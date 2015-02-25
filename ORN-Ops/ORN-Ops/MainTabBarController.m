@@ -60,6 +60,19 @@
 
 
 #
+# pragma mark - UIResponder
+#
+
+
+- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event {
+	
+	[self.view endEditing:YES];
+	
+	[super touchesBegan:touches withEvent:event];
+}
+
+
+#
 # pragma mark <UITabBarControllerDelegate>
 #
 

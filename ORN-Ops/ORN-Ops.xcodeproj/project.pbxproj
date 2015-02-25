@@ -132,8 +132,6 @@
 		B27B4A711A9AB1FB009277E4 /* ORN-Ops */ = {
 			isa = PBXGroup;
 			children = (
-				B27B4A761A9AB1FB009277E4 /* AppDelegate.h */,
-				B27B4A771A9AB1FB009277E4 /* AppDelegate.m */,
 				B27533431A9DA91700B3110C /* MainTabBarController.h */,
 				B27533441A9DA91700B3110C /* MainTabBarController.m */,
 				B2078B851A9DB406004AF662 /* MainMapViewController.h */,
@@ -150,6 +148,8 @@
 		B27B4A721A9AB1FB009277E4 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				B27B4A761A9AB1FB009277E4 /* AppDelegate.h */,
+				B27B4A771A9AB1FB009277E4 /* AppDelegate.m */,
 				B27B4A841A9AB1FB009277E4 /* LaunchScreen.xib */,
 				B27B4A821A9AB1FB009277E4 /* Images.xcassets */,
 				B27B4A731A9AB1FB009277E4 /* Info.plist */,
