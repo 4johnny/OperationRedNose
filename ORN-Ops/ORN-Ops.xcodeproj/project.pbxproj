@@ -83,13 +83,13 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		B2078B881A9DB662004AF662 /* Data Model - Extensions */ = {
+		B2078B881A9DB662004AF662 /* Data Model - Derived */ = {
 			isa = PBXGroup;
 			children = (
 				B2078B891A9DB6E5004AF662 /* Ride+RideMapAnnotation.h */,
 				B2078B8A1A9DB6E5004AF662 /* Ride+RideMapAnnotation.m */,
 			);
-			name = "Data Model - Extensions";
+			name = "Data Model - Derived";
 			sourceTree = "<group>";
 		};
 		B24D4FD21A9D98E9008A0C7A /* Data Model - Generated */ = {
@@ -100,6 +100,14 @@
 				B27533411A9DA46A00B3110C /* Ride.m */,
 			);
 			name = "Data Model - Generated";
+			sourceTree = "<group>";
+		};
+		B261725E1A9E595D00BB7D67 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				B2078B8E1A9DC043004AF662 /* ORNDataModelSource.h */,
+			);
+			name = Protocols;
 			sourceTree = "<group>";
 		};
 		B27B4A661A9AB1FB009277E4 = {
@@ -124,7 +132,6 @@
 		B27B4A711A9AB1FB009277E4 /* ORN-Ops */ = {
 			isa = PBXGroup;
 			children = (
-				B2078B8E1A9DC043004AF662 /* ORNDataModelSource.h */,
 				B27B4A761A9AB1FB009277E4 /* AppDelegate.h */,
 				B27B4A771A9AB1FB009277E4 /* AppDelegate.m */,
 				B27533431A9DA91700B3110C /* MainTabBarController.h */,
@@ -133,7 +140,8 @@
 				B2078B861A9DB406004AF662 /* MainMapViewController.m */,
 				B27B4A7F1A9AB1FB009277E4 /* Main.storyboard */,
 				B24D4FD21A9D98E9008A0C7A /* Data Model - Generated */,
-				B2078B881A9DB662004AF662 /* Data Model - Extensions */,
+				B2078B881A9DB662004AF662 /* Data Model - Derived */,
+				B261725E1A9E595D00BB7D67 /* Protocols */,
 				B27B4A721A9AB1FB009277E4 /* Supporting Files */,
 			);
 			path = "ORN-Ops";

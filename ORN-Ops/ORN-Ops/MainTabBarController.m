@@ -7,7 +7,7 @@
 //
 
 #import "MainTabBarController.h"
-#import "ORNDataModelSource.h"
+#import "AppDelegate.h"
 
 
 #
@@ -36,6 +36,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+
+	// Wire up delegate
+	self.delegate = self;
 	
 	// Inject data model for initial tab
 	[self injectDataModelIntoNavigationController:(UINavigationController*)self.viewControllers.firstObject];
@@ -66,6 +69,18 @@
 	// Inject data model into selected view controller, in case created just in time
 	// NOTE: All tabs in ORN tab bar are nav controllers
 	[self injectDataModelIntoNavigationController:(UINavigationController*)viewController];
+}
+
+
+#
+# pragma mark <ORNDataModelSource>
+#
+
+
++ (void)saveManagedObjectContext {
+	
+	AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+	[appDelegate saveManagedObjectContext];
 }
 
 

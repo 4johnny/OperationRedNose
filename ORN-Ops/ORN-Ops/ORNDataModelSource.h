@@ -21,9 +21,18 @@
 #
 
 @required
+
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+
+#
+# pragma mark Methods
+#
+
+@required
+
++ (void)saveManagedObjectContext;
 
 @end
 
 
-#endif
+#endif // ORN_Ops_ORNDataModelSource_h

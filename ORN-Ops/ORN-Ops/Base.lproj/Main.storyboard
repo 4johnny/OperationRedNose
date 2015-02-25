@@ -50,7 +50,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     </mapView>
-                    <navigationItem key="navigationItem" title="Operation Red Nose" id="RAh-2l-rsx"/>
+                    <navigationItem key="navigationItem" prompt="Operation Red Nose" id="RAh-2l-rsx"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QzW-8I-jrU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

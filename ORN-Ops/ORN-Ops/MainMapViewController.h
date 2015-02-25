@@ -14,7 +14,7 @@
 # pragma mark - Interface
 #
 
-@interface MainMapViewController : UIViewController <ORNDataModelSource>
+@interface MainMapViewController : UIViewController <ORNDataModelSource, NSFetchedResultsControllerDelegate>
 
 #
 # pragma mark <ORNDataModelSource>
