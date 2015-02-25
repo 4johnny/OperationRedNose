@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B24D4FD11A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B24D4FCF1A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld */; };
 		B27B4A751A9AB1FB009277E4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A741A9AB1FB009277E4 /* main.m */; };
 		B27B4A781A9AB1FB009277E4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A771A9AB1FB009277E4 /* AppDelegate.m */; };
 		B27B4A7B1A9AB1FB009277E4 /* FirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A7A1A9AB1FB009277E4 /* FirstViewController.m */; };
@@ -28,6 +29,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B24D4FD01A9D98E0008A0C7A /* ORN-Ops.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ORN-Ops.xcdatamodel"; sourceTree = "<group>"; };
+		B24D4FD31A9D9A0E008A0C7A /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		B27B4A6F1A9AB1FB009277E4 /* ORN-Ops.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ORN-Ops.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B27B4A731A9AB1FB009277E4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B27B4A741A9AB1FB009277E4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -63,9 +66,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B24D4FD21A9D98E9008A0C7A /* Data Model - Generated */ = {
+			isa = PBXGroup;
+			children = (
+				B24D4FCF1A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld */,
+			);
+			name = "Data Model - Generated";
+			sourceTree = "<group>";
+		};
 		B27B4A661A9AB1FB009277E4 = {
 			isa = PBXGroup;
 			children = (
+				B24D4FD31A9D9A0E008A0C7A /* CoreData.framework */,
 				B27B4A711A9AB1FB009277E4 /* ORN-Ops */,
 				B27B4A8E1A9AB1FB009277E4 /* ORN-OpsTests */,
 				B27B4A701A9AB1FB009277E4 /* Products */,
@@ -94,6 +106,7 @@
 				B27B4A821A9AB1FB009277E4 /* Images.xcassets */,
 				B27B4A841A9AB1FB009277E4 /* LaunchScreen.xib */,
 				B27B4A721A9AB1FB009277E4 /* Supporting Files */,
+				B24D4FD21A9D98E9008A0C7A /* Data Model - Generated */,
 			);
 			path = "ORN-Ops";
 			sourceTree = "<group>";
@@ -226,6 +239,7 @@
 			files = (
 				B27B4A7E1A9AB1FB009277E4 /* SecondViewController.m in Sources */,
 				B27B4A781A9AB1FB009277E4 /* AppDelegate.m in Sources */,
+				B24D4FD11A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld in Sources */,
 				B27B4A7B1A9AB1FB009277E4 /* FirstViewController.m in Sources */,
 				B27B4A751A9AB1FB009277E4 /* main.m in Sources */,
 			);
@@ -420,6 +434,7 @@
 				B27B4A971A9AB1FB009277E4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B27B4A981A9AB1FB009277E4 /* Build configuration list for PBXNativeTarget "ORN-OpsTests" */ = {
 			isa = XCConfigurationList;
@@ -428,8 +443,22 @@
 				B27B4A9A1A9AB1FB009277E4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		B24D4FCF1A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				B24D4FD01A9D98E0008A0C7A /* ORN-Ops.xcdatamodel */,
+			);
+			currentVersion = B24D4FD01A9D98E0008A0C7A /* ORN-Ops.xcdatamodel */;
+			path = "ORN-Ops.xcdatamodeld";
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = B27B4A671A9AB1FB009277E4 /* Project object */;
 }
