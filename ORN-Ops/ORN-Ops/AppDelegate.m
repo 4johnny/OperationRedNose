@@ -45,7 +45,7 @@
 @implementation AppDelegate
 
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+- (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions {
 	// Override point for customization after application launch.
 	
 	// Inject MOC into main tab bar controller
@@ -59,13 +59,13 @@
 }
 
 
-- (void)applicationWillResignActive:(UIApplication *)application {
+- (void)applicationWillResignActive:(UIApplication*)application {
 	// Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
 	// Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 }
 
 
-- (void)applicationDidEnterBackground:(UIApplication *)application {
+- (void)applicationDidEnterBackground:(UIApplication*)application {
 	// Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
 	// If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 	
@@ -74,17 +74,17 @@
 }
 
 
-- (void)applicationWillEnterForeground:(UIApplication *)application {
+- (void)applicationWillEnterForeground:(UIApplication*)application {
 	// Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
 
-- (void)applicationDidBecomeActive:(UIApplication *)application {
+- (void)applicationDidBecomeActive:(UIApplication*)application {
 	// Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
 
 
-- (void)applicationWillTerminate:(UIApplication *)application {
+- (void)applicationWillTerminate:(UIApplication*)application {
 	// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 	
 	// Saves changes in the application's managed object context before the application terminates.
@@ -105,11 +105,11 @@
 //
 // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.)
 //
-- (NSManagedObjectContext *)managedObjectContext {
+- (NSManagedObjectContext*)managedObjectContext {
 	
 	if (_managedObjectContext) return _managedObjectContext;
 	
-	NSPersistentStoreCoordinator *psc = self.persistentStoreCoordinator;
+	NSPersistentStoreCoordinator* psc = self.persistentStoreCoordinator;
 	if (!psc) return nil;
 	
 	_managedObjectContext = [[NSManagedObjectContext alloc] init]; // Init call makes this thread default owner
@@ -122,14 +122,14 @@
 //
 // The persistent store coordinator for the application. This implementation creates and return a coordinator, having added the store for the application to it.
 //
-- (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
+- (NSPersistentStoreCoordinator*)persistentStoreCoordinator {
 	
 	if (_persistentStoreCoordinator) return _persistentStoreCoordinator;
 	
 	// Create the coordinator and store
 	_persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];
-	NSURL *storeURL = [[AppDelegate applicationDocumentsDirectoryURL] URLByAppendingPathComponent:CORE_DATA_STORE_SQL_FILE_NAME];
-	NSError *error = nil;
+	NSURL* storeURL = [[AppDelegate applicationDocumentsDirectoryURL] URLByAppendingPathComponent:CORE_DATA_STORE_SQL_FILE_NAME];
+	NSError* error = nil;
 	if ([_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) return _persistentStoreCoordinator;
 	
 	// TODO: Replace this with code to handle the error appropriately.
@@ -145,11 +145,11 @@
 //
 // The managed object model for the application. It is a fatal error for the application not to be able to find and load its model.
 //
-- (NSManagedObjectModel *)managedObjectModel {
+- (NSManagedObjectModel*)managedObjectModel {
 	
 	if (_managedObjectModel) return _managedObjectModel;
 	
-	NSURL *modelURL = [[NSBundle mainBundle] URLForResource:CORE_DATA_MODEL_RESOURCE_NAME withExtension:@"momd"];
+	NSURL* modelURL = [[NSBundle mainBundle] URLForResource:CORE_DATA_MODEL_RESOURCE_NAME withExtension:@"momd"];
 	_managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
 	
 	return _managedObjectModel;
@@ -176,7 +176,7 @@
 }
 
 
-+ (NSError *)persistentStoreError:(NSError*)error {
++ (NSError*)persistentStoreError:(NSError*)error {
 	
 	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:3];
 	
@@ -195,7 +195,7 @@
 #
 
 
-+ (NSURL *)applicationDocumentsDirectoryURL {
++ (NSURL*)applicationDocumentsDirectoryURL {
 	
 	return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
