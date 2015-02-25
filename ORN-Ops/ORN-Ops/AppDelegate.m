@@ -7,7 +7,15 @@
 //
 
 #import "AppDelegate.h"
+#import "MainTabBarController.h"
 
+
+#
+# pragma mark - Constants
+#
+
+#define CORE_DATA_STORE_SQL_FILE_NAME	@"ORN-Ops.sqlite"
+#define CORE_DATA_MODEL_RESOURCE_NAME	@"ORN-Ops"
 
 #
 # pragma mark - Interface
@@ -39,30 +47,51 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	// Override point for customization after application launch.
+	
+	// Inject MOC into main tab bar controller
+	MainTabBarController* mainTabBarController = (MainTabBarController*)self.window.rootViewController;
+	mainTabBarController.managedObjectContext = self.managedObjectContext;
+	
+	// Initialize tab bar controller to first tab
+	// NOTE: Must happen _after_ MOC is injected
+	mainTabBarController.selectedViewController = mainTabBarController.viewControllers.firstObject;
+	
 	return YES;
 }
+
 
 - (void)applicationWillResignActive:(UIApplication *)application {
 	// Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
 	// Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 }
 
+
 - (void)applicationDidEnterBackground:(UIApplication *)application {
 	// Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
 	// If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+	
+	// Saves changes in the application's managed object context before the application terminates.
+	[self saveManagedObjectContext];
 }
+
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
 	// Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
+
 - (void)applicationDidBecomeActive:(UIApplication *)application {
 	// Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
 
+
 - (void)applicationWillTerminate:(UIApplication *)application {
 	// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+	
+	// Saves changes in the application's managed object context before the application terminates.
+	[self saveManagedObjectContext];
 }
+
 
 #
 # pragma mark - Core Data Stack
@@ -100,7 +129,7 @@
 	
 	// Create the coordinator and store
 	_persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];
-	NSURL *storeURL = [[AppDelegate applicationDocumentsDirectoryURL] URLByAppendingPathComponent:@"EveryDoAgain.sqlite"];
+	NSURL *storeURL = [[AppDelegate applicationDocumentsDirectoryURL] URLByAppendingPathComponent:CORE_DATA_STORE_SQL_FILE_NAME];
 	NSError *error = nil;
 	if ([_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) return _persistentStoreCoordinator;
 	
@@ -121,7 +150,7 @@
 	
 	if (_managedObjectModel) return _managedObjectModel;
 	
-	NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"EveryDoAgain" withExtension:@"momd"];
+	NSURL *modelURL = [[NSBundle mainBundle] URLForResource:CORE_DATA_MODEL_RESOURCE_NAME withExtension:@"momd"];
 	_managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
 	
 	return _managedObjectModel;
