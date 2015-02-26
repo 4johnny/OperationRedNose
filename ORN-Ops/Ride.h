@@ -2,7 +2,7 @@
 //  Ride.h
 //  ORN-Ops
 //
-//  Created by Johnny on 2015-02-24.
+//  Created by Johnny on 2015-02-25.
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
@@ -29,5 +29,6 @@
 @property (nonatomic, retain) NSString * vehicleDescription;
 @property (nonatomic, retain) NSNumber * vehicleSeatbeltCount;
 @property (nonatomic, retain) NSString * vehicleTransmission;
+@property (nonatomic, retain) NSString * notes;
 
 @end

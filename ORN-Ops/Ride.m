@@ -2,7 +2,7 @@
 //  Ride.m
 //  ORN-Ops
 //
-//  Created by Johnny on 2015-02-24.
+//  Created by Johnny on 2015-02-25.
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
@@ -28,5 +28,6 @@
 @dynamic vehicleDescription;
 @dynamic vehicleSeatbeltCount;
 @dynamic vehicleTransmission;
+@dynamic notes;
 
 @end

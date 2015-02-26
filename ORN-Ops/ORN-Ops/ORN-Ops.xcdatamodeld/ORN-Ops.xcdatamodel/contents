@@ -9,6 +9,7 @@
         <attribute name="locationStartAddress" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationStartLatitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="locationStartLongitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="passengerCount" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="passengerNameFirst" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="passengerNameLast" optional="YES" attributeType="String" syncable="YES"/>
@@ -20,6 +21,6 @@
         <attribute name="vehicleTransmission" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Ride" positionX="-36" positionY="152" width="153" height="298"/>
+        <element name="Ride" positionX="-36" positionY="152" width="153" height="313"/>
     </elements>
 </model>

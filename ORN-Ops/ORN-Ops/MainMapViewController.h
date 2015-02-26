@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MapKit/MapKit.h>
 #import "ORNDataModelSource.h"
 
 
@@ -14,7 +15,14 @@
 # pragma mark - Interface
 #
 
-@interface MainMapViewController : UIViewController <ORNDataModelSource, NSFetchedResultsControllerDelegate>
+@interface MainMapViewController : UIViewController <ORNDataModelSource, NSFetchedResultsControllerDelegate, UITextFieldDelegate, MKMapViewDelegate>
+
+#
+# pragma mark Outlets
+#
+
+@property (weak, nonatomic) IBOutlet UITextField *addressTextField;
+@property (strong, nonatomic) IBOutlet MKMapView *mainMapView;
 
 #
 # pragma mark <ORNDataModelSource>

@@ -7,11 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B2078B831A9DAF2A004AF662 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2078B821A9DAF2A004AF662 /* MapKit.framework */; };
 		B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2078B861A9DB406004AF662 /* MainMapViewController.m */; };
-		B2078B8B1A9DB6E5004AF662 /* Ride+RideMapAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B2078B8A1A9DB6E5004AF662 /* Ride+RideMapAnnotation.m */; };
+		B24C18711A9EF3D6008505BB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2078B821A9DAF2A004AF662 /* MapKit.framework */; };
 		B24D4FD11A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B24D4FCF1A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld */; };
-		B27533421A9DA46A00B3110C /* Ride.m in Sources */ = {isa = PBXBuildFile; fileRef = B27533411A9DA46A00B3110C /* Ride.m */; };
+		B26172651A9EE96B00BB7D67 /* Ride.m in Sources */ = {isa = PBXBuildFile; fileRef = B26172641A9EE96B00BB7D67 /* Ride.m */; };
 		B27533451A9DA91700B3110C /* MainTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = B27533441A9DA91700B3110C /* MainTabBarController.m */; };
 		B27B4A751A9AB1FB009277E4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A741A9AB1FB009277E4 /* main.m */; };
 		B27B4A781A9AB1FB009277E4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A771A9AB1FB009277E4 /* AppDelegate.m */; };
@@ -35,12 +34,10 @@
 		B2078B821A9DAF2A004AF662 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		B2078B851A9DB406004AF662 /* MainMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMapViewController.h; sourceTree = "<group>"; };
 		B2078B861A9DB406004AF662 /* MainMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMapViewController.m; sourceTree = "<group>"; };
-		B2078B891A9DB6E5004AF662 /* Ride+RideMapAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Ride+RideMapAnnotation.h"; sourceTree = "<group>"; };
-		B2078B8A1A9DB6E5004AF662 /* Ride+RideMapAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Ride+RideMapAnnotation.m"; sourceTree = "<group>"; };
 		B2078B8E1A9DC043004AF662 /* ORNDataModelSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ORNDataModelSource.h; sourceTree = "<group>"; };
 		B24D4FD01A9D98E0008A0C7A /* ORN-Ops.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ORN-Ops.xcdatamodel"; sourceTree = "<group>"; };
-		B27533401A9DA46A00B3110C /* Ride.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ride.h; sourceTree = "<group>"; };
-		B27533411A9DA46A00B3110C /* Ride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ride.m; sourceTree = "<group>"; };
+		B26172631A9EE96B00BB7D67 /* Ride.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Ride.h; path = ../Ride.h; sourceTree = "<group>"; };
+		B26172641A9EE96B00BB7D67 /* Ride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Ride.m; path = ../Ride.m; sourceTree = "<group>"; };
 		B27533431A9DA91700B3110C /* MainTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainTabBarController.h; sourceTree = "<group>"; };
 		B27533441A9DA91700B3110C /* MainTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainTabBarController.m; sourceTree = "<group>"; };
 		B27B4A6F1A9AB1FB009277E4 /* ORN-Ops.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ORN-Ops.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,7 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B2078B831A9DAF2A004AF662 /* MapKit.framework in Frameworks */,
+				B24C18711A9EF3D6008505BB /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,8 +83,6 @@
 		B2078B881A9DB662004AF662 /* Data Model - Derived */ = {
 			isa = PBXGroup;
 			children = (
-				B2078B891A9DB6E5004AF662 /* Ride+RideMapAnnotation.h */,
-				B2078B8A1A9DB6E5004AF662 /* Ride+RideMapAnnotation.m */,
 			);
 			name = "Data Model - Derived";
 			sourceTree = "<group>";
@@ -96,8 +91,8 @@
 			isa = PBXGroup;
 			children = (
 				B24D4FCF1A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld */,
-				B27533401A9DA46A00B3110C /* Ride.h */,
-				B27533411A9DA46A00B3110C /* Ride.m */,
+				B26172631A9EE96B00BB7D67 /* Ride.h */,
+				B26172641A9EE96B00BB7D67 /* Ride.m */,
 			);
 			name = "Data Model - Generated";
 			sourceTree = "<group>";
@@ -225,6 +220,11 @@
 					B27B4A6E1A9AB1FB009277E4 = {
 						CreatedOnToolsVersion = 6.1.1;
 						DevelopmentTeam = 6PP44SJ65P;
+						SystemCapabilities = {
+							com.apple.Maps.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					B27B4A8A1A9AB1FB009277E4 = {
 						CreatedOnToolsVersion = 6.1.1;
@@ -278,10 +278,9 @@
 			files = (
 				B27533451A9DA91700B3110C /* MainTabBarController.m in Sources */,
 				B27B4A781A9AB1FB009277E4 /* AppDelegate.m in Sources */,
-				B2078B8B1A9DB6E5004AF662 /* Ride+RideMapAnnotation.m in Sources */,
 				B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */,
+				B26172651A9EE96B00BB7D67 /* Ride.m in Sources */,
 				B24D4FD11A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld in Sources */,
-				B27533421A9DA46A00B3110C /* Ride.m in Sources */,
 				B27B4A751A9AB1FB009277E4 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

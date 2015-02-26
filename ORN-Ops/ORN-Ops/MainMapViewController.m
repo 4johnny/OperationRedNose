@@ -7,8 +7,10 @@
 //
 
 #import <CoreData/CoreData.h>
+#import <CoreLocation/CoreLocation.h>
 #import "MainMapViewController.h"
 #import "AppDelegate.h"
+#import "Ride.h"
 
 
 #
@@ -22,7 +24,11 @@
 # pragma mark Properties
 #
 
-@property (strong, nonatomic) NSFetchedResultsController *rideFetchedResultsController;
+@property (strong, nonatomic) NSFetchedResultsController* rideFetchedResultsController;
+
+@property (strong, nonatomic) CLGeocoder* geocoder;
+
+@property (strong, nonatomic) UIAlertController* okAlertController;
 
 @end
 
@@ -68,6 +74,28 @@
 }
 
 
+- (CLGeocoder*)geocoder {
+	
+	if (_geocoder) return _geocoder;
+
+	_geocoder = [[CLGeocoder alloc] init];
+	
+	return _geocoder;
+}
+
+
+- (UIAlertController*)okAlertController {
+
+	if (_okAlertController) return _okAlertController;
+	
+	UIAlertAction* okAlertAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+	_okAlertController = [UIAlertController alertControllerWithTitle:@"Error" message:nil preferredStyle:UIAlertControllerStyleAlert];
+	[_okAlertController addAction:okAlertAction];
+	
+	return _okAlertController;
+}
+
+
 #
 # pragma mark UIViewController
 #
@@ -107,6 +135,52 @@
 
 
 #
+# pragma mark <UITextFieldDelegate>
+#
+
+
+- (BOOL)textFieldShouldReturn:(UITextField*)textField {
+
+	// User has hit keyboard return key
+	// NOTE: Address is *not* empty due to "auto-enable" of return key
+	
+	[textField resignFirstResponder];
+
+	[self configureViewWithAddressString:self.addressTextField.text];
+	
+	return NO; // NOTE: Do not perform default text-field behaviour
+}
+
+
+#
+# pragma mark <MKMapViewDelegate>
+#
+
+
+//- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
+//	
+//	// NOTE: Called many times during scrolling, so keep code lightweight
+//}
+//
+//
+//- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
+//	
+//}
+//
+//
+//- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
+//	
+//	return nil;
+//}
+//
+//
+//- (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay {
+//	
+//	return nil;
+//}
+
+
+#
 # pragma mark <ORNDataModelSource>
 #
 
@@ -125,8 +199,53 @@
 
 - (void)configureView {
 
-	// Configure ride pins and annotations
-	// TODO: Code a fetchedResultsController for Rides
+	// Configure pins and annotations for all existing rides
+	
+	
+}
+
+
+- (void)configureViewWithAddressString:(NSString*)addressString {
+
+	// Geocode provided address string
+	[self.geocoder geocodeAddressString:addressString completionHandler:^(NSArray* placemarks, NSError* error) {
+		
+		// NOTES: Completion block executes on main thread. Do not run more than one reverse-geocode simultaneously.
+		
+		// If there is a problem, log it; alert the user; and we are done.
+		if (error || placemarks.count < 1) {
+			
+			if (error) {
+				NSLog(@"Geocode Error: %@ %@", error.localizedDescription, error.userInfo);
+			} else if (placemarks.count < 1) {
+				NSLog(@"Geocode Error: No placemarks for address string: %@", addressString);
+			}
+			
+			[self presentAlertWithTitle:@"Error" andMessage:@"Cannot find address."];
+			
+			return;
+		}
+
+		// Address resolved successfully to have at least one placemark
+		// Use first placemark to create annotation
+		CLPlacemark* placemark = placemarks[0];
+		NSLog(@"Geocode Location: %@", placemark.location);
+		NSLog(@"Geocode Address: %@", placemark.addressDictionary);
+		
+		
+		
+		// Alert the user
+		[self presentAlertWithTitle:@"Success" andMessage:@"Found placemark for address."];
+	}];
+}
+
+
+- (void)presentAlertWithTitle:(NSString*)title andMessage:(NSString*)message {
+	
+	self.okAlertController.title = title;
+	self.okAlertController.message = message;
+	
+	[self presentViewController:self.okAlertController animated:YES completion:nil];
 }
 
 

@@ -49,17 +49,27 @@
                     <mapView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" id="0H8-FR-r5U">
                         <rect key="frame" x="0.0" y="94" width="600" height="457"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <connections>
+                            <outlet property="delegate" destination="Cgj-Rd-EZz" id="F2v-lV-lAt"/>
+                        </connections>
                     </mapView>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" prompt="Operation Red Nose" id="RAh-2l-rsx">
                         <nil key="title"/>
-                        <textField key="titleView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter address" minimumFontSize="17" id="OpH-64-v2x">
+                        <textField key="titleView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter address" minimumFontSize="17" clearButtonMode="unlessEditing" id="OpH-64-v2x">
                             <rect key="frame" x="150" y="37" width="300" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                            <textInputTraits key="textInputTraits" returnKeyType="search" enablesReturnKeyAutomatically="YES"/>
+                            <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="go" enablesReturnKeyAutomatically="YES"/>
+                            <connections>
+                                <outlet property="delegate" destination="Cgj-Rd-EZz" id="nrv-7r-arJ"/>
+                            </connections>
                         </textField>
                     </navigationItem>
+                    <connections>
+                        <outlet property="addressTextField" destination="OpH-64-v2x" id="BhM-i1-3TK"/>
+                        <outlet property="mainMapView" destination="0H8-FR-r5U" id="Cxm-W6-GZy"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QzW-8I-jrU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
