@@ -12,7 +12,7 @@
 
 #import "MainMapViewController.h"
 #import "AppDelegate.h"
-#import "Ride.h"
+#import "Ride+RideHelpers.h"
 #import "RidePointAnnotation.h"
 
 
@@ -20,6 +20,17 @@
 # pragma mark - Constants
 #
 
+#define VANCOUVER_LATITUDE		49.25
+#define VANCOUVER_LONGITUDE		-123.1
+#define VANCOUVER_COORDINATE	CLLocationCoordinate2DMake(VANCOUVER_LATITUDE, VANCOUVER_LONGITUDE)
+#define VANCOUVER_RADIUS		10000 // metres
+
+#define MAP_SPAN_LOCATION_DELTA_NEIGHBOURHOOD	0.02 // degrees
+#define MAP_SPAN_LOCATION_DELTA_CITY			0.2 // degrees
+#define MAP_SPAN_LOCATION_DELTA_LOCALE			2.0 // degrees
+
+#define COMMAND_HELP		@"ornhelp"
+#define COMMAND_SHOW_ALL	@"ornshowall"
 #define COMMAND_DEMO_MODE	@"orndemomode"
 
 
@@ -231,14 +242,15 @@
 		}
 	}
 
-	[self.mainMapView showAnnotations:self.mainMapView.annotations animated:YES];
+	[self showAllAnnotations];
 }
 
 
 - (void)configureViewWithAddressString:(NSString*)addressString {
 
 	// Geocode provided address string
-	[self.geocoder geocodeAddressString:addressString completionHandler:^(NSArray* placemarks, NSError* error) {
+	CLCircularRegion* vancouverRegion = [[CLCircularRegion alloc] initWithCenter:VANCOUVER_COORDINATE radius:VANCOUVER_RADIUS identifier:@"Vancouver Region"];
+	[self.geocoder geocodeAddressString:addressString inRegion:vancouverRegion completionHandler:^(NSArray* placemarks, NSError* error) {
 		
 		// NOTES: Completion block executes on main thread. Do not run more than one reverse-geocode simultaneously.
 		
@@ -271,21 +283,18 @@
 		self.addressTextField.text = @"";
 		RidePointAnnotation* rideStartPointAnnotation = [RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_Start];
 		[self.mainMapView addAnnotation:rideStartPointAnnotation];
-		[self.mainMapView showAnnotations:self.mainMapView.annotations animated:YES];
+		[self.mainMapView showAnnotations:@[rideStartPointAnnotation] animated:YES];
+		[self.mainMapView selectAnnotation:rideStartPointAnnotation animated:YES];
 	}];
 }
 
 
 + (Ride*)rideFromPlacemark:(CLPlacemark*)placemark inManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
-
-	Ride* ride = [NSEntityDescription insertNewObjectForEntityForName:@"Ride" inManagedObjectContext:managedObjectContext];
 	
-	ride.locationStartLatitude = [NSNumber numberWithDouble:placemark.location.coordinate.latitude];
-	ride.locationStartLongitude = [NSNumber numberWithDouble:placemark.location.coordinate.longitude];
-	ride.locationStartCity = placemark.locality;
-	ride.locationStartAddress = [MainMapViewController addressStringWithPlacemark:placemark];
-	
-	return ride;
+	return [Ride rideWithManagedObjectContext:managedObjectContext
+				   andLocationStartCoordinate:placemark.location.coordinate
+					  andLocationStartAddress:[MainMapViewController addressStringWithPlacemark:placemark]
+						 andLocationStartCity:placemark.locality];
 }
 
 
@@ -296,24 +305,9 @@
 	
 	if (street && city) return [NSString stringWithFormat:@"%@, %@", street, city];
 	
-	return [NSString stringWithFormat:@"%@ (%.2f,%.2f)", placemark.name, placemark.location.coordinate.latitude, placemark.location.coordinate.longitude];
+	return [NSString stringWithFormat:@"%@ (%.3f,%.3f)", placemark.name, placemark.location.coordinate.latitude, placemark.location.coordinate.longitude];
 
 	//	return ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO);
-}
-
-
-// Handle command string
-// Returns whether command string was handled
-- (BOOL)handleCommandString:(NSString*)commandString {
-	
-	if ([commandString isEqualToString:COMMAND_DEMO_MODE]) {
-		
-		[self presentAlertWithTitle:@"Command" andMessage:[NSString stringWithFormat:@"Handled command: %@", commandString]];
-		NSLog(@"Handled Command: %@", commandString);
-		return YES;
-	}
-	
-	return NO;
 }
 
 
@@ -323,6 +317,96 @@
 	self.okAlertController.message = message;
 	
 	[self presentViewController:self.okAlertController animated:YES completion:nil];
+}
+
+
+- (void)showAllAnnotations {
+
+	[self.mainMapView showAnnotations:self.mainMapView.annotations animated:YES];
+}
+
+
+- (void)clearAllAnnotationSelections {
+	
+	for (id<MKAnnotation> annotation in self.mainMapView.annotations) {
+		
+		[self.mainMapView deselectAnnotation:annotation animated:NO];
+	}
+}
+
+
+#
+# pragma mark Demo
+#
+
+
+// Handle command string
+// Returns whether command string was handled
+- (BOOL)handleCommandString:(NSString*)commandString {
+
+	BOOL handled = NO;
+	
+	if ([commandString isEqualToString:COMMAND_HELP]) {
+		
+		[self presentAlertWithTitle:@"ORN Commands"
+						 andMessage:[NSString stringWithFormat:@"%@\n%@\n%@",
+									 COMMAND_HELP,
+									 COMMAND_SHOW_ALL,
+									 COMMAND_DEMO_MODE
+									 ]];
+		handled = YES;
+	}
+
+	if ([commandString isEqualToString:COMMAND_DEMO_MODE]) {
+		
+		[self configureDemoRides];
+		handled = YES;
+	}
+	
+	if ([commandString isEqualToString:COMMAND_SHOW_ALL]) {
+	
+		[self clearAllAnnotationSelections];
+		[self showAllAnnotations];
+		handled = YES;
+	}
+	
+	if (handled) {
+		NSLog(@"Handled Command: %@", commandString);
+	}
+	
+	return handled;
+}
+
+
+- (void)configureDemoRides {
+
+	// Load demo rides into data model
+	
+	[Ride rideWithManagedObjectContext:self.managedObjectContext
+			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.2818704, -123.1081611)
+			   andLocationStartAddress:@"128 W Hastings St, Vancouver"
+				  andLocationStartCity:@"Vancouver"];
+
+	[Ride rideWithManagedObjectContext:self.managedObjectContext
+			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.287826, -123.123834)
+			   andLocationStartAddress:@"580 Bute St, Vancouver"
+				  andLocationStartCity:@"Vancouver"];
+	
+	[Ride rideWithManagedObjectContext:self.managedObjectContext
+			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.27665770574511, -123.0847680657702)
+			   andLocationStartAddress:@"1 Venables St, Vancouver"
+				  andLocationStartCity:@"Vancouver"];
+	
+	[Ride rideWithManagedObjectContext:self.managedObjectContext
+			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.2688777, -123.0769722)
+			   andLocationStartAddress:@"1750 Clark Dr, Vancouver"
+				  andLocationStartCity:@"Vancouver"];
+	
+	// Mark refetch data model
+	self.rideFetchedResultsController = nil;
+	
+	// Annotate demo rides on map view
+	[self configureView];
 }
 
 
