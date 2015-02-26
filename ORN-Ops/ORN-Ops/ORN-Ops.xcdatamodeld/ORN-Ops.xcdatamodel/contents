@@ -4,16 +4,19 @@
         <attribute name="dateTimeEnd" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="dateTimeStart" optional="YES" attributeType="Date" indexed="YES" syncable="YES"/>
         <attribute name="locationEndAddress" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="locationEndLatitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="locationEndLongitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="locationEndCity" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="locationEndLatitude" optional="YES" attributeType="Double" defaultValueString="-1" syncable="YES"/>
+        <attribute name="locationEndLongitude" optional="YES" attributeType="Double" defaultValueString="-1" syncable="YES"/>
         <attribute name="locationStartAddress" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="locationStartLatitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="locationStartLongitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="locationStartCity" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="locationStartLatitude" optional="YES" attributeType="Double" defaultValueString="-1" syncable="YES"/>
+        <attribute name="locationStartLongitude" optional="YES" attributeType="Double" defaultValueString="-1" syncable="YES"/>
         <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="passengerCount" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="passengerNameFirst" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="passengerNameLast" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="passengerPhoneNumber" optional="YES" attributeType="String" minValueString="7" syncable="YES"/>
+        <attribute name="teamAssigned" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="transferFrom" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="transferTo" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="vehicleDescription" optional="YES" attributeType="String" syncable="YES"/>
@@ -21,6 +24,6 @@
         <attribute name="vehicleTransmission" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Ride" positionX="-36" positionY="152" width="153" height="313"/>
+        <element name="Ride" positionX="-36" positionY="152" width="153" height="358"/>
     </elements>
 </model>

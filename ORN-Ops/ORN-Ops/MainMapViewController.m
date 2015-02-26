@@ -8,9 +8,19 @@
 
 #import <CoreData/CoreData.h>
 #import <CoreLocation/CoreLocation.h>
+//#import <AddressBookUI/AddressBookUI.h>
+
 #import "MainMapViewController.h"
 #import "AppDelegate.h"
 #import "Ride.h"
+#import "RidePointAnnotation.h"
+
+
+#
+# pragma mark - Constants
+#
+
+#define COMMAND_DEMO_MODE	@"orndemomode"
 
 
 #
@@ -46,7 +56,7 @@
 #
 
 
-- (NSFetchedResultsController*)reviewsFetchedResultsController {
+- (NSFetchedResultsController*)rideFetchedResultsController {
 	
 	if (_rideFetchedResultsController) return _rideFetchedResultsController;
 	
@@ -139,16 +149,23 @@
 #
 
 
+// User hit keyboard return key
+// NOTE: Text field is *not* empty due to "auto-enable" of return key
 - (BOOL)textFieldShouldReturn:(UITextField*)textField {
 
-	// User has hit keyboard return key
-	// NOTE: Address is *not* empty due to "auto-enable" of return key
-	
+	// Remove focus and keyboard
 	[textField resignFirstResponder];
 
+	// If command present, handle it and we are done
+	if ([self handleCommandString:self.addressTextField.text]) {
+		self.addressTextField.text = @"";
+		return NO;
+	}
+
+	// Configure view with address string
 	[self configureViewWithAddressString:self.addressTextField.text];
 	
-	return NO; // NOTE: Do not perform default text-field behaviour
+	return NO; // Do not perform default text-field behaviour
 }
 
 
@@ -199,9 +216,22 @@
 
 - (void)configureView {
 
-	// Configure pins and annotations for all existing rides
+	// Configure annotations and callouts for all existing rides
 	
-	
+	for (Ride* ride in self.rideFetchedResultsController.fetchedObjects) {
+
+		if (!(ride.locationStartLatitude.doubleValue < 0)) {
+			
+			[self.mainMapView addAnnotation:[RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_Start]];
+		}
+		
+		if (!(ride.locationEndLatitude.doubleValue < 0)) {
+			
+			[self.mainMapView addAnnotation:[RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_End]];
+		}
+	}
+
+	[self.mainMapView showAnnotations:self.mainMapView.annotations animated:YES];
 }
 
 
@@ -227,16 +257,63 @@
 		}
 
 		// Address resolved successfully to have at least one placemark
-		// Use first placemark to create annotation
 		CLPlacemark* placemark = placemarks[0];
-		NSLog(@"Geocode Location: %@", placemark.location);
-		NSLog(@"Geocode Address: %@", placemark.addressDictionary);
+		NSLog(@"Geocode location: %@", placemark.location);
+		NSLog(@"Geocode locality: %@", placemark.locality);
+		NSLog(@"Geocode address: %@", placemark.addressDictionary);
 		
+		// Use first placemark as start location for new ride
+		Ride* ride = [MainMapViewController rideFromPlacemark:placemark inManagedObjectContext:self.managedObjectContext];
+		[MainMapViewController saveManagedObjectContext];
+		NSLog(@"Ride: %@", ride);
 		
-		
-		// Alert the user
-		[self presentAlertWithTitle:@"Success" andMessage:@"Found placemark for address."];
+		// Clear entry field and annotate ride on map view
+		self.addressTextField.text = @"";
+		RidePointAnnotation* rideStartPointAnnotation = [RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_Start];
+		[self.mainMapView addAnnotation:rideStartPointAnnotation];
+		[self.mainMapView showAnnotations:self.mainMapView.annotations animated:YES];
 	}];
+}
+
+
++ (Ride*)rideFromPlacemark:(CLPlacemark*)placemark inManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
+
+	Ride* ride = [NSEntityDescription insertNewObjectForEntityForName:@"Ride" inManagedObjectContext:managedObjectContext];
+	
+	ride.locationStartLatitude = [NSNumber numberWithDouble:placemark.location.coordinate.latitude];
+	ride.locationStartLongitude = [NSNumber numberWithDouble:placemark.location.coordinate.longitude];
+	ride.locationStartCity = placemark.locality;
+	ride.locationStartAddress = [MainMapViewController addressStringWithPlacemark:placemark];
+	
+	return ride;
+}
+
+
++ (NSString*)addressStringWithPlacemark:(CLPlacemark*)placemark {
+
+	NSString* street = placemark.addressDictionary[@"Street"];
+	NSString* city = placemark.addressDictionary[@"City"];
+	
+	if (street && city) return [NSString stringWithFormat:@"%@, %@", street, city];
+	
+	return [NSString stringWithFormat:@"%@ (%.2f,%.2f)", placemark.name, placemark.location.coordinate.latitude, placemark.location.coordinate.longitude];
+
+	//	return ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO);
+}
+
+
+// Handle command string
+// Returns whether command string was handled
+- (BOOL)handleCommandString:(NSString*)commandString {
+	
+	if ([commandString isEqualToString:COMMAND_DEMO_MODE]) {
+		
+		[self presentAlertWithTitle:@"Command" andMessage:[NSString stringWithFormat:@"Handled command: %@", commandString]];
+		NSLog(@"Handled Command: %@", commandString);
+		return YES;
+	}
+	
+	return NO;
 }
 
 

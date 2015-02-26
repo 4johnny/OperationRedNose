@@ -8,6 +8,7 @@
         <scene sceneID="yl2-sM-qoP">
             <objects>
                 <tabBarController id="49e-Tb-3d3" customClass="MainTabBarController" sceneMemberID="viewController">
+                    <extendedEdge key="edgesForExtendedLayout"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="W28-zg-YXA">
                         <rect key="frame" x="0.0" y="975" width="768" height="49"/>
@@ -26,6 +27,7 @@
         <scene sceneID="2uj-KS-lbg">
             <objects>
                 <navigationController storyboardIdentifier="mapNavigationController" title="Map Navigation Controller" id="KC7-5p-1m8" sceneMemberID="viewController">
+                    <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Map" id="C0O-X8-QZp"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="PY8-TU-oFh">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
