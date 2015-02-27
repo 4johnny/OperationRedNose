@@ -48,13 +48,29 @@
         <scene sceneID="cLB-JM-3uD">
             <objects>
                 <viewController storyboardIdentifier="mainMapViewController" title="Main Map View Controller" id="Cgj-Rd-EZz" customClass="MainMapViewController" sceneMemberID="viewController">
-                    <mapView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" id="0H8-FR-r5U">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="7AY-3h-6lr"/>
+                        <viewControllerLayoutGuide type="bottom" id="jEk-3Z-jcE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="XLH-Pf-8Rb">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="457"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <connections>
-                            <outlet property="delegate" destination="Cgj-Rd-EZz" id="F2v-lV-lAt"/>
-                        </connections>
-                    </mapView>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="eJC-AT-fJw">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="457"/>
+                                <connections>
+                                    <outlet property="delegate" destination="Cgj-Rd-EZz" id="K8C-Ej-bh8"/>
+                                </connections>
+                            </mapView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="eJC-AT-fJw" firstAttribute="top" secondItem="7AY-3h-6lr" secondAttribute="bottom" id="2Q2-w0-fOr"/>
+                            <constraint firstItem="jEk-3Z-jcE" firstAttribute="top" secondItem="eJC-AT-fJw" secondAttribute="bottom" id="BZM-Kl-9WS"/>
+                            <constraint firstItem="eJC-AT-fJw" firstAttribute="leading" secondItem="XLH-Pf-8Rb" secondAttribute="leading" id="q1u-mE-0YC"/>
+                            <constraint firstAttribute="trailing" secondItem="eJC-AT-fJw" secondAttribute="trailing" id="rLu-aY-Au5"/>
+                        </constraints>
+                    </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" prompt="ORN" id="RAh-2l-rsx">
                         <nil key="title"/>
@@ -70,12 +86,13 @@
                     </navigationItem>
                     <connections>
                         <outlet property="addressTextField" destination="OpH-64-v2x" id="BhM-i1-3TK"/>
-                        <outlet property="mainMapView" destination="0H8-FR-r5U" id="Cxm-W6-GZy"/>
+                        <outlet property="mainMapView" destination="eJC-AT-fJw" id="xiq-yJ-Ilg"/>
+                        <outlet property="view" destination="XLH-Pf-8Rb" id="0Hl-3N-g0s"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QzW-8I-jrU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1412" y="0.0"/>
+            <point key="canvasLocation" x="1445" y="0.0"/>
         </scene>
     </scenes>
 </document>
