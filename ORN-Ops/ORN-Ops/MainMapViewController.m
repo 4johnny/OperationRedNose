@@ -134,6 +134,12 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 	
+	// Set up navigation prompt
+	UINavigationItem* navigationItem = (UINavigationItem*)self.navigationItem;
+	NSString* promptBase = navigationItem.prompt;
+	navigationItem.prompt = [NSString stringWithFormat:@"%@: %@ for %@", promptBase, JURISDICTION_NAME, CHARITY_NAME];
+	
+	// Configure map
 	[self configureView];
 }
 
@@ -235,12 +241,7 @@
 
 - (void)configureView {
 	
-	// Set up navigation prompt
-	UINavigationItem* navigationItem = (UINavigationItem*)self.navigationItem;
-	NSString* promptBase = navigationItem.prompt;
-	navigationItem.prompt = [NSString stringWithFormat:@"%@: %@ for %@", promptBase, JURISDICTION_NAME, CHARITY_NAME];
-	
-	// Center map on Vancouver region
+	// Center and zoom map on juridiction region
 	MKCoordinateRegion centerRegion = MKCoordinateRegionMake(JURISDICTION_COORDINATE, MKCoordinateSpanMake(MAP_SPAN_LOCATION_DELTA_CITY, MAP_SPAN_LOCATION_DELTA_CITY));
 	[self.mainMapView setRegion:centerRegion animated:YES];
 

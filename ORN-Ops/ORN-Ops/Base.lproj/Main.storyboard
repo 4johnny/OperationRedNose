@@ -49,14 +49,14 @@
             <objects>
                 <viewController storyboardIdentifier="mainMapViewController" title="Main Map View Controller" id="Cgj-Rd-EZz" customClass="MainMapViewController" sceneMemberID="viewController">
                     <mapView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" id="0H8-FR-r5U">
-                        <rect key="frame" x="0.0" y="94" width="600" height="457"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="457"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <connections>
                             <outlet property="delegate" destination="Cgj-Rd-EZz" id="F2v-lV-lAt"/>
                         </connections>
                     </mapView>
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <navigationItem key="navigationItem" prompt="Operation Red Nose" id="RAh-2l-rsx">
+                    <navigationItem key="navigationItem" prompt="ORN" id="RAh-2l-rsx">
                         <nil key="title"/>
                         <textField key="titleView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter ride start location" textAlignment="center" minimumFontSize="17" clearButtonMode="unlessEditing" id="OpH-64-v2x">
                             <rect key="frame" x="150" y="37" width="300" height="30"/>
