@@ -24,7 +24,15 @@
 #define VANCOUVER_LATITUDE		49.25
 #define VANCOUVER_LONGITUDE		-123.1
 #define VANCOUVER_COORDINATE	CLLocationCoordinate2DMake(VANCOUVER_LATITUDE, VANCOUVER_LONGITUDE)
-#define VANCOUVER_RADIUS		100000 // metres
+
+#define BURNABY_LATITUDE		49.266667
+#define BURNABY_LONGITUDE		-122.966667
+#define BURNABY_COORDINATE		CLLocationCoordinate2DMake(BURNABY_LATITUDE, BURNABY_LONGITUDE)
+
+#define CHARITY_NAME				@"KidSport"
+#define JURISDICTION_NAME			@"Tri-Cities, Burnaby, New Westminster"
+#define JURISDICTION_COORDINATE		BURNABY_COORDINATE
+#define JURISDICTION_SEARCH_RADIUS	100000 // metres
 
 #define MAP_SPAN_LOCATION_DELTA_NEIGHBOURHOOD	0.02 // degrees
 #define MAP_SPAN_LOCATION_DELTA_CITY			0.2 // degrees
@@ -226,9 +234,17 @@
 
 
 - (void)configureView {
+	
+	// Set up navigation prompt
+	UINavigationItem* navigationItem = (UINavigationItem*)self.navigationItem;
+	NSString* promptBase = navigationItem.prompt;
+	navigationItem.prompt = [NSString stringWithFormat:@"%@: %@ for %@", promptBase, JURISDICTION_NAME, CHARITY_NAME];
+	
+	// Center map on Vancouver region
+	MKCoordinateRegion centerRegion = MKCoordinateRegionMake(JURISDICTION_COORDINATE, MKCoordinateSpanMake(MAP_SPAN_LOCATION_DELTA_CITY, MAP_SPAN_LOCATION_DELTA_CITY));
+	[self.mainMapView setRegion:centerRegion animated:YES];
 
 	// Configure annotations and callouts for all existing rides
-	
 	for (Ride* ride in self.rideFetchedResultsController.fetchedObjects) {
 
 		if (!(ride.locationStartLatitude.doubleValue < 0)) {
@@ -247,10 +263,10 @@
 
 
 - (void)configureViewWithAddressString:(NSString*)addressString {
-
+	
 	// Geocode provided address string
-	CLCircularRegion* vancouverRegion = [[CLCircularRegion alloc] initWithCenter:VANCOUVER_COORDINATE radius:VANCOUVER_RADIUS identifier:@"Vancouver Region"];
-	[self.geocoder geocodeAddressString:addressString inRegion:vancouverRegion completionHandler:^(NSArray* placemarks, NSError* error) {
+	CLCircularRegion* jurisdictionRegion = [[CLCircularRegion alloc] initWithCenter:JURISDICTION_COORDINATE radius:JURISDICTION_SEARCH_RADIUS identifier:@"ORN Jurisdication Region"];
+	[self.geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray* placemarks, NSError* error) {
 		
 		// NOTES: Completion block executes on main thread. Do not run more than one reverse-geocode simultaneously.
 		
@@ -283,7 +299,8 @@
 		self.addressTextField.text = @"";
 		RidePointAnnotation* rideStartPointAnnotation = [RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_Start];
 		[self.mainMapView addAnnotation:rideStartPointAnnotation];
-		[self.mainMapView showAnnotations:@[rideStartPointAnnotation] animated:YES];
+		[self.mainMapView setCenterCoordinate:CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue) animated:YES];
+		//	[self.mainMapView showAnnotations:@[rideStartPointAnnotation] animated:YES];
 		[self.mainMapView selectAnnotation:rideStartPointAnnotation animated:YES];
 	}];
 }
