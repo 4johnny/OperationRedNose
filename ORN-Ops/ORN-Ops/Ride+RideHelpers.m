@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
-#import <CoreLocation/CoreLocation.h>
 #import "Ride+RideHelpers.h"
 
 

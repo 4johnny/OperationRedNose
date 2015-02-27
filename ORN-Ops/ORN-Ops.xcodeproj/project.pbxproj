@@ -12,6 +12,7 @@
 		B24D4FD11A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B24D4FCF1A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld */; };
 		B252202C1A9F25D400C3CE00 /* Ride.m in Sources */ = {isa = PBXBuildFile; fileRef = B252202B1A9F25D400C3CE00 /* Ride.m */; };
 		B252202F1A9F391400C3CE00 /* Ride+RideHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B252202E1A9F391400C3CE00 /* Ride+RideHelpers.m */; };
+		B25220331AA0412C00C3CE00 /* DemoUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = B25220321AA0412C00C3CE00 /* DemoUtil.m */; };
 		B27533451A9DA91700B3110C /* MainTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = B27533441A9DA91700B3110C /* MainTabBarController.m */; };
 		B27B4A751A9AB1FB009277E4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A741A9AB1FB009277E4 /* main.m */; };
 		B27B4A781A9AB1FB009277E4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A771A9AB1FB009277E4 /* AppDelegate.m */; };
@@ -42,6 +43,8 @@
 		B252202B1A9F25D400C3CE00 /* Ride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ride.m; sourceTree = "<group>"; };
 		B252202D1A9F391400C3CE00 /* Ride+RideHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Ride+RideHelpers.h"; sourceTree = "<group>"; };
 		B252202E1A9F391400C3CE00 /* Ride+RideHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Ride+RideHelpers.m"; sourceTree = "<group>"; };
+		B25220311AA0412C00C3CE00 /* DemoUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoUtil.h; sourceTree = "<group>"; };
+		B25220321AA0412C00C3CE00 /* DemoUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoUtil.m; sourceTree = "<group>"; };
 		B27533431A9DA91700B3110C /* MainTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainTabBarController.h; sourceTree = "<group>"; };
 		B27533441A9DA91700B3110C /* MainTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainTabBarController.m; sourceTree = "<group>"; };
 		B27B4A6F1A9AB1FB009277E4 /* ORN-Ops.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ORN-Ops.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -86,23 +89,61 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		B24D4FD21A9D98E9008A0C7A /* Data Model - Generated */ = {
+		B24D4FD21A9D98E9008A0C7A /* Generated */ = {
 			isa = PBXGroup;
 			children = (
-				B24D4FCF1A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld */,
 				B252202A1A9F25D400C3CE00 /* Ride.h */,
 				B252202B1A9F25D400C3CE00 /* Ride.m */,
 			);
-			name = "Data Model - Generated";
+			name = Generated;
 			sourceTree = "<group>";
 		};
-		B25220301A9F391D00C3CE00 /* Data Model - Derived */ = {
+		B25220301A9F391D00C3CE00 /* Data Model */ = {
 			isa = PBXGroup;
 			children = (
+				B24D4FD21A9D98E9008A0C7A /* Generated */,
+				B24D4FCF1A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld */,
 				B252202D1A9F391400C3CE00 /* Ride+RideHelpers.h */,
 				B252202E1A9F391400C3CE00 /* Ride+RideHelpers.m */,
 			);
-			name = "Data Model - Derived";
+			name = "Data Model";
+			sourceTree = "<group>";
+		};
+		B25220341AA0415400C3CE00 /* Demo */ = {
+			isa = PBXGroup;
+			children = (
+				B25220311AA0412C00C3CE00 /* DemoUtil.h */,
+				B25220321AA0412C00C3CE00 /* DemoUtil.m */,
+			);
+			name = Demo;
+			sourceTree = "<group>";
+		};
+		B25220351AA0441A00C3CE00 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				B27B4A7F1A9AB1FB009277E4 /* Main.storyboard */,
+			);
+			name = Storyboards;
+			sourceTree = "<group>";
+		};
+		B25220361AA0444200C3CE00 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				B27533431A9DA91700B3110C /* MainTabBarController.h */,
+				B27533441A9DA91700B3110C /* MainTabBarController.m */,
+				B2078B851A9DB406004AF662 /* MainMapViewController.h */,
+				B2078B861A9DB406004AF662 /* MainMapViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		B25220371AA044B000C3CE00 /* Mapping */ = {
+			isa = PBXGroup;
+			children = (
+				B2907B821A9F1903008A0301 /* RidePointAnnotation.h */,
+				B2907B831A9F1903008A0301 /* RidePointAnnotation.m */,
+			);
+			name = Mapping;
 			sourceTree = "<group>";
 		};
 		B261725E1A9E595D00BB7D67 /* Protocols */ = {
@@ -135,16 +176,12 @@
 		B27B4A711A9AB1FB009277E4 /* ORN-Ops */ = {
 			isa = PBXGroup;
 			children = (
-				B27533431A9DA91700B3110C /* MainTabBarController.h */,
-				B27533441A9DA91700B3110C /* MainTabBarController.m */,
-				B2078B851A9DB406004AF662 /* MainMapViewController.h */,
-				B2078B861A9DB406004AF662 /* MainMapViewController.m */,
-				B2907B821A9F1903008A0301 /* RidePointAnnotation.h */,
-				B2907B831A9F1903008A0301 /* RidePointAnnotation.m */,
-				B27B4A7F1A9AB1FB009277E4 /* Main.storyboard */,
-				B24D4FD21A9D98E9008A0C7A /* Data Model - Generated */,
-				B25220301A9F391D00C3CE00 /* Data Model - Derived */,
+				B25220351AA0441A00C3CE00 /* Storyboards */,
+				B25220361AA0444200C3CE00 /* Controllers */,
+				B25220371AA044B000C3CE00 /* Mapping */,
+				B25220301A9F391D00C3CE00 /* Data Model */,
 				B261725E1A9E595D00BB7D67 /* Protocols */,
+				B25220341AA0415400C3CE00 /* Demo */,
 				B27B4A721A9AB1FB009277E4 /* Supporting Files */,
 			);
 			path = "ORN-Ops";
@@ -287,6 +324,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B2907B841A9F1903008A0301 /* RidePointAnnotation.m in Sources */,
+				B25220331AA0412C00C3CE00 /* DemoUtil.m in Sources */,
 				B27533451A9DA91700B3110C /* MainTabBarController.m in Sources */,
 				B252202C1A9F25D400C3CE00 /* Ride.m in Sources */,
 				B252202F1A9F391400C3CE00 /* Ride+RideHelpers.m in Sources */,

@@ -14,6 +14,7 @@
 #import "AppDelegate.h"
 #import "Ride+RideHelpers.h"
 #import "RidePointAnnotation.h"
+#import "DemoUtil.h"
 
 
 #
@@ -23,15 +24,16 @@
 #define VANCOUVER_LATITUDE		49.25
 #define VANCOUVER_LONGITUDE		-123.1
 #define VANCOUVER_COORDINATE	CLLocationCoordinate2DMake(VANCOUVER_LATITUDE, VANCOUVER_LONGITUDE)
-#define VANCOUVER_RADIUS		10000 // metres
+#define VANCOUVER_RADIUS		100000 // metres
 
 #define MAP_SPAN_LOCATION_DELTA_NEIGHBOURHOOD	0.02 // degrees
 #define MAP_SPAN_LOCATION_DELTA_CITY			0.2 // degrees
 #define MAP_SPAN_LOCATION_DELTA_LOCALE			2.0 // degrees
 
+#define ENABLE_COMMANDS		YES
 #define COMMAND_HELP		@"ornhelp"
-#define COMMAND_SHOW_ALL	@"ornshowall"
 #define COMMAND_DEMO_MODE	@"orndemomode"
+#define COMMAND_SHOW_ALL	@"ornshowall"
 
 
 #
@@ -46,9 +48,7 @@
 #
 
 @property (strong, nonatomic) NSFetchedResultsController* rideFetchedResultsController;
-
 @property (strong, nonatomic) CLGeocoder* geocoder;
-
 @property (strong, nonatomic) UIAlertController* okAlertController;
 
 @end
@@ -344,22 +344,28 @@
 // Returns whether command string was handled
 - (BOOL)handleCommandString:(NSString*)commandString {
 
+	if (!ENABLE_COMMANDS) return NO;
+
 	BOOL handled = NO;
 	
 	if ([commandString isEqualToString:COMMAND_HELP]) {
 		
 		[self presentAlertWithTitle:@"ORN Commands"
-						 andMessage:[NSString stringWithFormat:@"%@\n%@\n%@",
+						 andMessage:[NSString stringWithFormat:
+									 @"%@\n%@\n%@",
 									 COMMAND_HELP,
-									 COMMAND_SHOW_ALL,
-									 COMMAND_DEMO_MODE
+									 COMMAND_DEMO_MODE,
+									 COMMAND_SHOW_ALL
 									 ]];
 		handled = YES;
 	}
 
 	if ([commandString isEqualToString:COMMAND_DEMO_MODE]) {
 		
-		[self configureDemoRides];
+		[DemoUtil loadDemoRideDataModel:self.managedObjectContext];
+		self.rideFetchedResultsController = nil; // Trip refetch
+		[self configureView];
+
 		handled = YES;
 	}
 	
@@ -375,38 +381,6 @@
 	}
 	
 	return handled;
-}
-
-
-- (void)configureDemoRides {
-
-	// Load demo rides into data model
-	
-	[Ride rideWithManagedObjectContext:self.managedObjectContext
-			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.2818704, -123.1081611)
-			   andLocationStartAddress:@"128 W Hastings St, Vancouver"
-				  andLocationStartCity:@"Vancouver"];
-
-	[Ride rideWithManagedObjectContext:self.managedObjectContext
-			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.287826, -123.123834)
-			   andLocationStartAddress:@"580 Bute St, Vancouver"
-				  andLocationStartCity:@"Vancouver"];
-	
-	[Ride rideWithManagedObjectContext:self.managedObjectContext
-			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.27665770574511, -123.0847680657702)
-			   andLocationStartAddress:@"1 Venables St, Vancouver"
-				  andLocationStartCity:@"Vancouver"];
-	
-	[Ride rideWithManagedObjectContext:self.managedObjectContext
-			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.2688777, -123.0769722)
-			   andLocationStartAddress:@"1750 Clark Dr, Vancouver"
-				  andLocationStartCity:@"Vancouver"];
-	
-	// Mark refetch data model
-	self.rideFetchedResultsController = nil;
-	
-	// Annotate demo rides on map view
-	[self configureView];
 }
 
 
