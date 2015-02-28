@@ -138,6 +138,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 	
+	// Configure avatar in navigation item
+	self.avatarBarButtonItem.image = [[UIImage imageNamed:@"Operation-Red-Nose-Bar-Button-Item"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+	
 	// Configure map
 	[self configureView];
 }

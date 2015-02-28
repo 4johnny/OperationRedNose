@@ -21,6 +21,7 @@
 # pragma mark Outlets
 #
 
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *avatarBarButtonItem;
 @property (weak, nonatomic) IBOutlet UITextField *addressTextField;
 @property (strong, nonatomic) IBOutlet MKMapView *mainMapView;
 
