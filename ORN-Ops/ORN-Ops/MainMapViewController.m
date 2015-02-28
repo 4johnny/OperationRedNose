@@ -138,11 +138,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 	
-	// Set up navigation prompt
-	UINavigationItem* navigationItem = (UINavigationItem*)self.navigationItem;
-	NSString* promptBase = navigationItem.prompt;
-	navigationItem.prompt = [NSString stringWithFormat:@"%@: %@ for %@", promptBase, JURISDICTION_NAME, CHARITY_NAME];
-	
 	// Configure map
 	[self configureView];
 }

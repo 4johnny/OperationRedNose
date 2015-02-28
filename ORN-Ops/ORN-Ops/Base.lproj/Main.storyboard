@@ -53,11 +53,11 @@
                         <viewControllerLayoutGuide type="bottom" id="jEk-3Z-jcE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="XLH-Pf-8Rb">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="457"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="eJC-AT-fJw">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="457"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="487"/>
                                 <connections>
                                     <outlet property="delegate" destination="Cgj-Rd-EZz" id="K8C-Ej-bh8"/>
                                 </connections>
@@ -72,10 +72,10 @@
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <navigationItem key="navigationItem" prompt="ORN" id="RAh-2l-rsx">
+                    <navigationItem key="navigationItem" id="RAh-2l-rsx">
                         <nil key="title"/>
                         <textField key="titleView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter ride start location" textAlignment="center" minimumFontSize="17" clearButtonMode="unlessEditing" id="OpH-64-v2x">
-                            <rect key="frame" x="150" y="37" width="300" height="30"/>
+                            <rect key="frame" x="150" y="7" width="300" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="go" enablesReturnKeyAutomatically="YES"/>
