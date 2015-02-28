@@ -98,6 +98,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Operation-Red-Nose-Bar-Button-Item" width="30" height="40"/>
+        <image name="Operation-Red-Nose-Bar-Button-Item" width="23" height="30"/>
     </resources>
 </document>
