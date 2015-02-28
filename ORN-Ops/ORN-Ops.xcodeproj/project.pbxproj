@@ -141,18 +141,10 @@
 		B25220361AA0444200C3CE00 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				B27533431A9DA91700B3110C /* MainTabBarController.h */,
-				B27533441A9DA91700B3110C /* MainTabBarController.m */,
-				B2078B851A9DB406004AF662 /* MainMapViewController.h */,
-				B2078B861A9DB406004AF662 /* MainMapViewController.m */,
-				B2C756131AA1905E00B148D3 /* RidesTableViewController.h */,
-				B2C756141AA1905E00B148D3 /* RidesTableViewController.m */,
-				B2C756161AA1912B00B148D3 /* RideDetailTableViewController.h */,
-				B2C756171AA1912B00B148D3 /* RideDetailTableViewController.m */,
-				B2C756191AA1A64000B148D3 /* TeamsTableViewController.h */,
-				B2C7561A1AA1A83100B148D3 /* TeamsTableViewController.m */,
-				B2C7561C1AA1A8B200B148D3 /* TeamDetailTableViewController.h */,
-				B2C7561D1AA1A97900B148D3 /* TeamDetailTableViewController.m */,
+				B2C756221AA1AD4200B148D3 /* Main Tab Bar */,
+				B2C756211AA1AD1400B148D3 /* Main Map */,
+				B2C756201AA1AD0A00B148D3 /* Rides */,
+				B2C7561F1AA1ACFE00B148D3 /* Teams */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -235,6 +227,46 @@
 				B27B4A901A9AB1FB009277E4 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B2C7561F1AA1ACFE00B148D3 /* Teams */ = {
+			isa = PBXGroup;
+			children = (
+				B2C756191AA1A64000B148D3 /* TeamsTableViewController.h */,
+				B2C7561A1AA1A83100B148D3 /* TeamsTableViewController.m */,
+				B2C7561C1AA1A8B200B148D3 /* TeamDetailTableViewController.h */,
+				B2C7561D1AA1A97900B148D3 /* TeamDetailTableViewController.m */,
+			);
+			name = Teams;
+			sourceTree = "<group>";
+		};
+		B2C756201AA1AD0A00B148D3 /* Rides */ = {
+			isa = PBXGroup;
+			children = (
+				B2C756131AA1905E00B148D3 /* RidesTableViewController.h */,
+				B2C756141AA1905E00B148D3 /* RidesTableViewController.m */,
+				B2C756161AA1912B00B148D3 /* RideDetailTableViewController.h */,
+				B2C756171AA1912B00B148D3 /* RideDetailTableViewController.m */,
+			);
+			name = Rides;
+			sourceTree = "<group>";
+		};
+		B2C756211AA1AD1400B148D3 /* Main Map */ = {
+			isa = PBXGroup;
+			children = (
+				B2078B851A9DB406004AF662 /* MainMapViewController.h */,
+				B2078B861A9DB406004AF662 /* MainMapViewController.m */,
+			);
+			name = "Main Map";
+			sourceTree = "<group>";
+		};
+		B2C756221AA1AD4200B148D3 /* Main Tab Bar */ = {
+			isa = PBXGroup;
+			children = (
+				B27533431A9DA91700B3110C /* MainTabBarController.h */,
+				B27533441A9DA91700B3110C /* MainTabBarController.m */,
+			);
+			name = "Main Tab Bar";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
