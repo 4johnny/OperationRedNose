@@ -1,5 +1,5 @@
 //
-//  RideDetailTableViewController.h
+//  TeamDetailTableViewController.h
 //  ORN-Ops
 //
 //  Created by Johnny on 2015-02-27.
@@ -12,6 +12,6 @@
 # pragma mark - Interface
 #
 
-@interface RideDetailTableViewController : UITableViewController
+@interface TeamDetailTableViewController : UITableViewController
 
 @end

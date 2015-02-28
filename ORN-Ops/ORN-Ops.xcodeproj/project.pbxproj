@@ -22,6 +22,8 @@
 		B2C756071AA14B0900B148D3 /* Ride.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756061AA14B0900B148D3 /* Ride.m */; };
 		B2C756151AA1905E00B148D3 /* RidesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756141AA1905E00B148D3 /* RidesTableViewController.m */; };
 		B2C756181AA1912B00B148D3 /* RideDetailTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756171AA1912B00B148D3 /* RideDetailTableViewController.m */; };
+		B2C7561B1AA1A83100B148D3 /* TeamsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C7561A1AA1A83100B148D3 /* TeamsTableViewController.m */; };
+		B2C7561E1AA1A97900B148D3 /* TeamDetailTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C7561D1AA1A97900B148D3 /* TeamDetailTableViewController.m */; };
 		B2DECCAE1AA14A8F001FFC8F /* Ride+RideHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2DECCAD1AA14A8F001FFC8F /* Ride+RideHelpers.m */; };
 /* End PBXBuildFile section */
 
@@ -64,6 +66,10 @@
 		B2C756141AA1905E00B148D3 /* RidesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RidesTableViewController.m; sourceTree = "<group>"; };
 		B2C756161AA1912B00B148D3 /* RideDetailTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RideDetailTableViewController.h; sourceTree = "<group>"; };
 		B2C756171AA1912B00B148D3 /* RideDetailTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RideDetailTableViewController.m; sourceTree = "<group>"; };
+		B2C756191AA1A64000B148D3 /* TeamsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeamsTableViewController.h; sourceTree = "<group>"; };
+		B2C7561A1AA1A83100B148D3 /* TeamsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeamsTableViewController.m; sourceTree = "<group>"; };
+		B2C7561C1AA1A8B200B148D3 /* TeamDetailTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeamDetailTableViewController.h; sourceTree = "<group>"; };
+		B2C7561D1AA1A97900B148D3 /* TeamDetailTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeamDetailTableViewController.m; sourceTree = "<group>"; };
 		B2DECCAC1AA14A8F001FFC8F /* Ride+RideHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Ride+RideHelpers.h"; sourceTree = "<group>"; };
 		B2DECCAD1AA14A8F001FFC8F /* Ride+RideHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Ride+RideHelpers.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -143,6 +149,10 @@
 				B2C756141AA1905E00B148D3 /* RidesTableViewController.m */,
 				B2C756161AA1912B00B148D3 /* RideDetailTableViewController.h */,
 				B2C756171AA1912B00B148D3 /* RideDetailTableViewController.m */,
+				B2C756191AA1A64000B148D3 /* TeamsTableViewController.h */,
+				B2C7561A1AA1A83100B148D3 /* TeamsTableViewController.m */,
+				B2C7561C1AA1A8B200B148D3 /* TeamDetailTableViewController.h */,
+				B2C7561D1AA1A97900B148D3 /* TeamDetailTableViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -335,6 +345,7 @@
 			files = (
 				B2C756071AA14B0900B148D3 /* Ride.m in Sources */,
 				B2907B841A9F1903008A0301 /* RidePointAnnotation.m in Sources */,
+				B2C7561E1AA1A97900B148D3 /* TeamDetailTableViewController.m in Sources */,
 				B25220331AA0412C00C3CE00 /* DemoUtil.m in Sources */,
 				B27533451A9DA91700B3110C /* MainTabBarController.m in Sources */,
 				B2DECCAE1AA14A8F001FFC8F /* Ride+RideHelpers.m in Sources */,
@@ -343,6 +354,7 @@
 				B2C756151AA1905E00B148D3 /* RidesTableViewController.m in Sources */,
 				B2C756181AA1912B00B148D3 /* RideDetailTableViewController.m in Sources */,
 				B24D4FD11A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld in Sources */,
+				B2C7561B1AA1A83100B148D3 /* TeamsTableViewController.m in Sources */,
 				B27B4A751A9AB1FB009277E4 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

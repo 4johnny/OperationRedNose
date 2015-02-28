@@ -1,12 +1,12 @@
 //
-//  RideDetailTableViewController.m
+//  TeamDetailTableViewController.m
 //  ORN-Ops
 //
 //  Created by Johnny on 2015-02-27.
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
-#import "RideDetailTableViewController.h"
+#import "TeamDetailTableViewController.h"
 
 
 #
@@ -14,7 +14,7 @@
 #
 
 
-@interface RideDetailTableViewController ()
+@interface TeamDetailTableViewController ()
 
 @end
 
@@ -24,7 +24,7 @@
 #
 
 
-@implementation RideDetailTableViewController
+@implementation TeamDetailTableViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
