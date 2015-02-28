@@ -24,6 +24,7 @@
 		B2C756181AA1912B00B148D3 /* RideDetailTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756171AA1912B00B148D3 /* RideDetailTableViewController.m */; };
 		B2C7561B1AA1A83100B148D3 /* TeamsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C7561A1AA1A83100B148D3 /* TeamsTableViewController.m */; };
 		B2C7561E1AA1A97900B148D3 /* TeamDetailTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C7561D1AA1A97900B148D3 /* TeamDetailTableViewController.m */; };
+		B2C756251AA1BA8B00B148D3 /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756241AA1BA8B00B148D3 /* Util.m */; };
 		B2DECCAE1AA14A8F001FFC8F /* Ride+RideHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2DECCAD1AA14A8F001FFC8F /* Ride+RideHelpers.m */; };
 /* End PBXBuildFile section */
 
@@ -70,6 +71,9 @@
 		B2C7561A1AA1A83100B148D3 /* TeamsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeamsTableViewController.m; sourceTree = "<group>"; };
 		B2C7561C1AA1A8B200B148D3 /* TeamDetailTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeamDetailTableViewController.h; sourceTree = "<group>"; };
 		B2C7561D1AA1A97900B148D3 /* TeamDetailTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeamDetailTableViewController.m; sourceTree = "<group>"; };
+		B2C756231AA1BA8B00B148D3 /* Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Util.h; sourceTree = "<group>"; };
+		B2C756241AA1BA8B00B148D3 /* Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Util.m; sourceTree = "<group>"; };
+		B2C756261AA1BBD000B148D3 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		B2DECCAC1AA14A8F001FFC8F /* Ride+RideHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Ride+RideHelpers.h"; sourceTree = "<group>"; };
 		B2DECCAD1AA14A8F001FFC8F /* Ride+RideHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Ride+RideHelpers.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -204,6 +208,9 @@
 			children = (
 				B27B4A761A9AB1FB009277E4 /* AppDelegate.h */,
 				B27B4A771A9AB1FB009277E4 /* AppDelegate.m */,
+				B2C756231AA1BA8B00B148D3 /* Util.h */,
+				B2C756241AA1BA8B00B148D3 /* Util.m */,
+				B2C756261AA1BBD000B148D3 /* PrefixHeader.pch */,
 				B27B4A841A9AB1FB009277E4 /* LaunchScreen.xib */,
 				B27B4A821A9AB1FB009277E4 /* Images.xcassets */,
 				B27B4A731A9AB1FB009277E4 /* Info.plist */,
@@ -380,6 +387,7 @@
 				B2C7561E1AA1A97900B148D3 /* TeamDetailTableViewController.m in Sources */,
 				B25220331AA0412C00C3CE00 /* DemoUtil.m in Sources */,
 				B27533451A9DA91700B3110C /* MainTabBarController.m in Sources */,
+				B2C756251AA1BA8B00B148D3 /* Util.m in Sources */,
 				B2DECCAE1AA14A8F001FFC8F /* Ride+RideHelpers.m in Sources */,
 				B27B4A781A9AB1FB009277E4 /* AppDelegate.m in Sources */,
 				B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */,
@@ -452,6 +460,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/ORN-Ops/PrefixHeader.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -493,6 +502,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/ORN-Ops/PrefixHeader.pch";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
