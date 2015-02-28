@@ -17,11 +17,12 @@
                     </tabBar>
                     <connections>
                         <segue destination="KC7-5p-1m8" kind="relationship" relationship="viewControllers" id="y5O-Q9-neO"/>
+                        <segue destination="pld-vm-oCy" kind="relationship" relationship="viewControllers" id="Gk0-zj-OLc"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="26" y="0.0"/>
+            <point key="canvasLocation" x="51" y="0.0"/>
         </scene>
         <!--Map Navigation Controller-->
         <scene sceneID="2uj-KS-lbg">
@@ -94,7 +95,115 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QzW-8I-jrU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1445" y="0.0"/>
+            <point key="canvasLocation" x="1403" y="0.0"/>
+        </scene>
+        <!--Rides Table View Controller-->
+        <scene sceneID="qs7-WP-gn0">
+            <objects>
+                <tableViewController storyboardIdentifier="ridesTableViewController" title="Rides Table View Controller" id="ePf-i9-3Hp" customClass="RidesTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="85" sectionHeaderHeight="22" sectionFooterHeight="22" id="gT6-2y-JAf">
+                        <rect key="frame" x="0.0" y="64" width="600" height="487"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ridesTableViewCell" textLabel="Foe-L7-Afr" detailTextLabel="KHD-Ru-NoW" rowHeight="85" style="IBUITableViewCellStyleSubtitle" id="rcz-P7-hWn">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rcz-P7-hWn" id="kej-5E-YUl">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Foe-L7-Afr">
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="KHD-Ru-NoW">
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="EOY-Bm-UjH" kind="show" id="mox-mc-g7Y"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="ePf-i9-3Hp" id="hGs-Ve-sjg"/>
+                            <outlet property="delegate" destination="ePf-i9-3Hp" id="MEE-Qi-VYm"/>
+                        </connections>
+                    </tableView>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <navigationItem key="navigationItem" title="Rides" id="GgT-Jp-8lm">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="FEm-Y4-KAZ"/>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2Im-AZ-y0s" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1403" y="746"/>
+        </scene>
+        <!--Ride Detail Table View-->
+        <scene sceneID="l1U-Q4-vZF">
+            <objects>
+                <tableViewController storyboardIdentifier="rideDetailTableViewController" title="Ride Detail Table View" id="EOY-Bm-UjH" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="static" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="kqh-Zd-G9W">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="487"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <sections>
+                            <tableViewSection id="6ib-tf-wHn">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="ZwG-k0-NeR">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZwG-k0-NeR" id="OJ1-z4-CeL">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="4df-dD-t6N">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4df-dD-t6N" id="90G-zQ-gfP">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="E64-4N-Lj0">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="E64-4N-Lj0" id="4lw-8y-Caq">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="EOY-Bm-UjH" id="KpM-5C-KjQ"/>
+                            <outlet property="delegate" destination="EOY-Bm-UjH" id="U3L-XJ-As7"/>
+                        </connections>
+                    </tableView>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <navigationItem key="navigationItem" title="Ride" id="pwX-eP-kT9"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HqI-Ln-EfF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2075" y="746"/>
+        </scene>
+        <!--Rides Navigation Controller-->
+        <scene sceneID="fB9-LO-za9">
+            <objects>
+                <navigationController title="Rides Navigation Controller" id="pld-vm-oCy" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Rides" id="gZ7-HR-NQq"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Sqk-Py-Gq4">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="ePf-i9-3Hp" kind="relationship" relationship="rootViewController" id="RbD-S6-NHG"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aeY-fb-Doq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="729" y="746"/>
         </scene>
     </scenes>
     <resources>

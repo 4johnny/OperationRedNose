@@ -20,6 +20,8 @@
 		B27B4A921A9AB1FB009277E4 /* ORN_OpsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A911A9AB1FB009277E4 /* ORN_OpsTests.m */; };
 		B2907B841A9F1903008A0301 /* RidePointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B2907B831A9F1903008A0301 /* RidePointAnnotation.m */; };
 		B2C756071AA14B0900B148D3 /* Ride.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756061AA14B0900B148D3 /* Ride.m */; };
+		B2C756151AA1905E00B148D3 /* RidesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756141AA1905E00B148D3 /* RidesTableViewController.m */; };
+		B2C756181AA1912B00B148D3 /* RideDetailTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756171AA1912B00B148D3 /* RideDetailTableViewController.m */; };
 		B2DECCAE1AA14A8F001FFC8F /* Ride+RideHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2DECCAD1AA14A8F001FFC8F /* Ride+RideHelpers.m */; };
 /* End PBXBuildFile section */
 
@@ -58,6 +60,10 @@
 		B2907B831A9F1903008A0301 /* RidePointAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RidePointAnnotation.m; sourceTree = "<group>"; };
 		B2C756051AA14B0900B148D3 /* Ride.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ride.h; sourceTree = "<group>"; };
 		B2C756061AA14B0900B148D3 /* Ride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ride.m; sourceTree = "<group>"; };
+		B2C756131AA1905E00B148D3 /* RidesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RidesTableViewController.h; sourceTree = "<group>"; };
+		B2C756141AA1905E00B148D3 /* RidesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RidesTableViewController.m; sourceTree = "<group>"; };
+		B2C756161AA1912B00B148D3 /* RideDetailTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RideDetailTableViewController.h; sourceTree = "<group>"; };
+		B2C756171AA1912B00B148D3 /* RideDetailTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RideDetailTableViewController.m; sourceTree = "<group>"; };
 		B2DECCAC1AA14A8F001FFC8F /* Ride+RideHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Ride+RideHelpers.h"; sourceTree = "<group>"; };
 		B2DECCAD1AA14A8F001FFC8F /* Ride+RideHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Ride+RideHelpers.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -133,17 +139,21 @@
 				B27533441A9DA91700B3110C /* MainTabBarController.m */,
 				B2078B851A9DB406004AF662 /* MainMapViewController.h */,
 				B2078B861A9DB406004AF662 /* MainMapViewController.m */,
+				B2C756131AA1905E00B148D3 /* RidesTableViewController.h */,
+				B2C756141AA1905E00B148D3 /* RidesTableViewController.m */,
+				B2C756161AA1912B00B148D3 /* RideDetailTableViewController.h */,
+				B2C756171AA1912B00B148D3 /* RideDetailTableViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
 		};
-		B25220371AA044B000C3CE00 /* Mapping */ = {
+		B25220371AA044B000C3CE00 /* Map Helpers */ = {
 			isa = PBXGroup;
 			children = (
 				B2907B821A9F1903008A0301 /* RidePointAnnotation.h */,
 				B2907B831A9F1903008A0301 /* RidePointAnnotation.m */,
 			);
-			name = Mapping;
+			name = "Map Helpers";
 			sourceTree = "<group>";
 		};
 		B261725E1A9E595D00BB7D67 /* Protocols */ = {
@@ -178,7 +188,7 @@
 			children = (
 				B25220351AA0441A00C3CE00 /* Storyboards */,
 				B25220361AA0444200C3CE00 /* Controllers */,
-				B25220371AA044B000C3CE00 /* Mapping */,
+				B25220371AA044B000C3CE00 /* Map Helpers */,
 				B25220301A9F391D00C3CE00 /* Data Model */,
 				B261725E1A9E595D00BB7D67 /* Protocols */,
 				B25220341AA0415400C3CE00 /* Demo */,
@@ -330,6 +340,8 @@
 				B2DECCAE1AA14A8F001FFC8F /* Ride+RideHelpers.m in Sources */,
 				B27B4A781A9AB1FB009277E4 /* AppDelegate.m in Sources */,
 				B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */,
+				B2C756151AA1905E00B148D3 /* RidesTableViewController.m in Sources */,
+				B2C756181AA1912B00B148D3 /* RideDetailTableViewController.m in Sources */,
 				B24D4FD11A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld in Sources */,
 				B27B4A751A9AB1FB009277E4 /* main.m in Sources */,
 			);
