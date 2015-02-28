@@ -53,4 +53,14 @@ insertIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
 }
 
 
+#
+# pragma mark Class Methods
+#
+
++ (BOOL)isTeamAssignedToRide:(Ride*)ride {
+
+	return (ride.assignedTeam && ride.assignedTeam.length > 0);
+}
+
+
 @end

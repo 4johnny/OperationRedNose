@@ -2,7 +2,7 @@
 //  Ride.h
 //  ORN-Ops
 //
-//  Created by Johnny on 2015-02-26.
+//  Created by Johnny on 2015-02-27.
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
@@ -12,6 +12,7 @@
 
 @interface Ride : NSManagedObject
 
+@property (nonatomic, retain) NSString * assignedTeam;
 @property (nonatomic, retain) NSDate * dateTimeEnd;
 @property (nonatomic, retain) NSDate * dateTimeStart;
 @property (nonatomic, retain) NSString * locationEndAddress;
@@ -27,7 +28,6 @@
 @property (nonatomic, retain) NSString * passengerNameFirst;
 @property (nonatomic, retain) NSString * passengerNameLast;
 @property (nonatomic, retain) NSString * passengerPhoneNumber;
-@property (nonatomic, retain) NSString * teamAssigned;
 @property (nonatomic, retain) NSString * transferFrom;
 @property (nonatomic, retain) NSString * transferTo;
 @property (nonatomic, retain) NSString * vehicleDescription;

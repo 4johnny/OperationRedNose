@@ -38,6 +38,10 @@
 #define MAP_SPAN_LOCATION_DELTA_CITY			0.2 // degrees
 #define MAP_SPAN_LOCATION_DELTA_LOCALE			2.0 // degrees
 
+#define RIDE_START_ANNOTATION_ID	@"rideStartAnnotation"
+#define RIDE_END_ANNOTATION_ID		@"rideEndAnnotation"
+#define DRIVING_TEAM_ANNOTATION_ID	@"drivingTeamAnnotation"
+
 #define ENABLE_COMMANDS		YES
 #define COMMAND_HELP		@"ornhelp"
 #define COMMAND_DEMO_MODE	@"orndemomode"
@@ -203,19 +207,55 @@
 //	
 //	// NOTE: Called many times during scrolling, so keep code lightweight
 //}
-//
-//
+
+
 //- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
 //	
 //}
-//
-//
-//- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
-//	
-//	return nil;
-//}
-//
-//
+
+
+- (MKAnnotationView*)mapView:(MKMapView*)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
+
+	if ([annotation isKindOfClass:[MKUserLocation class]]) return nil;
+	
+	if ([annotation isKindOfClass:[RidePointAnnotation class]]) {
+		
+		RidePointAnnotation* ridePointAnnotation = (RidePointAnnotation*)annotation;
+		
+		switch (ridePointAnnotation.rideLocationType) {
+				
+			case RideLocationType_Start: {
+				
+				MKPinAnnotationView* pinAnnotationView = (MKPinAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:annotation andIdentifier:RIDE_START_ANNOTATION_ID];
+				
+				pinAnnotationView.pinColor = [Ride isTeamAssignedToRide:ridePointAnnotation.ride] ? MKPinAnnotationColorGreen : MKPinAnnotationColorPurple;
+				pinAnnotationView.animatesDrop = YES;
+				pinAnnotationView.canShowCallout = YES;
+				
+				return pinAnnotationView;
+			}
+				
+			case RideLocationType_End: {
+				
+				MKPinAnnotationView* pinAnnotationView = (MKPinAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:annotation andIdentifier:RIDE_END_ANNOTATION_ID];
+				
+				pinAnnotationView.pinColor = MKPinAnnotationColorRed;
+				pinAnnotationView.animatesDrop = YES;
+				pinAnnotationView.canShowCallout = YES;
+				
+				return pinAnnotationView;
+			}
+
+			default:
+			case RideLocationType_None:
+				return nil;
+		}
+	}
+	
+	return nil;
+}
+
+
 //- (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay {
 //	
 //	return nil;
@@ -265,8 +305,10 @@
 
 - (void)configureViewWithAddressString:(NSString*)addressString {
 	
-	// Geocode provided address string
+	// Geocode given address string relative to jurisdiction
+	
 	CLCircularRegion* jurisdictionRegion = [[CLCircularRegion alloc] initWithCenter:JURISDICTION_COORDINATE radius:JURISDICTION_SEARCH_RADIUS identifier:@"ORN Jurisdication Region"];
+	
 	[self.geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray* placemarks, NSError* error) {
 		
 		// NOTES: Completion block executes on main thread. Do not run more than one reverse-geocode simultaneously.
@@ -301,31 +343,8 @@
 		RidePointAnnotation* rideStartPointAnnotation = [RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_Start];
 		[self.mainMapView addAnnotation:rideStartPointAnnotation];
 		[self.mainMapView setCenterCoordinate:CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue) animated:YES];
-		//	[self.mainMapView showAnnotations:@[rideStartPointAnnotation] animated:YES];
 		[self.mainMapView selectAnnotation:rideStartPointAnnotation animated:YES];
 	}];
-}
-
-
-+ (Ride*)rideFromPlacemark:(CLPlacemark*)placemark inManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
-	
-	return [Ride rideWithManagedObjectContext:managedObjectContext
-				   andLocationStartCoordinate:placemark.location.coordinate
-					  andLocationStartAddress:[MainMapViewController addressStringWithPlacemark:placemark]
-						 andLocationStartCity:placemark.locality];
-}
-
-
-+ (NSString*)addressStringWithPlacemark:(CLPlacemark*)placemark {
-
-	NSString* street = placemark.addressDictionary[@"Street"];
-	NSString* city = placemark.addressDictionary[@"City"];
-	
-	if (street && city) return [NSString stringWithFormat:@"%@, %@", street, city];
-	
-	return [NSString stringWithFormat:@"%@ (%.3f,%.3f)", placemark.name, placemark.location.coordinate.latitude, placemark.location.coordinate.longitude];
-
-	//	return ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO);
 }
 
 
@@ -350,6 +369,42 @@
 		
 		[self.mainMapView deselectAnnotation:annotation animated:NO];
 	}
+}
+
+
++ (Ride*)rideFromPlacemark:(CLPlacemark*)placemark inManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
+	
+	return [Ride rideWithManagedObjectContext:managedObjectContext
+				   andLocationStartCoordinate:placemark.location.coordinate
+					  andLocationStartAddress:[MainMapViewController addressStringWithPlacemark:placemark]
+						 andLocationStartCity:placemark.locality];
+}
+
+
++ (NSString*)addressStringWithPlacemark:(CLPlacemark*)placemark {
+	
+	NSString* street = placemark.addressDictionary[@"Street"];
+	NSString* city = placemark.addressDictionary[@"City"];
+	
+	if (street && city) return [NSString stringWithFormat:@"%@, %@", street, city];
+	
+	return [NSString stringWithFormat:@"%@ (%.3f,%.3f)", placemark.name, placemark.location.coordinate.latitude, placemark.location.coordinate.longitude];
+	
+	//	return ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO);
+}
+
+
++ (MKAnnotationView*)dequeueReusableAnnotationViewWithMapView:(MKMapView*)mapView andAnnotation:(id<MKAnnotation>)annotation andIdentifier:(NSString*)identifier {
+
+	// Reuse pooled annotation if possible
+	MKPinAnnotationView* pinAnnotationView = (MKPinAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+	if (pinAnnotationView) {
+		pinAnnotationView.annotation = annotation;
+		return pinAnnotationView;
+	}
+	
+	// No pooled annotation - create new one
+	return [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
 }
 
 

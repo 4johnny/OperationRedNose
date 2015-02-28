@@ -24,4 +24,10 @@
 					 andLocationStartAddress:(NSString*)locationStartAddress
 						andLocationStartCity:(NSString*)locationStartCity;
 
+#
+# pragma mark Methods
+#
+
++ (BOOL)isTeamAssignedToRide:(Ride*)ride;
+
 @end
