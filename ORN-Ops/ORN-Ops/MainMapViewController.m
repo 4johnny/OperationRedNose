@@ -143,7 +143,7 @@
 	
 	// Configure avatar in navigation item
 	// NOTE: Must be done in code - otherwise we just get a template
-	self.avatarBarButtonItem.image = [[UIImage imageNamed:@"Operation-Red-Nose-Bar-Button-Item"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+	self.avatarBarButtonItem.image = [[UIImage imageNamed:@"ORN-Bar-Button-Item"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 	
 	// Configure map
 	[self configureView];

@@ -18,13 +18,6 @@ All rights reserved.</string>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Operation-Red-Nose-Logo" translatesAutoresizingMaskIntoConstraints="NO" id="AxR-fQ-CNZ">
-                    <rect key="frame" x="120" y="76" width="240" height="128"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="128" id="OVY-YB-IWW"/>
-                        <constraint firstAttribute="width" constant="240" id="YPZ-RO-wrS"/>
-                    </constraints>
-                </imageView>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Operations App" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="kId-c2-rCX">
                     <rect key="frame" x="90" y="265" width="300" height="50"/>
                     <constraints>
@@ -35,6 +28,13 @@ All rights reserved.</string>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ORN-Logo" translatesAutoresizingMaskIntoConstraints="NO" id="AxR-fQ-CNZ">
+                    <rect key="frame" x="90" y="50" width="300" height="200"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="200" id="OVY-YB-IWW"/>
+                        <constraint firstAttribute="width" constant="300" id="YPZ-RO-wrS"/>
+                    </constraints>
+                </imageView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
@@ -42,7 +42,7 @@ All rights reserved.</string>
                 <constraint firstAttribute="centerX" secondItem="AxR-fQ-CNZ" secondAttribute="centerX" id="HXH-sT-Lpp"/>
                 <constraint firstAttribute="centerX" secondItem="8ie-xW-0ye" secondAttribute="centerX" id="NlR-RV-0xN"/>
                 <constraint firstAttribute="centerX" secondItem="kId-c2-rCX" secondAttribute="centerX" id="pDU-bQ-ecV"/>
-                <constraint firstAttribute="centerY" secondItem="AxR-fQ-CNZ" secondAttribute="centerY" constant="100" id="sIt-PW-vsW"/>
+                <constraint firstAttribute="centerY" secondItem="AxR-fQ-CNZ" secondAttribute="centerY" constant="90" id="sIt-PW-vsW"/>
                 <constraint firstAttribute="bottom" secondItem="8ie-xW-0ye" secondAttribute="bottom" constant="20" id="yVn-JA-Qk6"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
@@ -51,6 +51,6 @@ All rights reserved.</string>
         </view>
     </objects>
     <resources>
-        <image name="Operation-Red-Nose-Logo" width="162" height="88"/>
+        <image name="ORN-Logo" width="500" height="500"/>
     </resources>
 </document>

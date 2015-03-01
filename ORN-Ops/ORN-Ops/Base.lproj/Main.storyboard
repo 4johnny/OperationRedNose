@@ -76,7 +76,7 @@
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" id="RAh-2l-rsx">
                         <nil key="title"/>
-                        <barButtonItem key="leftBarButtonItem" enabled="NO" image="Operation-Red-Nose-Bar-Button-Item" id="i5N-jO-Wmp"/>
+                        <barButtonItem key="leftBarButtonItem" enabled="NO" image="ORN-Bar-Button-Item" id="i5N-jO-Wmp"/>
                         <textField key="titleView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter ride start location" textAlignment="center" minimumFontSize="17" clearButtonMode="unlessEditing" id="OpH-64-v2x">
                             <rect key="frame" x="150" y="7" width="300" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -318,6 +318,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Operation-Red-Nose-Bar-Button-Item" width="23" height="30"/>
+        <image name="ORN-Bar-Button-Item" width="22" height="30"/>
     </resources>
 </document>
