@@ -61,7 +61,7 @@ insertIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
 
 + (BOOL)isTeamAssignedToRide:(Ride*)ride {
 
-	return (ride.assignedTeam && ride.assignedTeam.length > 0);
+	return (ride.teamAssigned && ride.teamAssigned.length > 0);
 }
 
 

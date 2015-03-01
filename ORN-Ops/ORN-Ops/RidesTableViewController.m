@@ -297,8 +297,8 @@
 	NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
 	dateFormatter.dateFormat = @"hh:mm";
 
-	cell.textLabel.text = [dateFormatter stringFromDate:ride.dateTimeStart];
-	cell.detailTextLabel.text = ride.locationStartAddress;
+	cell.textLabel.text = ride.locationStartAddress;
+	cell.detailTextLabel.text = [dateFormatter stringFromDate:ride.dateTimeStart];
 }
 
 

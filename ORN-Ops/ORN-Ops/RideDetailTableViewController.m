@@ -58,6 +58,80 @@
 
 
 #
+# pragma mark <UIPickerViewDataSource>
+#
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView*)pickerView {
+
+	return 1;
+}
+
+
+- (NSInteger)pickerView:(UIPickerView*)pickerView numberOfRowsInComponent:(NSInteger)component {
+
+	if (pickerView == self.vehicleTransmissionPickerView) return 2;
+	if (pickerView == self.seatBeltCountPickerView) return 10;
+	
+	return 0;
+}
+
+
+#
+# pragma mark <UIPickerViewDelegate>
+#
+
+- (CGFloat)pickerView:(UIPickerView*)pickerView rowHeightForComponent:(NSInteger)component {
+	
+	return 30;
+}
+
+- (CGFloat)pickerView:(UIPickerView*)pickerView widthForComponent:(NSInteger)component {
+	
+	if (pickerView == self.vehicleTransmissionPickerView) return 100;
+	if (pickerView == self.seatBeltCountPickerView) return 30;
+	
+	return 0;
+}
+
+
+- (NSString*)pickerView:(UIPickerView*)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+
+	if (pickerView == self.vehicleTransmissionPickerView) {
+		
+		switch (row) {
+				
+			case 0:
+			    return @"Automatic";
+				
+			case 1:
+				return @"Manual";
+				
+			default:
+		    break;
+		}
+	}
+	
+	if (pickerView == self.seatBeltCountPickerView) return [NSString stringWithFormat:@"%d", (int)row];
+	
+	return nil;
+}
+
+
+/*
+- (NSAttributedString*)pickerView:(UIPickerView*)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component {
+
+	return nil;
+}
+*/
+/*
+- (UIView*)pickerView:(UIPickerView*)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView*)view {
+	
+	return view;
+}
+*/
+
+
+#
 # pragma mark Action Handlers
 #
 

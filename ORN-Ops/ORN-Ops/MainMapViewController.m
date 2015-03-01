@@ -44,7 +44,7 @@
 
 #define ENABLE_COMMANDS		YES
 #define COMMAND_HELP		@"ornhelp"
-#define COMMAND_DEMO_MODE	@"orndemomode"
+#define COMMAND_DEMO		@"orndemo"
 #define COMMAND_SHOW_ALL	@"ornshowall"
 
 
@@ -429,13 +429,13 @@
 						 andMessage:[NSString stringWithFormat:
 									 @"%@\n%@\n%@",
 									 COMMAND_HELP,
-									 COMMAND_DEMO_MODE,
+									 COMMAND_DEMO,
 									 COMMAND_SHOW_ALL
 									 ]];
 		handled = YES;
 	}
 
-	if ([commandString isEqualToString:COMMAND_DEMO_MODE]) {
+	if ([commandString isEqualToString:COMMAND_DEMO]) {
 		
 		[DemoUtil loadDemoRideDataModel:self.managedObjectContext];
 		self.rideFetchedResultsController = nil; // Trip refetch
