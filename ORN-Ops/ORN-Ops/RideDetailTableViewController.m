@@ -41,6 +41,14 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	
+	// HACK: Recreate start-time date picker in code, since UI bug causes middle components to white out
+	// TODO: Remove hack code if/when Apple fixes bug
+	UIView* superview = self.startTimeDatePicker.superview;
+	[self.startTimeDatePicker removeFromSuperview];
+	UIDatePicker* startTimeDatePicker = [[UIDatePicker alloc] initWithFrame:self.startTimeDatePicker.frame];
+	self.startTimeDatePicker = startTimeDatePicker;
+	[superview addSubview:self.startTimeDatePicker];
 }
 
 
