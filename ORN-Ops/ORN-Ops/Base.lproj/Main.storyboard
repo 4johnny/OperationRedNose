@@ -98,10 +98,10 @@
             </objects>
             <point key="canvasLocation" x="1403" y="0.0"/>
         </scene>
-        <!--Rides Table View-->
+        <!--Rides Table View Controller-->
         <scene sceneID="qs7-WP-gn0">
             <objects>
-                <tableViewController storyboardIdentifier="ridesTableViewController" title="Rides Table View" id="ePf-i9-3Hp" customClass="RidesTableViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="ridesTableViewController" title="Rides Table View Controller" id="ePf-i9-3Hp" customClass="RidesTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="100" sectionHeaderHeight="22" sectionFooterHeight="22" id="gT6-2y-JAf">
                         <rect key="frame" x="0.0" y="64" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -145,10 +145,10 @@
             </objects>
             <point key="canvasLocation" x="1403" y="746"/>
         </scene>
-        <!--Teams Table View-->
+        <!--Teams Table View Controller-->
         <scene sceneID="5KK-i3-pAJ">
             <objects>
-                <tableViewController storyboardIdentifier="teamsTableViewController" title="Teams Table View" id="e91-Dg-yiD" customClass="TeamsTableViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="teamsTableViewController" title="Teams Table View Controller" id="e91-Dg-yiD" customClass="TeamsTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="100" sectionHeaderHeight="22" sectionFooterHeight="22" id="GEL-h0-BBO">
                         <rect key="frame" x="0.0" y="64" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -192,14 +192,15 @@
             </objects>
             <point key="canvasLocation" x="1403" y="1488"/>
         </scene>
-        <!--Team Detail View-->
+        <!--Team Detail View Controller-->
         <scene sceneID="Wlz-hy-s1i">
             <objects>
-                <tableViewController storyboardIdentifier="teamDetailTableViewController" title="Team Detail View" id="XpS-Zq-vPa" customClass="TeamDetailTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="static" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="kj8-Sz-QNp">
+                <tableViewController storyboardIdentifier="teamDetailTableViewController" title="Team Detail View Controller" id="XpS-Zq-vPa" customClass="TeamDetailTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="static" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="kj8-Sz-QNp">
                         <rect key="frame" x="0.0" y="64" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <gestureRecognizers/>
                         <sections>
                             <tableViewSection id="brU-K4-UfI">
                                 <cells>
@@ -227,6 +228,7 @@
                         <connections>
                             <outlet property="dataSource" destination="XpS-Zq-vPa" id="3aV-rB-yJx"/>
                             <outlet property="delegate" destination="XpS-Zq-vPa" id="KTj-bD-YsQ"/>
+                            <outletCollection property="gestureRecognizers" destination="F0a-aH-rGx" appends="YES" id="X8w-lY-vZm"/>
                         </connections>
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout"/>
@@ -239,6 +241,11 @@
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qpE-BM-fg9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="F0a-aH-rGx">
+                    <connections>
+                        <action selector="backgroundTapped:" destination="XpS-Zq-vPa" id="JMZ-Nd-xkU"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="2075" y="1488"/>
         </scene>
@@ -260,32 +267,87 @@
             </objects>
             <point key="canvasLocation" x="729" y="1488"/>
         </scene>
-        <!--Ride Detail View-->
+        <!--Ride Detail View Controller-->
         <scene sceneID="l1U-Q4-vZF">
             <objects>
-                <tableViewController storyboardIdentifier="rideDetailTableViewController" title="Ride Detail View" id="EOY-Bm-UjH" customClass="RideDetailTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="static" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="kqh-Zd-G9W">
+                <tableViewController storyboardIdentifier="rideDetailTableViewController" title="Ride Detail View Controller" id="EOY-Bm-UjH" customClass="RideDetailTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="static" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="kqh-Zd-G9W">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <gestureRecognizers/>
                         <sections>
-                            <tableViewSection id="6ib-tf-wHn">
+                            <tableViewSection headerTitle="Passenger" id="6ib-tf-wHn">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="130" id="ZwG-k0-NeR">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="170" id="ZwG-k0-NeR">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZwG-k0-NeR" id="OJ1-z4-CeL">
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="First Name:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ngs-h8-xdl">
+                                                    <rect key="frame" x="8" y="12" width="109" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Last Name:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nrH-bG-977">
+                                                    <rect key="frame" x="8" y="50" width="109" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" clearButtonMode="unlessEditing" translatesAutoresizingMaskIntoConstraints="NO" id="z4N-Lk-ham">
+                                                    <rect key="frame" x="125" y="8" width="467" height="30"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" enablesReturnKeyAutomatically="YES"/>
+                                                </textField>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" clearButtonMode="unlessEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Rue-M5-nfb">
+                                                    <rect key="frame" x="125" y="46" width="467" height="30"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" enablesReturnKeyAutomatically="YES"/>
+                                                </textField>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" clearButtonMode="unlessEditing" translatesAutoresizingMaskIntoConstraints="NO" id="9cU-35-FSH">
+                                                    <rect key="frame" x="125" y="84" width="467" height="30"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="phonePad" enablesReturnKeyAutomatically="YES"/>
+                                                </textField>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Phone #:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IpA-o9-76V">
+                                                    <rect key="frame" x="8" y="88" width="109" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="AZ8-P7-RE1">
+                                                    <rect key="frame" x="125" y="122" width="467" height="30"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="numberPad" enablesReturnKeyAutomatically="YES"/>
+                                                </textField>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="# Passengers:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gdl-Wo-pnC">
+                                                    <rect key="frame" x="8" y="126" width="109" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="202" id="4df-dD-t6N">
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Time" id="oIT-Po-O8x">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="150" id="Bgy-9r-LNI">
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4df-dD-t6N" id="90G-zQ-gfP">
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Bgy-9r-LNI" id="hZR-Je-Ww1">
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="104" id="E64-4N-Lj0">
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Location" id="8K2-7H-GJH">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="202" id="hEx-4p-YDq">
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="E64-4N-Lj0" id="4lw-8y-Caq">
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hEx-4p-YDq" id="e9c-kM-j2P">
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -294,7 +356,7 @@
                         </sections>
                         <connections>
                             <outlet property="dataSource" destination="EOY-Bm-UjH" id="KpM-5C-KjQ"/>
-                            <outlet property="delegate" destination="EOY-Bm-UjH" id="U3L-XJ-As7"/>
+                            <outletCollection property="gestureRecognizers" destination="Zi7-Sl-hm0" appends="YES" id="cNj-MR-Cph"/>
                         </connections>
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout"/>
@@ -307,6 +369,11 @@
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HqI-Ln-EfF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="Zi7-Sl-hm0">
+                    <connections>
+                        <action selector="backgroundTapped:" destination="EOY-Bm-UjH" id="dGL-hi-4qU"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="2075" y="746"/>
         </scene>

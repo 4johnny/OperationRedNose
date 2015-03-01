@@ -30,6 +30,8 @@ insertIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
 	self = [super initWithEntity:entityDescription insertIntoManagedObjectContext:managedObjectContext];
 	if (self) {
 		
+		self.dateTimeStart = [NSDate date];
+		
 		self.locationStartLatitude = [NSNumber numberWithDouble:locationStartCoordinate.latitude];
 		self.locationStartLongitude = [NSNumber numberWithDouble:locationStartCoordinate.longitude];
 		self.locationStartAddress = locationStartAddress;

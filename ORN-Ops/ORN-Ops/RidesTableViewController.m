@@ -20,7 +20,9 @@
 #define RIDE_SORT_KEY			@"dateTimeStart"
 #define RIDE_SORT_ASCENDING		YES
 
-#define RIDES_CELL_REUSE_ID	@"ridesTableViewCell"
+#define RIDES_CELL_REUSE_ID		@"ridesTableViewCell"
+
+#define MINUTE_INTERVAL			15
 
 
 #
@@ -54,7 +56,6 @@
 
 	// Build fetch request
 	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:RIDE_ENTITY_NAME];
-	//	fetchRequest.entity = [NSEntityDescription entityForName:RIDE_ENTITY_NAME inManagedObjectContext:self.managedObjectContext];
 	fetchRequest.fetchBatchSize = RIDE_FETCH_BATCH_SIZE;
 	fetchRequest.sortDescriptors = @[[[NSSortDescriptor alloc] initWithKey:RIDE_SORT_KEY ascending:RIDE_SORT_ASCENDING]];
 	// fetchRequest.predicate = [NSPredicate predicateWithFormat:@"<#format string#>", <#arguments#>];
@@ -294,11 +295,10 @@
 	Ride* ride = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
 	NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
-	dateFormatter.dateFormat = @"hh:mm:ss";
+	dateFormatter.dateFormat = @"hh:mm";
 
-	cell.textLabel.text = ride.locationStartAddress;
-//	cell.textLabel.text = [dateFormatter stringFromDate:ride.dateTimeStart];
-	cell.detailTextLabel.hidden = YES;
+	cell.textLabel.text = [dateFormatter stringFromDate:ride.dateTimeStart];
+	cell.detailTextLabel.text = ride.locationStartAddress;
 }
 
 

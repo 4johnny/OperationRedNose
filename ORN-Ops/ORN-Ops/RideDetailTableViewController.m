@@ -62,6 +62,12 @@
 #
 
 
+- (IBAction)backgroundTapped:(UITapGestureRecognizer*)sender {
+
+	[self.view endEditing:YES];
+}
+
+
 - (IBAction)savePressed:(UIBarButtonItem *)sender {
 	
 	[self.view endEditing:YES];

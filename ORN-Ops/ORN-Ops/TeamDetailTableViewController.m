@@ -61,6 +61,16 @@
 # pragma mark Action Handlers
 #
 
+#
+# pragma mark Action Handlers
+#
+
+
+- (IBAction)backgroundTapped:(UITapGestureRecognizer*)sender {
+	
+	[self.view endEditing:YES];
+}
+
 
 - (IBAction)savePressed:(UIBarButtonItem *)sender {
 	
