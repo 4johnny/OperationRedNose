@@ -7,6 +7,7 @@
 //
 
 #import "TeamDetailTableViewController.h"
+#import "AppDelegate.h"
 
 
 #
@@ -26,6 +27,12 @@
 
 @implementation TeamDetailTableViewController
 
+
+#
+# pragma mark UIViewController
+#
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -35,6 +42,7 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -47,6 +55,33 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+
+#
+# pragma mark Action Handlers
+#
+
+
+- (IBAction)savePressed:(UIBarButtonItem *)sender {
+	
+	[self.view endEditing:YES];
+
+	
+	//	[TeamDetailTableViewController saveManagedObjectContext];
+	[self.navigationController popViewControllerAnimated:YES];
+}
+
+
+#
+# pragma mark Helpers
+#
+
+
++ (void)saveManagedObjectContext {
+	
+	AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+	[appDelegate saveManagedObjectContext];
+}
 
 
 @end

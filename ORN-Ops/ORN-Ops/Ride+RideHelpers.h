@@ -10,6 +10,12 @@
 #import "Ride.h"
 
 #
+# pragma mark - Constants
+#
+
+#define RIDE_ENTITY_NAME	@"Ride"
+
+#
 # pragma mark - Interface
 #
 

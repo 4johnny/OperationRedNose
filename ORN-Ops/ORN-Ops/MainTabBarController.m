@@ -105,13 +105,11 @@
 	
 	// Inject data model into top view controller
 	// NOTE: All tabs in ORN tab bar are nav controllers pointing to view controllers that implement ORN Data Model Source protocol
-	[self injectDataModel:(id<ORNDataModelSource>)navigationController.topViewController];
-}
-
-
-- (void)injectDataModel:(id<ORNDataModelSource>)dataModelConsumer {
-	
-	dataModelConsumer.managedObjectContext = self.managedObjectContext;
+	// NOTE: If user previously drilled deeper into controller stack on this tab, we do not need to inject data model
+	if ([navigationController.topViewController conformsToProtocol:@protocol(ORNDataModelSource)]) {
+		
+		((id<ORNDataModelSource>)navigationController.topViewController).managedObjectContext = self.managedObjectContext;
+	}
 }
 
 

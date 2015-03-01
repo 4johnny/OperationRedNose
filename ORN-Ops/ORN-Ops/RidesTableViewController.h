@@ -7,13 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreData/CoreData.h>
 #import "ORNDataModelSource.h"
 
 #
 # pragma mark - Interface
 #
 
-@interface RidesTableViewController : UITableViewController <ORNDataModelSource>
+@interface RidesTableViewController : UITableViewController <ORNDataModelSource, NSFetchedResultsControllerDelegate>
 
 #
 # pragma mark <ORNDataModelSource>
