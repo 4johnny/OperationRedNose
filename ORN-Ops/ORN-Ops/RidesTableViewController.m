@@ -20,6 +20,8 @@
 #define RIDE_SORT_KEY			@"dateTimeStart"
 #define RIDE_SORT_ASCENDING		YES
 
+#define TIME_FORMAT				@"HH:mm"
+
 #define RIDES_CELL_REUSE_ID		@"ridesTableViewCell"
 
 #define MINUTE_INTERVAL			15
@@ -294,11 +296,11 @@
 	
 	Ride* ride = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
-	NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
-	dateFormatter.dateFormat = @"hh:mm";
+	NSDateFormatter* startTimeDateFormatter = [[NSDateFormatter alloc] init];
+	startTimeDateFormatter.dateFormat = TIME_FORMAT;
 
 	cell.textLabel.text = ride.locationStartAddress;
-	cell.detailTextLabel.text = [dateFormatter stringFromDate:ride.dateTimeStart];
+	cell.detailTextLabel.text = [startTimeDateFormatter stringFromDate:ride.dateTimeStart];
 }
 
 

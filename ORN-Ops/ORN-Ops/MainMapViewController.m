@@ -42,6 +42,8 @@
 #define RIDE_END_ANNOTATION_ID		@"rideEndAnnotation"
 #define DRIVING_TEAM_ANNOTATION_ID	@"drivingTeamAnnotation"
 
+#define MAP_ANNOTATION_TIME_FORMAT	@"HH:mm"
+
 #define ENABLE_COMMANDS		YES
 #define COMMAND_HELP		@"ornhelp"
 #define COMMAND_DEMO		@"orndemo"
@@ -223,38 +225,73 @@
 	if ([annotation isKindOfClass:[RidePointAnnotation class]]) {
 		
 		RidePointAnnotation* ridePointAnnotation = (RidePointAnnotation*)annotation;
+		MKPinAnnotationView* ridePinAnnotationView = nil;
 		
+		// Create pin of approproate color
 		switch (ridePointAnnotation.rideLocationType) {
 				
-			case RideLocationType_Start: {
+			case RideLocationType_Start:
 				
-				MKPinAnnotationView* pinAnnotationView = (MKPinAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:annotation andIdentifier:RIDE_START_ANNOTATION_ID];
+				ridePinAnnotationView = (MKPinAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:annotation andIdentifier:RIDE_START_ANNOTATION_ID];
 				
-				pinAnnotationView.pinColor = [Ride isTeamAssignedToRide:ridePointAnnotation.ride] ? MKPinAnnotationColorGreen : MKPinAnnotationColorPurple;
-				pinAnnotationView.animatesDrop = YES;
-				pinAnnotationView.canShowCallout = YES;
+				ridePinAnnotationView.pinColor = [Ride isTeamAssignedToRide:ridePointAnnotation.ride] ? MKPinAnnotationColorGreen : MKPinAnnotationColorPurple;
 				
-				return pinAnnotationView;
-			}
+				break;
 				
-			case RideLocationType_End: {
+			case RideLocationType_End:
 				
-				MKPinAnnotationView* pinAnnotationView = (MKPinAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:annotation andIdentifier:RIDE_END_ANNOTATION_ID];
+				ridePinAnnotationView = (MKPinAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:annotation andIdentifier:RIDE_END_ANNOTATION_ID];
 				
-				pinAnnotationView.pinColor = MKPinAnnotationColorRed;
-				pinAnnotationView.animatesDrop = YES;
-				pinAnnotationView.canShowCallout = YES;
+				ridePinAnnotationView.pinColor = MKPinAnnotationColorRed;
 				
-				return pinAnnotationView;
-			}
+				break;
 
 			default:
 			case RideLocationType_None:
+				
 				return nil;
 		}
+		
+		// Animate pin
+		ridePinAnnotationView.animatesDrop = YES;
+		
+		// Add callout view to pin
+		ridePinAnnotationView.canShowCallout = YES;
+		
+		// Add ride start time to left side of callout
+		NSDateFormatter* startTimeDateFormatter = [[NSDateFormatter alloc] init];
+		startTimeDateFormatter.dateFormat = MAP_ANNOTATION_TIME_FORMAT;
+		UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 35, 30)];
+		leftInfoView.text = [startTimeDateFormatter stringFromDate:ridePointAnnotation.ride.dateTimeStart];
+		leftInfoView.font = [UIFont fontWithDescriptor:leftInfoView.font.fontDescriptor size:[UIFont smallSystemFontSize]];
+		leftInfoView.textAlignment = NSTextAlignmentCenter;
+		ridePinAnnotationView.leftCalloutAccessoryView = leftInfoView;
+		
+		// Add disclosure button to right side of callout
+		UIButton* rightDisclosureButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+		[rightDisclosureButton addTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
+		ridePinAnnotationView.rightCalloutAccessoryView = rightDisclosureButton;
+		
+		return ridePinAnnotationView;
 	}
 	
 	return nil;
+}
+
+
+- (void)mapView:(MKMapView*)mapView annotationView:(MKAnnotationView*)view calloutAccessoryControlTapped:(UIControl*)control {
+	
+	MKPinAnnotationView* pinAnnotationView = (MKPinAnnotationView*)view;
+	
+	if ([pinAnnotationView.annotation isKindOfClass:[MKUserLocation class]]) return;
+
+	if ([pinAnnotationView.annotation isKindOfClass:[RidePointAnnotation class]]) {
+		
+		RidePointAnnotation* ridePointAnnotation = pinAnnotationView.annotation;
+		Ride* ride = ridePointAnnotation.ride;
+		
+		
+	}
 }
 
 
