@@ -82,15 +82,15 @@
 
 - (CGFloat)pickerView:(UIPickerView*)pickerView rowHeightForComponent:(NSInteger)component {
 	
-	return 30;
+	return 30; // points
 }
 
 - (CGFloat)pickerView:(UIPickerView*)pickerView widthForComponent:(NSInteger)component {
 	
-	if (pickerView == self.vehicleTransmissionPickerView) return 100;
+	if (pickerView == self.vehicleTransmissionPickerView) return 150;
 	if (pickerView == self.seatBeltCountPickerView) return 30;
 	
-	return 0;
+	return 0; // points
 }
 
 
