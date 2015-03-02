@@ -28,6 +28,7 @@
 @dynamic passengerNameFirst;
 @dynamic passengerNameLast;
 @dynamic passengerPhoneNumber;
+@dynamic source;
 @dynamic teamAssigned;
 @dynamic vehicleDescription;
 @dynamic vehicleSeatBeltCount;

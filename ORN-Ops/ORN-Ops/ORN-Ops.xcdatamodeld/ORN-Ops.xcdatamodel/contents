@@ -18,12 +18,13 @@
         <attribute name="passengerNameFirst" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="passengerNameLast" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="passengerPhoneNumber" optional="YES" attributeType="String" minValueString="7" syncable="YES"/>
+        <attribute name="source" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="teamAssigned" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="vehicleDescription" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="vehicleSeatBeltCount" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="vehicleTransmission" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Ride" positionX="-54" positionY="152" width="153" height="358"/>
+        <element name="Ride" positionX="-54" positionY="152" width="153" height="373"/>
     </elements>
 </model>
