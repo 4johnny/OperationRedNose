@@ -104,6 +104,12 @@
 #
 
 
+- (void)pickerView:(UIPickerView*)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+
+	[self.view endEditing:YES];
+}
+
+
 - (CGFloat)pickerView:(UIPickerView*)pickerView rowHeightForComponent:(NSInteger)component {
 	
 	return 20; // points
