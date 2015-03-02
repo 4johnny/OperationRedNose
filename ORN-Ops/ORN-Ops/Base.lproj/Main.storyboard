@@ -277,7 +277,7 @@
                         <sections>
                             <tableViewSection headerTitle="Dispatch" id="j0Z-V6-tcg">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="89" id="TIY-Ve-7qH">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="84" id="TIY-Ve-7qH">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="TIY-Ve-7qH" id="pV4-TZ-XLg">
                                             <autoresizingMask key="autoresizingMask"/>
@@ -311,7 +311,7 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Passenger" id="6ib-tf-wHn">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="160" id="ZwG-k0-NeR">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="267" id="ZwG-k0-NeR">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZwG-k0-NeR" id="OJ1-z4-CeL">
                                             <autoresizingMask key="autoresizingMask"/>
@@ -349,17 +349,19 @@
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="phonePad" enablesReturnKeyAutomatically="YES"/>
                                                 </textField>
+                                                <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7SS-wk-obR">
+                                                    <rect key="frame" x="126" y="114" width="147" height="162"/>
+                                                    <connections>
+                                                        <outlet property="dataSource" destination="EOY-Bm-UjH" id="WYZ-co-f6u"/>
+                                                        <outlet property="delegate" destination="EOY-Bm-UjH" id="n5o-Ne-tul"/>
+                                                    </connections>
+                                                </pickerView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="# Passengers:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gdl-Wo-pnC">
-                                                    <rect key="frame" x="8" y="126" width="110" height="21"/>
+                                                    <rect key="frame" x="8" y="184" width="110" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" clearButtonMode="unlessEditing" translatesAutoresizingMaskIntoConstraints="NO" id="AZ8-P7-RE1">
-                                                    <rect key="frame" x="127" y="122" width="465" height="30"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="numberPad" enablesReturnKeyAutomatically="YES"/>
-                                                </textField>
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -423,13 +425,13 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Vehicle" id="2od-gD-EDv">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="300" id="W79-5P-bVM">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="258" id="W79-5P-bVM">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="W79-5P-bVM" id="A4H-6m-w2R">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bgr-2L-eeA">
-                                                    <rect key="frame" x="127" y="8" width="147" height="162"/>
+                                                    <rect key="frame" x="127" y="-5" width="147" height="162"/>
                                                     <connections>
                                                         <outlet property="dataSource" destination="EOY-Bm-UjH" id="8jy-um-55a"/>
                                                         <outlet property="delegate" destination="EOY-Bm-UjH" id="68S-lq-oaL"/>
@@ -447,20 +449,20 @@
                                                     <textInputTraits key="textInputTraits" enablesReturnKeyAutomatically="YES"/>
                                                 </textField>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Transmission:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OEU-FO-oRz">
-                                                    <rect key="frame" x="8" y="78" width="105" height="21"/>
+                                                    <rect key="frame" x="8" y="65" width="111" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0X3-eY-y0R">
-                                                    <rect key="frame" x="127" y="147" width="147" height="162"/>
+                                                    <rect key="frame" x="127" y="116" width="147" height="162"/>
                                                     <connections>
                                                         <outlet property="dataSource" destination="EOY-Bm-UjH" id="tN4-n0-LJg"/>
                                                         <outlet property="delegate" destination="EOY-Bm-UjH" id="hmV-QI-G61"/>
                                                     </connections>
                                                 </pickerView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="# Seat Belts:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YNK-YK-nnm">
-                                                    <rect key="frame" x="8" y="217" width="105" height="21"/>
+                                                    <rect key="frame" x="8" y="186" width="111" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
@@ -478,7 +480,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" keyboardDismissMode="interactive" translatesAutoresizingMaskIntoConstraints="NO" id="VEt-fW-EOg">
-                                                    <rect key="frame" x="0.0" y="-1" width="600" height="140"/>
+                                                    <rect key="frame" x="8" y="8" width="584" height="123"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" enablesReturnKeyAutomatically="YES"/>
@@ -490,23 +492,23 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Time" id="8K2-7H-GJH">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="177" id="hEx-4p-YDq">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="163" id="hEx-4p-YDq">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hEx-4p-YDq" id="e9c-kM-j2P">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Start Time:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IhO-j1-0wP">
-                                                    <rect key="frame" x="8" y="78" width="111" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                                 <datePicker contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="15" translatesAutoresizingMaskIntoConstraints="NO" id="VSV-Fr-3SI">
-                                                    <rect key="frame" x="127" y="8" width="300" height="162"/>
+                                                    <rect key="frame" x="127" y="0.0" width="300" height="162"/>
                                                     <date key="date" timeIntervalSinceReferenceDate="446898038.33594602">
                                                         <!--2015-03-01 10:20:38 +0000-->
                                                     </date>
                                                 </datePicker>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Start Time:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IhO-j1-0wP">
+                                                    <rect key="frame" x="8" y="70" width="111" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -531,7 +533,7 @@
                         <outlet property="firstNameTextField" destination="z4N-Lk-ham" id="QdL-HV-YQ5"/>
                         <outlet property="lastNameTextField" destination="Rue-M5-nfb" id="OAc-GN-Mma"/>
                         <outlet property="notesTextView" destination="VEt-fW-EOg" id="Ytj-rc-mfn"/>
-                        <outlet property="passengerCountTextField" destination="AZ8-P7-RE1" id="1v2-Wn-BEa"/>
+                        <outlet property="passengerCountPickerView" destination="7SS-wk-obR" id="cPC-aw-Fpu"/>
                         <outlet property="phoneNumberTextField" destination="9cU-35-FSH" id="qaN-Ib-AlD"/>
                         <outlet property="seatBeltCountPickerView" destination="0X3-eY-y0R" id="x7Y-fE-9OU"/>
                         <outlet property="sourceTextField" destination="dfs-3U-IDE" id="Cvg-5W-XbN"/>
@@ -551,7 +553,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="2075" y="737"/>
+            <point key="canvasLocation" x="2075" y="746"/>
         </scene>
         <!--Rides Navigation Controller-->
         <scene sceneID="fB9-LO-za9">

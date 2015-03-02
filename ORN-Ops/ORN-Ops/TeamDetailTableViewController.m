@@ -72,7 +72,7 @@
 }
 
 
-- (IBAction)savePressed:(UIBarButtonItem *)sender {
+- (IBAction)savePressed:(UIBarButtonItem*)sender {
 	
 	[self.view endEditing:YES];
 

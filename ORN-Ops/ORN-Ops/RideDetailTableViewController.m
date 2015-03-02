@@ -79,8 +79,9 @@
 
 - (NSInteger)pickerView:(UIPickerView*)pickerView numberOfRowsInComponent:(NSInteger)component {
 
+	if (pickerView == self.passengerCountPickerView) return 10;
 	if (pickerView == self.vehicleTransmissionPickerView) return 2;
-	if (pickerView == self.seatBeltCountPickerView) return 10;
+	if (pickerView == self.seatBeltCountPickerView) return 11;
 	
 	return 0;
 }
@@ -90,15 +91,18 @@
 # pragma mark <UIPickerViewDelegate>
 #
 
+
 - (CGFloat)pickerView:(UIPickerView*)pickerView rowHeightForComponent:(NSInteger)component {
 	
-	return 30; // points
+	return 20; // points
 }
 
+
 - (CGFloat)pickerView:(UIPickerView*)pickerView widthForComponent:(NSInteger)component {
-	
+
+	if (pickerView == self.passengerCountPickerView) return 35;
 	if (pickerView == self.vehicleTransmissionPickerView) return 150;
-	if (pickerView == self.seatBeltCountPickerView) return 30;
+	if (pickerView == self.seatBeltCountPickerView) return 35;
 	
 	return 0; // points
 }
@@ -106,6 +110,8 @@
 
 - (NSString*)pickerView:(UIPickerView*)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
 
+	if (pickerView == self.passengerCountPickerView) return [NSString stringWithFormat:@"%d", (int)row + 1];
+	
 	if (pickerView == self.vehicleTransmissionPickerView) {
 		
 		switch (row) {
@@ -152,7 +158,7 @@
 }
 
 
-- (IBAction)savePressed:(UIBarButtonItem *)sender {
+- (IBAction)savePressed:(UIBarButtonItem*)sender {
 	
 	[self.view endEditing:YES];
 	
