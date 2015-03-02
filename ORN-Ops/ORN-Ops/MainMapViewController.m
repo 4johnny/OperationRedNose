@@ -113,7 +113,7 @@
 - (CLGeocoder*)geocoder {
 	
 	if (_geocoder) return _geocoder;
-
+	
 	_geocoder = [[CLGeocoder alloc] init];
 	
 	return _geocoder;
@@ -121,7 +121,7 @@
 
 
 - (UIAlertController*)okAlertController {
-
+	
 	if (_okAlertController) return _okAlertController;
 	
 	UIAlertAction* okAlertAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
@@ -138,8 +138,8 @@
 
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
+	[super viewDidLoad];
+	// Do any additional setup after loading the view.
 	
 	// Trigger keyboard preload to avoid UX delay
 	[Util preloadKeyboardViaTextField:self.addressTextField];
@@ -154,17 +154,17 @@
 
 
 - (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+	[super didReceiveMemoryWarning];
+	// Dispose of any resources that can be recreated.
 }
 
 
 /*
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 
 #
@@ -186,16 +186,16 @@
 // User hit keyboard return key
 // NOTE: Text field is *not* empty due to "auto-enable" of return key
 - (BOOL)textFieldShouldReturn:(UITextField*)textField {
-
+	
 	// Remove focus and keyboard
 	[textField resignFirstResponder];
-
+	
 	// If command present, handle it and we are done
 	if ([self handleCommandString:self.addressTextField.text]) {
 		self.addressTextField.text = @"";
 		return NO;
 	}
-
+	
 	// Configure view with address string
 	[self configureViewWithAddressString:self.addressTextField.text];
 	
@@ -209,18 +209,18 @@
 
 
 //- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
-//	
+//
 //	// NOTE: Called many times during scrolling, so keep code lightweight
 //}
 
 
 //- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
-//	
+//
 //}
 
 
 - (MKAnnotationView*)mapView:(MKMapView*)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
-
+	
 	if ([annotation isKindOfClass:[MKUserLocation class]]) return nil;
 	
 	if ([annotation isKindOfClass:[RidePointAnnotation class]]) {
@@ -246,7 +246,7 @@
 				ridePinAnnotationView.pinColor = MKPinAnnotationColorRed;
 				
 				break;
-
+				
 			default:
 			case RideLocationType_None:
 				
@@ -285,20 +285,20 @@
 	MKPinAnnotationView* pinAnnotationView = (MKPinAnnotationView*)view;
 	
 	if ([pinAnnotationView.annotation isKindOfClass:[MKUserLocation class]]) return;
-
+	
 	if ([pinAnnotationView.annotation isKindOfClass:[RidePointAnnotation class]]) {
 		
 		// Create ride-detail controller, inject ride, and push onto navigation stack
 		RideDetailTableViewController* rideDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:RIDE_DETAIL_TABLE_VIEW_CONTROLLER_ID];
-		//	RidePointAnnotation* ridePointAnnotation = pinAnnotationView.annotation;
-		//	rideDetailTableViewController.ride = ridePointAnnotation.ride;
+		RidePointAnnotation* ridePointAnnotation = pinAnnotationView.annotation;
+		rideDetailTableViewController.ride = ridePointAnnotation.ride;
 		[self.navigationController pushViewController:rideDetailTableViewController animated:YES];
 	}
 }
 
 
 //- (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay {
-//	
+//
 //	return nil;
 //}
 
@@ -320,8 +320,8 @@
 #
 
 
-- (IBAction)avatarBarButtonItem:(UIBarButtonItem *)sender {
-
+- (IBAction)avatarBarButtonPressed:(UIBarButtonItem *)sender {
+	
 	// Re-orientate map back to initial perspective
 	[self clearAllAnnotationSelections];
 	[self showAllAnnotations];
@@ -338,10 +338,10 @@
 	// Center and zoom map on juridiction region
 	MKCoordinateRegion centerRegion = MKCoordinateRegionMake(JURISDICTION_COORDINATE, MKCoordinateSpanMake(MAP_SPAN_LOCATION_DELTA_CITY, MAP_SPAN_LOCATION_DELTA_CITY));
 	[self.mainMapView setRegion:centerRegion animated:YES];
-
+	
 	// Configure annotations and callouts for all existing rides
 	for (Ride* ride in self.rideFetchedResultsController.fetchedObjects) {
-
+		
 		if (!(ride.locationStartLatitude.doubleValue < 0)) {
 			
 			[self.mainMapView addAnnotation:[RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_Start]];
@@ -352,7 +352,7 @@
 			[self.mainMapView addAnnotation:[RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_End]];
 		}
 	}
-
+	
 	[self showAllAnnotations];
 }
 
@@ -380,7 +380,7 @@
 			
 			return;
 		}
-
+		
 		// Address resolved successfully to have at least one placemark
 		CLPlacemark* placemark = placemarks[0];
 		NSLog(@"Geocode location: %@", placemark.location);
@@ -412,7 +412,7 @@
 
 
 - (void)showAllAnnotations {
-
+	
 	[self.mainMapView showAnnotations:self.mainMapView.annotations animated:YES];
 }
 
@@ -449,7 +449,7 @@
 
 
 + (MKAnnotationView*)dequeueReusableAnnotationViewWithMapView:(MKMapView*)mapView andAnnotation:(id<MKAnnotation>)annotation andIdentifier:(NSString*)identifier {
-
+	
 	// Reuse pooled annotation if possible
 	MKPinAnnotationView* pinAnnotationView = (MKPinAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
 	if (pinAnnotationView) {
@@ -470,9 +470,9 @@
 // Handle command string
 // Returns whether command string was handled
 - (BOOL)handleCommandString:(NSString*)commandString {
-
+	
 	if (!ENABLE_COMMANDS) return NO;
-
+	
 	BOOL handled = NO;
 	
 	if ([commandString isEqualToString:COMMAND_HELP]) {
@@ -485,16 +485,16 @@
 									 ]];
 		handled = YES;
 	}
-
+	
 	if ([commandString isEqualToString:COMMAND_DEMO]) {
 		
 		[DemoUtil loadDemoRideDataModel:self.managedObjectContext];
 		self.rideFetchedResultsController = nil; // Trip refetch
 		[self configureView];
-
+		
 		handled = YES;
 	}
-
+	
 	if (handled) {
 		NSLog(@"Handled Command: %@", commandString);
 	}

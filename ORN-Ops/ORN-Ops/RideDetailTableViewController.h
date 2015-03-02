@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Ride.h"
 
 #
 # pragma mark - Constants
@@ -19,6 +20,12 @@
 #
 
 @interface RideDetailTableViewController : UITableViewController <UIPickerViewDataSource, UIPickerViewDelegate>
+
+#
+# pragma mark Properties
+#
+
+@property (nonatomic) Ride* ride;
 
 #
 # pragma mark Outlets

@@ -9,6 +9,7 @@
 #import "RidesTableViewController.h"
 #import "AppDelegate.h"
 #import "Ride+RideHelpers.h"
+#import "RideDetailTableViewController.h"
 
 
 #
@@ -23,8 +24,7 @@
 #define TIME_FORMAT				@"HH:mm"
 
 #define RIDES_CELL_REUSE_ID		@"ridesTableViewCell"
-
-#define MINUTE_INTERVAL			15
+#define SHOW_RIDE_DETAIL_SEQUE	@"showRideDetailSeque"
 
 
 #
@@ -100,12 +100,18 @@
 }
 
 
-/*
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
  // Get the new view controller using [segue destinationViewController].
  // Pass the selected object to the new view controller.
- }
- */
+	
+	if ([segue.identifier isEqualToString:SHOW_RIDE_DETAIL_SEQUE]) {
+		
+		// Inject ride model into ride view controller
+		NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+		RideDetailTableViewController* rideDetailTableViewController = segue.destinationViewController;
+		rideDetailTableViewController.ride = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	}
+}
 
 
 #

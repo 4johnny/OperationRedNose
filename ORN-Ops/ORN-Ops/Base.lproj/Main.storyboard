@@ -75,9 +75,9 @@
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" title="Map" id="RAh-2l-rsx">
-                        <barButtonItem key="leftBarButtonItem" image="ORN-Bar-Button-Item" id="i5N-jO-Wmp">
+                        <barButtonItem key="leftBarButtonItem" image="ORN-Bar-Button-Item" id="dEi-XX-jP7">
                             <connections>
-                                <action selector="avatarBarButtonItem:" destination="Cgj-Rd-EZz" id="JFW-ye-7xg"/>
+                                <action selector="avatarBarButtonPressed:" destination="Cgj-Rd-EZz" id="COn-L8-3Ui"/>
                             </connections>
                         </barButtonItem>
                         <textField key="titleView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter ride start location" textAlignment="center" minimumFontSize="17" clearButtonMode="unlessEditing" id="OpH-64-v2x">
@@ -92,7 +92,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="addressTextField" destination="OpH-64-v2x" id="BhM-i1-3TK"/>
-                        <outlet property="avatarBarButtonItem" destination="i5N-jO-Wmp" id="lkO-Rh-rvA"/>
+                        <outlet property="avatarBarButtonItem" destination="dEi-XX-jP7" id="0In-32-fHP"/>
                         <outlet property="mainMapView" destination="eJC-AT-fJw" id="xiq-yJ-Ilg"/>
                         <outlet property="view" destination="XLH-Pf-8Rb" id="0Hl-3N-g0s"/>
                     </connections>
