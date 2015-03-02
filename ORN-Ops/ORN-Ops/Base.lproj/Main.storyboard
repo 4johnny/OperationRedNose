@@ -502,6 +502,7 @@
                                                     <date key="date" timeIntervalSinceReferenceDate="446898038.33594602">
                                                         <!--2015-03-01 10:20:38 +0000-->
                                                     </date>
+                                                    <locale key="locale" localeIdentifier="en_150"/>
                                                 </datePicker>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Start Time:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IhO-j1-0wP">
                                                     <rect key="frame" x="8" y="70" width="111" height="21"/>
