@@ -49,7 +49,6 @@
 #define ENABLE_COMMANDS		YES
 #define COMMAND_HELP		@"ornhelp"
 #define COMMAND_DEMO		@"orndemo"
-#define COMMAND_SHOW_ALL	@"ornshowall"
 
 
 #
@@ -317,6 +316,19 @@
 
 
 #
+# pragma mark Action Handlers
+#
+
+
+- (IBAction)avatarBarButtonItem:(UIBarButtonItem *)sender {
+
+	// Re-orientate map back to initial perspective
+	[self clearAllAnnotationSelections];
+	[self showAllAnnotations];
+}
+
+
+#
 # pragma mark Helpers
 #
 
@@ -467,10 +479,9 @@
 		
 		[self presentAlertWithTitle:@"ORN Commands"
 						 andMessage:[NSString stringWithFormat:
-									 @"%@\n%@\n%@",
+									 @"%@\n%@",
 									 COMMAND_HELP,
-									 COMMAND_DEMO,
-									 COMMAND_SHOW_ALL
+									 COMMAND_DEMO
 									 ]];
 		handled = YES;
 	}
@@ -483,14 +494,7 @@
 
 		handled = YES;
 	}
-	
-	if ([commandString isEqualToString:COMMAND_SHOW_ALL]) {
-	
-		[self clearAllAnnotationSelections];
-		[self showAllAnnotations];
-		handled = YES;
-	}
-	
+
 	if (handled) {
 		NSLog(@"Handled Command: %@", commandString);
 	}
