@@ -46,8 +46,10 @@
 	// TODO: Remove hack code if/when Apple fixes bug
 	UIView* superview = self.startTimeDatePicker.superview;
 	[self.startTimeDatePicker removeFromSuperview];
+	NSInteger minuteInterval = self.startTimeDatePicker.minuteInterval;
 	UIDatePicker* startTimeDatePicker = [[UIDatePicker alloc] initWithFrame:self.startTimeDatePicker.frame];
 	self.startTimeDatePicker = startTimeDatePicker;
+	self.startTimeDatePicker.minuteInterval = minuteInterval;
 	[superview addSubview:self.startTimeDatePicker];
 }
 
