@@ -54,6 +54,12 @@
 }
 
 
+- (instancetype)init {
+	
+	return [self initWithRide:nil andRideLocationType:RideLocationType_None];
+}
+
+
 + (instancetype)ridePointAnnotationWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType {
 
 	return [[RidePointAnnotation alloc] initWithRide:ride andRideLocationType:rideLocationType];

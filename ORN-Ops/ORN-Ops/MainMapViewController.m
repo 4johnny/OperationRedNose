@@ -14,7 +14,6 @@
 #import "AppDelegate.h"
 #import "Ride+RideHelpers.h"
 #import "RidePointAnnotation.h"
-#import	"RideDetailTableViewController.h"
 
 #import "DemoUtil.h"
 
@@ -288,10 +287,17 @@
 	
 	if ([pinAnnotationView.annotation isKindOfClass:[RidePointAnnotation class]]) {
 		
-		// Create ride-detail controller, inject ride, and push onto navigation stack
+		// Create ride-detail controller
 		RideDetailTableViewController* rideDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:RIDE_DETAIL_TABLE_VIEW_CONTROLLER_ID];
+		
+		// Inject ride data model
 		RidePointAnnotation* ridePointAnnotation = pinAnnotationView.annotation;
 		rideDetailTableViewController.ride = ridePointAnnotation.ride;
+		
+		// Wire up delegate
+		rideDetailTableViewController.delegate = self;
+		
+		// Push onto navigation stack
 		[self.navigationController pushViewController:rideDetailTableViewController animated:YES];
 	}
 }
@@ -301,6 +307,30 @@
 //
 //	return nil;
 //}
+
+
+#
+# pragma mark <RideDetailTableViewControllerDelegate>
+#
+
+// TODO: Use NSNotification instead of delegate, since changes can happen outside our direct control
+- (void)rideDetailTableViewController:(RideDetailTableViewController*)controller didSaveRide:(Ride*)ride {
+
+	// Find annotation related to ride - if none, we are done
+	NSArray* annotationsAffected = [self.mainMapView.annotations filteredArrayUsingPredicate:
+	[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+
+		RidePointAnnotation* ridePointAnnotation = evaluatedObject;
+		return ridePointAnnotation.ride == ride;
+	}]];
+	if (annotationsAffected.count <= 0) return;
+	
+	// Refresh map annotation by removing, reinitializing, and re-adding to map view
+	RidePointAnnotation* ridePointAnnotation = annotationsAffected.firstObject;
+	[self.mainMapView removeAnnotation:ridePointAnnotation];
+	[self.mainMapView addAnnotation:[ridePointAnnotation initWithRide:ride andRideLocationType:ridePointAnnotation.rideLocationType]];
+	[self.mainMapView selectAnnotation:ridePointAnnotation animated:YES];
+}
 
 
 #

@@ -9,13 +9,14 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 #import "ORNDataModelSource.h"
+#import "RideDetailTableViewController.h"
 
 
 #
 # pragma mark - Interface
 #
 
-@interface MainMapViewController : UIViewController <ORNDataModelSource, NSFetchedResultsControllerDelegate, UITextFieldDelegate, MKMapViewDelegate>
+@interface MainMapViewController : UIViewController <ORNDataModelSource, NSFetchedResultsControllerDelegate, UITextFieldDelegate, MKMapViewDelegate, RideDetailTableViewControllerDelegate>
 
 #
 # pragma mark Outlets

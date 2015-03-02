@@ -54,15 +54,8 @@
 	self.startTimeDatePicker.minuteInterval = minuteInterval;
 	[superview addSubview:self.startTimeDatePicker];
 	// END HACK
-	
-	// Constrain start-time date picker to range between 1 day before and after now
-	NSDate* now = [NSDate date];
-	NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-	NSDateComponents* offsetComponents = [[NSDateComponents alloc] init];
-	offsetComponents.day = -1;
-	self.startTimeDatePicker.minimumDate = [gregorianCalendar dateByAddingComponents:offsetComponents toDate:now options:0];
-	offsetComponents.day = 1;
-	self.startTimeDatePicker.maximumDate = [gregorianCalendar dateByAddingComponents:offsetComponents toDate:now options:0];
+
+	[self configureView];
 }
 
 
@@ -179,10 +172,8 @@
 - (IBAction)savePressed:(UIBarButtonItem*)sender {
 	
 	[self.view endEditing:YES];
-	
-	
-	
-	//	[RideDetailTableViewController saveManagedObjectContext];
+	[self saveDataModelFromView];
+	[self.delegate rideDetailTableViewController:self didSaveRide:self.ride];
 	[self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -190,6 +181,79 @@
 #
 # pragma mark Helpers
 #
+
+
+- (void)configureView {
+
+	[self configureRangeForStartTimeDatePicker];
+	[self loadDataModelIntoView];
+}
+
+
+// Constrain start-time date picker to range between 1 day before and after now
+- (void)configureRangeForStartTimeDatePicker {
+	
+	// Get date-time for now, and Gregorian calendar
+	NSDate* now = [NSDate date];
+	NSCalendar* gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+	
+	// Minimum date-time is one day before now
+	NSDateComponents* offsetComponents = [[NSDateComponents alloc] init];
+	offsetComponents.day = -1;
+	self.startTimeDatePicker.minimumDate = [gregorianCalendar dateByAddingComponents:offsetComponents toDate:now options:0];
+	
+	// Maximum date-time is one day from now
+	offsetComponents.day = 1;
+	self.startTimeDatePicker.maximumDate = [gregorianCalendar dateByAddingComponents:offsetComponents toDate:now options:0];
+}
+
+
+// Load ride data model into view fields
+// TODO: Load remaining data model values into view
+- (void)loadDataModelIntoView {
+
+	// Load dispatch fields
+	self.teamAssignedTextField.text = self.ride.teamAssigned;
+	
+	// Load passenger fields
+	
+	// Load location fields
+	self.startAddressTextField.text = self.ride.locationStartAddress;
+	self.endAddressTextField.text = self.ride.locationEndAddress;
+	
+	// Load vehicle fields
+	
+	// Load notes fields
+	
+	// Load time fields
+	self.startTimeDatePicker.date = self.ride.dateTimeStart;
+}
+
+
+// Save ride data model from view fields
+// TODO: Save remaining data model values from view
+- (void)saveDataModelFromView {
+
+	// Save dispatch fields
+	self.ride.teamAssigned = self.teamAssignedTextField.text;
+	
+	// Save passenger fields
+	
+	// Save location fields
+	// TODO: Validate locations via geocoding
+	self.ride.locationStartAddress = self.startAddressTextField.text;
+	self.ride.locationEndAddress = self.endAddressTextField.text;
+	
+	// Save vehicle fields
+	
+	// Save notes fields
+	
+	// Save time fields
+	self.ride.dateTimeStart = self.startTimeDatePicker.date;
+	
+	// Persist data model to disk
+	[RideDetailTableViewController saveManagedObjectContext];
+}
 
 
 + (void)saveManagedObjectContext {

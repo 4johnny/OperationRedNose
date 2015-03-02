@@ -36,17 +36,11 @@ typedef NS_ENUM(NSInteger, RideLocationType) {
 @property (nonatomic) RideLocationType rideLocationType;
 
 #
-# pragma mark <MKAnnotation>
-#
-
-@property (nonatomic, readonly, copy) NSString *title;
-@property (nonatomic, readonly, copy) NSString *subtitle;
-
-#
 # pragma mark Initializers
 #
 
 - (instancetype)initWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType;
+- (instancetype)init;
 + (instancetype)ridePointAnnotationWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType;
 
 

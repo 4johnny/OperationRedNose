@@ -9,7 +9,6 @@
 #import "RidesTableViewController.h"
 #import "AppDelegate.h"
 #import "Ride+RideHelpers.h"
-#import "RideDetailTableViewController.h"
 
 
 #
@@ -110,6 +109,9 @@
 		NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
 		RideDetailTableViewController* rideDetailTableViewController = segue.destinationViewController;
 		rideDetailTableViewController.ride = [self.fetchedResultsController objectAtIndexPath:indexPath];
+		
+		// Wire up delegate
+		rideDetailTableViewController.delegate = self;
 	}
 }
 
@@ -258,6 +260,17 @@
  [self.tableView reloadData];
  }
  */
+
+
+#
+# pragma mark <RideDetailTableViewControllerDelegate>
+#
+
+
+- (void)rideDetailTableViewController:(RideDetailTableViewController*)controller didSaveRide:(Ride*)ride {
+
+	[self.tableView reloadData];
+}
 
 
 #
