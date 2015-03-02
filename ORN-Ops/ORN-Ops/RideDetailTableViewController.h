@@ -9,6 +9,12 @@
 #import <UIKit/UIKit.h>
 
 #
+# pragma mark - Constants
+#
+
+#define RIDE_DETAIL_TABLE_VIEW_CONTROLLER_ID	@"rideDetailTableViewController"
+
+#
 # pragma mark - Interface
 #
 

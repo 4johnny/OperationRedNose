@@ -14,6 +14,8 @@
 #import "AppDelegate.h"
 #import "Ride+RideHelpers.h"
 #import "RidePointAnnotation.h"
+#import	"RideDetailTableViewController.h"
+
 #import "DemoUtil.h"
 
 
@@ -287,10 +289,11 @@
 
 	if ([pinAnnotationView.annotation isKindOfClass:[RidePointAnnotation class]]) {
 		
-		RidePointAnnotation* ridePointAnnotation = pinAnnotationView.annotation;
-		Ride* ride = ridePointAnnotation.ride;
-		
-		
+		// Create ride-detail controller, inject ride, and push onto navigation stack
+		RideDetailTableViewController* rideDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:RIDE_DETAIL_TABLE_VIEW_CONTROLLER_ID];
+		//	RidePointAnnotation* ridePointAnnotation = pinAnnotationView.annotation;
+		//	rideDetailTableViewController.ride = ridePointAnnotation.ride;
+		[self.navigationController pushViewController:rideDetailTableViewController animated:YES];
 	}
 }
 
