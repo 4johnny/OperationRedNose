@@ -44,16 +44,16 @@
 	
 	// HACK: Recreate start-time date picker in code, since UI bug causes middle components to white out on iPad
 	// TODO: Remove hack code if/when Apple fixes bug
-	
 	UIView* superview = self.startTimeDatePicker.superview;
 	[self.startTimeDatePicker removeFromSuperview];
 	NSLocale* locale = self.startTimeDatePicker.locale;
 	NSInteger minuteInterval = self.startTimeDatePicker.minuteInterval;
 	UIDatePicker* startTimeDatePicker = [[UIDatePicker alloc] initWithFrame:self.startTimeDatePicker.frame];
-	self.startTimeDatePicker = startTimeDatePicker;
-	self.startTimeDatePicker.minuteInterval = minuteInterval;
+	self.startTimeDatePicker = startTimeDatePicker; // NOTE: Need local strong var since Outlet is weak
 	self.startTimeDatePicker.locale = locale;
+	self.startTimeDatePicker.minuteInterval = minuteInterval;
 	[superview addSubview:self.startTimeDatePicker];
+	// END HACK
 }
 
 
