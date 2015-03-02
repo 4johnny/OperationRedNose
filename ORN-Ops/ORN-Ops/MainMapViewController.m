@@ -171,7 +171,7 @@
 #
 
 
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+- (void)controllerDidChangeContent:(NSFetchedResultsController*)controller {
 	
 	// NOTE: Even if method is empty, at least one protocol method must be implemented for fetch-results controller to track changes
 }
@@ -227,28 +227,41 @@
 		RidePointAnnotation* ridePointAnnotation = (RidePointAnnotation*)annotation;
 		MKPinAnnotationView* ridePinAnnotationView = nil;
 		
-		// Create pin of approproate color
 		switch (ridePointAnnotation.rideLocationType) {
 				
-			case RideLocationType_Start:
+			case RideLocationType_Start: {
 				
 				ridePinAnnotationView = (MKPinAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:annotation andIdentifier:RIDE_START_ANNOTATION_ID];
 				
+				// Set color based on status
+				// NOTE: Color for start of route is green by convention
 				ridePinAnnotationView.pinColor = [Ride isTeamAssignedToRide:ridePointAnnotation.ride] ? MKPinAnnotationColorGreen : MKPinAnnotationColorPurple;
 				
-				break;
+				// Add ride start time to left side of callout
+				NSDateFormatter* startTimeDateFormatter = [[NSDateFormatter alloc] init];
+				startTimeDateFormatter.dateFormat = MAP_ANNOTATION_TIME_FORMAT;
+				UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 35, 30)];
+				leftInfoView.text = [startTimeDateFormatter stringFromDate:ridePointAnnotation.ride.dateTimeStart];
+				leftInfoView.font = [UIFont fontWithDescriptor:leftInfoView.font.fontDescriptor size:[UIFont smallSystemFontSize]];
+				leftInfoView.textAlignment = NSTextAlignmentCenter;
+				ridePinAnnotationView.leftCalloutAccessoryView = leftInfoView;
 				
-			case RideLocationType_End:
+				break;
+			}
+				
+			case RideLocationType_End: {
 				
 				ridePinAnnotationView = (MKPinAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:annotation andIdentifier:RIDE_END_ANNOTATION_ID];
-				
+
+				// Set color based on status
+				// NOTE: Color for end of route is red by convention
 				ridePinAnnotationView.pinColor = MKPinAnnotationColorRed;
 				
 				break;
+			}
 				
 			default:
 			case RideLocationType_None:
-				
 				return nil;
 		}
 		
@@ -257,15 +270,6 @@
 		
 		// Add callout view to pin
 		ridePinAnnotationView.canShowCallout = YES;
-		
-		// Add ride start time to left side of callout
-		NSDateFormatter* startTimeDateFormatter = [[NSDateFormatter alloc] init];
-		startTimeDateFormatter.dateFormat = MAP_ANNOTATION_TIME_FORMAT;
-		UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 35, 30)];
-		leftInfoView.text = [startTimeDateFormatter stringFromDate:ridePointAnnotation.ride.dateTimeStart];
-		leftInfoView.font = [UIFont fontWithDescriptor:leftInfoView.font.fontDescriptor size:[UIFont smallSystemFontSize]];
-		leftInfoView.textAlignment = NSTextAlignmentCenter;
-		ridePinAnnotationView.leftCalloutAccessoryView = leftInfoView;
 		
 		// Add disclosure button to right side of callout
 		UIButton* rightDisclosureButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
@@ -316,20 +320,24 @@
 // TODO: Use NSNotification instead of delegate, since changes can happen outside our direct control
 - (void)rideDetailTableViewController:(RideDetailTableViewController*)controller didSaveRide:(Ride*)ride {
 
-	// Find annotation related to ride - if none, we are done
+	// Find annotations related to ride - if none, we are done
 	NSArray* annotationsAffected = [self.mainMapView.annotations filteredArrayUsingPredicate:
-	[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+	[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
 
 		RidePointAnnotation* ridePointAnnotation = evaluatedObject;
 		return ridePointAnnotation.ride == ride;
 	}]];
-	if (annotationsAffected.count <= 0) return;
 	
-	// Refresh map annotation by removing, reinitializing, and re-adding to map view
-	RidePointAnnotation* ridePointAnnotation = annotationsAffected.firstObject;
-	[self.mainMapView removeAnnotation:ridePointAnnotation];
-	[self.mainMapView addAnnotation:[ridePointAnnotation initWithRide:ride andRideLocationType:ridePointAnnotation.rideLocationType]];
-	[self.mainMapView selectAnnotation:ridePointAnnotation animated:YES];
+	// Refresh map annotations by removing, reinitializing, and re-adding to map view
+	for (RidePointAnnotation* ridePointAnnotation in annotationsAffected) {
+		
+		[self.mainMapView removeAnnotation:ridePointAnnotation];
+		[self.mainMapView addAnnotation:[ridePointAnnotation initWithRide:ride andRideLocationType:ridePointAnnotation.rideLocationType]];
+		
+		if (ridePointAnnotation.rideLocationType == RideLocationType_Start) {
+			[self.mainMapView selectAnnotation:ridePointAnnotation animated:YES];
+		}
+	}
 }
 
 

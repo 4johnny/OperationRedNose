@@ -35,19 +35,19 @@
 			case RideLocationType_Start:
 				self.coordinate = CLLocationCoordinate2DMake(_ride.locationStartLatitude.doubleValue, _ride.locationStartLongitude.doubleValue);
 				self.title = @"Ride Start";
+				self.subtitle = _ride.locationStartAddress;
   		  		break;
 				
 			case RideLocationType_End:
 				self.coordinate = CLLocationCoordinate2DMake(_ride.locationEndLatitude.doubleValue, _ride.locationEndLongitude.doubleValue);
 				self.title = @"Ride End";
+				self.subtitle = _ride.locationEndAddress;
 				break;
 				
 			default:
 			case RideLocationType_None:
 			    break;
 		}
-		
-		self.subtitle = _ride.locationStartAddress;
 	}
 	
 	return self;

@@ -34,15 +34,20 @@
 
 + (void)loadVancouverDemoRidesIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
 	
+	Ride* ride =
 	[Ride rideWithManagedObjectContext:managedObjectContext
 			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.2818704, -123.1081611)
 			   andLocationStartAddress:@"128 W Hastings St, Vancouver"
 				  andLocationStartCity:@"Vancouver"];
+	ride.locationEndLatitude = [NSNumber numberWithDouble:49.287826];
+	ride.locationEndLongitude = [NSNumber numberWithDouble:-123.123834];
+	ride.locationEndAddress = @"580 Bute St, Vancouver";
+	ride.locationEndCity = @"Vancouver";
 	
-	[Ride rideWithManagedObjectContext:managedObjectContext
-			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.287826, -123.123834)
-			   andLocationStartAddress:@"580 Bute St, Vancouver"
-				  andLocationStartCity:@"Vancouver"];
+//	[Ride rideWithManagedObjectContext:managedObjectContext
+//			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.287826, -123.123834)
+//			   andLocationStartAddress:@"580 Bute St, Vancouver"
+//				  andLocationStartCity:@"Vancouver"];
 	
 	[Ride rideWithManagedObjectContext:managedObjectContext
 			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.27665770574511, -123.0847680657702)
