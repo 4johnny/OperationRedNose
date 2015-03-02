@@ -54,6 +54,15 @@
 	self.startTimeDatePicker.minuteInterval = minuteInterval;
 	[superview addSubview:self.startTimeDatePicker];
 	// END HACK
+	
+	// Constrain start-time date picker to range between 1 day before and after now
+	NSDate* now = [NSDate date];
+	NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+	NSDateComponents* offsetComponents = [[NSDateComponents alloc] init];
+	offsetComponents.day = -1;
+	self.startTimeDatePicker.minimumDate = [gregorianCalendar dateByAddingComponents:offsetComponents toDate:now options:0];
+	offsetComponents.day = 1;
+	self.startTimeDatePicker.maximumDate = [gregorianCalendar dateByAddingComponents:offsetComponents toDate:now options:0];
 }
 
 
