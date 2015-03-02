@@ -14,6 +14,7 @@
 
 @property (nonatomic, retain) NSDate * dateTimeEnd;
 @property (nonatomic, retain) NSDate * dateTimeStart;
+@property (nonatomic, retain) NSDecimalNumber * donation;
 @property (nonatomic, retain) NSString * locationEndAddress;
 @property (nonatomic, retain) NSString * locationEndCity;
 @property (nonatomic, retain) NSNumber * locationEndLatitude;

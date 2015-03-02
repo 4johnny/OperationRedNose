@@ -3,6 +3,7 @@
     <entity name="Ride" representedClassName="Ride" syncable="YES">
         <attribute name="dateTimeEnd" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="dateTimeStart" optional="YES" attributeType="Date" indexed="YES" syncable="YES"/>
+        <attribute name="donation" optional="YES" attributeType="Decimal" minValueString="0" defaultValueString="0.0" syncable="YES"/>
         <attribute name="locationEndAddress" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationEndCity" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationEndLatitude" optional="YES" attributeType="Double" defaultValueString="-1" syncable="YES"/>
@@ -25,6 +26,6 @@
         <attribute name="vehicleTransmission" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Ride" positionX="-54" positionY="152" width="153" height="373"/>
+        <element name="Ride" positionX="-54" positionY="152" width="153" height="388"/>
     </elements>
 </model>

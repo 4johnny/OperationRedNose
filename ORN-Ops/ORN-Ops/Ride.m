@@ -13,6 +13,7 @@
 
 @dynamic dateTimeEnd;
 @dynamic dateTimeStart;
+@dynamic donation;
 @dynamic locationEndAddress;
 @dynamic locationEndCity;
 @dynamic locationEndLatitude;

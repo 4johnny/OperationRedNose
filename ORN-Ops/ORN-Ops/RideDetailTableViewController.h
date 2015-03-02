@@ -21,6 +21,7 @@
 // Dispatch
 @property (weak, nonatomic) IBOutlet UITextField *sourceTextField;
 @property (weak, nonatomic) IBOutlet UITextField *teamAssignedTextField;
+@property (weak, nonatomic) IBOutlet UITextField *donationTextField;
 
 // Passenger
 @property (weak, nonatomic) IBOutlet UITextField *firstNameTextField;
