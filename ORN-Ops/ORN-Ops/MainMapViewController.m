@@ -45,9 +45,13 @@
 
 #define MAP_ANNOTATION_TIME_FORMAT	@"HH:mm"
 
-#define ENABLE_COMMANDS		YES
-#define COMMAND_HELP		@"ornhelp" // lowercase
-#define COMMAND_DEMO		@"orndemo" // lowercase
+
+#define ENABLE_COMMANDS	// WARNING: Demo commands change real data model!!!
+#define COMMAND_HELP			@"ornhelp"
+#define COMMAND_DEMO			@"orndemo"
+#define COMMAND_DEMO_RIDES		@"orndemorides"
+#define COMMAND_DEMO_TEAMS		@"orndemoteams"
+#define COMMAND_DEMO_ASSIGN		@"orndemoassign"
 
 
 #
@@ -192,11 +196,15 @@
 	// Remove focus and keyboard
 	[textField resignFirstResponder];
 	
+#ifdef ENABLE_COMMANDS
+	
 	// If command present, handle it and we are done
 	if ([self handleCommandString:self.addressTextField.text]) {
 		self.addressTextField.text = @"";
 		return NO;
 	}
+	
+#endif
 	
 	// Configure view with address string
 	[self configureViewWithAddressString:self.addressTextField.text];
@@ -511,7 +519,7 @@
 
 
 #
-# pragma mark Demo
+# pragma mark Command Handler
 #
 
 
@@ -519,29 +527,54 @@
 // Returns whether command string was handled
 - (BOOL)handleCommandString:(NSString*)commandString {
 	
-	if (!ENABLE_COMMANDS) return NO;
-	
+	commandString = [commandString lowercaseString];
 	BOOL handled = NO;
 	
-	if ([commandString isEqualToString:COMMAND_HELP]) {
+	if ([COMMAND_HELP isEqualToString:commandString]) {
 		
 		[self presentAlertWithTitle:@"ORN Commands"
 						 andMessage:[NSString stringWithFormat:
-									 @"%@\n%@",
+									 @"%@\n%@\n%@\n%@\n%@\n",
 									 COMMAND_HELP,
-									 COMMAND_DEMO
+									 COMMAND_DEMO,
+									 COMMAND_DEMO_RIDES,
+									 COMMAND_DEMO_TEAMS,
+									 COMMAND_DEMO_ASSIGN
 									 ]];
 		handled = YES;
-	}
-	
-	if ([[commandString lowercaseString] isEqualToString:COMMAND_DEMO]) {
 		
+	} else if ([COMMAND_DEMO isEqualToString:commandString]) {
+		
+		// Run all demo commands
+		[self handleCommandString:COMMAND_DEMO_RIDES];
+		
+		handled = YES;
+		
+	} else if ([COMMAND_DEMO_RIDES isEqualToString:commandString]) {
+
+		// Load all demo rides
 		[DemoUtil loadDemoRideDataModel:self.managedObjectContext];
 		self.showRides = nil;
 		self.rideFetchedResultsController = nil; // Trip refetch
 		[self configureView];
 		
 		handled = YES;
+		
+	} else if ([COMMAND_DEMO_TEAMS isEqualToString:commandString]) {
+		
+		// Load all demo teams
+		//	[DemoUtil loadDemoTeamDataModel:self.managedObjectContext];
+		//	self.showTeams = nil;
+		//	self.teamFetchedResultsController = nil; // Trip refetch
+		//	[self configureView];
+		
+		handled = NO;
+		
+	} else if ([COMMAND_DEMO_ASSIGN isEqualToString:commandString]) {
+		
+		// Assign teams to rides
+		
+		handled = NO;
 	}
 	
 	if (handled) {

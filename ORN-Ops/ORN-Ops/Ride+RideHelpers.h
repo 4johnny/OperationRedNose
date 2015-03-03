@@ -20,7 +20,6 @@
 #define RIDE_STATUS_STRING_CONFIRMED	@"Confirmed"
 #define RIDE_STATUS_STRING_PROGRESSING	@"Progressing"
 #define RIDE_STATUS_STRING_COMPLETED	@"Completed"
-#define RIDE_STATUS_STRING_TRANSFERRED	@"Transferred"
 #define RIDE_STATUS_STRING_CANCELLED	@"Cancelled"
 
 #
@@ -35,9 +34,16 @@ typedef NS_ENUM(NSInteger, RideStatus) {
 	RideStatus_Confirmed =		2,
 	RideStatus_Progressing =	3,
 	RideStatus_Completed =		4,
-	RideStatus_Transferred =	5,
 	
 	RideStatus_Cancelled =		9
+};
+
+typedef NS_ENUM(NSInteger, RideLocationType) {
+	
+	RideLocationType_None = 0,
+	
+	RideLocationType_Start,
+	RideLocationType_End
 };
 
 #

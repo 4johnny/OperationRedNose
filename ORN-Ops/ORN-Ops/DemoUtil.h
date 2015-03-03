@@ -21,5 +21,6 @@
 #
 
 + (void)loadDemoRideDataModel:(NSManagedObjectContext*)managedObjectContext;
-
++ (void)loadDemoTeamDataModel:(NSManagedObjectContext*)managedObjectContext;
+	
 @end

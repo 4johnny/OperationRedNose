@@ -27,6 +27,7 @@
 		B2C7561E1AA1A97900B148D3 /* TeamDetailTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C7561D1AA1A97900B148D3 /* TeamDetailTableViewController.m */; };
 		B2C756251AA1BA8B00B148D3 /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756241AA1BA8B00B148D3 /* Util.m */; };
 		B2DECCAE1AA14A8F001FFC8F /* Ride+RideHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2DECCAD1AA14A8F001FFC8F /* Ride+RideHelpers.m */; };
+		B2E76A221AA64572004B55BB /* Team+TeamHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E76A211AA64572004B55BB /* Team+TeamHelpers.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +80,8 @@
 		B2C756261AA1BBD000B148D3 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		B2DECCAC1AA14A8F001FFC8F /* Ride+RideHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Ride+RideHelpers.h"; sourceTree = "<group>"; };
 		B2DECCAD1AA14A8F001FFC8F /* Ride+RideHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Ride+RideHelpers.m"; sourceTree = "<group>"; };
+		B2E76A201AA64572004B55BB /* Team+TeamHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Team+TeamHelpers.h"; sourceTree = "<group>"; };
+		B2E76A211AA64572004B55BB /* Team+TeamHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Team+TeamHelpers.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +129,8 @@
 				B24D4FCF1A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld */,
 				B2DECCAC1AA14A8F001FFC8F /* Ride+RideHelpers.h */,
 				B2DECCAD1AA14A8F001FFC8F /* Ride+RideHelpers.m */,
+				B2E76A201AA64572004B55BB /* Team+TeamHelpers.h */,
+				B2E76A211AA64572004B55BB /* Team+TeamHelpers.m */,
 			);
 			name = "Data Model";
 			sourceTree = "<group>";
@@ -396,6 +401,7 @@
 				B27B4A781A9AB1FB009277E4 /* AppDelegate.m in Sources */,
 				B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */,
 				B2C756151AA1905E00B148D3 /* RidesTableViewController.m in Sources */,
+				B2E76A221AA64572004B55BB /* Team+TeamHelpers.m in Sources */,
 				B2009CCA1AA57F650065E67B /* Ride.m in Sources */,
 				B2009CCD1AA57F650065E67B /* Team.m in Sources */,
 				B2C756181AA1912B00B148D3 /* RideDetailTableViewController.m in Sources */,

@@ -8,6 +8,7 @@
 
 #import "DemoUtil.h"
 #import "Ride+RideHelpers.h"
+#import "Team+TeamHelpers.h"
 
 
 #
@@ -29,6 +30,12 @@
 	[DemoUtil loadBurnabyDemoRidesIntoDataModel:managedObjectContext];
 	[DemoUtil loadNewWestminsterDemoRidesIntoDataModel:managedObjectContext];
 	[DemoUtil loadTriCitiesDemoRidesIntoDataModel:managedObjectContext];
+}
+
+
++ (void)loadDemoTeamDataModel:(NSManagedObjectContext*)managedObjectContext {
+
+	
 }
 
 

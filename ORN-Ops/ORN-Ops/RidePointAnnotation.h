@@ -9,19 +9,6 @@
 #import <MapKit/MapKit.h>
 #import "Ride+RideHelpers.h"
 
-
-#
-# pragma mark - Types
-#
-
-typedef NS_ENUM(NSInteger, RideLocationType) {
-
-	RideLocationType_None = 0,
-	
-	RideLocationType_Start,
-	RideLocationType_End
-};
-
 #
 # pragma mark - Interface
 #

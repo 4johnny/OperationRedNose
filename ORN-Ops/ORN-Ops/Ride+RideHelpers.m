@@ -47,7 +47,7 @@ insertIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
 					 andLocationStartAddress:(NSString*)locationStartAddress
 						andLocationStartCity:(NSString*)locationStartCity {
 	
-	return [[Ride alloc] initWithEntity:[NSEntityDescription entityForName:@"Ride" inManagedObjectContext:managedObjectContext]
+	return [[Ride alloc] initWithEntity:[NSEntityDescription entityForName:RIDE_ENTITY_NAME inManagedObjectContext:managedObjectContext]
 		 insertIntoManagedObjectContext:managedObjectContext
 			withLocationStartCoordinate:locationStartCoordinate
 				andLocationStartAddress:locationStartAddress
@@ -86,11 +86,7 @@ insertIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
 			
 		case RideStatus_Completed:
 			return RIDE_STATUS_STRING_COMPLETED;
-			
-		case RideStatus_Transferred:
-			return RIDE_STATUS_STRING_TRANSFERRED;
-			
-			
+
 		case RideStatus_Cancelled:
 			return RIDE_STATUS_STRING_CANCELLED;
 			
@@ -109,7 +105,6 @@ insertIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
 	if ([statusString isEqualToString:RIDE_STATUS_STRING_CONFIRMED]) return RideStatus_Confirmed;
 	if ([statusString isEqualToString:RIDE_STATUS_STRING_PROGRESSING]) return RideStatus_Progressing;
 	if ([statusString isEqualToString:RIDE_STATUS_STRING_COMPLETED]) return RideStatus_Completed;
-	if ([statusString isEqualToString:RIDE_STATUS_STRING_TRANSFERRED]) return RideStatus_Transferred;
 	
 	if ([statusString isEqualToString:RIDE_STATUS_STRING_CANCELLED]) return RideStatus_Cancelled;
 	
