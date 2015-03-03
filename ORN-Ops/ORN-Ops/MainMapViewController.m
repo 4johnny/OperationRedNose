@@ -46,8 +46,8 @@
 #define MAP_ANNOTATION_TIME_FORMAT	@"HH:mm"
 
 #define ENABLE_COMMANDS		YES
-#define COMMAND_HELP		@"ornhelp"
-#define COMMAND_DEMO		@"orndemo"
+#define COMMAND_HELP		@"ornhelp" // lowercase
+#define COMMAND_DEMO		@"orndemo" // lowercase
 
 
 #
@@ -235,7 +235,7 @@
 				
 				// Set color based on status
 				// NOTE: Color for start of route is green by convention
-				ridePinAnnotationView.pinColor = [Ride isTeamAssignedToRide:ridePointAnnotation.ride] ? MKPinAnnotationColorGreen : MKPinAnnotationColorPurple;
+				ridePinAnnotationView.pinColor = ridePointAnnotation.ride.teamAssigned ? MKPinAnnotationColorGreen : MKPinAnnotationColorPurple;
 				
 				// Add ride start time to left side of callout
 				NSDateFormatter* startTimeDateFormatter = [[NSDateFormatter alloc] init];
@@ -524,7 +524,7 @@
 		handled = YES;
 	}
 	
-	if ([commandString isEqualToString:COMMAND_DEMO]) {
+	if ([[commandString lowercaseString] isEqualToString:COMMAND_DEMO]) {
 		
 		[DemoUtil loadDemoRideDataModel:self.managedObjectContext];
 		self.rideFetchedResultsController = nil; // Trip refetch

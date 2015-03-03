@@ -8,6 +8,7 @@
 
 #import "RideDetailTableViewController.h"
 #import "AppDelegate.h"
+#import "Team.h"
 
 
 #
@@ -213,7 +214,9 @@
 - (void)loadDataModelIntoView {
 
 	// Load dispatch fields
-	self.teamAssignedTextField.text = self.ride.teamAssigned;
+//	if (self.ride.teamAssigned) {
+//		self.teamAssignedTextField.text = ((Team*)self.ride.teamAssigned).name;
+//	}
 	
 	// Load passenger fields
 	
@@ -235,7 +238,12 @@
 - (void)saveDataModelFromView {
 
 	// Save dispatch fields
-	self.ride.teamAssigned = self.teamAssignedTextField.text;
+//	self.ride.teamAssigned = nil;
+//	if (self.teamAssignedPicker.selectedIndex) {
+//		
+//		// TODO: Get selected team object to assign
+//		self.ride.teamAssigned =;
+//	}
 	
 	// Save passenger fields
 	

@@ -56,12 +56,53 @@ insertIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
 
 
 #
-# pragma mark Class Methods
+# pragma mark Helpers
 #
 
-+ (BOOL)isTeamAssignedToRide:(Ride*)ride {
 
-	return (ride.teamAssigned && ride.teamAssigned.length > 0);
++ (NSString*)stringFromStatus:(RideStatus)status {
+	
+	switch (status) {
+			
+		case RideStatus_New:
+			return RIDE_STATUS_STRING_NEW;
+			
+		case RideStatus_Confirmed:
+			return RIDE_STATUS_STRING_CONFIRMED;
+			
+		case RideStatus_Progressing:
+			return RIDE_STATUS_STRING_PROGRESSING;
+			
+		case RideStatus_Completed:
+			return RIDE_STATUS_STRING_COMPLETED;
+			
+		case RideStatus_Transferred:
+			return RIDE_STATUS_STRING_TRANSFERRED;
+			
+			
+		case RideStatus_Cancelled:
+			return RIDE_STATUS_STRING_CANCELLED;
+			
+		default:
+		case RideStatus_None:
+			return RIDE_STATUS_STRING_NONE;
+	}
+}
+
+
++ (RideStatus)statusFromString:(NSString*)statusString {
+	
+	if (!statusString || statusString.length <= 0) return RideStatus_None;
+	
+	if ([statusString isEqualToString:RIDE_STATUS_STRING_NEW]) return RideStatus_New;
+	if ([statusString isEqualToString:RIDE_STATUS_STRING_CONFIRMED]) return RideStatus_Confirmed;
+	if ([statusString isEqualToString:RIDE_STATUS_STRING_PROGRESSING]) return RideStatus_Progressing;
+	if ([statusString isEqualToString:RIDE_STATUS_STRING_COMPLETED]) return RideStatus_Completed;
+	if ([statusString isEqualToString:RIDE_STATUS_STRING_TRANSFERRED]) return RideStatus_Transferred;
+	
+	if ([statusString isEqualToString:RIDE_STATUS_STRING_CANCELLED]) return RideStatus_Cancelled;
+	
+	return RideStatus_None;
 }
 
 
