@@ -588,23 +588,6 @@
             </objects>
             <point key="canvasLocation" x="729" y="746"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="fSU-Xz-CFt">
-            <objects>
-                <viewController id="p5f-6V-jni" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Xpd-EW-QtZ"/>
-                        <viewControllerLayoutGuide type="bottom" id="bWb-C3-mb1"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="1qZ-vu-TWO">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dr2-Ns-iZe" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-        </scene>
     </scenes>
     <resources>
         <image name="ORN-Bar-Button-Item" width="22" height="30"/>

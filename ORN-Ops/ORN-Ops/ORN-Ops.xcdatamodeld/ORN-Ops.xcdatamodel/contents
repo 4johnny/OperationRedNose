@@ -6,12 +6,12 @@
         <attribute name="donationAmount" optional="YES" attributeType="Decimal" minValueString="0" defaultValueString="0.0" syncable="YES"/>
         <attribute name="locationEndAddress" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationEndCity" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="locationEndLatitude" optional="YES" attributeType="Double" defaultValueString="-1" syncable="YES"/>
-        <attribute name="locationEndLongitude" optional="YES" attributeType="Double" defaultValueString="-1" syncable="YES"/>
+        <attribute name="locationEndLatitude" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="locationEndLongitude" optional="YES" attributeType="Double" syncable="YES"/>
         <attribute name="locationStartAddress" attributeType="String" syncable="YES"/>
         <attribute name="locationStartCity" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="locationStartLatitude" optional="YES" attributeType="Double" defaultValueString="-1" syncable="YES"/>
-        <attribute name="locationStartLongitude" optional="YES" attributeType="Double" defaultValueString="-1" syncable="YES"/>
+        <attribute name="locationStartLatitude" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="locationStartLongitude" optional="YES" attributeType="Double" syncable="YES"/>
         <attribute name="locationTransferFrom" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationTransferTo" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
@@ -30,8 +30,8 @@
         <attribute name="isActive" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="isMascot" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="locationCurrentAddress" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="locationCurrentLatitude" optional="YES" attributeType="Double" defaultValueString="-1" syncable="YES"/>
-        <attribute name="locationCurrentLongitude" optional="YES" attributeType="Double" defaultValueString="-1" syncable="YES"/>
+        <attribute name="locationCurrentLatitude" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="locationCurrentLongitude" optional="YES" attributeType="Double" syncable="YES"/>
         <attribute name="members" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>

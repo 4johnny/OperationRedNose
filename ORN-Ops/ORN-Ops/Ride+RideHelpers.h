@@ -59,6 +59,8 @@ typedef NS_ENUM(NSInteger, RideStatus) {
 # pragma mark Helpers
 #
 
+- (NSString*)getPassengerName;
+
 + (NSString*)stringFromStatus:(RideStatus)status;
 + (RideStatus)statusFromString:(NSString*)statusString;
 

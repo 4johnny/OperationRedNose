@@ -219,6 +219,8 @@
 //	}
 	
 	// Load passenger fields
+	self.firstNameTextField.text = self.ride.passengerNameFirst;
+	self.lastNameTextField.text = self.ride.passengerNameLast;
 	
 	// Load location fields
 	self.startAddressTextField.text = self.ride.locationStartAddress;
@@ -246,6 +248,8 @@
 //	}
 	
 	// Save passenger fields
+	self.ride.passengerNameFirst = self.firstNameTextField.text;
+	self.ride.passengerNameLast = self.lastNameTextField.text;
 	
 	// Save location fields
 	// TODO: Validate locations via geocoding

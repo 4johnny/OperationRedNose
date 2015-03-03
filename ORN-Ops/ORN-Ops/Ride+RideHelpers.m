@@ -60,6 +60,17 @@ insertIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
 #
 
 
+- (NSString*)getPassengerName {
+	
+	// If first or last name is empty return other one
+	if (!self.passengerNameLast || self.passengerNameLast.length <= 0) return self.passengerNameFirst;
+	if (!self.passengerNameFirst || self.passengerNameFirst.length <= 0) return self.passengerNameLast;
+	
+	// Combine first and last name
+	return [NSString stringWithFormat:@"%@ %@", self.passengerNameFirst, self.passengerNameLast];
+}
+
+
 + (NSString*)stringFromStatus:(RideStatus)status {
 	
 	switch (status) {

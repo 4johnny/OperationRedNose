@@ -65,6 +65,9 @@
 @property (strong, nonatomic) CLGeocoder* geocoder;
 @property (strong, nonatomic) UIAlertController* okAlertController;
 
+@property (nonatomic) NSArray* showRides;
+@property (nonatomic) NSArray* showTeams;
+
 @end
 
 
@@ -147,7 +150,7 @@
 	// NOTE: Must be done in code - otherwise we just get a template
 	self.avatarBarButtonItem.image = [[UIImage imageNamed:@"ORN-Bar-Button-Item"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 	
-	// Configure map
+	// Configure map zoom and annotations
 	[self configureView];
 }
 
@@ -373,24 +376,31 @@
 
 - (void)configureView {
 	
-	// Center and zoom map on juridiction region
+	// Initially center and zoom map on juridiction region
 	MKCoordinateRegion centerRegion = MKCoordinateRegionMake(JURISDICTION_COORDINATE, MKCoordinateSpanMake(MAP_SPAN_LOCATION_DELTA_CITY, MAP_SPAN_LOCATION_DELTA_CITY));
 	[self.mainMapView setRegion:centerRegion animated:YES];
 	
-	// Configure annotations and callouts for all existing rides
-	for (Ride* ride in self.rideFetchedResultsController.fetchedObjects) {
+	// Configure annotations and callouts for rides
+	[self.mainMapView removeAnnotations:self.mainMapView.annotations];
+	self.showRides = self.showRides ?: self.rideFetchedResultsController.fetchedObjects;
+	for (Ride* ride in self.showRides) {
 		
-		if (!(ride.locationStartLatitude.doubleValue < 0)) {
-			
-			[self.mainMapView addAnnotation:[RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_Start]];
-		}
+		// If no start-location coordinate, we are done with this ride
+		// NOTE: Orphaned end locations will also *not* been shown
+		if (!ride.locationStartLatitude || !ride.locationStartLongitude) continue;
+
+		// Add annotation for start location to map
+		[self.mainMapView addAnnotation:[RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_Start]];
 		
-		if (!(ride.locationEndLatitude.doubleValue < 0)) {
-			
-			[self.mainMapView addAnnotation:[RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_End]];
-		}
+		// If no end-location coordinate, we are done with this ride
+		if (!ride.locationEndLatitude || !ride.locationEndLongitude) continue;
+
+		// Add annotation for end location to map
+		[self.mainMapView addAnnotation:[RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_End]];
 	}
 	
+	// Zoom map to show all annotations
+	// TODO: potentially put on timer delay, since seems to get ignored
 	[self showAllAnnotations];
 }
 
@@ -527,6 +537,7 @@
 	if ([[commandString lowercaseString] isEqualToString:COMMAND_DEMO]) {
 		
 		[DemoUtil loadDemoRideDataModel:self.managedObjectContext];
+		self.showRides = nil;
 		self.rideFetchedResultsController = nil; // Trip refetch
 		[self configureView];
 		

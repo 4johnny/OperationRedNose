@@ -7,7 +7,7 @@
 //
 
 #import <MapKit/MapKit.h>
-#import "Ride.h"
+#import "Ride+RideHelpers.h"
 
 
 #
