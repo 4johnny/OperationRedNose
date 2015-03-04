@@ -41,10 +41,4 @@
 
 + (void)preloadKeyboardViaTextField:(UITextField*)textfield;
 
-#
-# pragma mark Map
-#
-
-+ (MKAnnotationView*)dequeueReusableAnnotationViewWithMapView:(MKMapView*)mapView andAnnotation:(id<MKAnnotation>)annotation andIdentifier:(NSString*)identifier;
-
 @end
