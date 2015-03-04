@@ -56,6 +56,29 @@
 	ride.locationEndAddress = @"1523 Prairie Ave, Port Coquitlam";
 	ride.locationEndCity = @"Port Coquitlam";
 	
+	MKPlacemark* sourcePlacemark = [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue) addressDictionary:nil];
+	MKPlacemark* destinationPlacemark = [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(ride.locationEndLatitude.doubleValue, ride.locationEndLongitude.doubleValue) addressDictionary:nil];
+	MKDirectionsRequest* directionsRequest = [[MKDirectionsRequest alloc] init];
+	directionsRequest.source = [[MKMapItem alloc] initWithPlacemark:sourcePlacemark];
+	directionsRequest.destination = [[MKMapItem alloc] initWithPlacemark:destinationPlacemark];
+	directionsRequest.transportType = MKDirectionsTransportTypeAutomobile;
+	directionsRequest.departureDate = ride.dateTimeStart;
+	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
+	[directions calculateETAWithCompletionHandler:^(MKETAResponse *response, NSError *error) {
+		
+		// NOTES: Completion block executes on main thread. Do not run more than one ETA calculation simultaneously on this object.
+		if (error) {
+			NSLog(@"ETA Error: %@ %@", error.localizedDescription, error.userInfo);
+			return;
+		}
+
+		// ETA calculated successfully
+		NSLog(@"ETA: %.2f seconds", response.expectedTravelTime);
+
+		// Determine end time by adding ETA seconds to start time
+		ride.dateTimeEnd = [NSDate dateWithTimeInterval:response.expectedTravelTime sinceDate:ride.dateTimeStart];
+	}];
+	
 	ride =
 	[Ride rideWithManagedObjectContext:managedObjectContext
 			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.27665770574511, -123.0847680657702)

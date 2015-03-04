@@ -50,7 +50,8 @@
 #define TEAM_CURRENT_NORMAL_ANNOTATION_ID	@"teamCurrentNormalAnnotation"
 #define TEAM_CURRENT_MASCOT_ANNOTATION_ID	@"teamCurrentMascotAnnotation"
 
-#define MAP_ANNOTATION_TIME_FORMAT	@"HH:mm"
+#define MAP_ANNOTATION_TIME_FORMAT		@"HH:mm"
+#define LEFT_CALLOUT_ACCESSORY_FRAME	CGRectMake(0, 0, 35, 30)
 
 #
 # pragma mark Command Constants
@@ -542,13 +543,16 @@
 			ridePinAnnotationView.pinColor = ridePointAnnotation.ride.teamAssigned ? MKPinAnnotationColorGreen : MKPinAnnotationColorPurple;
 			
 			// Add ride start time to left side of callout
-			NSDateFormatter* startTimeDateFormatter = [[NSDateFormatter alloc] init];
-			startTimeDateFormatter.dateFormat = MAP_ANNOTATION_TIME_FORMAT;
-			UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 35, 30)];
-			leftInfoView.text = [startTimeDateFormatter stringFromDate:ridePointAnnotation.ride.dateTimeStart];
-			leftInfoView.font = [UIFont fontWithDescriptor:leftInfoView.font.fontDescriptor size:[UIFont smallSystemFontSize]];
-			leftInfoView.textAlignment = NSTextAlignmentCenter;
-			ridePinAnnotationView.leftCalloutAccessoryView = leftInfoView;
+			if (ridePointAnnotation.ride.dateTimeStart) {
+				
+				NSDateFormatter* startTimeDateFormatter = [[NSDateFormatter alloc] init];
+				startTimeDateFormatter.dateFormat = MAP_ANNOTATION_TIME_FORMAT;
+				UILabel* leftInfoView = [[UILabel alloc] initWithFrame:LEFT_CALLOUT_ACCESSORY_FRAME];
+				leftInfoView.text = [startTimeDateFormatter stringFromDate:ridePointAnnotation.ride.dateTimeStart];
+				leftInfoView.font = [UIFont fontWithDescriptor:leftInfoView.font.fontDescriptor size:[UIFont smallSystemFontSize]];
+				leftInfoView.textAlignment = NSTextAlignmentCenter;
+				ridePinAnnotationView.leftCalloutAccessoryView = leftInfoView;
+			}
 			
 			break;
 		}
@@ -561,6 +565,19 @@
 			// NOTE: Color for end of route is red by convention
 			// TODO: Consider setting color based on status
 			ridePinAnnotationView.pinColor = MKPinAnnotationColorRed;
+			
+			// Add ride end time to left side of callout
+			NSLog(@"Check dataTimeEnd for annotation callout");
+			if (ridePointAnnotation.ride.dateTimeEnd) {
+				
+				NSDateFormatter* endTimeDateFormatter = [[NSDateFormatter alloc] init];
+				endTimeDateFormatter.dateFormat = MAP_ANNOTATION_TIME_FORMAT;
+				UILabel* leftInfoView = [[UILabel alloc] initWithFrame:LEFT_CALLOUT_ACCESSORY_FRAME];
+				leftInfoView.text = [endTimeDateFormatter stringFromDate:ridePointAnnotation.ride.dateTimeEnd];
+				leftInfoView.font = [UIFont fontWithDescriptor:leftInfoView.font.fontDescriptor size:[UIFont smallSystemFontSize]];
+				leftInfoView.textAlignment = NSTextAlignmentCenter;
+				ridePinAnnotationView.leftCalloutAccessoryView = leftInfoView;
+			}
 			
 			break;
 		}
