@@ -10,6 +10,7 @@
 #import <MapKit/MapKit.h>
 #import "ORNDataModelSource.h"
 #import "RideDetailTableViewController.h"
+#import "TeamDetailTableViewController.h"
 
 
 #

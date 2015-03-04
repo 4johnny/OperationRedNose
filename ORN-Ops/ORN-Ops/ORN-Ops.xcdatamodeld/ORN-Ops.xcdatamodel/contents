@@ -8,7 +8,7 @@
         <attribute name="locationEndCity" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationEndLatitude" optional="YES" attributeType="Double" syncable="YES"/>
         <attribute name="locationEndLongitude" optional="YES" attributeType="Double" syncable="YES"/>
-        <attribute name="locationStartAddress" attributeType="String" syncable="YES"/>
+        <attribute name="locationStartAddress" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationStartCity" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationStartLatitude" optional="YES" attributeType="Double" syncable="YES"/>
         <attribute name="locationStartLongitude" optional="YES" attributeType="Double" syncable="YES"/>
@@ -33,9 +33,9 @@
         <attribute name="locationCurrentLatitude" optional="YES" attributeType="Double" syncable="YES"/>
         <attribute name="locationCurrentLongitude" optional="YES" attributeType="Double" syncable="YES"/>
         <attribute name="members" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="name" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="phoneNumber" attributeType="String" syncable="YES"/>
+        <attribute name="phoneNumber" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="ridesAssigned" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Ride" inverseName="teamAssigned" inverseEntity="Ride" syncable="YES"/>
     </entity>
     <elements>

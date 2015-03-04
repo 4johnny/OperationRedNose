@@ -18,7 +18,7 @@
 
 
 #
-# pragma mark Class Methods
+# pragma mark Responder
 #
 
 

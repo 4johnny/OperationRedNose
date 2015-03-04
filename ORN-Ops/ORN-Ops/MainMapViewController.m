@@ -14,6 +14,7 @@
 #import "AppDelegate.h"
 #import "Ride+RideHelpers.h"
 #import "RidePointAnnotation.h"
+#import "TeamPointAnnotation.h"
 
 #import "DemoUtil.h"
 
@@ -22,31 +23,40 @@
 # pragma mark - Constants
 #
 
-#define VANCOUVER_LATITUDE		49.25
-#define VANCOUVER_LONGITUDE		-123.1
-#define VANCOUVER_COORDINATE	CLLocationCoordinate2DMake(VANCOUVER_LATITUDE, VANCOUVER_LONGITUDE)
-
-#define BURNABY_LATITUDE		49.266667
-#define BURNABY_LONGITUDE		-122.966667
-#define BURNABY_COORDINATE		CLLocationCoordinate2DMake(BURNABY_LATITUDE, BURNABY_LONGITUDE)
+#
+# pragma mark Jurisdication Constants
+#
 
 #define CHARITY_NAME				@"KidSport"
 #define JURISDICTION_NAME			@"Tri-Cities, Burnaby, New Westminster"
 #define JURISDICTION_COORDINATE		BURNABY_COORDINATE
 #define JURISDICTION_SEARCH_RADIUS	100000 // metres
 
-#define MAP_SPAN_LOCATION_DELTA_NEIGHBOURHOOD	0.02 // degrees
-#define MAP_SPAN_LOCATION_DELTA_CITY			0.2 // degrees
-#define MAP_SPAN_LOCATION_DELTA_LOCALE			2.0 // degrees
+#
+# pragma mark Data Model Constants
+#
 
-#define RIDE_START_ANNOTATION_ID	@"rideStartAnnotation"
-#define RIDE_END_ANNOTATION_ID		@"rideEndAnnotation"
-#define DRIVING_TEAM_ANNOTATION_ID	@"drivingTeamAnnotation"
+#define RIDE_FETCH_SORT_KEY			@"dateTimeStart"
+#define RIDE_FETCH_SORT_ASCENDING	NO
+#define TEAM_FETCH_SORT_KEY			@"name"
+#define TEAM_FETCH_SORT_ASCENDING	YES
+
+#
+# pragma mark Map Constants
+#
+
+#define RIDE_START_ANNOTATION_ID			@"rideStartAnnotation"
+#define RIDE_END_ANNOTATION_ID				@"rideEndAnnotation"
+#define TEAM_CURRENT_NORMAL_ANNOTATION_ID	@"teamCurrentNormalAnnotation"
+#define TEAM_CURRENT_MASCOT_ANNOTATION_ID	@"teamCurrentMascotAnnotation"
 
 #define MAP_ANNOTATION_TIME_FORMAT	@"HH:mm"
 
+#
+# pragma mark Command Constants
+#
 
-#define ENABLE_COMMANDS	// WARNING: Demo commands change real data model!!!
+#define ENABLE_COMMANDS	// WARNING: Demo commands change *real* data model!!!
 #define COMMAND_HELP			@"ornhelp"
 #define COMMAND_DEMO			@"orndemo"
 #define COMMAND_DEMO_RIDES		@"orndemorides"
@@ -61,16 +71,21 @@
 
 @interface MainMapViewController ()
 
+
 #
 # pragma mark Properties
 #
 
+
 @property (strong, nonatomic) NSFetchedResultsController* rideFetchedResultsController;
+@property (strong, nonatomic) NSFetchedResultsController* teamFetchedResultsController;
+
 @property (strong, nonatomic) CLGeocoder* geocoder;
 @property (strong, nonatomic) UIAlertController* okAlertController;
 
 @property (nonatomic) NSArray* showRides;
 @property (nonatomic) NSArray* showTeams;
+
 
 @end
 
@@ -92,15 +107,14 @@
 	
 	if (_rideFetchedResultsController) return _rideFetchedResultsController;
 	
-	// Create fetch request for reviews
-	NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Ride"];
-	fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"dateTimeStart" ascending:NO]];
+	// Create fetch request for rides
+	NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:RIDE_ENTITY_NAME];
+	fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY ascending:RIDE_FETCH_SORT_ASCENDING]];
 	//fetchRequest.predicate = [NSPredicate predicateWithFormat:@"movie.id == %@", self.movie.id];
 	//fetchRequest.fetchBatchSize = PAGE_LIMIT;
 	//fetchRequest.fetchLimit = PAGE_LIMIT;
 	
-	// Edit the section name key path and cache name if appropriate.
-	// nil for section name key path means "no sections".
+	// NOTE: nil for section name key path means "no sections"
 	_rideFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
 	_rideFetchedResultsController.delegate = self;
 	
@@ -113,6 +127,33 @@
 	abort();
 	
 	return _rideFetchedResultsController;
+}
+
+
+- (NSFetchedResultsController*)teamFetchedResultsController {
+	
+	if (_teamFetchedResultsController) return _teamFetchedResultsController;
+	
+	// Create fetch request for teams
+	NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:TEAM_ENTITY_NAME];
+	fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY ascending:TEAM_FETCH_SORT_ASCENDING]];
+	//fetchRequest.predicate = [NSPredicate predicateWithFormat:@"movie.id == %@", self.movie.id];
+	//fetchRequest.fetchBatchSize = PAGE_LIMIT;
+	//fetchRequest.fetchLimit = PAGE_LIMIT;
+	
+	// NOTE: nil for section name key path means "no sections"
+	_teamFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+	_teamFetchedResultsController.delegate = self;
+	
+	NSError *error = nil;
+	if ([_teamFetchedResultsController performFetch:&error]) return _teamFetchedResultsController;
+	
+	// TODO: Replace this with code to handle the error appropriately.
+	// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+	NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+	abort();
+	
+	return _teamFetchedResultsController;
 }
 
 
@@ -200,8 +241,10 @@
 	
 	// If command present, handle it and we are done
 	if ([self handleCommandString:self.addressTextField.text]) {
+		
 		self.addressTextField.text = @"";
-		return NO;
+		
+		return NO; // Do not perform default text-field behaviour
 	}
 	
 #endif
@@ -218,13 +261,13 @@
 #
 
 
-//- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
+//- (void)mapView:(MKMapView*)mapView regionDidChangeAnimated:(BOOL)animated {
 //
 //	// NOTE: Called many times during scrolling, so keep code lightweight
 //}
 
 
-//- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
+//- (void)mapView:(MKMapView*)mapView didUpdateUserLocation:(MKUserLocation*)userLocation {
 //
 //}
 
@@ -233,62 +276,9 @@
 	
 	if ([annotation isKindOfClass:[MKUserLocation class]]) return nil;
 	
-	if ([annotation isKindOfClass:[RidePointAnnotation class]]) {
-		
-		RidePointAnnotation* ridePointAnnotation = (RidePointAnnotation*)annotation;
-		MKPinAnnotationView* ridePinAnnotationView = nil;
-		
-		switch (ridePointAnnotation.rideLocationType) {
-				
-			case RideLocationType_Start: {
-				
-				ridePinAnnotationView = (MKPinAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:annotation andIdentifier:RIDE_START_ANNOTATION_ID];
-				
-				// Set color based on status
-				// NOTE: Color for start of route is green by convention
-				ridePinAnnotationView.pinColor = ridePointAnnotation.ride.teamAssigned ? MKPinAnnotationColorGreen : MKPinAnnotationColorPurple;
-				
-				// Add ride start time to left side of callout
-				NSDateFormatter* startTimeDateFormatter = [[NSDateFormatter alloc] init];
-				startTimeDateFormatter.dateFormat = MAP_ANNOTATION_TIME_FORMAT;
-				UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 35, 30)];
-				leftInfoView.text = [startTimeDateFormatter stringFromDate:ridePointAnnotation.ride.dateTimeStart];
-				leftInfoView.font = [UIFont fontWithDescriptor:leftInfoView.font.fontDescriptor size:[UIFont smallSystemFontSize]];
-				leftInfoView.textAlignment = NSTextAlignmentCenter;
-				ridePinAnnotationView.leftCalloutAccessoryView = leftInfoView;
-				
-				break;
-			}
-				
-			case RideLocationType_End: {
-				
-				ridePinAnnotationView = (MKPinAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:annotation andIdentifier:RIDE_END_ANNOTATION_ID];
-
-				// Set color based on status
-				// NOTE: Color for end of route is red by convention
-				ridePinAnnotationView.pinColor = MKPinAnnotationColorRed;
-				
-				break;
-			}
-				
-			default:
-			case RideLocationType_None:
-				return nil;
-		}
-		
-		// Animate pin
-		ridePinAnnotationView.animatesDrop = YES;
-		
-		// Add callout view to pin
-		ridePinAnnotationView.canShowCallout = YES;
-		
-		// Add disclosure button to right side of callout
-		UIButton* rightDisclosureButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-		[rightDisclosureButton addTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
-		ridePinAnnotationView.rightCalloutAccessoryView = rightDisclosureButton;
-		
-		return ridePinAnnotationView;
-	}
+	if ([annotation isKindOfClass:[RidePointAnnotation class]]) return [MainMapViewController mapView:mapView viewForRidePointAnnotation:(RidePointAnnotation*)annotation];
+	
+	if ([annotation isKindOfClass:[TeamPointAnnotation class]]) return [MainMapViewController mapView:mapView viewForTeamPointAnnotation:(TeamPointAnnotation*)annotation];
 	
 	return nil;
 }
@@ -296,13 +286,15 @@
 
 - (void)mapView:(MKMapView*)mapView annotationView:(MKAnnotationView*)view calloutAccessoryControlTapped:(UIControl*)control {
 	
-	MKPinAnnotationView* pinAnnotationView = (MKPinAnnotationView*)view;
-	
-	if ([pinAnnotationView.annotation isKindOfClass:[MKUserLocation class]]) return;
-	
-	if ([pinAnnotationView.annotation isKindOfClass:[RidePointAnnotation class]]) {
+	// If user location, we are done
+	if ([view.annotation isKindOfClass:[MKUserLocation class]]) return;
+
+	// If ride, navigate to ride detail controller
+	if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) {
 		
-		// Create ride-detail controller
+		MKPinAnnotationView* pinAnnotationView = (MKPinAnnotationView*)view;
+		
+		// Create ride detail controller
 		RideDetailTableViewController* rideDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:RIDE_DETAIL_TABLE_VIEW_CONTROLLER_ID];
 		
 		// Inject ride data model
@@ -314,6 +306,27 @@
 		
 		// Push onto navigation stack
 		[self.navigationController pushViewController:rideDetailTableViewController animated:YES];
+		
+		return;
+	}
+
+	// If team, navigate to team detail controller
+	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
+		
+		// Create team detail controller
+		TeamDetailTableViewController* teamDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:TEAM_DETAIL_TABLE_VIEW_CONTROLLER_ID];
+		
+		// Inject team data model
+		TeamPointAnnotation* teamPointAnnotation = view.annotation;
+		teamDetailTableViewController.team = teamPointAnnotation.team;
+		
+		// Wire up delegate
+//		teamDetailTableViewController.delegate = self;
+		
+		// Push onto navigation stack
+		[self.navigationController pushViewController:teamDetailTableViewController animated:YES];
+		
+		return;
 	}
 }
 
@@ -328,13 +341,16 @@
 # pragma mark <RideDetailTableViewControllerDelegate>
 #
 
+
 // TODO: Use NSNotification instead of delegate, since changes can happen outside our direct control
 - (void)rideDetailTableViewController:(RideDetailTableViewController*)controller didSaveRide:(Ride*)ride {
-
-	// Find annotations related to ride - if none, we are done
+	
+	// Find ride annotations related to given ride - if none, we are done
 	NSArray* annotationsAffected = [self.mainMapView.annotations filteredArrayUsingPredicate:
-	[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
-
+									[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
+		
+		if (![evaluatedObject isKindOfClass:[RidePointAnnotation class]]) return NO;
+		
 		RidePointAnnotation* ridePointAnnotation = evaluatedObject;
 		return ridePointAnnotation.ride == ride;
 	}]];
@@ -384,32 +400,61 @@
 
 - (void)configureView {
 	
+	// Clear any existing annotationa
+	[self.mainMapView removeAnnotations:self.mainMapView.annotations];
+	
 	// Initially center and zoom map on juridiction region
 	MKCoordinateRegion centerRegion = MKCoordinateRegionMake(JURISDICTION_COORDINATE, MKCoordinateSpanMake(MAP_SPAN_LOCATION_DELTA_CITY, MAP_SPAN_LOCATION_DELTA_CITY));
 	[self.mainMapView setRegion:centerRegion animated:YES];
+
+	// Configure ride annotations and callouts
+	[self configureRidesView];
 	
-	// Configure annotations and callouts for rides
-	[self.mainMapView removeAnnotations:self.mainMapView.annotations];
+	// Configure team annotations and callouts
+	[self configureTeamsView];
+	
+	// Zoom map to show all annotations
+	// TODO: potentially put on timer delay, since seems to get ignored
+	[self showAllAnnotations];
+}
+
+
+- (void)configureRidesView {
+	
+	// If set of rides specified, show them; o/w show all
 	self.showRides = self.showRides ?: self.rideFetchedResultsController.fetchedObjects;
+	
 	for (Ride* ride in self.showRides) {
 		
 		// If no start-location coordinate, we are done with this ride
 		// NOTE: Orphaned end locations will also *not* been shown
 		if (!ride.locationStartLatitude || !ride.locationStartLongitude) continue;
-
+		
 		// Add annotation for start location to map
 		[self.mainMapView addAnnotation:[RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_Start]];
 		
 		// If no end-location coordinate, we are done with this ride
 		if (!ride.locationEndLatitude || !ride.locationEndLongitude) continue;
-
+		
 		// Add annotation for end location to map
 		[self.mainMapView addAnnotation:[RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_End]];
 	}
+}
+
+
+- (void)configureTeamsView {
 	
-	// Zoom map to show all annotations
-	// TODO: potentially put on timer delay, since seems to get ignored
-	[self showAllAnnotations];
+	// If set of teams specified, show them; o/w show all
+	self.showTeams = self.showTeams ?: self.teamFetchedResultsController.fetchedObjects;
+	
+	for (Team* team in self.showTeams) {
+		
+		// If no current-location coordinate, we are done with this team
+		if (!team.locationCurrentLatitude || !team.locationCurrentLongitude) continue;
+		
+		// Add annotation for current location to map
+		[self.mainMapView addAnnotation:[TeamPointAnnotation teamPointAnnotationWithTeam:team]];
+	}
 }
 
 
@@ -482,6 +527,112 @@
 }
 
 
++ (MKAnnotationView*)mapView:(MKMapView*)mapView viewForRidePointAnnotation:(RidePointAnnotation*)ridePointAnnotation {
+	
+	MKPinAnnotationView* ridePinAnnotationView = nil;
+	
+	switch (ridePointAnnotation.rideLocationType) {
+			
+		case RideLocationType_Start: {
+			
+			ridePinAnnotationView = (MKPinAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:ridePointAnnotation andIdentifier:RIDE_START_ANNOTATION_ID];
+			
+			// Set pin color based on status
+			// NOTE: Color for start of route is green by convention
+			ridePinAnnotationView.pinColor = ridePointAnnotation.ride.teamAssigned ? MKPinAnnotationColorGreen : MKPinAnnotationColorPurple;
+			
+			// Add ride start time to left side of callout
+			NSDateFormatter* startTimeDateFormatter = [[NSDateFormatter alloc] init];
+			startTimeDateFormatter.dateFormat = MAP_ANNOTATION_TIME_FORMAT;
+			UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 35, 30)];
+			leftInfoView.text = [startTimeDateFormatter stringFromDate:ridePointAnnotation.ride.dateTimeStart];
+			leftInfoView.font = [UIFont fontWithDescriptor:leftInfoView.font.fontDescriptor size:[UIFont smallSystemFontSize]];
+			leftInfoView.textAlignment = NSTextAlignmentCenter;
+			ridePinAnnotationView.leftCalloutAccessoryView = leftInfoView;
+			
+			break;
+		}
+			
+		case RideLocationType_End: {
+			
+			ridePinAnnotationView = (MKPinAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:ridePointAnnotation andIdentifier:RIDE_END_ANNOTATION_ID];
+			
+			// Set pin color
+			// NOTE: Color for end of route is red by convention
+			// TODO: Consider setting color based on status
+			ridePinAnnotationView.pinColor = MKPinAnnotationColorRed;
+			
+			break;
+		}
+			
+		default:
+		case RideLocationType_None:
+			return nil;
+	}
+	
+	// Animate pin
+	ridePinAnnotationView.animatesDrop = YES;
+	
+	// Add callout view to annotation
+	ridePinAnnotationView.canShowCallout = YES;
+	
+	// Add disclosure button to right side of callout
+	UIButton* rightDisclosureButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+	[rightDisclosureButton addTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
+	ridePinAnnotationView.rightCalloutAccessoryView = rightDisclosureButton;
+	
+	return ridePinAnnotationView;
+}
+
+
++ (MKAnnotationView*)mapView:(MKMapView*)mapView viewForTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
+	
+	MKAnnotationView* teamAnnotationView = nil;
+	
+	if (teamPointAnnotation.team.isMascot.boolValue) {
+		
+		teamAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:teamPointAnnotation andIdentifier:TEAM_CURRENT_MASCOT_ANNOTATION_ID];
+		
+		teamAnnotationView.image = [UIImage imageNamed:@"ORN-Team-Mascot-Map-Annotation"];
+
+	} else {
+	
+		teamAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:teamPointAnnotation andIdentifier:TEAM_CURRENT_NORMAL_ANNOTATION_ID];
+		
+		teamAnnotationView.image = [UIImage imageNamed:@"ORN-Team-Map-Annotation"];
+	}
+	
+	// Add callout view to annotation
+	teamAnnotationView.canShowCallout = YES;
+	
+	// Add disclosure button to right side of callout
+	UIButton* rightDisclosureButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+	[rightDisclosureButton addTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
+	teamAnnotationView.rightCalloutAccessoryView = rightDisclosureButton;
+	
+	return teamAnnotationView;
+}
+
+
++ (MKAnnotationView*)dequeueReusableAnnotationViewWithMapView:(MKMapView*)mapView andAnnotation:(id<MKAnnotation>)annotation andIdentifier:(NSString*)identifier {
+	
+	// Reuse pooled annotation if possible
+	MKAnnotationView* annotationView = (MKAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+	if (annotationView) {
+		annotationView.annotation = annotation;
+		return annotationView;
+	}
+	
+	// No pooled annotation - create new one
+	
+	if ([identifier isEqualToString:RIDE_START_ANNOTATION_ID] ||
+		[identifier isEqualToString:RIDE_END_ANNOTATION_ID])
+		return [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+
+	return [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+}
+
+
 + (Ride*)rideFromPlacemark:(CLPlacemark*)placemark inManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
 	return [Ride rideWithManagedObjectContext:managedObjectContext
@@ -501,20 +652,6 @@
 	return [NSString stringWithFormat:@"%@ (%.3f,%.3f)", placemark.name, placemark.location.coordinate.latitude, placemark.location.coordinate.longitude];
 	
 	//	return ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO);
-}
-
-
-+ (MKAnnotationView*)dequeueReusableAnnotationViewWithMapView:(MKMapView*)mapView andAnnotation:(id<MKAnnotation>)annotation andIdentifier:(NSString*)identifier {
-	
-	// Reuse pooled annotation if possible
-	MKPinAnnotationView* pinAnnotationView = (MKPinAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
-	if (pinAnnotationView) {
-		pinAnnotationView.annotation = annotation;
-		return pinAnnotationView;
-	}
-	
-	// No pooled annotation - create new one
-	return [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
 }
 
 
@@ -551,7 +688,7 @@
 		handled = YES;
 		
 	} else if ([COMMAND_DEMO_RIDES isEqualToString:commandString]) {
-
+		
 		// Load all demo rides
 		[DemoUtil loadDemoRideDataModel:self.managedObjectContext];
 		self.showRides = nil;
@@ -563,18 +700,18 @@
 	} else if ([COMMAND_DEMO_TEAMS isEqualToString:commandString]) {
 		
 		// Load all demo teams
-		//	[DemoUtil loadDemoTeamDataModel:self.managedObjectContext];
-		//	self.showTeams = nil;
-		//	self.teamFetchedResultsController = nil; // Trip refetch
-		//	[self configureView];
+		[DemoUtil loadDemoTeamDataModel:self.managedObjectContext];
+		self.showTeams = nil;
+		self.teamFetchedResultsController = nil; // Trip refetch
+		[self configureView];
 		
-		handled = NO;
+		handled = YES;
 		
 	} else if ([COMMAND_DEMO_ASSIGN isEqualToString:commandString]) {
 		
 		// Assign teams to rides
 		
-		handled = NO;
+		handled = YES;
 	}
 	
 	if (handled) {

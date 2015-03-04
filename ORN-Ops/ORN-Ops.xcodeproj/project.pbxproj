@@ -28,6 +28,7 @@
 		B2C756251AA1BA8B00B148D3 /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756241AA1BA8B00B148D3 /* Util.m */; };
 		B2DECCAE1AA14A8F001FFC8F /* Ride+RideHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2DECCAD1AA14A8F001FFC8F /* Ride+RideHelpers.m */; };
 		B2E76A221AA64572004B55BB /* Team+TeamHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E76A211AA64572004B55BB /* Team+TeamHelpers.m */; };
+		B2E76A251AA6D0A3004B55BB /* TeamPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E76A241AA6D0A3004B55BB /* TeamPointAnnotation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +83,8 @@
 		B2DECCAD1AA14A8F001FFC8F /* Ride+RideHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Ride+RideHelpers.m"; sourceTree = "<group>"; };
 		B2E76A201AA64572004B55BB /* Team+TeamHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Team+TeamHelpers.h"; sourceTree = "<group>"; };
 		B2E76A211AA64572004B55BB /* Team+TeamHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Team+TeamHelpers.m"; sourceTree = "<group>"; };
+		B2E76A231AA6D0A3004B55BB /* TeamPointAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeamPointAnnotation.h; sourceTree = "<group>"; };
+		B2E76A241AA6D0A3004B55BB /* TeamPointAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeamPointAnnotation.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,10 +117,10 @@
 		B24D4FD21A9D98E9008A0C7A /* Generated */ = {
 			isa = PBXGroup;
 			children = (
-				B2009CCB1AA57F650065E67B /* Team.h */,
-				B2009CCC1AA57F650065E67B /* Team.m */,
 				B2009CC81AA57F650065E67B /* Ride.h */,
 				B2009CC91AA57F650065E67B /* Ride.m */,
+				B2009CCB1AA57F650065E67B /* Team.h */,
+				B2009CCC1AA57F650065E67B /* Team.m */,
 			);
 			name = Generated;
 			sourceTree = "<group>";
@@ -168,6 +171,8 @@
 			children = (
 				B2907B821A9F1903008A0301 /* RidePointAnnotation.h */,
 				B2907B831A9F1903008A0301 /* RidePointAnnotation.m */,
+				B2E76A231AA6D0A3004B55BB /* TeamPointAnnotation.h */,
+				B2E76A241AA6D0A3004B55BB /* TeamPointAnnotation.m */,
 			);
 			name = "Map Helpers";
 			sourceTree = "<group>";
@@ -394,6 +399,7 @@
 			files = (
 				B2907B841A9F1903008A0301 /* RidePointAnnotation.m in Sources */,
 				B2C7561E1AA1A97900B148D3 /* TeamDetailTableViewController.m in Sources */,
+				B2E76A251AA6D0A3004B55BB /* TeamPointAnnotation.m in Sources */,
 				B25220331AA0412C00C3CE00 /* DemoUtil.m in Sources */,
 				B27533451A9DA91700B3110C /* MainTabBarController.m in Sources */,
 				B2C756251AA1BA8B00B148D3 /* Util.m in Sources */,

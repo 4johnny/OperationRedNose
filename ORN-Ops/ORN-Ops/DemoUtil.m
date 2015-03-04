@@ -33,12 +33,6 @@
 }
 
 
-+ (void)loadDemoTeamDataModel:(NSManagedObjectContext*)managedObjectContext {
-
-	
-}
-
-
 + (void)loadVancouverDemoRidesIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
 
 	Ride* ride;
@@ -56,7 +50,7 @@
 			   andLocationStartAddress:@"128 W Hastings St, Vancouver"
 				  andLocationStartCity:@"Vancouver"];
 	ride.passengerNameFirst = @"Rob";
-	ride.passengerNameLast = @"Smith";
+	ride.passengerNameLast = @"Jankovic";
 	ride.locationEndLatitude = [NSNumber numberWithDouble:49.271438];
 	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.756615];
 	ride.locationEndAddress = @"1523 Prairie Ave, Port Coquitlam";
@@ -97,8 +91,8 @@
 			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.2660725, -123.0024237)
 			   andLocationStartAddress:@"4512 Lougheed Hwy, Burnaby"
 				  andLocationStartCity:@"Burnaby"];
-	ride.passengerNameFirst = @"Billy";
-	ride.passengerNameLast = @"Jean";
+	ride.passengerNameFirst = @"Morris";
+	ride.passengerNameLast = @"Sander";
 	ride.locationEndLatitude = [NSNumber numberWithDouble:49.2407423];
 	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.8527494];
 	ride.locationEndAddress = @"1431 Brunette Ave, Coquitlam";
@@ -139,8 +133,8 @@
 			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.202296, -122.9382)
 			   andLocationStartAddress:@"1700 Stewardson Way, New Westminster"
 				  andLocationStartCity:@"New Westminster"];
-	ride.passengerNameFirst = @"Twinkle";
-	ride.passengerNameLast = @"Star";
+	ride.passengerNameFirst = @"Adrianna";
+	ride.passengerNameLast = @"Butler";
 	ride.locationEndLatitude = [NSNumber numberWithDouble:49.304498];
 	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.830639];
 	ride.locationEndAddress = @"131 Forest Park Way, Port Moody";
@@ -183,8 +177,8 @@
 			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.25625588056973, -122.7782533932433)
 			   andLocationStartAddress:@"2211 Central Ave, Port Coquitlam"
 				  andLocationStartCity:@"Port Coquitlam"];
-	ride.passengerNameFirst = @"Last";
-	ride.passengerNameLast = @"Chance";
+	ride.passengerNameFirst = @"Tara";
+	ride.passengerNameLast = @"Hughes";
 	ride.locationEndLatitude = [NSNumber numberWithDouble:49.2931232];
 	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.7907818];
 	ride.locationEndAddress = @"1330 Pinetree Way, Coquitlam";
@@ -201,8 +195,8 @@
 			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.30258801423837, -122.8759178752116)
 			   andLocationStartAddress:@"1970 Ioco Rd, Port Moody"
 				  andLocationStartCity:@"Port Moody"];
-	ride.passengerNameFirst = @"Johnny";
-	ride.passengerNameLast = @"5";
+	ride.passengerNameFirst = @"Farai";
+	ride.passengerNameLast = @"Cole";
 	ride.locationEndLatitude = [NSNumber numberWithDouble:49.27457909172165];
 	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.8739446137635];
 	ride.locationEndAddress = @"1000 Clarke Rd, Port Moody";
@@ -214,5 +208,157 @@
 # pragma mark Demo Teams
 #
 
+
++ (void)loadDemoTeamDataModel:(NSManagedObjectContext*)managedObjectContext {
+	
+	[DemoUtil loadVancouverDemoTeamsIntoDataModel:managedObjectContext];
+	[DemoUtil loadBurnabyDemoTeamsIntoDataModel:managedObjectContext];
+//	[DemoUtil loadNewWestminsterDemoTeamsIntoDataModel:managedObjectContext];
+//	[DemoUtil loadTriCitiesDemoTeamsIntoDataModel:managedObjectContext];
+}
+
+
++ (void)loadVancouverDemoTeamsIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
+
+	Team* team;
+
+	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team.name = @"1";
+	team.members = @"Selma, Akbar, George";
+	team.isMascot = [NSNumber numberWithBool:NO];
+	team.locationCurrentLatitude = [NSNumber numberWithDouble:49.284440];
+	team.locationCurrentLongitude = [NSNumber numberWithDouble:-123.121104];
+	team.locationCurrentAddress = @"1001 W Georgia St, Vancouver";
+	team.isActive = [NSNumber numberWithBool:YES];
+	
+	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team.name = @"2";
+	team.members = @"Matthew, Bethanie, Kelila";
+	team.isMascot = [NSNumber numberWithBool:NO];
+	team.locationCurrentLatitude = [NSNumber numberWithDouble:49.265067];
+	team.locationCurrentLongitude = [NSNumber numberWithDouble:-123.069709];
+	team.locationCurrentAddress = @"2201 Commercial Dr, Vancouver";
+	team.isActive = [NSNumber numberWithBool:YES];
+}
+
+
++ (void)loadBurnabyDemoTeamsIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
+	
+//	Team* team;
+//	
+//	team = [Team teamWithManagedObjectContext:managedObjectContext];
+//	team.name = @"3";
+//	team.members = @"Cornel, Lucas, Kaylynn";
+//	team.isMascot = [NSNumber numberWithBool:NO];
+//	team.locationCurrentLatitude = [NSNumber numberWithDouble:<#(double)#>];
+//	team.locationCurrentLongitude = [NSNumber numberWithDouble:<#(double)#>];
+//	team.locationCurrentAddress = @"";
+//	team.isActive = [NSNumber numberWithBool:YES];
+//	
+//	team = [Team teamWithManagedObjectContext:managedObjectContext];
+//	team.name = @"4";
+//	team.members = @"Serena, Hector, Maciej";
+//	team.isMascot = [NSNumber numberWithBool:NO];
+//	team.locationCurrentLatitude = [NSNumber numberWithDouble:<#(double)#>];
+//	team.locationCurrentLongitude = [NSNumber numberWithDouble:<#(double)#>];
+//	team.locationCurrentAddress = @"";
+//	team.isActive = [NSNumber numberWithBool:YES];
+}
+
+/*
++ (void)loadNewWestminsterDemoTeamsIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
+	
+	Team* team;
+	
+	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team.name = @"5";
+	team.members = @"Lea, Mark, Terese";
+	team.isMascot = [NSNumber numberWithBool:NO];
+	team.locationCurrentLatitude = [NSNumber numberWithDouble:<#(double)#>];
+	team.locationCurrentLongitude = [NSNumber numberWithDouble:<#(double)#>];
+	team.locationCurrentAddress = @"";
+	team.isActive = [NSNumber numberWithBool:YES];
+	
+	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team.name = @"6";
+	team.members = @"Greg, Désiré, Romana";
+	team.isMascot = [NSNumber numberWithBool:NO];
+	team.locationCurrentLatitude = [NSNumber numberWithDouble:<#(double)#>];
+	team.locationCurrentLongitude = [NSNumber numberWithDouble:<#(double)#>];
+	team.locationCurrentAddress = @"";
+	team.isActive = [NSNumber numberWithBool:YES];
+}
+
+
++ (void)loadTriCitiesDemoTeamsIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
+	
+	[DemoUtil loadCoquitlamDemoTeamsIntoDataModel:managedObjectContext];
+	[DemoUtil loadPortCoquitlamDemoTeamsIntoDataModel:managedObjectContext];
+	[DemoUtil loadPortMoodyDemoTeamsIntoDataModel:managedObjectContext];
+}
+
+
++ (void)loadCoquitlamDemoTeamsIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
+
+	Team* team;
+ 
+	// NOTE: Team is mascot
+	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team.name = @"7";
+	team.members = @"Abe, Jarek, Larisa";
+	team.isMascot = [NSNumber numberWithBool:YES];
+	team.locationCurrentLatitude = [NSNumber numberWithDouble:<#(double)#>];
+	team.locationCurrentLongitude = [NSNumber numberWithDouble:<#(double)#>];
+	team.locationCurrentAddress = @"";
+	team.isActive = [NSNumber numberWithBool:YES];
+
+	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team.name = @"8";
+	team.members = @"Vera, Leonard, Ashley";
+	team.isMascot = [NSNumber numberWithBool:NO];
+	team.locationCurrentLatitude = [NSNumber numberWithDouble:<#(double)#>];
+	team.locationCurrentLongitude = [NSNumber numberWithDouble:<#(double)#>];
+	team.locationCurrentAddress = @"";
+	team.isActive = [NSNumber numberWithBool:YES];
+}
+
+
++ (void)loadPortCoquitlamDemoTeamsIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
+	
+	Team* team;
+	
+	// NOTE: Team missing members
+	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team.name = @"9";
+	team.isMascot = [NSNumber numberWithBool:NO];
+	team.locationCurrentLatitude = [NSNumber numberWithDouble:<#(double)#>];
+	team.locationCurrentLongitude = [NSNumber numberWithDouble:<#(double)#>];
+	team.locationCurrentAddress = @"";
+	team.isActive = [NSNumber numberWithBool:YES];
+
+	// NOTE: Team missing name
+	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team.members = @"Martin, Jolene, Anatoly";
+	team.isMascot = [NSNumber numberWithBool:NO];
+	team.locationCurrentLatitude = [NSNumber numberWithDouble:<#(double)#>];
+	team.locationCurrentLongitude = [NSNumber numberWithDouble:<#(double)#>];
+	team.locationCurrentAddress = @"";
+	team.isActive = [NSNumber numberWithBool:YES];
+}
+
+
++ (void)loadPortMoodyDemoTeamsIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
+	
+	Team* team;
+	
+	// NOTE: Team missing name and members
+	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team.isMascot = [NSNumber numberWithBool:NO];
+	team.locationCurrentLatitude = [NSNumber numberWithDouble:<#(double)#>];
+	team.locationCurrentLongitude = [NSNumber numberWithDouble:<#(double)#>];
+	team.locationCurrentAddress = @"";
+	team.isActive = [NSNumber numberWithBool:YES];
+}
+*/
 
 @end
