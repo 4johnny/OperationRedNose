@@ -196,8 +196,12 @@
 	// NOTE: Must be done in code - otherwise we just get a template
 	self.avatarBarButtonItem.image = [[UIImage imageNamed:@"ORN-Bar-Button-Item"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 	
-	// Configure map zoom and annotations
+	// Wire up observer for ride update notifications
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideUpdatedWithNotification:) name:RIDE_UPDATED_NOTIFICATION_NAME object:nil];
+	
+	// Configure map with annotations and zoom
 	[self configureView];
+	[self showAllAnnotations];
 }
 
 
@@ -301,10 +305,7 @@
 		// Inject ride data model
 		RidePointAnnotation* ridePointAnnotation = pinAnnotationView.annotation;
 		rideDetailTableViewController.ride = ridePointAnnotation.ride;
-		
-		// Wire up delegate
-		rideDetailTableViewController.delegate = self;
-		
+
 		// Push onto navigation stack
 		[self.navigationController pushViewController:rideDetailTableViewController animated:YES];
 		
@@ -320,10 +321,7 @@
 		// Inject team data model
 		TeamPointAnnotation* teamPointAnnotation = view.annotation;
 		teamDetailTableViewController.team = teamPointAnnotation.team;
-		
-		// Wire up delegate
-//		teamDetailTableViewController.delegate = self;
-		
+				
 		// Push onto navigation stack
 		[self.navigationController pushViewController:teamDetailTableViewController animated:YES];
 		
@@ -336,37 +334,6 @@
 //
 //	return nil;
 //}
-
-
-#
-# pragma mark <RideDetailTableViewControllerDelegate>
-#
-
-
-// TODO: Use NSNotification instead of delegate, since changes can happen outside our direct control
-- (void)rideDetailTableViewController:(RideDetailTableViewController*)controller didSaveRide:(Ride*)ride {
-	
-	// Find ride annotations related to given ride - if none, we are done
-	NSArray* annotationsAffected = [self.mainMapView.annotations filteredArrayUsingPredicate:
-									[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
-		
-		if (![evaluatedObject isKindOfClass:[RidePointAnnotation class]]) return NO;
-		
-		RidePointAnnotation* ridePointAnnotation = evaluatedObject;
-		return ridePointAnnotation.ride == ride;
-	}]];
-	
-	// Refresh map annotations by removing, reinitializing, and re-adding to map view
-	for (RidePointAnnotation* ridePointAnnotation in annotationsAffected) {
-		
-		[self.mainMapView removeAnnotation:ridePointAnnotation];
-		[self.mainMapView addAnnotation:[ridePointAnnotation initWithRide:ride andRideLocationType:ridePointAnnotation.rideLocationType]];
-		
-		if (ridePointAnnotation.rideLocationType == RideLocationType_Start) {
-			[self.mainMapView selectAnnotation:ridePointAnnotation animated:YES];
-		}
-	}
-}
 
 
 #
@@ -395,14 +362,43 @@
 
 
 #
+# pragma mark Notification Handlers
+#
+
+
+- (void)rideUpdatedWithNotification:(NSNotification*)notification {
+
+	Ride* ride = notification.userInfo[RIDE_ENTITY_NAME];
+	
+	// Find ride annotations related to given ride - if none, we are done
+	NSArray* annotationsAffected = [self.mainMapView.annotations filteredArrayUsingPredicate:
+									[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
+		
+		if (![evaluatedObject isKindOfClass:[RidePointAnnotation class]]) return NO;
+		
+		RidePointAnnotation* ridePointAnnotation = evaluatedObject;
+		return ridePointAnnotation.ride == ride;
+	}]];
+	
+	// Refresh map annotations by removing, reinitializing, and re-adding to map view
+	for (RidePointAnnotation* ridePointAnnotation in annotationsAffected) {
+		
+		[self.mainMapView removeAnnotation:ridePointAnnotation];
+		[self.mainMapView addAnnotation:[ridePointAnnotation initWithRide:ride andRideLocationType:ridePointAnnotation.rideLocationType]];
+		
+//		if (ridePointAnnotation.rideLocationType == RideLocationType_Start) {
+//			[self.mainMapView selectAnnotation:ridePointAnnotation animated:YES];
+//		}
+	}
+}
+
+
+#
 # pragma mark Helpers
 #
 
 
 - (void)configureView {
-	
-	// Clear any existing annotationa
-	[self.mainMapView removeAnnotations:self.mainMapView.annotations];
 	
 	// Initially center and zoom map on juridiction region
 	MKCoordinateRegion centerRegion = MKCoordinateRegionMake(JURISDICTION_COORDINATE, MKCoordinateSpanMake(MAP_SPAN_LOCATION_DELTA_CITY, MAP_SPAN_LOCATION_DELTA_CITY));
@@ -413,10 +409,6 @@
 	
 	// Configure team annotations and callouts
 	[self configureTeamsView];
-	
-	// Zoom map to show all annotations
-	// TODO: potentially put on timer delay, since seems to get ignored
-	[self showAllAnnotations];
 }
 
 
@@ -519,6 +511,12 @@
 }
 
 
+- (void)clearAllAnnotations {
+	
+	[self.mainMapView removeAnnotations:self.mainMapView.annotations];
+}
+
+
 - (void)clearAllAnnotationSelections {
 	
 	for (id<MKAnnotation> annotation in self.mainMapView.annotations) {
@@ -567,7 +565,6 @@
 			ridePinAnnotationView.pinColor = MKPinAnnotationColorRed;
 			
 			// Add ride end time to left side of callout
-			NSLog(@"Check dataTimeEnd for annotation callout");
 			if (ridePointAnnotation.ride.dateTimeEnd) {
 				
 				NSDateFormatter* endTimeDateFormatter = [[NSDateFormatter alloc] init];

@@ -77,6 +77,8 @@
 
 		// Determine end time by adding ETA seconds to start time
 		ride.dateTimeEnd = [NSDate dateWithTimeInterval:response.expectedTravelTime sinceDate:ride.dateTimeStart];
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:ride}];
 	}];
 	
 	ride =

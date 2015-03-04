@@ -17,7 +17,7 @@
 # pragma mark - Interface
 #
 
-@interface MainMapViewController : UIViewController <ORNDataModelSource, NSFetchedResultsControllerDelegate, UITextFieldDelegate, MKMapViewDelegate, RideDetailTableViewControllerDelegate>
+@interface MainMapViewController : UIViewController <ORNDataModelSource, NSFetchedResultsControllerDelegate, UITextFieldDelegate, MKMapViewDelegate>
 
 #
 # pragma mark Outlets

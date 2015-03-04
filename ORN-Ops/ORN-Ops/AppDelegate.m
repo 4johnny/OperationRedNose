@@ -51,9 +51,6 @@
 	// Inject MOC into main tab bar controller
 	MainTabBarController* mainTabBarController = (MainTabBarController*)self.window.rootViewController;
 	mainTabBarController.managedObjectContext = self.managedObjectContext;
-
-	// Initialize tab bar controller to first tab
-	mainTabBarController.selectedViewController = mainTabBarController.viewControllers.firstObject;
 	
 	return YES;
 }

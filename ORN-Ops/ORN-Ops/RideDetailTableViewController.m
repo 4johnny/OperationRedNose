@@ -173,8 +173,9 @@
 - (IBAction)savePressed:(UIBarButtonItem*)sender {
 	
 	[self.view endEditing:YES];
+	
 	[self saveDataModelFromView];
-	[self.delegate rideDetailTableViewController:self didSaveRide:self.ride];
+	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:self.ride}];
 	[self.navigationController popViewControllerAnimated:YES];
 }
 

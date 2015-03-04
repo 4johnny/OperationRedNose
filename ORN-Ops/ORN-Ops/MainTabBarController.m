@@ -40,8 +40,12 @@
 	// Wire up delegate
 	self.delegate = self;
 	
-	// Inject data model for initial tab
-	[self injectDataModelIntoNavigationController:(UINavigationController*)self.viewControllers.firstObject];
+	// Inject data model for all loaded tabs
+	// NOTE: All tabs in ORN tab bar are nav controllers
+	for (UINavigationController* navigationViewController in self.viewControllers) {
+		
+		[self injectDataModelIntoNavigationController:navigationViewController];
+	}
 }
 
 

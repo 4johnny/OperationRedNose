@@ -90,6 +90,9 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	
+	// Wire up observer for ride update notifications
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideUpdatedWithNotification:) name:RIDE_UPDATED_NOTIFICATION_NAME object:nil];
 }
 
 
@@ -109,9 +112,6 @@
 		NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
 		RideDetailTableViewController* rideDetailTableViewController = segue.destinationViewController;
 		rideDetailTableViewController.ride = [self.fetchedResultsController objectAtIndexPath:indexPath];
-		
-		// Wire up delegate
-		rideDetailTableViewController.delegate = self;
 	}
 }
 
@@ -263,17 +263,6 @@
 
 
 #
-# pragma mark <RideDetailTableViewControllerDelegate>
-#
-
-
-- (void)rideDetailTableViewController:(RideDetailTableViewController*)controller didSaveRide:(Ride*)ride {
-
-	[self.tableView reloadData];
-}
-
-
-#
 # pragma mark <ORNDataModelSource>
 #
 
@@ -282,6 +271,17 @@
 	
 	AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
 	[appDelegate saveManagedObjectContext];
+}
+
+
+#
+# pragma mark Notification Handlers
+#
+
+
+- (void)rideUpdatedWithNotification:(NSNotification*)notification {
+
+	[self.tableView reloadData];
 }
 
 

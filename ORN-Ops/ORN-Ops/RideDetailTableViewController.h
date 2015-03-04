@@ -7,27 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Ride.h"
+#import "Ride+RideHelpers.h"
 
 #
 # pragma mark - Constants
 #
 
 #define RIDE_DETAIL_TABLE_VIEW_CONTROLLER_ID	@"rideDetailTableViewController"
-
-#
-# pragma mark - Protocol
-#
-
-@class RideDetailTableViewController;
-
-@protocol RideDetailTableViewControllerDelegate <NSObject>
-
-@optional
-
-- (void)rideDetailTableViewController:(RideDetailTableViewController*)controller didSaveRide:(Ride*)ride;
-
-@end
 
 #
 # pragma mark - Interface
@@ -40,7 +26,6 @@
 #
 
 @property (nonatomic) Ride* ride;
-@property (nonatomic) id<RideDetailTableViewControllerDelegate> delegate;
 
 #
 # pragma mark Outlets

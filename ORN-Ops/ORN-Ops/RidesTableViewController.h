@@ -15,7 +15,7 @@
 # pragma mark - Interface
 #
 
-@interface RidesTableViewController : UITableViewController <ORNDataModelSource, NSFetchedResultsControllerDelegate, RideDetailTableViewControllerDelegate>
+@interface RidesTableViewController : UITableViewController <ORNDataModelSource, NSFetchedResultsControllerDelegate>
 
 #
 # pragma mark <ORNDataModelSource>
