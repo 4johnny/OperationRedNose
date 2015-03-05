@@ -2,7 +2,7 @@
 //  Ride.h
 //  ORN-Ops
 //
-//  Created by Johnny on 2015-03-04.
+//  Created by Johnny on 2015-03-05.
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
@@ -15,6 +15,7 @@
 
 @property (nonatomic, retain) NSDate * dateTimeEnd;
 @property (nonatomic, retain) NSDate * dateTimeStart;
+@property (nonatomic, retain) NSNumber * distance;
 @property (nonatomic, retain) NSDecimalNumber * donationAmount;
 @property (nonatomic, retain) NSNumber * duration;
 @property (nonatomic, retain) NSString * locationEndAddress;

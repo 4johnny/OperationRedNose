@@ -7,6 +7,7 @@
 //
 
 #import <CoreLocation/CoreLocation.h>
+#import <MapKit/MapKit.h>
 #import "Ride.h"
 
 #
@@ -69,6 +70,7 @@ typedef NS_ENUM(NSInteger, RideLocationType) {
 #
 
 - (NSString*)getPassengerName;
+- (MKDirectionsRequest*)getDirectionsRequest;
 
 + (NSString*)stringFromStatus:(RideStatus)status;
 + (RideStatus)statusFromString:(NSString*)statusString;

@@ -379,16 +379,9 @@
 // Calculate ride duration and end time asynchronously
 + (void)calculateEndTimeForRide:(Ride*)ride {
 	
-	// Create placemarks for ride start and end locations
-	MKPlacemark* startPlacemark = [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue) addressDictionary:nil];
-	MKPlacemark* endPlacemark = [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(ride.locationEndLatitude.doubleValue, ride.locationEndLongitude.doubleValue) addressDictionary:nil];
-	
-	// Create directions request for route by car for given time of day
-	MKDirectionsRequest* directionsRequest = [[MKDirectionsRequest alloc] init];
-	directionsRequest.source = [[MKMapItem alloc] initWithPlacemark:startPlacemark];
-	directionsRequest.destination = [[MKMapItem alloc] initWithPlacemark:endPlacemark];
-	directionsRequest.transportType = MKDirectionsTransportTypeAutomobile;
-	directionsRequest.departureDate = ride.dateTimeStart;
+	// If cannot get directions request, we are done with this ride
+	MKDirectionsRequest* directionsRequest = ride.getDirectionsRequest;
+	if (!directionsRequest) return;
 	
 	// Update ride duration and end time with ETA calculation for route
 	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
@@ -401,7 +394,7 @@
 		}
 		
 		// Expected travel time calculated successfully, so store it
-		ride.duration = [NSNumber numberWithDouble:response.expectedTravelTime];
+		ride.duration = [NSNumber numberWithDouble:response.expectedTravelTime]; // Seconds
 		NSLog(@"ETA: %.0f seconds", response.expectedTravelTime);
 		
 		// Determine end time by adding ETA seconds to start time

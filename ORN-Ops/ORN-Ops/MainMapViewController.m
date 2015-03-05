@@ -87,6 +87,7 @@
 @property (nonatomic) NSArray* showRides;
 @property (nonatomic) NSArray* showTeams;
 
+@property (nonatomic) BOOL isSelecting;
 
 @end
 
@@ -384,10 +385,129 @@
 }
 
 
-//- (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay {
-//
-//	return nil;
-//}
+- (void)mapView:(MKMapView*)mapView didSelectAnnotationView:(MKAnnotationView*)view {
+	
+	// Break selection cycle due to ride-update notification
+	if (self.isSelecting) return;
+	
+	// If not ride, we are done with this view
+	if (![view.annotation isKindOfClass:[RidePointAnnotation class]]) return;
+
+	// If already have an overlay, we are done
+	if (self.mainMapView.overlays.count > 0) return;
+	
+	// If cannot get directions request, we are done with this ride
+	RidePointAnnotation* ridePointAnnotation = view.annotation;
+	Ride* ride = ridePointAnnotation.ride;
+	MKDirectionsRequest* directionsRequest = ride.getDirectionsRequest;
+	if (!directionsRequest) return;
+	
+	// Determine route for ride, and add overlay to map asynchronously
+	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
+	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
+		
+		// NOTES: Completion block executes on main thread. Do not run more than one directions calculation simultaneously on this object.
+		if (error) {
+			NSLog(@"ETA Error: %@ %@", error.localizedDescription, error.userInfo);
+			return;
+		}
+		
+		// Route directions calculated successfully, so grab first one
+		// NOTE: Should be exactly 1, since we did not request alternate routes
+		MKRoute* route = response.routes.firstObject;
+		
+		// Update expected travel time for ride, since may have changed
+		ride.duration = [NSNumber numberWithDouble:route.expectedTravelTime]; // Seconds
+		NSLog(@"ETA: %.0f seconds", route.expectedTravelTime);
+		
+		// Determine end time by adding ETA seconds to start time
+		ride.dateTimeEnd = [NSDate dateWithTimeInterval:route.expectedTravelTime sinceDate:ride.dateTimeStart];
+		
+		// Store distance in ride
+		ride.distance = [NSNumber numberWithDouble:route.distance]; // Meters
+
+		// Notify that ride has updated
+		self.isSelecting = YES;
+		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:ride}];
+		self.isSelecting = NO;
+		
+		// Add overlay to map - if one happens already to exist for this ride, reuse it
+		// TODO: Ensure this issue/code is considered
+		// Find route overlays related to given ride - if none, create new one
+		// NOTE: There should be max 1 overlay
+		//	NSArray* annotationsAffected =
+		//	[self.mainMapView.annotations filteredArrayUsingPredicate:
+		//	 [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
+		//
+		//		if (![evaluatedObject isKindOfClass:[RidePointAnnotation class]]) return NO;
+		//		RidePointAnnotation* ridePointAnnotation = evaluatedObject;
+		//
+		//		return ridePointAnnotation.ride == ride;
+		//	}]];
+		[self.mainMapView addOverlay:route.polyline level:MKOverlayLevelAboveRoads];
+		
+		// TODO: Consider features that also utilize the route steps and advisory notices
+		NSLog(@"Route Steps (%d):", (int)route.steps.count);
+		for (MKRouteStep* step in route.steps) {
+			NSLog(@"\t%@", step.instructions);
+		}
+		
+		// TODO: Consider features that also utilize the route steps and advisory notices
+		NSLog(@"Route Advisory Notices (%d):", (int)route.advisoryNotices.count);
+		for (NSString* advisoryNotice in route.advisoryNotices) {
+			NSLog(@"\t%@", advisoryNotice);
+		}
+	}];
+}
+
+
+- (void)mapView:(MKMapView *)mapView didDeselectAnnotationView:(MKAnnotationView *)view {
+	
+	// If not ride, we are done with this view
+	if (![view.annotation isKindOfClass:[RidePointAnnotation class]]) return;
+
+	// Remove route overlay for ride
+	[self clearAllOverlays];
+//	RidePointAnnotation* ridePointAnnotation = view.annotation;
+//	Ride* ride = ridePointAnnotation.ride;
+	
+	// Find route overlays related to given ride - if none, we are done
+	// NOTE: There should be max 1 overlay
+//	NSArray* annotationsAffected =
+//	[self.mainMapView.annotations filteredArrayUsingPredicate:
+//	 [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
+//		
+//		if (![evaluatedObject isKindOfClass:[RidePointAnnotation class]]) return NO;
+//		RidePointAnnotation* ridePointAnnotation = evaluatedObject;
+//		
+//		return ridePointAnnotation.ride == ride;
+//	}]];
+//	
+//	// Refresh map annotations - remove, re-init, re-add, and re-select
+//	for (RidePointAnnotation* ridePointAnnotation in annotationsAffected) {
+//		
+//		BOOL isAnnotationSelected = [self.mainMapView.selectedAnnotations containsObject:ridePointAnnotation];
+//		
+//		[self.mainMapView removeAnnotation:ridePointAnnotation];
+//		[self.mainMapView addAnnotation:[ridePointAnnotation initWithRide:ride andRideLocationType:ridePointAnnotation.rideLocationType andNeedsAnimation:needsAnimation]];
+//		
+//		if (isAnnotationSelected) {
+//			[self.mainMapView selectAnnotation:ridePointAnnotation animated:needsAnimation];
+//		}
+//	}
+}
+
+
+- (MKOverlayRenderer*)mapView:(MKMapView*)mapView rendererForOverlay:(id<MKOverlay>)overlay {
+
+	MKPolylineRenderer* renderer = [[MKPolylineRenderer alloc] initWithOverlay:overlay];
+	
+	renderer.strokeColor = [UIColor blueColor];
+	renderer.alpha = 0.5;
+	renderer.lineWidth = 5.0;
+	
+	return renderer;
+}
 
 
 #
@@ -410,7 +530,6 @@
 - (IBAction)avatarBarButtonPressed:(UIBarButtonItem *)sender {
 	
 	// Re-orientate map back to initial perspective
-	[self clearAllAnnotationSelections];
 	[self configureRegionView];
 }
 
@@ -675,6 +794,12 @@
 		
 		[self.mainMapView deselectAnnotation:annotation animated:NO];
 	}
+}
+
+
+- (void)clearAllOverlays {
+
+	[self.mainMapView removeOverlays:self.mainMapView.overlays];
 }
 
 

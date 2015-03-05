@@ -71,6 +71,27 @@ insertIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
 }
 
 
+- (MKDirectionsRequest*)getDirectionsRequest {
+	
+	if (!self.locationStartLatitude || !self.locationStartLongitude ||
+		!self.locationEndLatitude || !self.locationEndLongitude) return nil;
+	
+	// Create placemarks for ride start and end locations
+	MKPlacemark* startPlacemark = [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(self.locationStartLatitude.doubleValue, self.locationStartLongitude.doubleValue) addressDictionary:nil];
+	MKPlacemark* endPlacemark = [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(self.locationEndLatitude.doubleValue, self.locationEndLongitude.doubleValue) addressDictionary:nil];
+	
+	// Create directions request for route by car for given time of day
+	MKDirectionsRequest* directionsRequest = [[MKDirectionsRequest alloc] init];
+	directionsRequest.source = [[MKMapItem alloc] initWithPlacemark:startPlacemark];
+	directionsRequest.destination = [[MKMapItem alloc] initWithPlacemark:endPlacemark];
+	directionsRequest.transportType = MKDirectionsTransportTypeAutomobile;
+	directionsRequest.departureDate = self.dateTimeStart;
+	directionsRequest.requestsAlternateRoutes = NO;
+	
+	return directionsRequest;
+}
+
+
 + (NSString*)stringFromStatus:(RideStatus)status {
 	
 	switch (status) {
