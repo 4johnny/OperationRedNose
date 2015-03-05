@@ -71,6 +71,7 @@
                                     <segment title="Hybrid"/>
                                     <segment title="Satellite"/>
                                 </segments>
+                                <color key="tintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
                                     <action selector="mapTypeChanged:" destination="Cgj-Rd-EZz" eventType="valueChanged" id="3d6-vJ-f9o"/>
                                 </connections>
