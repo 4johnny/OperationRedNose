@@ -216,7 +216,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="teamDetailTableViewController" title="Team Detail View Controller" id="XpS-Zq-vPa" customClass="TeamDetailTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="static" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="kj8-Sz-QNp">
-                        <rect key="frame" x="0.0" y="64" width="600" height="487"/>
+                        <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
@@ -248,7 +248,7 @@
                             <outletCollection property="gestureRecognizers" destination="F0a-aH-rGx" appends="YES" id="X8w-lY-vZm"/>
                         </connections>
                     </tableView>
-                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <navigationItem key="navigationItem" title="Team" id="ToU-Mx-Iak">
                         <barButtonItem key="rightBarButtonItem" systemItem="save" id="FY0-3P-fXx">
                             <connections>
@@ -289,7 +289,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="rideDetailTableViewController" title="Ride Detail View Controller" id="EOY-Bm-UjH" customClass="RideDetailTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="static" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="kqh-Zd-G9W">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="487"/>
+                        <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
@@ -549,7 +549,12 @@
                             <outletCollection property="gestureRecognizers" destination="Zi7-Sl-hm0" appends="YES" id="cNj-MR-Cph"/>
                         </connections>
                     </tableView>
-                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
+                    <toolbarItems>
+                        <barButtonItem title="Route" id="K8v-dn-AVY"/>
+                        <barButtonItem title="Delete" id="GiP-jb-09a"/>
+                        <barButtonItem title="Map" id="4oZ-F4-xPQ"/>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" title="Ride" id="pwX-eP-kT9">
                         <barButtonItem key="rightBarButtonItem" systemItem="save" id="T3J-8b-aWD">
                             <connections>
@@ -557,6 +562,7 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="donationTextField" destination="IVW-ZY-bBn" id="NmW-0d-GI8"/>
                         <outlet property="endAddressTextField" destination="27Q-3u-cxw" id="WBn-Gm-DAE"/>
@@ -595,6 +601,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="67j-0p-JPk">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="ePf-i9-3Hp" kind="relationship" relationship="rootViewController" id="RbD-S6-NHG"/>
                     </connections>
