@@ -22,12 +22,13 @@
 #
 
 
-- (instancetype)initWithTeam:(Team*)team {
+- (instancetype)initWithTeam:(Team*)team andNeedsAnimation:(BOOL)needsAnimation {
 
 	self = [super init];
 	if (self) {
 		
 		_team = team;
+		_needsAnimation = needsAnimation;
 
 		self.coordinate = CLLocationCoordinate2DMake(_team.locationCurrentLatitude.doubleValue, _team.locationCurrentLongitude.doubleValue);
 		NSString* titlePrefix = @"Team";
@@ -45,13 +46,13 @@
 
 - (instancetype)init {
 	
-	return [self initWithTeam:nil];
+	return [self initWithTeam:nil andNeedsAnimation:NO];
 }
 
 
-+ (instancetype)teamPointAnnotationWithTeam:(Team*)team {
++ (instancetype)teamPointAnnotationWithTeam:(Team*)team andNeedsAnimation:(BOOL)needsAnimation {
 	
-	return [[TeamPointAnnotation alloc] initWithTeam:team];
+	return [[TeamPointAnnotation alloc] initWithTeam:team andNeedsAnimation:needsAnimation];
 }
 
 

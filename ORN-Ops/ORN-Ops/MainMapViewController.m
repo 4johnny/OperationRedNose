@@ -199,9 +199,11 @@
 	// Wire up observer for ride update notifications
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideUpdatedWithNotification:) name:RIDE_UPDATED_NOTIFICATION_NAME object:nil];
 	
-	// Configure map with annotations and zoom
-	[self configureView];
-	[self showAllAnnotations];
+	// Configure map with annotations, and zoom to show them all
+	// NOTE: Delay so that orientation is established
+	[self configureRegionView];
+	[self performSelector:@selector(configureView) withObject:nil afterDelay:0.5];
+	[self performSelector:@selector(showAllAnnotations) withObject:nil afterDelay:1];
 }
 
 
@@ -289,6 +291,58 @@
 }
 
 
+- (void)mapView:(MKMapView*)mapView didAddAnnotationViews:(NSArray*)views {
+	
+	for (MKAnnotationView* view in views) {
+		
+		// If not team annotation, we are done with this view
+		if (![view.annotation isKindOfClass:[TeamPointAnnotation class]]) continue;
+		
+		// If team annotation does not need animating, we are done with this view
+		TeamPointAnnotation* teamPointAnnotation = view.annotation;
+		if (!teamPointAnnotation.needsAnimation) continue;
+		
+		// Animation for team annotation has been triggered, so reset trigger
+		teamPointAnnotation.needsAnimation = NO;
+		
+		// If annotation is not inside visible map rect, we are done with this view
+		MKMapPoint point =  MKMapPointForCoordinate(view.annotation.coordinate);
+		if (!MKMapRectContainsPoint(mapView.visibleMapRect, point)) continue;
+		
+		// Remember end frame for annotation
+		CGRect endFrame = view.frame;
+		
+		// Move annotation out of view
+		view.frame = CGRectMake(view.frame.origin.x, view.frame.origin.y - self.view.frame.size.height, view.frame.size.width, view.frame.size.height);
+		
+		// Animate drop, completing with squash effect
+		[UIView animateWithDuration:0.5 delay:(0.04 * [views indexOfObject:view]) options: UIViewAnimationOptionCurveLinear animations:^{
+			
+			view.frame = endFrame;
+			
+		} completion:^(BOOL finished) {
+			
+			if (!finished) return; // Exit block
+			
+			// Animate squash, completing with un-squash
+			[UIView animateWithDuration:0.05 animations:^{
+				
+				view.transform = CGAffineTransformMakeScale(1.0, 0.8);
+				
+			} completion:^(BOOL finished){
+				
+				if (!finished) return; // Exit block
+					
+				[UIView animateWithDuration:0.1 animations:^{
+					
+					view.transform = CGAffineTransformIdentity;
+				}];
+			}];
+		}];
+	}
+}
+
+
 - (void)mapView:(MKMapView*)mapView annotationView:(MKAnnotationView*)view calloutAccessoryControlTapped:(UIControl*)control {
 	
 	// If user location, we are done
@@ -357,7 +411,7 @@
 	
 	// Re-orientate map back to initial perspective
 	[self clearAllAnnotationSelections];
-	[self showAllAnnotations];
+	[self configureRegionView];
 }
 
 
@@ -456,7 +510,8 @@
 		[DemoUtil loadDemoRideDataModel:self.managedObjectContext];
 		self.showRides = nil;
 		self.rideFetchedResultsController = nil; // Trip refetch
-		[self configureView];
+		[self configureRidesView];
+		[self showAllAnnotations];
 		
 		handled = YES;
 		
@@ -466,7 +521,8 @@
 		[DemoUtil loadDemoTeamDataModel:self.managedObjectContext];
 		self.showTeams = nil;
 		self.teamFetchedResultsController = nil; // Trip refetch
-		[self configureView];
+		[self configureTeamsView];
+		[self showAllAnnotations];
 		
 		handled = YES;
 		
@@ -492,15 +548,19 @@
 
 - (void)configureView {
 	
-	// Initially center and zoom map on juridiction region
-	MKCoordinateRegion centerRegion = MKCoordinateRegionMake(JURISDICTION_COORDINATE, MKCoordinateSpanMake(MAP_SPAN_LOCATION_DELTA_CITY, MAP_SPAN_LOCATION_DELTA_CITY));
-	[self.mainMapView setRegion:centerRegion animated:YES];
-	
 	// Configure ride annotations and callouts
 	[self configureRidesView];
 	
 	// Configure team annotations and callouts
 	[self configureTeamsView];
+}
+
+
+- (void)configureRegionView {
+	
+	MKCoordinateRegion centerRegion = MKCoordinateRegionMake(JURISDICTION_COORDINATE, MKCoordinateSpanMake(MAP_SPAN_LOCATION_DELTA_CITY, MAP_SPAN_LOCATION_DELTA_CITY));
+	
+	[self.mainMapView setRegion:centerRegion animated:YES];
 }
 
 
@@ -538,7 +598,7 @@
 		if (!team.locationCurrentLatitude || !team.locationCurrentLongitude) continue;
 		
 		// Add annotation for current location to map
-		[self.mainMapView addAnnotation:[TeamPointAnnotation teamPointAnnotationWithTeam:team]];
+		[self.mainMapView addAnnotation:[TeamPointAnnotation teamPointAnnotationWithTeam:team andNeedsAnimation:YES]];
 	}
 }
 
@@ -680,7 +740,7 @@
 			return nil;
 	}
 	
-	// Animate pin, and reset trigger
+	// Animate annotation if triggered, and reset trigger
 	ridePinAnnotationView.animatesDrop = ridePointAnnotation.needsAnimation;
 	ridePointAnnotation.needsAnimation = NO;
 	
@@ -713,6 +773,8 @@
 		teamAnnotationView.image = [UIImage imageNamed:@"ORN-Team-Map-Annotation"];
 	}
 	
+	// NOTE: Animation of team annotation is done manually in "mapView:didAddAnnotationViews:"
+
 	// Add callout view to annotation
 	teamAnnotationView.canShowCallout = YES;
 	
