@@ -293,7 +293,7 @@
 	
 	// If user location, we are done
 	if ([view.annotation isKindOfClass:[MKUserLocation class]]) return;
-
+	
 	// If ride, navigate to ride detail controller
 	if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) {
 		
@@ -305,13 +305,13 @@
 		// Inject ride data model
 		RidePointAnnotation* ridePointAnnotation = pinAnnotationView.annotation;
 		rideDetailTableViewController.ride = ridePointAnnotation.ride;
-
+		
 		// Push onto navigation stack
 		[self.navigationController pushViewController:rideDetailTableViewController animated:YES];
 		
 		return;
 	}
-
+	
 	// If team, navigate to team detail controller
 	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
 		
@@ -321,7 +321,7 @@
 		// Inject team data model
 		TeamPointAnnotation* teamPointAnnotation = view.annotation;
 		teamDetailTableViewController.team = teamPointAnnotation.team;
-				
+		
 		// Push onto navigation stack
 		[self.navigationController pushViewController:teamDetailTableViewController animated:YES];
 		
@@ -367,7 +367,7 @@
 
 
 - (void)rideUpdatedWithNotification:(NSNotification*)notification {
-
+	
 	Ride* ride = notification.userInfo[RIDE_ENTITY_NAME];
 	
 	// Find ride annotations related to given ride - if none, we are done
@@ -386,9 +386,9 @@
 		[self.mainMapView removeAnnotation:ridePointAnnotation];
 		[self.mainMapView addAnnotation:[ridePointAnnotation initWithRide:ride andRideLocationType:ridePointAnnotation.rideLocationType]];
 		
-//		if (ridePointAnnotation.rideLocationType == RideLocationType_Start) {
-//			[self.mainMapView selectAnnotation:ridePointAnnotation animated:YES];
-//		}
+		//		if (ridePointAnnotation.rideLocationType == RideLocationType_Start) {
+		//			[self.mainMapView selectAnnotation:ridePointAnnotation animated:YES];
+		//		}
 	}
 }
 
@@ -403,7 +403,7 @@
 	// Initially center and zoom map on juridiction region
 	MKCoordinateRegion centerRegion = MKCoordinateRegionMake(JURISDICTION_COORDINATE, MKCoordinateSpanMake(MAP_SPAN_LOCATION_DELTA_CITY, MAP_SPAN_LOCATION_DELTA_CITY));
 	[self.mainMapView setRegion:centerRegion animated:YES];
-
+	
 	// Configure ride annotations and callouts
 	[self configureRidesView];
 	
@@ -608,9 +608,9 @@
 		teamAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:teamPointAnnotation andIdentifier:TEAM_CURRENT_MASCOT_ANNOTATION_ID];
 		
 		teamAnnotationView.image = [UIImage imageNamed:@"ORN-Team-Mascot-Map-Annotation"];
-
+		
 	} else {
-	
+		
 		teamAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:teamPointAnnotation andIdentifier:TEAM_CURRENT_NORMAL_ANNOTATION_ID];
 		
 		teamAnnotationView.image = [UIImage imageNamed:@"ORN-Team-Map-Annotation"];
@@ -642,7 +642,7 @@
 	if ([identifier isEqualToString:RIDE_START_ANNOTATION_ID] ||
 		[identifier isEqualToString:RIDE_END_ANNOTATION_ID])
 		return [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
-
+	
 	return [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
 }
 
@@ -670,7 +670,32 @@
 
 
 #
-# pragma mark Command Handler
+# pragma mark Action Handlers
+#
+
+
+- (IBAction)mapTypeChanged:(UISegmentedControl*)sender {
+	
+	switch (self.mapTypeSegmentedControl.selectedSegmentIndex) {
+			
+		default:
+		case 0:
+			self.mainMapView.mapType = MKMapTypeStandard;
+			break;
+			
+		case 1:
+			self.mainMapView.mapType = MKMapTypeHybrid;
+			break;
+			
+		case 2:
+			self.mainMapView.mapType = MKMapTypeSatellite;
+			break;
+	}
+}
+
+
+#
+# pragma mark Command Handlers
 #
 
 

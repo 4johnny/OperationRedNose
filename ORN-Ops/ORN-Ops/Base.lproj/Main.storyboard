@@ -64,11 +64,24 @@
                                     <outlet property="delegate" destination="Cgj-Rd-EZz" id="K8C-Ej-bh8"/>
                                 </connections>
                             </mapView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Aqa-EQ-eWp">
+                                <rect key="frame" x="383" y="451" width="209" height="29"/>
+                                <segments>
+                                    <segment title="Standard"/>
+                                    <segment title="Hybrid"/>
+                                    <segment title="Satellite"/>
+                                </segments>
+                                <connections>
+                                    <action selector="mapTypeChanged:" destination="Cgj-Rd-EZz" eventType="valueChanged" id="3d6-vJ-f9o"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="eJC-AT-fJw" firstAttribute="top" secondItem="7AY-3h-6lr" secondAttribute="bottom" id="2Q2-w0-fOr"/>
                             <constraint firstItem="jEk-3Z-jcE" firstAttribute="top" secondItem="eJC-AT-fJw" secondAttribute="bottom" id="BZM-Kl-9WS"/>
+                            <constraint firstAttribute="trailing" secondItem="Aqa-EQ-eWp" secondAttribute="trailing" constant="8" id="EVv-9P-rNy"/>
+                            <constraint firstItem="jEk-3Z-jcE" firstAttribute="top" secondItem="Aqa-EQ-eWp" secondAttribute="bottom" constant="8" id="MUB-l7-Tf7"/>
                             <constraint firstItem="eJC-AT-fJw" firstAttribute="leading" secondItem="XLH-Pf-8Rb" secondAttribute="leading" id="q1u-mE-0YC"/>
                             <constraint firstAttribute="trailing" secondItem="eJC-AT-fJw" secondAttribute="trailing" id="rLu-aY-Au5"/>
                         </constraints>
@@ -95,6 +108,7 @@
                         <outlet property="addressTextField" destination="OpH-64-v2x" id="BhM-i1-3TK"/>
                         <outlet property="avatarBarButtonItem" destination="dEi-XX-jP7" id="0In-32-fHP"/>
                         <outlet property="mainMapView" destination="eJC-AT-fJw" id="xiq-yJ-Ilg"/>
+                        <outlet property="mapTypeSegmentedControl" destination="Aqa-EQ-eWp" id="1ah-5z-Le0"/>
                         <outlet property="view" destination="XLH-Pf-8Rb" id="0Hl-3N-g0s"/>
                     </connections>
                 </viewController>

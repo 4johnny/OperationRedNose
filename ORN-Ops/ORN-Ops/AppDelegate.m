@@ -49,6 +49,7 @@
 	// Override point for customization after application launch.
 	
 	// Inject MOC into main tab bar controller
+	// TODO: Refactor so everyone just uses app-delegate's MOC, instead of injecting
 	MainTabBarController* mainTabBarController = (MainTabBarController*)self.window.rootViewController;
 	mainTabBarController.managedObjectContext = self.managedObjectContext;
 	
