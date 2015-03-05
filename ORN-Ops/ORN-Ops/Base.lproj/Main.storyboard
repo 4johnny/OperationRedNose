@@ -551,7 +551,11 @@
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <toolbarItems>
-                        <barButtonItem title="Route" id="K8v-dn-AVY"/>
+                        <barButtonItem title="Route" id="K8v-dn-AVY">
+                            <connections>
+                                <segue destination="pbo-18-4eI" kind="show" identifier="showRouteDetailSeque" id="Plo-6s-vWc"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem title="Delete" id="GiP-jb-09a"/>
                         <barButtonItem title="Map" id="4oZ-F4-xPQ"/>
                     </toolbarItems>
@@ -590,6 +594,78 @@
                 </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="2075" y="746"/>
+        </scene>
+        <!--Route Detail View Controller-->
+        <scene sceneID="dJM-4y-ljE">
+            <objects>
+                <tableViewController storyboardIdentifier="routeDetailTableViewController" title="Route Detail View Controller" id="pbo-18-4eI" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="static" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="feg-EH-HQg">
+                        <rect key="frame" x="0.0" y="64" width="600" height="492"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <sections>
+                            <tableViewSection headerTitle="Summary" id="vCX-HZ-b2G">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="79" id="Tdk-Ed-dp3">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Tdk-Ed-dp3" id="12j-cb-sZJ">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Ride Start" id="ZYR-Ju-lux">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="72" id="O5t-gg-jlH">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="O5t-gg-jlH" id="JKV-Wj-q2J">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Directions" id="oL7-Vm-GcF">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="127" id="8rm-uf-kMV">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="8rm-uf-kMV" id="Kd2-Vq-PXY">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Ride End" id="uXe-jJ-NHD">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="49" id="XSW-NX-BZB">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="XSW-NX-BZB" id="HVd-sQ-Dr7">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Advisories" id="XdP-OI-zBF">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="127" id="1KA-eP-IE0">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1KA-eP-IE0" id="CoC-bp-D5m">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="pbo-18-4eI" id="bQa-W6-HQ2"/>
+                            <outlet property="delegate" destination="pbo-18-4eI" id="VZD-Zw-cqi"/>
+                        </connections>
+                    </tableView>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <navigationItem key="navigationItem" title="Route" id="xGb-g8-DPX"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fSp-cQ-GYO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2749" y="746"/>
         </scene>
         <!--Rides Navigation Controller-->
         <scene sceneID="fB9-LO-za9">
