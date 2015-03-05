@@ -2,19 +2,21 @@
 //  Ride.h
 //  ORN-Ops
 //
-//  Created by Johnny on 2015-03-02.
+//  Created by Johnny on 2015-03-04.
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+@class Team;
 
 @interface Ride : NSManagedObject
 
 @property (nonatomic, retain) NSDate * dateTimeEnd;
 @property (nonatomic, retain) NSDate * dateTimeStart;
 @property (nonatomic, retain) NSDecimalNumber * donationAmount;
+@property (nonatomic, retain) NSNumber * duration;
 @property (nonatomic, retain) NSString * locationEndAddress;
 @property (nonatomic, retain) NSString * locationEndCity;
 @property (nonatomic, retain) NSNumber * locationEndLatitude;
@@ -35,6 +37,6 @@
 @property (nonatomic, retain) NSString * vehicleDescription;
 @property (nonatomic, retain) NSNumber * vehicleSeatBeltCount;
 @property (nonatomic, retain) NSString * vehicleTransmission;
-@property (nonatomic, retain) NSManagedObject *teamAssigned;
+@property (nonatomic, retain) Team *teamAssigned;
 
 @end

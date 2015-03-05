@@ -22,13 +22,14 @@
 #
 
 
-- (instancetype)initWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType {
+- (instancetype)initWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimation:(BOOL)needsAnimation {
 	
 	self = [super init];
 	if (self) {
 
 		_ride = ride;
 		_rideLocationType = rideLocationType;
+		_needsAnimation = needsAnimation;
 		
 		NSString* titlePrefix = nil;
 		
@@ -62,13 +63,13 @@
 
 - (instancetype)init {
 	
-	return [self initWithRide:nil andRideLocationType:RideLocationType_None];
+	return [self initWithRide:nil andRideLocationType:RideLocationType_None andNeedsAnimation:NO];
 }
 
 
-+ (instancetype)ridePointAnnotationWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType {
++ (instancetype)ridePointAnnotationWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimation:(BOOL)needsAnimation {
 
-	return [[RidePointAnnotation alloc] initWithRide:ride andRideLocationType:rideLocationType];
+	return [[RidePointAnnotation alloc] initWithRide:ride andRideLocationType:rideLocationType andNeedsAnimation:needsAnimation];
 }
 
 

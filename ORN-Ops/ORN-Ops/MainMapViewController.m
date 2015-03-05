@@ -361,6 +361,26 @@
 }
 
 
+- (IBAction)mapTypeChanged:(UISegmentedControl*)sender {
+	
+	switch (self.mapTypeSegmentedControl.selectedSegmentIndex) {
+			
+		default:
+		case 0:
+			self.mainMapView.mapType = MKMapTypeStandard;
+			break;
+			
+		case 1:
+			self.mainMapView.mapType = MKMapTypeHybrid;
+			break;
+			
+		case 2:
+			self.mainMapView.mapType = MKMapTypeSatellite;
+			break;
+	}
+}
+
+
 #
 # pragma mark Notification Handlers
 #
@@ -369,27 +389,99 @@
 - (void)rideUpdatedWithNotification:(NSNotification*)notification {
 	
 	Ride* ride = notification.userInfo[RIDE_ENTITY_NAME];
+	BOOL needsAnimation = (notification.userInfo[RIDE_DID_LOCATION_CHANGE_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_DID_LOCATION_CHANGE_NOTIFICATION_KEY]).boolValue);
 	
 	// Find ride annotations related to given ride - if none, we are done
-	NSArray* annotationsAffected = [self.mainMapView.annotations filteredArrayUsingPredicate:
-									[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
+	// NOTE: There should be max 2, one each for start and end locations
+	NSArray* annotationsAffected =
+		[self.mainMapView.annotations filteredArrayUsingPredicate:
+		 [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
 		
 		if (![evaluatedObject isKindOfClass:[RidePointAnnotation class]]) return NO;
-		
 		RidePointAnnotation* ridePointAnnotation = evaluatedObject;
+		
 		return ridePointAnnotation.ride == ride;
 	}]];
 	
-	// Refresh map annotations by removing, reinitializing, and re-adding to map view
+	// Refresh map annotations - remove, re-init, re-add, and re-select
 	for (RidePointAnnotation* ridePointAnnotation in annotationsAffected) {
 		
-		[self.mainMapView removeAnnotation:ridePointAnnotation];
-		[self.mainMapView addAnnotation:[ridePointAnnotation initWithRide:ride andRideLocationType:ridePointAnnotation.rideLocationType]];
+		BOOL isAnnotationSelected = [self.mainMapView.selectedAnnotations containsObject:ridePointAnnotation];
 		
-		//		if (ridePointAnnotation.rideLocationType == RideLocationType_Start) {
-		//			[self.mainMapView selectAnnotation:ridePointAnnotation animated:YES];
-		//		}
+		[self.mainMapView removeAnnotation:ridePointAnnotation];
+		[self.mainMapView addAnnotation:[ridePointAnnotation initWithRide:ride andRideLocationType:ridePointAnnotation.rideLocationType andNeedsAnimation:needsAnimation]];
+		
+		if (isAnnotationSelected) {
+			[self.mainMapView selectAnnotation:ridePointAnnotation animated:needsAnimation];
+		}
 	}
+}
+
+
+#
+# pragma mark Command Handlers
+#
+
+
+// Handle command string
+// Returns whether command string was handled
+- (BOOL)handleCommandString:(NSString*)commandString {
+	
+	commandString = [commandString lowercaseString];
+	BOOL handled = NO;
+	
+	if ([COMMAND_HELP isEqualToString:commandString]) {
+		
+		[self presentAlertWithTitle:@"ORN Commands"
+						 andMessage:[NSString stringWithFormat:
+									 @"%@\n%@\n%@\n%@\n%@\n",
+									 COMMAND_HELP,
+									 COMMAND_DEMO,
+									 COMMAND_DEMO_RIDES,
+									 COMMAND_DEMO_TEAMS,
+									 COMMAND_DEMO_ASSIGN
+									 ]];
+		handled = YES;
+		
+	} else if ([COMMAND_DEMO isEqualToString:commandString]) {
+		
+		// Run all demo commands
+		[self handleCommandString:COMMAND_DEMO_RIDES];
+		
+		handled = YES;
+		
+	} else if ([COMMAND_DEMO_RIDES isEqualToString:commandString]) {
+		
+		// Load all demo rides
+		[DemoUtil loadDemoRideDataModel:self.managedObjectContext];
+		self.showRides = nil;
+		self.rideFetchedResultsController = nil; // Trip refetch
+		[self configureView];
+		
+		handled = YES;
+		
+	} else if ([COMMAND_DEMO_TEAMS isEqualToString:commandString]) {
+		
+		// Load all demo teams
+		[DemoUtil loadDemoTeamDataModel:self.managedObjectContext];
+		self.showTeams = nil;
+		self.teamFetchedResultsController = nil; // Trip refetch
+		[self configureView];
+		
+		handled = YES;
+		
+	} else if ([COMMAND_DEMO_ASSIGN isEqualToString:commandString]) {
+		
+		// Assign teams to rides
+		
+		handled = YES;
+	}
+	
+	if (handled) {
+		NSLog(@"Handled Command: %@", commandString);
+	}
+	
+	return handled;
 }
 
 
@@ -424,13 +516,13 @@
 		if (!ride.locationStartLatitude || !ride.locationStartLongitude) continue;
 		
 		// Add annotation for start location to map
-		[self.mainMapView addAnnotation:[RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_Start]];
+		[self.mainMapView addAnnotation:[RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_Start andNeedsAnimation:YES]];
 		
 		// If no end-location coordinate, we are done with this ride
 		if (!ride.locationEndLatitude || !ride.locationEndLongitude) continue;
 		
 		// Add annotation for end location to map
-		[self.mainMapView addAnnotation:[RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_End]];
+		[self.mainMapView addAnnotation:[RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_End andNeedsAnimation:YES]];
 	}
 }
 
@@ -488,7 +580,7 @@
 		
 		// Clear entry field and annotate ride on map view
 		self.addressTextField.text = @"";
-		RidePointAnnotation* rideStartPointAnnotation = [RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_Start];
+		RidePointAnnotation* rideStartPointAnnotation = [RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_Start andNeedsAnimation:YES];
 		[self.mainMapView addAnnotation:rideStartPointAnnotation];
 		[self.mainMapView setCenterCoordinate:CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue) animated:YES];
 		[self.mainMapView selectAnnotation:rideStartPointAnnotation animated:YES];
@@ -588,8 +680,9 @@
 			return nil;
 	}
 	
-	// Animate pin
-	ridePinAnnotationView.animatesDrop = YES;
+	// Animate pin, and reset trigger
+	ridePinAnnotationView.animatesDrop = ridePointAnnotation.needsAnimation;
+	ridePointAnnotation.needsAnimation = NO;
 	
 	// Add callout view to annotation
 	ridePinAnnotationView.canShowCallout = YES;
@@ -670,98 +763,6 @@
 	return [NSString stringWithFormat:@"%@ (%.3f,%.3f)", placemark.name, placemark.location.coordinate.latitude, placemark.location.coordinate.longitude];
 	
 	//	return ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO);
-}
-
-
-#
-# pragma mark Action Handlers
-#
-
-
-- (IBAction)mapTypeChanged:(UISegmentedControl*)sender {
-	
-	switch (self.mapTypeSegmentedControl.selectedSegmentIndex) {
-			
-		default:
-		case 0:
-			self.mainMapView.mapType = MKMapTypeStandard;
-			break;
-			
-		case 1:
-			self.mainMapView.mapType = MKMapTypeHybrid;
-			break;
-			
-		case 2:
-			self.mainMapView.mapType = MKMapTypeSatellite;
-			break;
-	}
-}
-
-
-#
-# pragma mark Command Handlers
-#
-
-
-// Handle command string
-// Returns whether command string was handled
-- (BOOL)handleCommandString:(NSString*)commandString {
-	
-	commandString = [commandString lowercaseString];
-	BOOL handled = NO;
-	
-	if ([COMMAND_HELP isEqualToString:commandString]) {
-		
-		[self presentAlertWithTitle:@"ORN Commands"
-						 andMessage:[NSString stringWithFormat:
-									 @"%@\n%@\n%@\n%@\n%@\n",
-									 COMMAND_HELP,
-									 COMMAND_DEMO,
-									 COMMAND_DEMO_RIDES,
-									 COMMAND_DEMO_TEAMS,
-									 COMMAND_DEMO_ASSIGN
-									 ]];
-		handled = YES;
-		
-	} else if ([COMMAND_DEMO isEqualToString:commandString]) {
-		
-		// Run all demo commands
-		[self handleCommandString:COMMAND_DEMO_RIDES];
-		
-		handled = YES;
-		
-	} else if ([COMMAND_DEMO_RIDES isEqualToString:commandString]) {
-		
-		// Load all demo rides
-		[DemoUtil loadDemoRideDataModel:self.managedObjectContext];
-		self.showRides = nil;
-		self.rideFetchedResultsController = nil; // Trip refetch
-		[self configureView];
-		
-		handled = YES;
-		
-	} else if ([COMMAND_DEMO_TEAMS isEqualToString:commandString]) {
-		
-		// Load all demo teams
-		[DemoUtil loadDemoTeamDataModel:self.managedObjectContext];
-		self.showTeams = nil;
-		self.teamFetchedResultsController = nil; // Trip refetch
-		[self configureView];
-		
-		handled = YES;
-		
-	} else if ([COMMAND_DEMO_ASSIGN isEqualToString:commandString]) {
-		
-		// Assign teams to rides
-		
-		handled = YES;
-	}
-	
-	if (handled) {
-		NSLog(@"Handled Command: %@", commandString);
-	}
-	
-	return handled;
 }
 
 

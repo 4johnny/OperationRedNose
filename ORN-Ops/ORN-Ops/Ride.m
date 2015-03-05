@@ -2,11 +2,12 @@
 //  Ride.m
 //  ORN-Ops
 //
-//  Created by Johnny on 2015-03-02.
+//  Created by Johnny on 2015-03-04.
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
 #import "Ride.h"
+#import "Team.h"
 
 
 @implementation Ride
@@ -14,6 +15,7 @@
 @dynamic dateTimeEnd;
 @dynamic dateTimeStart;
 @dynamic donationAmount;
+@dynamic duration;
 @dynamic locationEndAddress;
 @dynamic locationEndCity;
 @dynamic locationEndLatitude;
