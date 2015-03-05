@@ -317,7 +317,7 @@
 		view.frame = CGRectMake(view.frame.origin.x, view.frame.origin.y - self.view.frame.size.height, view.frame.size.width, view.frame.size.height);
 		
 		// Animate drop, completing with squash effect
-		[UIView animateWithDuration:0.5 delay:(0.04 * [views indexOfObject:view]) options: UIViewAnimationOptionCurveLinear animations:^{
+		[UIView animateWithDuration:0.25 delay:(0.04 * [views indexOfObject:view]) options: UIViewAnimationOptionCurveLinear animations:^{
 			
 			view.frame = endFrame;
 			
