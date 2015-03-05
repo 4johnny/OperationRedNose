@@ -50,8 +50,8 @@
 #define TEAM_CURRENT_NORMAL_ANNOTATION_ID	@"teamCurrentNormalAnnotation"
 #define TEAM_CURRENT_MASCOT_ANNOTATION_ID	@"teamCurrentMascotAnnotation"
 
-#define MAP_ANNOTATION_TIME_FORMAT		@"HH:mm"
-#define LEFT_CALLOUT_ACCESSORY_FRAME	CGRectMake(0, 0, 35, 30)
+#define MAP_ANNOTATION_TIME_FORMAT			@"HH:mm"
+#define LEFT_CALLOUT_ACCESSORY_LABEL_WIDTH	40
 
 #
 # pragma mark Command Constants
@@ -545,10 +545,12 @@
 				
 				NSDateFormatter* startTimeDateFormatter = [[NSDateFormatter alloc] init];
 				startTimeDateFormatter.dateFormat = MAP_ANNOTATION_TIME_FORMAT;
-				UILabel* leftInfoView = [[UILabel alloc] initWithFrame:LEFT_CALLOUT_ACCESSORY_FRAME];
+				UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, LEFT_CALLOUT_ACCESSORY_LABEL_WIDTH, ridePinAnnotationView.bounds.size.height)];
 				leftInfoView.text = [startTimeDateFormatter stringFromDate:ridePointAnnotation.ride.dateTimeStart];
-				leftInfoView.font = [UIFont fontWithDescriptor:leftInfoView.font.fontDescriptor size:[UIFont smallSystemFontSize]];
+				leftInfoView.font = [UIFont boldSystemFontOfSize:12.0];
 				leftInfoView.textAlignment = NSTextAlignmentCenter;
+				leftInfoView.textColor = [UIColor whiteColor];
+				leftInfoView.backgroundColor = [UIColor greenColor];
 				ridePinAnnotationView.leftCalloutAccessoryView = leftInfoView;
 			}
 			
@@ -569,10 +571,12 @@
 				
 				NSDateFormatter* endTimeDateFormatter = [[NSDateFormatter alloc] init];
 				endTimeDateFormatter.dateFormat = MAP_ANNOTATION_TIME_FORMAT;
-				UILabel* leftInfoView = [[UILabel alloc] initWithFrame:LEFT_CALLOUT_ACCESSORY_FRAME];
+				UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, LEFT_CALLOUT_ACCESSORY_LABEL_WIDTH, ridePinAnnotationView.bounds.size.height)];
 				leftInfoView.text = [endTimeDateFormatter stringFromDate:ridePointAnnotation.ride.dateTimeEnd];
-				leftInfoView.font = [UIFont fontWithDescriptor:leftInfoView.font.fontDescriptor size:[UIFont smallSystemFontSize]];
+				leftInfoView.font = [UIFont boldSystemFontOfSize:12.0];
 				leftInfoView.textAlignment = NSTextAlignmentCenter;
+				leftInfoView.textColor = [UIColor whiteColor];
+				leftInfoView.backgroundColor = [UIColor redColor];
 				ridePinAnnotationView.leftCalloutAccessoryView = leftInfoView;
 			}
 			
