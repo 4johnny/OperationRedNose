@@ -20,7 +20,7 @@
         <attribute name="passengerCount" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="passengerNameFirst" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="passengerNameLast" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="passengerPhoneNumber" optional="YES" attributeType="String" minValueString="7" syncable="YES"/>
+        <attribute name="passengerPhoneNumber" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sourceName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="status" optional="YES" attributeType="Integer 16" minValueString="0" defaultValueString="0" syncable="YES"/>
         <attribute name="vehicleDescription" optional="YES" attributeType="String" syncable="YES"/>

@@ -867,6 +867,7 @@
 				leftInfoView.textAlignment = NSTextAlignmentCenter;
 				leftInfoView.textColor = [UIColor whiteColor];
 				leftInfoView.backgroundColor = ridePointAnnotation.ride.teamAssigned ? [UIColor greenColor] : [UIColor purpleColor];
+				leftInfoView.alpha = 0.5;
 				
 				ridePinAnnotationView.leftCalloutAccessoryView = leftInfoView;
 			}
@@ -895,6 +896,7 @@
 				leftInfoView.textAlignment = NSTextAlignmentCenter;
 				leftInfoView.textColor = [UIColor whiteColor];
 				leftInfoView.backgroundColor = [UIColor redColor];
+				leftInfoView.alpha = 0.5;
 				
 				ridePinAnnotationView.leftCalloutAccessoryView = leftInfoView;
 			}
@@ -956,6 +958,7 @@
 		leftInfoView.textAlignment = NSTextAlignmentCenter;
 		leftInfoView.textColor = [UIColor whiteColor];
 		leftInfoView.backgroundColor = [UIColor blueColor];
+		leftInfoView.alpha = 0.5;
 		
 		teamAnnotationView.leftCalloutAccessoryView = leftInfoView;
 	}
@@ -976,7 +979,7 @@
 
 - (void)mapView:(MKMapView*)mapView didSelectRidePointAnnotationWithRide:(Ride*)ride {
 
-	// Add polying for team assigned to ride, if possible
+	// Add polyline for team assigned to ride, if possible
 	[self configureTeamAssignedOverlayWithTeam:ride.teamAssigned andStartCoordinate:CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue)];
 	
 	// If cannot get directions request, we are done with this ride

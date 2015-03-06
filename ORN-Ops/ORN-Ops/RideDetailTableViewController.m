@@ -311,11 +311,11 @@
 
 
 // Load ride data model into view fields
-// TODO: Load remaining data model values into view
 - (void)loadDataModelIntoView {
 
 	// Load dispatch fields
-	
+	self.sourceTextField.text = self.ride.sourceName;
+	self.donationTextField.text = self.ride.donationAmount.stringValue;
 	if (self.ride.teamAssigned) {
 		
 		NSUInteger row = [self.teamFetchedResultsController.fetchedObjects indexOfObject:self.ride.teamAssigned];
@@ -325,14 +325,22 @@
 	// Load passenger fields
 	self.firstNameTextField.text = self.ride.passengerNameFirst;
 	self.lastNameTextField.text = self.ride.passengerNameLast;
+	self.phoneNumberTextField.text = self.ride.passengerPhoneNumber;
+	[self.passengerCountPickerView selectRow:self.ride.passengerCount.longValue inComponent:0 animated:NO];
 	
 	// Load location fields
 	self.startAddressTextField.text = self.ride.locationStartAddress;
 	self.endAddressTextField.text = self.ride.locationEndAddress;
+	self.transferFromTextField.text = self.ride.locationTransferFrom;
+	self.transferToTextField.text = self.ride.locationTransferTo;
 	
 	// Load vehicle fields
+	self.vehicleDescriptionTextField.text = self.ride.vehicleDescription;
+	[self.vehicleTransmissionPickerView selectRow:([self.ride.vehicleTransmission isEqualToString:@"Manual"] ? 1 : 0) inComponent:0 animated:NO];
+	[self.seatBeltCountPickerView selectRow:self.ride.vehicleSeatBeltCount.longValue inComponent:0 animated:NO];
 	
 	// Load notes fields
+	self.notesTextView.text = self.ride.notes;
 	
 	// Load time fields
 	self.startTimeDatePicker.date = self.ride.dateTimeStart;
@@ -340,10 +348,11 @@
 
 
 // Save ride data model from view fields
-// TODO: Save remaining data model values from view
 - (void)saveDataModelFromView {
 
 	// Save dispatch fields
+	self.ride.sourceName = self.sourceTextField.text;
+	self.ride.donationAmount = [NSDecimalNumber decimalNumberWithString:self.donationTextField.text];
 
 	// Remove any existing team assigned and assign new one if necessary - notify observers
 	if (self.ride.teamAssigned) {
@@ -364,24 +373,32 @@
 	// Save passenger fields
 	self.ride.passengerNameFirst = self.firstNameTextField.text;
 	self.ride.passengerNameLast = self.lastNameTextField.text;
+	self.ride.passengerPhoneNumber = self.phoneNumberTextField.text;
+	self.ride.passengerCount = [NSNumber numberWithLong:[self.passengerCountPickerView selectedRowInComponent:0]];
 	
 	// Save location fields
 	// TODO: Validate locations via geocoding
 	self.ride.locationStartAddress = self.startAddressTextField.text;
 	self.ride.locationEndAddress = self.endAddressTextField.text;
+	self.ride.locationTransferFrom = self.transferFromTextField.text;
+	self.ride.locationTransferTo = self.transferToTextField.text;
 	
 	// Save vehicle fields
+	self.ride.vehicleDescription = self.vehicleDescriptionTextField.text;
+	self.ride.vehicleTransmission = [self.vehicleTransmissionPickerView selectedRowInComponent:0] == 1 ? @"Manual" : @"Automatic";
+	self.ride.vehicleSeatBeltCount = [NSNumber numberWithLong:[self.seatBeltCountPickerView selectedRowInComponent:0]];
 	
 	// Save notes fields
+	self.ride.notes = self.notesTextView.text;
 	
 	// Save time fields
 	self.ride.dateTimeStart = self.startTimeDatePicker.date;
 	
-	// Persist data model to disk
-	[RideDetailTableViewController saveManagedObjectContext];
-
 	// Notify observers of updates to ride
 	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:self.ride, RIDE_DID_LOCATION_CHANGE_NOTIFICATION_KEY:[NSNumber numberWithBool:YES]}];
+	
+	// Persist data model to disk
+	[RideDetailTableViewController saveManagedObjectContext];
 }
 
 
