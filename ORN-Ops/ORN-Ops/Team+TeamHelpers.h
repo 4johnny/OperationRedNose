@@ -26,4 +26,10 @@
 
 + (instancetype)teamWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
 
+#
+# pragma mark Helpers
+#
+
+- (NSString*)getTeamTitle;
+
 @end

@@ -620,6 +620,7 @@
 		
 		// Run all demo commands
 		[self handleCommandString:COMMAND_DEMO_RIDES];
+		[self handleCommandString:COMMAND_DEMO_TEAMS];
 		
 		handled = YES;
 		

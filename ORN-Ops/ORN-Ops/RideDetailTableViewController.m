@@ -8,7 +8,20 @@
 
 #import "RideDetailTableViewController.h"
 #import "AppDelegate.h"
-#import "Team.h"
+#import "Team+TeamHelpers.h"
+
+
+#
+# pragma mark - Constants
+#
+
+
+#
+# pragma mark Data Model Constants
+#
+
+#define TEAM_FETCH_SORT_KEY			@"name"
+#define TEAM_FETCH_SORT_ASCENDING	YES
 
 
 #
@@ -17,6 +30,15 @@
 
 
 @interface RideDetailTableViewController ()
+
+
+#
+# pragma mark Properties
+#
+
+
+@property (strong, nonatomic) NSFetchedResultsController* teamFetchedResultsController;
+
 
 @end
 
@@ -27,6 +49,38 @@
 
 
 @implementation RideDetailTableViewController
+
+
+#
+# pragma mark Property Accessors
+#
+
+
+- (NSFetchedResultsController*)teamFetchedResultsController {
+	
+	if (_teamFetchedResultsController) return _teamFetchedResultsController;
+	
+	// Create fetch request for teams
+	NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:TEAM_ENTITY_NAME];
+	fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY ascending:TEAM_FETCH_SORT_ASCENDING]];
+	//fetchRequest.predicate = [NSPredicate predicateWithFormat:@"movie.id == %@", self.movie.id];
+	//fetchRequest.fetchBatchSize = PAGE_LIMIT;
+	//fetchRequest.fetchLimit = PAGE_LIMIT;
+	
+	// NOTE: nil for section name key path means "no sections"
+	_teamFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.ride.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+	_teamFetchedResultsController.delegate = self;
+	
+	NSError *error = nil;
+	if ([_teamFetchedResultsController performFetch:&error]) return _teamFetchedResultsController;
+	
+	// TODO: Replace this with code to handle the error appropriately.
+	// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+	NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+	abort();
+	
+	return _teamFetchedResultsController;
+}
 
 
 #
@@ -99,6 +153,7 @@
 
 - (NSInteger)pickerView:(UIPickerView*)pickerView numberOfRowsInComponent:(NSInteger)component {
 
+	if (pickerView == self.teamAssignedPickerView) return self.teamFetchedResultsController.fetchedObjects.count;
 	if (pickerView == self.passengerCountPickerView) return 10;
 	if (pickerView == self.vehicleTransmissionPickerView) return 2;
 	if (pickerView == self.seatBeltCountPickerView) return 11;
@@ -126,6 +181,7 @@
 
 - (CGFloat)pickerView:(UIPickerView*)pickerView widthForComponent:(NSInteger)component {
 
+	if (pickerView == self.teamAssignedPickerView) return 300;
 	if (pickerView == self.passengerCountPickerView) return 35;
 	if (pickerView == self.vehicleTransmissionPickerView) return 150;
 	if (pickerView == self.seatBeltCountPickerView) return 35;
@@ -136,20 +192,25 @@
 
 - (NSString*)pickerView:(UIPickerView*)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
 
+	if (pickerView == self.teamAssignedPickerView) {
+		
+		Team* team = self.teamFetchedResultsController.fetchedObjects[row];
+		NSString* teamTitle = [team getTeamTitle];
+		return (teamTitle && teamTitle.length > 0) ? teamTitle : @"<Unidentified Team>";
+	}
+	
 	if (pickerView == self.passengerCountPickerView) return [NSString stringWithFormat:@"%d", (int)row + 1];
 	
 	if (pickerView == self.vehicleTransmissionPickerView) {
 		
 		switch (row) {
 				
+			default:
 			case 0:
 			    return @"Automatic";
 				
 			case 1:
 				return @"Manual";
-				
-			default:
-		    break;
 		}
 	}
 	
@@ -159,18 +220,41 @@
 }
 
 
-/*
 - (NSAttributedString*)pickerView:(UIPickerView*)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component {
 
-	return nil;
+	if (pickerView == self.teamAssignedPickerView) {
+		
+		// Left-align team titles
+		NSString* title = [self pickerView:pickerView titleForRow:row forComponent:component];
+		NSMutableParagraphStyle* mutableParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+		mutableParagraphStyle.alignment = NSTextAlignmentLeft;
+		NSMutableAttributedString* attributedTitle = [[NSMutableAttributedString alloc] initWithString:title attributes:@{NSParagraphStyleAttributeName:mutableParagraphStyle}];
+//		[attributedTitle addAttribute:NSParagraphStyleAttributeName value:mutableParagraphStyle range:NSMakeRange(0,title.length)];
+		
+		return attributedTitle;
+	}
+	
+	return nil; // NOTE: Falls back to "pickerView:titleForRow:forComponent:"
 }
-*/
+
+
 /*
 - (UIView*)pickerView:(UIPickerView*)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView*)view {
 	
 	return view;
 }
 */
+
+
+#
+# pragma mark <NSFetchedResultsControllerDelegate>
+#
+
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController*)controller {
+	
+	// NOTE: Even if method is empty, at least one protocol method must be implemented for fetch-results controller to track changes
+}
 
 
 #
@@ -204,6 +288,7 @@
 - (void)configureView {
 
 	[self configureRangeForStartTimeDatePicker];
+	
 	[self loadDataModelIntoView];
 }
 
@@ -231,9 +316,12 @@
 - (void)loadDataModelIntoView {
 
 	// Load dispatch fields
-//	if (self.ride.teamAssigned) {
-//		self.teamAssignedTextField.text = ((Team*)self.ride.teamAssigned).name;
-//	}
+	
+	if (self.ride.teamAssigned) {
+		
+		NSUInteger row = [self.teamFetchedResultsController.fetchedObjects indexOfObject:self.ride.teamAssigned];
+		[self.teamAssignedPickerView selectRow:row inComponent:0 animated:NO];
+	}
 	
 	// Load passenger fields
 	self.firstNameTextField.text = self.ride.passengerNameFirst;
@@ -257,12 +345,8 @@
 - (void)saveDataModelFromView {
 
 	// Save dispatch fields
-//	self.ride.teamAssigned = nil;
-//	if (self.teamAssignedPicker.selectedIndex) {
-//		
-//		// TODO: Get selected team object to assign
-//		self.ride.teamAssigned =;
-//	}
+	NSInteger selectedTeamRow = [self.teamAssignedPickerView selectedRowInComponent:0];
+	self.ride.teamAssigned = self.teamFetchedResultsController.fetchedObjects[selectedTeamRow];
 	
 	// Save passenger fields
 	self.ride.passengerNameFirst = self.firstNameTextField.text;

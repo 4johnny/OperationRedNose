@@ -31,11 +31,10 @@
 		_needsAnimation = needsAnimation;
 
 		self.coordinate = CLLocationCoordinate2DMake(_team.locationCurrentLatitude.doubleValue, _team.locationCurrentLongitude.doubleValue);
+		
 		NSString* titlePrefix = @"Team";
-		
-		titlePrefix = (_team.name && _team.name.length > 0) ? [NSString stringWithFormat:@"%@: %@", titlePrefix, _team.name] : titlePrefix;
-		
-		self.title = (_team.members && _team.members.length > 0) ? [NSString stringWithFormat:@"%@: %@", titlePrefix, _team.members] : titlePrefix;
+		NSString* teamTitle = [_team getTeamTitle];
+		self.title = (teamTitle && teamTitle.length > 0) ? [NSString stringWithFormat:@"%@: %@", titlePrefix, teamTitle] : titlePrefix;
 		
 		self.subtitle = _team.locationCurrentAddress;
 	}

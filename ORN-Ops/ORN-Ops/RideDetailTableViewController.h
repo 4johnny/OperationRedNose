@@ -19,7 +19,7 @@
 # pragma mark - Interface
 #
 
-@interface RideDetailTableViewController : UITableViewController <UIPickerViewDataSource, UIPickerViewDelegate>
+@interface RideDetailTableViewController : UITableViewController <UIPickerViewDataSource, UIPickerViewDelegate, NSFetchedResultsControllerDelegate>
 
 #
 # pragma mark Properties

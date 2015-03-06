@@ -324,7 +324,11 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fD5-6F-yV7">
-                                                    <rect key="frame" x="127" y="75" width="150" height="162"/>
+                                                    <rect key="frame" x="127" y="75" width="300" height="162"/>
+                                                    <connections>
+                                                        <outlet property="dataSource" destination="EOY-Bm-UjH" id="lGN-B9-DrL"/>
+                                                        <outlet property="delegate" destination="EOY-Bm-UjH" id="nlQ-pL-DWc"/>
+                                                    </connections>
                                                 </pickerView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Team:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QyG-aL-jzr">
                                                     <rect key="frame" x="8" y="145" width="111" height="21"/>
