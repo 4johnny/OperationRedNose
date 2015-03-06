@@ -411,7 +411,7 @@
 
 - (void)mapView:(MKMapView*)mapView didDeselectAnnotationView:(MKAnnotationView*)view {
 	
-	// Clear all selected annotations, since may get multiple due to aynch timing
+	// Clear all selected annotations, since may get multiple due to asynch timing
 	[self clearAllAnnotationSelections];
 
 	// Remove route overlays
@@ -617,7 +617,7 @@
 		UIAlertAction* deleteAllAlertAction = [UIAlertAction actionWithTitle:@"Delete All" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 			
 			// Delete all rides and teams
-			// TODO: Manually remove relationships?  They still exist in DB even after their objects have been deleated.  They get resurrected when new objects are created later
+			// TODO: Intead, just ask AppDelegate to delete and recreate the backing DB file
 			AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
 			[appDelegate deleteAllObjectsWithEntityName:RIDE_ENTITY_NAME];
 			[appDelegate deleteAllObjectsWithEntityName:TEAM_ENTITY_NAME];
@@ -640,6 +640,7 @@
 		// Run all demo commands
 		[self handleCommandString:COMMAND_DEMO_RIDES];
 		[self handleCommandString:COMMAND_DEMO_TEAMS];
+		[self handleCommandString:COMMAND_DEMO_ASSIGN];
 		
 		isCommandHandled = YES;
 		
@@ -860,7 +861,7 @@
 				NSDateFormatter* startTimeDateFormatter = [[NSDateFormatter alloc] init];
 				startTimeDateFormatter.dateFormat = MAP_ANNOTATION_TIME_FORMAT;
 				
-				UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, 53)];
+				UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 53)];
 				leftInfoView.text = [startTimeDateFormatter stringFromDate:ridePointAnnotation.ride.dateTimeStart];
 				leftInfoView.font = [UIFont boldSystemFontOfSize:14.0];
 				leftInfoView.textAlignment = NSTextAlignmentCenter;
@@ -888,7 +889,7 @@
 				NSDateFormatter* endTimeDateFormatter = [[NSDateFormatter alloc] init];
 				endTimeDateFormatter.dateFormat = MAP_ANNOTATION_TIME_FORMAT;
 				
-				UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, 53)];
+				UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 53)];
 				leftInfoView.text = [endTimeDateFormatter stringFromDate:ridePointAnnotation.ride.dateTimeEnd];
 				leftInfoView.font = [UIFont boldSystemFontOfSize:14.0];
 				leftInfoView.textAlignment = NSTextAlignmentCenter;
@@ -949,7 +950,7 @@
 			minsUntilTeamAvailable += rideAssigned.duration.doubleValue / SECONDS_PER_MINUTE;
 		}
 
-		UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, 53)];
+		UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 53)];
 		leftInfoView.text = [NSString stringWithFormat:@"%d min", minsUntilTeamAvailable];
 		leftInfoView.font = [UIFont boldSystemFontOfSize:14.0];
 		leftInfoView.textAlignment = NSTextAlignmentCenter;
