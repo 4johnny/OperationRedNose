@@ -934,9 +934,12 @@
 	if (teamPointAnnotation.team.ridesAssigned && teamPointAnnotation.team.ridesAssigned.count > 0) {
 		
 		// TODO: Use proper calculation for mins until available
-		Ride* rideAssigned = teamPointAnnotation.team.ridesAssigned.anyObject;
-		int minsUntilTeamAvailable = rideAssigned.duration.doubleValue / SECONDS_PER_MINUTE;
-		
+		int minsUntilTeamAvailable = 0;
+		for (Ride* rideAssigned in teamPointAnnotation.team.ridesAssigned) {
+			
+			minsUntilTeamAvailable += rideAssigned.duration.doubleValue / SECONDS_PER_MINUTE;
+		}
+
 		UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, 53)];
 		leftInfoView.text = [NSString stringWithFormat:@"%d min", minsUntilTeamAvailable];
 		leftInfoView.font = [UIFont boldSystemFontOfSize:14.0];
