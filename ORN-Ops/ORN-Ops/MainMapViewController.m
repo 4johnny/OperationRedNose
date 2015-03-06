@@ -394,13 +394,13 @@
 	
 	// If not ride, we are done with this view
 	if (![view.annotation isKindOfClass:[RidePointAnnotation class]]) return;
-
-	// If already have an overlay, we are done
-	if (self.mainMapView.overlays.count > 0) return;
-	
-	// If cannot get directions request, we are done with this ride
 	RidePointAnnotation* ridePointAnnotation = view.annotation;
 	Ride* ride = ridePointAnnotation.ride;
+
+	// Add polying for team assigned to ride, if possible
+	[self configureTeamAssignedOverlayWithTeam:ride.teamAssigned andStartCoordinate:CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue)];
+	
+	// If cannot get directions request, we are done with this ride
 	MKDirectionsRequest* directionsRequest = ride.getDirectionsRequest;
 	if (!directionsRequest) return;
 	
@@ -433,7 +433,11 @@
 		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:ride}];
 		self.isSelecting = NO;
 		
-		// Add overlay to map - if one happens already to exist for this ride, reuse it
+		// Add polying for team assigned to ride, if possible
+		// NOTE: Notification handler likely blew away original overlay from above
+		[self configureTeamAssignedOverlayWithTeam:ride.teamAssigned andStartCoordinate:MKCoordinateForMapPoint(route.polyline.points[0])];
+		
+		// Add polyline overlay to map - if one happens already to exist for this ride route, reuse it
 		// TODO: Ensure this issue/code is considered
 		// Find route overlays related to given ride - if none, create new one
 		// NOTE: There should be max 1 overlay
@@ -454,7 +458,6 @@
 			NSLog(@"\t%@", step.instructions);
 		}
 		
-		// TODO: Consider features that also utilize the route steps and advisory notices
 		NSLog(@"Route Advisory Notices (%d):", (int)route.advisoryNotices.count);
 		for (NSString* advisoryNotice in route.advisoryNotices) {
 			NSLog(@"\t%@", advisoryNotice);
@@ -463,13 +466,17 @@
 }
 
 
-- (void)mapView:(MKMapView *)mapView didDeselectAnnotationView:(MKAnnotationView *)view {
+- (void)mapView:(MKMapView*)mapView didDeselectAnnotationView:(MKAnnotationView*)view {
+	
+	// Clear all selected annotations, since may get multiple due to aynch timing
+	[self clearAllAnnotationSelections];
 	
 	// If not ride, we are done with this view
 	if (![view.annotation isKindOfClass:[RidePointAnnotation class]]) return;
 
-	// Remove route overlay for ride
+	// Remove route overlays
 	[self clearAllOverlays];
+	
 //	RidePointAnnotation* ridePointAnnotation = view.annotation;
 //	Ride* ride = ridePointAnnotation.ride;
 	
@@ -503,10 +510,18 @@
 - (MKOverlayRenderer*)mapView:(MKMapView*)mapView rendererForOverlay:(id<MKOverlay>)overlay {
 
 	MKPolylineRenderer* renderer = [[MKPolylineRenderer alloc] initWithOverlay:overlay];
-	
 	renderer.strokeColor = [UIColor blueColor];
 	renderer.alpha = 0.5;
 	renderer.lineWidth = 5.0;
+
+	// For overlay between team and ride use dotted line
+	// NOTE: For now, differentiate polylines by taking advantage of likely point count
+	MKPolyline* polyline = overlay;
+	if (polyline.pointCount <= 2) {
+		
+		renderer.lineDashPattern = @[@5, @10];
+		//	renderer.lineDashPhase = 6;
+	}
 	
 	return renderer;
 }
@@ -588,6 +603,7 @@
 		[self.mainMapView addAnnotation:[ridePointAnnotation initWithRide:ride andRideLocationType:ridePointAnnotation.rideLocationType andNeedsAnimation:needsAnimation]];
 		
 		if (isAnnotationSelected) {
+			[self clearAllAnnotationSelections];
 			[self.mainMapView selectAnnotation:ridePointAnnotation animated:needsAnimation];
 		}
 	}
@@ -621,6 +637,7 @@
 		[self.mainMapView addAnnotation:[teamPointAnnotation initWithTeam:team andNeedsAnimation:needsAnimation]];
 		
 		if (isAnnotationSelected) {
+			[self clearAllAnnotationSelections];
 			[self.mainMapView selectAnnotation:teamPointAnnotation animated:needsAnimation];
 		}
 	}
@@ -1039,6 +1056,17 @@
 	return [NSString stringWithFormat:@"%@ (%.3f,%.3f)", placemark.name, placemark.location.coordinate.latitude, placemark.location.coordinate.longitude];
 	
 	//	return ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO);
+}
+
+
+- (void)configureTeamAssignedOverlayWithTeam:(Team*)team andStartCoordinate:(CLLocationCoordinate2D)startCoordinate {
+	
+	if (!team || !team.locationCurrentLatitude || !team.locationCurrentLongitude) return;
+		
+	CLLocationCoordinate2D locationCoordinates[2] = { CLLocationCoordinate2DMake(team.locationCurrentLatitude.doubleValue, team.locationCurrentLongitude.doubleValue), startCoordinate };
+	MKPolyline* polyline = [MKPolyline polylineWithCoordinates:locationCoordinates count:2];
+	
+	[self.mainMapView addOverlay:polyline level:MKOverlayLevelAboveLabels];
 }
 
 
