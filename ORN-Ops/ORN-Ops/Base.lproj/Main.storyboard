@@ -30,7 +30,7 @@
             <objects>
                 <navigationController storyboardIdentifier="mainMapNavigationController" title="Main Map Navigation Controller" id="KC7-5p-1m8" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Map" id="C0O-X8-QZp"/>
+                    <tabBarItem key="tabBarItem" title="Map" image="ORN-Map-Tab-Icon" id="C0O-X8-QZp"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="PY8-TU-oFh">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -270,7 +270,7 @@
             <objects>
                 <navigationController storyboardIdentifier="teamsNavigationController" title="Teams Navigation Controller" id="kRe-vU-Y7a" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Teams" id="zOE-tf-hrL"/>
+                    <tabBarItem key="tabBarItem" title="Teams" image="ORN-Teams-Tab-Icon" id="zOE-tf-hrL"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Rpj-c3-GSa">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -675,7 +675,7 @@
             <objects>
                 <navigationController storyboardIdentifier="ridesNavigationController" title="Rides Navigation Controller" id="pld-vm-oCy" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Rides" id="gZ7-HR-NQq"/>
+                    <tabBarItem key="tabBarItem" title="Rides" image="ORN-Rides-Tab-Icon" id="gZ7-HR-NQq"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Sqk-Py-Gq4">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -694,5 +694,8 @@
     </scenes>
     <resources>
         <image name="ORN-Bar-Button-Item" width="22" height="30"/>
+        <image name="ORN-Map-Tab-Icon" width="30" height="30"/>
+        <image name="ORN-Rides-Tab-Icon" width="25" height="30"/>
+        <image name="ORN-Teams-Tab-Icon" width="30" height="30"/>
     </resources>
 </document>
