@@ -391,78 +391,21 @@
 	
 	// Break selection cycle due to ride-update notification
 	if (self.isSelecting) return;
+	self.isSelecting = YES;
 	
-	// If not ride, we are done with this view
-	if (![view.annotation isKindOfClass:[RidePointAnnotation class]]) return;
-	RidePointAnnotation* ridePointAnnotation = view.annotation;
-	Ride* ride = ridePointAnnotation.ride;
+	if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) {
+		
+		[self mapView:mapView didSelectRidePointAnnotationWithRide:((RidePointAnnotation*)view.annotation).ride];
+		return;
+	}
+	
+	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
+		
+		[self mapView:mapView didSelectTeamPointAnnotationWithTeam:((TeamPointAnnotation*)view.annotation).team];
+		return;
+	}
 
-	// Add polying for team assigned to ride, if possible
-	[self configureTeamAssignedOverlayWithTeam:ride.teamAssigned andStartCoordinate:CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue)];
-	
-	// If cannot get directions request, we are done with this ride
-	MKDirectionsRequest* directionsRequest = ride.getDirectionsRequest;
-	if (!directionsRequest) return;
-	
-	// Determine route for ride, and add overlay to map asynchronously
-	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
-	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
-		
-		// NOTES: Completion block executes on main thread. Do not run more than one directions calculation simultaneously on this object.
-		if (error) {
-			NSLog(@"ETA Error: %@ %@", error.localizedDescription, error.userInfo);
-			return;
-		}
-		
-		// Route directions calculated successfully, so grab first one
-		// NOTE: Should be exactly 1, since we did not request alternate routes
-		MKRoute* route = response.routes.firstObject;
-		
-		// Update expected travel time for ride, since may have changed
-		ride.duration = [NSNumber numberWithDouble:route.expectedTravelTime]; // seconds
-		NSLog(@"ETA: %.0f seconds", route.expectedTravelTime);
-		
-		// Determine end time by adding ETA seconds to start time
-		ride.dateTimeEnd = [NSDate dateWithTimeInterval:route.expectedTravelTime sinceDate:ride.dateTimeStart];
-		
-		// Store distance in ride
-		ride.distance = [NSNumber numberWithDouble:route.distance]; // meters
-
-		// Notify that ride has updated
-		self.isSelecting = YES;
-		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:ride}];
-		self.isSelecting = NO;
-		
-		// Add polying for team assigned to ride, if possible
-		// NOTE: Notification handler likely blew away original overlay from above
-		[self configureTeamAssignedOverlayWithTeam:ride.teamAssigned andStartCoordinate:MKCoordinateForMapPoint(route.polyline.points[0])];
-		
-		// Add polyline overlay to map - if one happens already to exist for this ride route, reuse it
-		// TODO: Ensure this issue/code is considered
-		// Find route overlays related to given ride - if none, create new one
-		// NOTE: There should be max 1 overlay
-		//	NSArray* annotationsAffected =
-		//	[self.mainMapView.annotations filteredArrayUsingPredicate:
-		//	 [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
-		//
-		//		if (![evaluatedObject isKindOfClass:[RidePointAnnotation class]]) return NO;
-		//		RidePointAnnotation* ridePointAnnotation = evaluatedObject;
-		//
-		//		return ridePointAnnotation.ride == ride;
-		//	}]];
-		[self.mainMapView addOverlay:route.polyline level:MKOverlayLevelAboveRoads];
-		
-		// TODO: Consider features that also utilize the route steps and advisory notices
-		NSLog(@"Route Steps (%d):", (int)route.steps.count);
-		for (MKRouteStep* step in route.steps) {
-			NSLog(@"\t%@", step.instructions);
-		}
-		
-		NSLog(@"Route Advisory Notices (%d):", (int)route.advisoryNotices.count);
-		for (NSString* advisoryNotice in route.advisoryNotices) {
-			NSLog(@"\t%@", advisoryNotice);
-		}
-	}];
+	self.isSelecting = NO;
 }
 
 
@@ -1015,6 +958,98 @@
 	teamAnnotationView.rightCalloutAccessoryView = rightDisclosureButton;
 	
 	return teamAnnotationView;
+}
+
+
+- (void)mapView:(MKMapView*)mapView didSelectRidePointAnnotationWithRide:(Ride*)ride {
+
+	// Add polying for team assigned to ride, if possible
+	[self configureTeamAssignedOverlayWithTeam:ride.teamAssigned andStartCoordinate:CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue)];
+	
+	// If cannot get directions request, we are done with this ride
+	MKDirectionsRequest* directionsRequest = ride.getDirectionsRequest;
+	if (!directionsRequest) {
+		
+		self.isSelecting = NO;
+		return;
+	}
+	
+	// Determine route for ride, and add overlay to map asynchronously
+	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
+	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
+		
+		// NOTES: Completion block executes on main thread. Do not run more than one directions calculation simultaneously on this object.
+		if (error) {
+			NSLog(@"ETA Error: %@ %@", error.localizedDescription, error.userInfo);
+			self.isSelecting = NO;
+			return;
+		}
+		
+		// Route directions calculated successfully, so grab first one
+		// NOTE: Should be exactly 1, since we did not request alternate routes
+		MKRoute* route = response.routes.firstObject;
+		
+		// Update expected travel time for ride, since may have changed
+		ride.duration = [NSNumber numberWithDouble:route.expectedTravelTime]; // seconds
+		NSLog(@"ETA: %.0f seconds", route.expectedTravelTime);
+		
+		// Determine end time by adding ETA seconds to start time
+		ride.dateTimeEnd = [NSDate dateWithTimeInterval:route.expectedTravelTime sinceDate:ride.dateTimeStart];
+		
+		// Store distance in ride
+		ride.distance = [NSNumber numberWithDouble:route.distance]; // meters
+		
+		// Notify that ride has updated
+		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:ride}];
+		self.isSelecting = NO;
+		
+		// Add polyline for team assigned to ride, if possible
+		// NOTE: Notification handler likely blew away original overlay from above
+		[self configureTeamAssignedOverlayWithTeam:ride.teamAssigned andStartCoordinate:MKCoordinateForMapPoint(route.polyline.points[0])];
+		
+		// Add polyline overlay to map - if one happens already to exist for this ride route, reuse it
+		// TODO: Ensure this issue/code is considered
+		// Find route overlays related to given ride - if none, create new one
+		// NOTE: There should be max 1 overlay
+		//	NSArray* annotationsAffected =
+		//	[self.mainMapView.annotations filteredArrayUsingPredicate:
+		//	 [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
+		//
+		//		if (![evaluatedObject isKindOfClass:[RidePointAnnotation class]]) return NO;
+		//		RidePointAnnotation* ridePointAnnotation = evaluatedObject;
+		//
+		//		return ridePointAnnotation.ride == ride;
+		//	}]];
+		[self.mainMapView addOverlay:route.polyline level:MKOverlayLevelAboveRoads];
+		
+		// TODO: Consider features that also utilize the route steps and advisory notices
+		NSLog(@"Route Steps (%d):", (int)route.steps.count);
+		for (MKRouteStep* step in route.steps) {
+			NSLog(@"\t%@", step.instructions);
+		}
+		
+		NSLog(@"Route Advisory Notices (%d):", (int)route.advisoryNotices.count);
+		for (NSString* advisoryNotice in route.advisoryNotices) {
+			NSLog(@"\t%@", advisoryNotice);
+		}
+	}];
+}
+
+
+- (void)mapView:(MKMapView*)mapView didSelectTeamPointAnnotationWithTeam:(Team*)team {
+	
+	if (!team.ridesAssigned) {
+		
+		self.isSelecting = NO;
+		return;
+	}
+	
+	for (Ride* ride in team.ridesAssigned) {
+
+		[self mapView:mapView didSelectRidePointAnnotationWithRide:ride];
+	}
+	
+	self.isSelecting = NO;
 }
 
 
