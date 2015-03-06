@@ -35,6 +35,7 @@
 #
 
 - (void)saveManagedObjectContext;
+- (void)deleteAllObjectsWithEntityName:(NSString*)entityName;
 
 #
 # pragma mark Helpers

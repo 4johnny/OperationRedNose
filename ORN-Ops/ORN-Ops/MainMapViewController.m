@@ -58,6 +58,7 @@
 
 #define ENABLE_COMMANDS	// WARNING: Demo commands change *real* data model!!!
 #define COMMAND_HELP			@"ornhelp"
+#define COMMAND_DELETE_ALL		@"orndeleteall"
 #define COMMAND_DEMO			@"orndemo"
 #define COMMAND_DEMO_RIDES		@"orndemorides"
 #define COMMAND_DEMO_TEAMS		@"orndemoteams"
@@ -636,6 +637,7 @@
 - (BOOL)handleCommandString:(NSString*)commandString {
 	
 	commandString = [commandString lowercaseString];
+	
 	BOOL isCommandHandled = NO;
 	BOOL needsDataModelSave = NO;
 	
@@ -643,13 +645,36 @@
 		
 		[self presentAlertWithTitle:@"ORN Commands"
 						 andMessage:[NSString stringWithFormat:
-									 @"%@\n%@\n%@\n%@\n%@\n",
+									 @"%@\n%@\n%@\n%@\n%@\n%@",
 									 COMMAND_HELP,
+									 COMMAND_DELETE_ALL,
 									 COMMAND_DEMO,
 									 COMMAND_DEMO_RIDES,
 									 COMMAND_DEMO_TEAMS,
 									 COMMAND_DEMO_ASSIGN
 									 ]];
+		isCommandHandled = YES;
+		
+	} else if ([COMMAND_DELETE_ALL isEqualToString:commandString]) {
+		
+		UIAlertAction* deleteAllAlertAction = [UIAlertAction actionWithTitle:@"Delete All" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+			
+			// Delete all rides and teams
+			AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+			[appDelegate deleteAllObjectsWithEntityName:RIDE_ENTITY_NAME];
+			[appDelegate deleteAllObjectsWithEntityName:TEAM_ENTITY_NAME];
+			
+			// Reset map
+			[self clearAllAnnotations];
+			[self configureRegionView];
+		}];
+		UIAlertController* deleteAllAlertController = [UIAlertController alertControllerWithTitle:@"!!! Warning !!!" message:@"About to delete all data, which cannot be undone!  Are you absolutely sure?!" preferredStyle:UIAlertControllerStyleAlert];
+		UIAlertAction* cancelAlertAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil];
+		[deleteAllAlertController addAction:deleteAllAlertAction];
+		[deleteAllAlertController addAction:cancelAlertAction];
+		
+		[self presentViewController:deleteAllAlertController animated:YES completion:nil];
+		
 		isCommandHandled = YES;
 		
 	} else if ([COMMAND_DEMO isEqualToString:commandString]) {
@@ -668,8 +693,8 @@
 		self.rideFetchedResultsController = nil; // Trip refetch
 		[self configureRidesView];
 		[self showAllAnnotations];
-		needsDataModelSave = YES;
 		
+		needsDataModelSave = YES;
 		isCommandHandled = YES;
 		
 	} else if ([COMMAND_DEMO_TEAMS isEqualToString:commandString]) {
@@ -680,8 +705,8 @@
 		self.teamFetchedResultsController = nil; // Trip refetch
 		[self configureTeamsView];
 		[self showAllAnnotations];
-		needsDataModelSave = YES;
 		
+		needsDataModelSave = YES;
 		isCommandHandled = YES;
 		
 	} else if ([COMMAND_DEMO_ASSIGN isEqualToString:commandString]) {
