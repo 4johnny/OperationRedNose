@@ -51,7 +51,6 @@
 #define TEAM_CURRENT_MASCOT_ANNOTATION_ID	@"teamCurrentMascotAnnotation"
 
 #define MAP_ANNOTATION_TIME_FORMAT			@"HH:mm"
-#define LEFT_CALLOUT_ACCESSORY_LABEL_WIDTH	40
 
 #
 # pragma mark Command Constants
@@ -294,6 +293,7 @@
 
 - (void)mapView:(MKMapView*)mapView didAddAnnotationViews:(NSArray*)views {
 	
+	// Animate dropping for team point annotations
 	for (MKAnnotationView* view in views) {
 		
 		// If not team annotation, we are done with this view
@@ -417,14 +417,14 @@
 		MKRoute* route = response.routes.firstObject;
 		
 		// Update expected travel time for ride, since may have changed
-		ride.duration = [NSNumber numberWithDouble:route.expectedTravelTime]; // Seconds
+		ride.duration = [NSNumber numberWithDouble:route.expectedTravelTime]; // seconds
 		NSLog(@"ETA: %.0f seconds", route.expectedTravelTime);
 		
 		// Determine end time by adding ETA seconds to start time
 		ride.dateTimeEnd = [NSDate dateWithTimeInterval:route.expectedTravelTime sinceDate:ride.dateTimeStart];
 		
 		// Store distance in ride
-		ride.distance = [NSNumber numberWithDouble:route.distance]; // Meters
+		ride.distance = [NSNumber numberWithDouble:route.distance]; // meters
 
 		// Notify that ride has updated
 		self.isSelecting = YES;
@@ -601,7 +601,8 @@
 - (BOOL)handleCommandString:(NSString*)commandString {
 	
 	commandString = [commandString lowercaseString];
-	BOOL handled = NO;
+	BOOL isCommandHandled = NO;
+	BOOL needsDataModelSave = NO;
 	
 	if ([COMMAND_HELP isEqualToString:commandString]) {
 		
@@ -614,7 +615,7 @@
 									 COMMAND_DEMO_TEAMS,
 									 COMMAND_DEMO_ASSIGN
 									 ]];
-		handled = YES;
+		isCommandHandled = YES;
 		
 	} else if ([COMMAND_DEMO isEqualToString:commandString]) {
 		
@@ -622,7 +623,7 @@
 		[self handleCommandString:COMMAND_DEMO_RIDES];
 		[self handleCommandString:COMMAND_DEMO_TEAMS];
 		
-		handled = YES;
+		isCommandHandled = YES;
 		
 	} else if ([COMMAND_DEMO_RIDES isEqualToString:commandString]) {
 		
@@ -632,8 +633,9 @@
 		self.rideFetchedResultsController = nil; // Trip refetch
 		[self configureRidesView];
 		[self showAllAnnotations];
+		needsDataModelSave = YES;
 		
-		handled = YES;
+		isCommandHandled = YES;
 		
 	} else if ([COMMAND_DEMO_TEAMS isEqualToString:commandString]) {
 		
@@ -643,21 +645,26 @@
 		self.teamFetchedResultsController = nil; // Trip refetch
 		[self configureTeamsView];
 		[self showAllAnnotations];
+		needsDataModelSave = YES;
 		
-		handled = YES;
+		isCommandHandled = YES;
 		
 	} else if ([COMMAND_DEMO_ASSIGN isEqualToString:commandString]) {
 		
 		// Assign teams to rides
 		
-		handled = YES;
+		isCommandHandled = YES;
 	}
 	
-	if (handled) {
+	if (isCommandHandled) {
 		NSLog(@"Handled Command: %@", commandString);
+		
+		if (needsDataModelSave) {
+			[MainMapViewController saveManagedObjectContext];
+		}
 	}
 	
-	return handled;
+	return isCommandHandled;
 }
 
 
@@ -823,12 +830,14 @@
 				
 				NSDateFormatter* startTimeDateFormatter = [[NSDateFormatter alloc] init];
 				startTimeDateFormatter.dateFormat = MAP_ANNOTATION_TIME_FORMAT;
-				UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, LEFT_CALLOUT_ACCESSORY_LABEL_WIDTH, ridePinAnnotationView.bounds.size.height)];
+				
+				UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, 53)];
 				leftInfoView.text = [startTimeDateFormatter stringFromDate:ridePointAnnotation.ride.dateTimeStart];
-				leftInfoView.font = [UIFont boldSystemFontOfSize:12.0];
+				leftInfoView.font = [UIFont boldSystemFontOfSize:14.0];
 				leftInfoView.textAlignment = NSTextAlignmentCenter;
 				leftInfoView.textColor = [UIColor whiteColor];
-				leftInfoView.backgroundColor = [UIColor greenColor];
+				leftInfoView.backgroundColor = ridePointAnnotation.ride.teamAssigned ? [UIColor greenColor] : [UIColor purpleColor];
+				
 				ridePinAnnotationView.leftCalloutAccessoryView = leftInfoView;
 			}
 			
@@ -849,12 +858,14 @@
 				
 				NSDateFormatter* endTimeDateFormatter = [[NSDateFormatter alloc] init];
 				endTimeDateFormatter.dateFormat = MAP_ANNOTATION_TIME_FORMAT;
-				UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, LEFT_CALLOUT_ACCESSORY_LABEL_WIDTH, ridePinAnnotationView.bounds.size.height)];
+				
+				UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, 53)];
 				leftInfoView.text = [endTimeDateFormatter stringFromDate:ridePointAnnotation.ride.dateTimeEnd];
-				leftInfoView.font = [UIFont boldSystemFontOfSize:12.0];
+				leftInfoView.font = [UIFont boldSystemFontOfSize:14.0];
 				leftInfoView.textAlignment = NSTextAlignmentCenter;
 				leftInfoView.textColor = [UIColor whiteColor];
 				leftInfoView.backgroundColor = [UIColor redColor];
+				
 				ridePinAnnotationView.leftCalloutAccessoryView = leftInfoView;
 			}
 			
@@ -897,6 +908,23 @@
 		teamAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:teamPointAnnotation andIdentifier:TEAM_CURRENT_NORMAL_ANNOTATION_ID];
 		
 		teamAnnotationView.image = [UIImage imageNamed:@"ORN-Team-Map-Annotation"];
+	}
+
+	// Add mins until available to left side of callout
+	if (teamPointAnnotation.team.ridesAssigned && teamPointAnnotation.team.ridesAssigned.count > 0) {
+		
+		// TODO: Use proper calculation for mins until available
+		Ride* rideAssigned = teamPointAnnotation.team.ridesAssigned.anyObject;
+		int minsUntilTeamAvailable = rideAssigned.duration.doubleValue / SECONDS_PER_MINUTE;
+		
+		UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, 53)];
+		leftInfoView.text = [NSString stringWithFormat:@"%d min", minsUntilTeamAvailable];
+		leftInfoView.font = [UIFont boldSystemFontOfSize:14.0];
+		leftInfoView.textAlignment = NSTextAlignmentCenter;
+		leftInfoView.textColor = [UIColor whiteColor];
+		leftInfoView.backgroundColor = [UIColor blueColor];
+		
+		teamAnnotationView.leftCalloutAccessoryView = leftInfoView;
 	}
 	
 	// NOTE: Animation of team annotation is done manually in "mapView:didAddAnnotationViews:"

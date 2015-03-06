@@ -394,7 +394,7 @@
 		}
 		
 		// Expected travel time calculated successfully, so store it
-		ride.duration = [NSNumber numberWithDouble:response.expectedTravelTime]; // Seconds
+		ride.duration = [NSNumber numberWithDouble:response.expectedTravelTime]; // seconds
 		NSLog(@"ETA: %.0f seconds", response.expectedTravelTime);
 		
 		// Determine end time by adding ETA seconds to start time

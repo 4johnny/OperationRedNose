@@ -13,6 +13,8 @@
 # pragma mark - Constants
 #
 
+#define SECONDS_PER_MINUTE	60
+
 #
 # pragma mark Map Constants
 #

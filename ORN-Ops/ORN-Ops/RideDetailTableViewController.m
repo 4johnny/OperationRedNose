@@ -153,7 +153,7 @@
 
 - (NSInteger)pickerView:(UIPickerView*)pickerView numberOfRowsInComponent:(NSInteger)component {
 
-	if (pickerView == self.teamAssignedPickerView) return self.teamFetchedResultsController.fetchedObjects.count;
+	if (pickerView == self.teamAssignedPickerView) return self.teamFetchedResultsController.fetchedObjects.count + 1;
 	if (pickerView == self.passengerCountPickerView) return 10;
 	if (pickerView == self.vehicleTransmissionPickerView) return 2;
 	if (pickerView == self.seatBeltCountPickerView) return 11;
@@ -194,9 +194,11 @@
 
 	if (pickerView == self.teamAssignedPickerView) {
 		
-		Team* team = self.teamFetchedResultsController.fetchedObjects[row];
+		if (row == 0) return @"- None -";
+		
+		Team* team = self.teamFetchedResultsController.fetchedObjects[row - 1];
 		NSString* teamTitle = [team getTeamTitle];
-		return (teamTitle && teamTitle.length > 0) ? teamTitle : @"<Unidentified Team>";
+		return (teamTitle && teamTitle.length > 0) ? teamTitle : @"(Team)";
 	}
 	
 	if (pickerView == self.passengerCountPickerView) return [NSString stringWithFormat:@"%d", (int)row + 1];
@@ -229,7 +231,6 @@
 		NSMutableParagraphStyle* mutableParagraphStyle = [[NSMutableParagraphStyle alloc] init];
 		mutableParagraphStyle.alignment = NSTextAlignmentLeft;
 		NSMutableAttributedString* attributedTitle = [[NSMutableAttributedString alloc] initWithString:title attributes:@{NSParagraphStyleAttributeName:mutableParagraphStyle}];
-//		[attributedTitle addAttribute:NSParagraphStyleAttributeName value:mutableParagraphStyle range:NSMakeRange(0,title.length)];
 		
 		return attributedTitle;
 	}
@@ -320,7 +321,7 @@
 	if (self.ride.teamAssigned) {
 		
 		NSUInteger row = [self.teamFetchedResultsController.fetchedObjects indexOfObject:self.ride.teamAssigned];
-		[self.teamAssignedPickerView selectRow:row inComponent:0 animated:NO];
+		[self.teamAssignedPickerView selectRow:(row + 1) inComponent:0 animated:NO];
 	}
 	
 	// Load passenger fields
@@ -345,8 +346,15 @@
 - (void)saveDataModelFromView {
 
 	// Save dispatch fields
+
+	[self.ride.teamAssigned removeRidesAssignedObject:self.ride];
+	self.ride.teamAssigned = nil;
 	NSInteger selectedTeamRow = [self.teamAssignedPickerView selectedRowInComponent:0];
-	self.ride.teamAssigned = self.teamFetchedResultsController.fetchedObjects[selectedTeamRow];
+	if (selectedTeamRow > 0) {
+		Team* teamAssigned = self.teamFetchedResultsController.fetchedObjects[selectedTeamRow - 1];
+		[teamAssigned addRidesAssignedObject:self.ride];
+		self.ride.teamAssigned = teamAssigned;
+	}
 	
 	// Save passenger fields
 	self.ride.passengerNameFirst = self.firstNameTextField.text;
