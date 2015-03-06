@@ -20,7 +20,8 @@
 # pragma mark Class Methods
 #
 
-+ (void)loadDemoRideDataModel:(NSManagedObjectContext*)managedObjectContext;
-+ (void)loadDemoTeamDataModel:(NSManagedObjectContext*)managedObjectContext;
-	
++ (void)loadDemoRidesIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
++ (void)loadDemoTeamsIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
++ (void)loadDemoAssignTeams:(NSArray*)teams toRides:(NSArray*)rides;
+
 @end

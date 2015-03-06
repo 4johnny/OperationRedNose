@@ -37,7 +37,7 @@
 #
 
 #define RIDE_FETCH_SORT_KEY			@"dateTimeStart"
-#define RIDE_FETCH_SORT_ASCENDING	NO
+#define RIDE_FETCH_SORT_ASCENDING	YES
 #define TEAM_FETCH_SORT_KEY			@"name"
 #define TEAM_FETCH_SORT_ASCENDING	YES
 
@@ -204,7 +204,7 @@
 	// Configure map with annotations, and zoom to show them all
 	// NOTE: Delay so that orientation is established
 	[self configureRegionView];
-	[self performSelector:@selector(configureView) withObject:nil afterDelay:0.5];
+	[self performSelector:@selector(configureViewWithAnimation:) withObject:[NSNumber numberWithBool:YES] afterDelay:0.5];
 	[self performSelector:@selector(showAllAnnotations) withObject:nil afterDelay:1];
 }
 
@@ -413,9 +413,6 @@
 	
 	// Clear all selected annotations, since may get multiple due to aynch timing
 	[self clearAllAnnotationSelections];
-	
-	// If not ride, we are done with this view
-	if (![view.annotation isKindOfClass:[RidePointAnnotation class]]) return;
 
 	// Remove route overlays
 	[self clearAllOverlays];
@@ -620,6 +617,7 @@
 		UIAlertAction* deleteAllAlertAction = [UIAlertAction actionWithTitle:@"Delete All" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 			
 			// Delete all rides and teams
+			// TODO: Manually remove relationships?  They still exist in DB even after their objects have been deleated.  They get resurrected when new objects are created later
 			AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
 			[appDelegate deleteAllObjectsWithEntityName:RIDE_ENTITY_NAME];
 			[appDelegate deleteAllObjectsWithEntityName:TEAM_ENTITY_NAME];
@@ -648,10 +646,10 @@
 	} else if ([COMMAND_DEMO_RIDES isEqualToString:commandString]) {
 		
 		// Load all demo rides
-		[DemoUtil loadDemoRideDataModel:self.managedObjectContext];
+		[DemoUtil loadDemoRidesIntoManagedObjectContext:self.managedObjectContext];
 		self.showRides = nil;
 		self.rideFetchedResultsController = nil; // Trip refetch
-		[self configureRidesView];
+		[self configureRidesViewWithAnimation:YES];
 		[self showAllAnnotations];
 		
 		needsDataModelSave = YES;
@@ -660,10 +658,10 @@
 	} else if ([COMMAND_DEMO_TEAMS isEqualToString:commandString]) {
 		
 		// Load all demo teams
-		[DemoUtil loadDemoTeamDataModel:self.managedObjectContext];
+		[DemoUtil loadDemoTeamsIntoManagedObjectContext:self.managedObjectContext];
 		self.showTeams = nil;
 		self.teamFetchedResultsController = nil; // Trip refetch
-		[self configureTeamsView];
+		[self configureTeamsViewWithAnimation:YES];
 		[self showAllAnnotations];
 		
 		needsDataModelSave = YES;
@@ -672,7 +670,12 @@
 	} else if ([COMMAND_DEMO_ASSIGN isEqualToString:commandString]) {
 		
 		// Assign teams to rides
+		[DemoUtil loadDemoAssignTeams:self.teamFetchedResultsController.fetchedObjects toRides:self.rideFetchedResultsController.fetchedObjects];
+		[self configureRidesViewWithAnimation:NO];
+		[self configureTeamsViewWithAnimation:NO];
+		[self showAllAnnotations];
 		
+		needsDataModelSave = YES;
 		isCommandHandled = YES;
 	}
 	
@@ -693,13 +696,19 @@
 #
 
 
-- (void)configureView {
+- (void)configureViewWithAnimation:(BOOL)needsAnimation {
 	
 	// Configure ride annotations and callouts
-	[self configureRidesView];
+	[self configureRidesViewWithAnimation:needsAnimation];
 	
 	// Configure team annotations and callouts
-	[self configureTeamsView];
+	[self configureTeamsViewWithAnimation:needsAnimation];
+}
+
+
+- (void)configureViewWithAnimationSelector:(NSNumber*)needsAnimation {
+	
+	[self configureViewWithAnimation:needsAnimation.boolValue];
 }
 
 
@@ -711,7 +720,7 @@
 }
 
 
-- (void)configureRidesView {
+- (void)configureRidesViewWithAnimation:(BOOL)needsAnimation {
 	
 	// If set of rides specified, show them; o/w show all
 	self.showRides = self.showRides ?: self.rideFetchedResultsController.fetchedObjects;
@@ -723,18 +732,18 @@
 		if (!ride.locationStartLatitude || !ride.locationStartLongitude) continue;
 		
 		// Add annotation for start location to map
-		[self.mainMapView addAnnotation:[RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_Start andNeedsAnimation:YES]];
+		[self.mainMapView addAnnotation:[RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_Start andNeedsAnimation:needsAnimation]];
 		
 		// If no end-location coordinate, we are done with this ride
 		if (!ride.locationEndLatitude || !ride.locationEndLongitude) continue;
 		
 		// Add annotation for end location to map
-		[self.mainMapView addAnnotation:[RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_End andNeedsAnimation:YES]];
+		[self.mainMapView addAnnotation:[RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_End andNeedsAnimation:needsAnimation]];
 	}
 }
 
 
-- (void)configureTeamsView {
+- (void)configureTeamsViewWithAnimation:(BOOL)needsAnimation {
 	
 	// If set of teams specified, show them; o/w show all
 	self.showTeams = self.showTeams ?: self.teamFetchedResultsController.fetchedObjects;
@@ -745,7 +754,7 @@
 		if (!team.locationCurrentLatitude || !team.locationCurrentLongitude) continue;
 		
 		// Add annotation for current location to map
-		[self.mainMapView addAnnotation:[TeamPointAnnotation teamPointAnnotationWithTeam:team andNeedsAnimation:YES]];
+		[self.mainMapView addAnnotation:[TeamPointAnnotation teamPointAnnotationWithTeam:team andNeedsAnimation:needsAnimation]];
 	}
 }
 

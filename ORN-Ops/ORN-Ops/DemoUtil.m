@@ -24,16 +24,16 @@
 #
 
 
-+ (void)loadDemoRideDataModel:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadDemoRidesIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
-	[DemoUtil loadVancouverDemoRidesIntoDataModel:managedObjectContext];
-	[DemoUtil loadBurnabyDemoRidesIntoDataModel:managedObjectContext];
-	[DemoUtil loadNewWestminsterDemoRidesIntoDataModel:managedObjectContext];
-	[DemoUtil loadTriCitiesDemoRidesIntoDataModel:managedObjectContext];
+	[DemoUtil loadVancouverDemoRidesIntoManagedObjectContext:managedObjectContext];
+	[DemoUtil loadBurnabyDemoRidesIntoManagedObjectContext:managedObjectContext];
+	[DemoUtil loadNewWestminsterDemoRidesIntoManagedObjectContext:managedObjectContext];
+	[DemoUtil loadTriCitiesDemoRidesIntoManagedObjectContext:managedObjectContext];
 }
 
 
-+ (void)loadVancouverDemoRidesIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadVancouverDemoRidesIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 
 	Ride* ride;
 
@@ -72,7 +72,7 @@
 }
 
 
-+ (void)loadBurnabyDemoRidesIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadBurnabyDemoRidesIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
 	Ride* ride;
 	
@@ -104,7 +104,7 @@
 }
 
 
-+ (void)loadNewWestminsterDemoRidesIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadNewWestminsterDemoRidesIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
 	Ride* ride;
 	
@@ -149,15 +149,15 @@
 }
 
 
-+ (void)loadTriCitiesDemoRidesIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadTriCitiesDemoRidesIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
  
-	[DemoUtil loadCoquitlamDemoRidesIntoDataModel:managedObjectContext];
-	[DemoUtil loadPortCoquitlamDemoRidesIntoDataModel:managedObjectContext];
-	[DemoUtil loadPortMoodyDemoRidesIntoDataModel:managedObjectContext];
+	[DemoUtil loadCoquitlamDemoRidesIntoManagedObjectContext:managedObjectContext];
+	[DemoUtil loadPortCoquitlamDemoRidesIntoManagedObjectContext:managedObjectContext];
+	[DemoUtil loadPortMoodyDemoRidesIntoManagedObjectContext:managedObjectContext];
 }
 
 
-+ (void)loadCoquitlamDemoRidesIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadCoquitlamDemoRidesIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
 	Ride* ride;
 	
@@ -176,7 +176,7 @@
 }
 
 
-+ (void)loadPortCoquitlamDemoRidesIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadPortCoquitlamDemoRidesIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
 	Ride* ride;
 	
@@ -195,7 +195,7 @@
 }
 
 
-+ (void)loadPortMoodyDemoRidesIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadPortMoodyDemoRidesIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
 	Ride* ride;
 	
@@ -219,16 +219,16 @@
 #
 
 
-+ (void)loadDemoTeamDataModel:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadDemoTeamsIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
-	[DemoUtil loadVancouverDemoTeamsIntoDataModel:managedObjectContext];
-	[DemoUtil loadBurnabyDemoTeamsIntoDataModel:managedObjectContext];
-	[DemoUtil loadNewWestminsterDemoTeamsIntoDataModel:managedObjectContext];
-	[DemoUtil loadTriCitiesDemoTeamsIntoDataModel:managedObjectContext];
+	[DemoUtil loadVancouverDemoTeamsIntoManagedObjectContext:managedObjectContext];
+	[DemoUtil loadBurnabyDemoTeamsIntoManagedObjectContext:managedObjectContext];
+	[DemoUtil loadNewWestminsterDemoTeamsIntoManagedObjectContext:managedObjectContext];
+	[DemoUtil loadTriCitiesDemoTeamsIntoManagedObjectContext:managedObjectContext];
 }
 
 
-+ (void)loadVancouverDemoTeamsIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadVancouverDemoTeamsIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 
 	Team* team;
 
@@ -252,7 +252,7 @@
 }
 
 
-+ (void)loadBurnabyDemoTeamsIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadBurnabyDemoTeamsIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
 	Team* team;
 	
@@ -276,7 +276,7 @@
 }
 
 
-+ (void)loadNewWestminsterDemoTeamsIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadNewWestminsterDemoTeamsIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
 	Team* team;
 	
@@ -300,15 +300,15 @@
 }
 
 
-+ (void)loadTriCitiesDemoTeamsIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadTriCitiesDemoTeamsIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
-	[DemoUtil loadCoquitlamDemoTeamsIntoDataModel:managedObjectContext];
-	[DemoUtil loadPortCoquitlamDemoTeamsIntoDataModel:managedObjectContext];
-	[DemoUtil loadPortMoodyDemoTeamsIntoDataModel:managedObjectContext];
+	[DemoUtil loadCoquitlamDemoTeamsIntoManagedObjectContext:managedObjectContext];
+	[DemoUtil loadPortCoquitlamDemoTeamsIntoManagedObjectContext:managedObjectContext];
+	[DemoUtil loadPortMoodyDemoTeamsIntoManagedObjectContext:managedObjectContext];
 }
 
 
-+ (void)loadCoquitlamDemoTeamsIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadCoquitlamDemoTeamsIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 
 	Team* team;
  
@@ -333,7 +333,7 @@
 }
 
 
-+ (void)loadPortCoquitlamDemoTeamsIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadPortCoquitlamDemoTeamsIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
 	Team* team;
 	
@@ -357,7 +357,7 @@
 }
 
 
-+ (void)loadPortMoodyDemoTeamsIntoDataModel:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadPortMoodyDemoTeamsIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
 	Team* team;
 	
@@ -372,8 +372,38 @@
 
 
 #
+# pragma mark Demo Assign
+#
+
+
++ (void)loadDemoAssignTeams:(NSArray*)teams toRides:(NSArray*)rides {
+
+	// Assign specific teams to specific rides
+	
+	[DemoUtil assignTeam:teams[2] toRide:rides[0]];
+	[DemoUtil assignTeam:teams[2] toRide:rides[1]];
+	[DemoUtil assignTeam:teams[3] toRide:rides[2]];
+	[DemoUtil assignTeam:teams[4] toRide:rides[3]];
+	[DemoUtil assignTeam:teams[5] toRide:rides[4]];
+	[DemoUtil assignTeam:teams[6] toRide:rides[5]];
+	[DemoUtil assignTeam:teams[7] toRide:rides[6]];
+	[DemoUtil assignTeam:teams[6] toRide:rides[7]];
+	[DemoUtil assignTeam:teams[8] toRide:rides[8]];
+	[DemoUtil assignTeam:teams[10] toRide:rides[9]];
+	[DemoUtil assignTeam:teams[0] toRide:rides[10]];
+}
+
+
+#
 # pragma mark Helpers
 #
+
+
++ (void)assignTeam:(Team*)team toRide:(Ride*)ride {
+
+	ride.teamAssigned = team;
+	[team addRidesAssignedObject:ride];
+}
 
 
 // Calculate ride duration and end time asynchronously
@@ -403,5 +433,6 @@
 		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:ride}];
 	}];
 }
+
 
 @end
