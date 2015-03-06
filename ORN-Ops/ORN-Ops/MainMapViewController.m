@@ -196,8 +196,9 @@
 	// NOTE: Must be done in code - otherwise we just get a template
 	self.avatarBarButtonItem.image = [[UIImage imageNamed:@"ORN-Bar-Button-Item"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 	
-	// Wire up observer for ride update notifications
+	// Wire up observers for update notifications for rides and teams
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideUpdatedWithNotification:) name:RIDE_UPDATED_NOTIFICATION_NAME object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(teamUpdatedWithNotification:) name:TEAM_UPDATED_NOTIFICATION_NAME object:nil];
 	
 	// Configure map with annotations, and zoom to show them all
 	// NOTE: Delay so that orientation is established
@@ -561,11 +562,12 @@
 
 - (void)rideUpdatedWithNotification:(NSNotification*)notification {
 	
+	// Grab args from notification
 	Ride* ride = notification.userInfo[RIDE_ENTITY_NAME];
 	BOOL needsAnimation = (notification.userInfo[RIDE_DID_LOCATION_CHANGE_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_DID_LOCATION_CHANGE_NOTIFICATION_KEY]).boolValue);
 	
-	// Find ride annotations related to given ride - if none, we are done
-	// NOTE: There should be max 2, one each for start and end locations
+	// Find map annotations related to given ride - if none, we are done
+	// NOTE: Should be max 2, one each for start and end locations
 	NSArray* annotationsAffected =
 		[self.mainMapView.annotations filteredArrayUsingPredicate:
 		 [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
@@ -586,6 +588,39 @@
 		
 		if (isAnnotationSelected) {
 			[self.mainMapView selectAnnotation:ridePointAnnotation animated:needsAnimation];
+		}
+	}
+}
+
+
+- (void)teamUpdatedWithNotification:(NSNotification*)notification {
+	
+	// Grab args from notification
+	Team* team = notification.userInfo[TEAM_ENTITY_NAME];
+	BOOL needsAnimation = (notification.userInfo[TEAM_DID_LOCATION_CHANGE_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[TEAM_DID_LOCATION_CHANGE_NOTIFICATION_KEY]).boolValue);
+	
+	// Find map annotations related to given team - if none, we are done
+	// NOTE: Should be max 1
+	NSArray* annotationsAffected =
+	[self.mainMapView.annotations filteredArrayUsingPredicate:
+	 [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
+		
+		if (![evaluatedObject isKindOfClass:[TeamPointAnnotation class]]) return NO;
+		TeamPointAnnotation* teamPointAnnotation = evaluatedObject;
+		
+		return teamPointAnnotation.team == team;
+	}]];
+	
+	// Refresh map annotations - remove, re-init, re-add, and re-select
+	for (TeamPointAnnotation* teamPointAnnotation in annotationsAffected) {
+		
+		BOOL isAnnotationSelected = [self.mainMapView.selectedAnnotations containsObject:teamPointAnnotation];
+		
+		[self.mainMapView removeAnnotation:teamPointAnnotation];
+		[self.mainMapView addAnnotation:[teamPointAnnotation initWithTeam:team andNeedsAnimation:needsAnimation]];
+		
+		if (isAnnotationSelected) {
+			[self.mainMapView selectAnnotation:teamPointAnnotation animated:needsAnimation];
 		}
 	}
 }

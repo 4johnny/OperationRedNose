@@ -275,8 +275,6 @@
 	
 	[self saveDataModelFromView];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:self.ride, RIDE_DID_LOCATION_CHANGE_NOTIFICATION_KEY:[NSNumber numberWithBool:YES]}];
-	
 	[self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -347,12 +345,19 @@
 
 	// Save dispatch fields
 
-	[self.ride.teamAssigned removeRidesAssignedObject:self.ride];
-	self.ride.teamAssigned = nil;
+	// Remove any existing team assigned and assign new one if necessary - notify observers
+	if (self.ride.teamAssigned) {
+
+		Team* teamAssigned = self.ride.teamAssigned; // NOTE: Must use local var when removing Core Data relationships
+		[teamAssigned removeRidesAssignedObject:self.ride];
+		[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME:teamAssigned}];
+		self.ride.teamAssigned = nil; // NOTE: Likely redundant
+	}
 	NSInteger selectedTeamRow = [self.teamAssignedPickerView selectedRowInComponent:0];
 	if (selectedTeamRow > 0) {
 		Team* teamAssigned = self.teamFetchedResultsController.fetchedObjects[selectedTeamRow - 1];
 		[teamAssigned addRidesAssignedObject:self.ride];
+		[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME:teamAssigned}];
 		self.ride.teamAssigned = teamAssigned;
 	}
 	
@@ -374,6 +379,9 @@
 	
 	// Persist data model to disk
 	[RideDetailTableViewController saveManagedObjectContext];
+
+	// Notify observers of updates to ride
+	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:self.ride, RIDE_DID_LOCATION_CHANGE_NOTIFICATION_KEY:[NSNumber numberWithBool:YES]}];
 }
 
 
