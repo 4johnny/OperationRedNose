@@ -883,7 +883,7 @@
 			// NOTE: Color for end of route is red by convention
 			// TODO: Consider setting color based on status
 			ridePinAnnotationView.pinColor = MKPinAnnotationColorRed;
-			
+	
 			// Add ride end time to left side of callout
 			if (ridePointAnnotation.ride.dateTimeEnd) {
 				

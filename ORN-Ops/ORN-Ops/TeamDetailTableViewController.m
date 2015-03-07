@@ -44,10 +44,25 @@
 }
 
 
+- (void)viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+	
+	[self.navigationController setToolbarHidden:NO];
+}
+
+
+- (void)viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
+	
+	[self.navigationController setToolbarHidden:YES];
+}
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 
 /*
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -56,10 +71,6 @@
 }
 */
 
-
-#
-# pragma mark Action Handlers
-#
 
 #
 # pragma mark Action Handlers
