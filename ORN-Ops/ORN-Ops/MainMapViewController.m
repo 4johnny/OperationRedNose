@@ -979,8 +979,8 @@
 
 - (void)mapView:(MKMapView*)mapView didSelectRidePointAnnotationWithRide:(Ride*)ride {
 
-	// Add polyline for team assigned to ride, if possible
-	[self configureTeamAssignedOverlayWithTeam:ride.teamAssigned andStartCoordinate:CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue)];
+	// Add polyline from team assigned to ride start, if possible
+	MKPolyline* teamAssignedPolyline = [self configureTeamAssignedOverlayWithTeam:ride.teamAssigned andStartCoordinate:CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue)];
 	
 	// If cannot get directions request, we are done with this ride
 	MKDirectionsRequest* directionsRequest = ride.getDirectionsRequest;
@@ -1019,8 +1019,10 @@
 		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:ride}];
 		self.isSelecting = NO;
 		
-		// Add polyline for team assigned to ride, if possible
-		// NOTE: Notification handler likely blew away original overlay from above
+		// Add polyline from team assigned to actual route start, if possible
+		if (teamAssignedPolyline) {
+			[self.mainMapView removeOverlay:teamAssignedPolyline];
+		}
 		[self configureTeamAssignedOverlayWithTeam:ride.teamAssigned andStartCoordinate:MKCoordinateForMapPoint(route.polyline.points[0])];
 		
 		// Add polyline overlay to map - if one happens already to exist for this ride route, reuse it
@@ -1110,14 +1112,16 @@
 }
 
 
-- (void)configureTeamAssignedOverlayWithTeam:(Team*)team andStartCoordinate:(CLLocationCoordinate2D)startCoordinate {
+- (MKPolyline*)configureTeamAssignedOverlayWithTeam:(Team*)team andStartCoordinate:(CLLocationCoordinate2D)startCoordinate {
 	
-	if (!team || !team.locationCurrentLatitude || !team.locationCurrentLongitude) return;
+	if (!team || !team.locationCurrentLatitude || !team.locationCurrentLongitude) return nil;
 		
 	CLLocationCoordinate2D locationCoordinates[2] = { CLLocationCoordinate2DMake(team.locationCurrentLatitude.doubleValue, team.locationCurrentLongitude.doubleValue), startCoordinate };
 	MKPolyline* polyline = [MKPolyline polylineWithCoordinates:locationCoordinates count:2];
 	
 	[self.mainMapView addOverlay:polyline level:MKOverlayLevelAboveLabels];
+
+	return polyline;
 }
 
 
