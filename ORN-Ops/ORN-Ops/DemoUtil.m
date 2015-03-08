@@ -430,7 +430,7 @@
 		// Determine end time by adding ETA seconds to start time
 		ride.dateTimeEnd = [NSDate dateWithTimeInterval:response.expectedTravelTime sinceDate:ride.dateTimeStart];
 		
-		// Notify ride and team, if assigned
+		// Notify that ride and assigned team have updated
 		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:ride}];
 		if (ride.teamAssigned) {
 			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME:ride.teamAssigned}];

@@ -389,6 +389,8 @@
 
 - (void)mapView:(MKMapView*)mapView didSelectAnnotationView:(MKAnnotationView*)view {
 	
+	NSLog(@"didSelectAnnotationView: %@", view);
+	
 	// Break selection cycle due to ride-update notification
 	if (self.isSelecting) return;
 	self.isSelecting = YES;
@@ -410,6 +412,8 @@
 
 
 - (void)mapView:(MKMapView*)mapView didDeselectAnnotationView:(MKAnnotationView*)view {
+	
+	NSLog(@"didDeselectAnnotationView: %@", view);
 	
 	// Clear all selected annotations, since may get multiple due to asynch timing
 	[self clearAllAnnotationSelections];
@@ -1011,17 +1015,25 @@
 		// Store distance in ride
 		ride.distance = [NSNumber numberWithDouble:route.distance]; // meters
 		
-		// Notify that ride has updated
+		// Notify that ride and assigned team have updated
 		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:ride}];
+		if (ride.teamAssigned) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME:ride.teamAssigned}];
+		}
 		self.isSelecting = NO;
 		
-		// Add polyline from team assigned to actual route start, if possible
+		// If ride or team assigned not still selected, we are done
+		MKPointAnnotation* selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
+		if (!([selectedAnnotation isKindOfClass:[RidePointAnnotation class]] && ((RidePointAnnotation*)selectedAnnotation).ride == ride) &&
+			!([selectedAnnotation isKindOfClass:[TeamPointAnnotation class]] && ((TeamPointAnnotation*)selectedAnnotation).team == ride.teamAssigned)) return;
+
+		// Add polyline to map, from team assigned to actual route start, if possible
 		if (teamAssignedPolyline) {
 			[self.mainMapView removeOverlay:teamAssignedPolyline];
 		}
 		[self configureTeamAssignedOverlayWithTeam:ride.teamAssigned andStartCoordinate:MKCoordinateForMapPoint(route.polyline.points[0])];
 		
-		// Add polyline overlay to map - if one happens already to exist for this ride route, reuse it
+		// Add polyline to map, for ride route - if one happens already to exist for this ride route, reuse it
 		// TODO: Ensure this issue/code is considered
 		// Find route overlays related to given ride - if none, create new one
 		// NOTE: There should be max 1 overlay
@@ -1037,15 +1049,15 @@
 		[self.mainMapView addOverlay:route.polyline level:MKOverlayLevelAboveRoads];
 		
 		// TODO: Consider features that also utilize the route steps and advisory notices
-		NSLog(@"Route Steps (%d):", (int)route.steps.count);
-		for (MKRouteStep* step in route.steps) {
-			NSLog(@"\t%@", step.instructions);
-		}
-		
-		NSLog(@"Route Advisory Notices (%d):", (int)route.advisoryNotices.count);
-		for (NSString* advisoryNotice in route.advisoryNotices) {
-			NSLog(@"\t%@", advisoryNotice);
-		}
+		//		NSLog(@"Route Steps (%d):", (int)route.steps.count);
+		//		for (MKRouteStep* step in route.steps) {
+		//			NSLog(@"\t%@", step.instructions);
+		//		}
+		//
+		//		NSLog(@"Route Advisory Notices (%d):", (int)route.advisoryNotices.count);
+		//		for (NSString* advisoryNotice in route.advisoryNotices) {
+		//			NSLog(@"\t%@", advisoryNotice);
+		//		}
 	}];
 }
 
