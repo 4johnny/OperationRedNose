@@ -648,7 +648,6 @@
 		
 		// Load all demo rides
 		[DemoUtil loadDemoRidesIntoManagedObjectContext:self.managedObjectContext];
-		self.showRides = nil;
 		self.rideFetchedResultsController = nil; // Trip refetch
 		[self configureRidesViewWithAnimation:YES];
 		[self showAllAnnotations];
@@ -660,7 +659,6 @@
 		
 		// Load all demo teams
 		[DemoUtil loadDemoTeamsIntoManagedObjectContext:self.managedObjectContext];
-		self.showTeams = nil;
 		self.teamFetchedResultsController = nil; // Trip refetch
 		[self configureTeamsViewWithAnimation:YES];
 		[self showAllAnnotations];
@@ -723,8 +721,7 @@
 
 - (void)configureRidesViewWithAnimation:(BOOL)needsAnimation {
 	
-	// If set of rides specified, show them; o/w show all
-	self.showRides = self.showRides ?: self.rideFetchedResultsController.fetchedObjects;
+	self.showRides = self.rideFetchedResultsController.fetchedObjects;
 	
 	for (Ride* ride in self.showRides) {
 		
@@ -746,8 +743,7 @@
 
 - (void)configureTeamsViewWithAnimation:(BOOL)needsAnimation {
 	
-	// If set of teams specified, show them; o/w show all
-	self.showTeams = self.showTeams ?: self.teamFetchedResultsController.fetchedObjects;
+	self.showTeams = self.teamFetchedResultsController.fetchedObjects;
 	
 	for (Team* team in self.showTeams) {
 		
