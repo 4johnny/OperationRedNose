@@ -992,7 +992,7 @@
 	
 	// Determine route for ride, and add overlay to map asynchronously
 	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
-	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
+	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse* response, NSError* error) {
 		
 		// NOTES: Completion block executes on main thread. Do not run more than one directions calculation simultaneously on this object.
 		if (error) {

@@ -15,6 +15,7 @@
 # pragma mark - Constants
 #
 
+#define DONATION_TEXT_LENGTH_MAX	8 // NOTE: Limit to ensure number fits in NSDecimal
 
 #
 # pragma mark Data Model Constants
@@ -248,6 +249,50 @@
 
 
 #
+# pragma mark <UITextFieldDelegate>
+#
+
+
+- (BOOL)textField:(UITextField*)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString*)string {
+	
+	// NOTE: String may be typed or pasted
+	// NOTE: Cannot rely on keyboards to constrain input char types, since different devices show different keyboards for same text field
+	
+	// If replacement string empty, we are done
+	if (string.length <= 0) return YES;
+	
+	// Donation field should conform to monetary format
+	if (textField == self.donationTextField) {
+		
+		// Reject replacement string exceeding max length
+		// NOTE: Optimization to avoid further checks below
+		if (string.length > DONATION_TEXT_LENGTH_MAX) return NO;
+
+		// Reject non-decimal chars
+		NSCharacterSet* nonDecimalSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789."].invertedSet;
+		if ([string rangeOfCharacterFromSet:nonDecimalSet].location != NSNotFound) return NO;
+		
+		// Reject more than one decimal-point char
+		if ([string containsString:@"."] && [textField.text containsString:@"."]) return NO;
+		
+		// Reject resulting string exceeding max length
+		NSMutableString* newString = [textField.text mutableCopy];
+		[newString replaceCharactersInRange:range withString:string];
+		if (newString.length > DONATION_TEXT_LENGTH_MAX) return NO;
+		
+		// Reject more than two decimal places
+		NSRange range = [newString rangeOfString:@"."];
+		if (range.location != NSNotFound) {
+			NSString* decimalNumbers = [newString substringFromIndex:range.location + 1];
+			if (decimalNumbers.length > 2) return NO;
+		}
+	}
+
+	return YES;
+}
+
+
+#
 # pragma mark <NSFetchedResultsControllerDelegate>
 #
 
@@ -315,12 +360,8 @@
 
 	// Load dispatch fields
 	self.sourceTextField.text = self.ride.sourceName;
-	self.donationTextField.text = self.ride.donationAmount.stringValue;
-	if (self.ride.teamAssigned) {
-		
-		NSUInteger row = [self.teamFetchedResultsController.fetchedObjects indexOfObject:self.ride.teamAssigned];
-		[self.teamAssignedPickerView selectRow:(row + 1) inComponent:0 animated:NO];
-	}
+	self.donationTextField.text = self.ride.donationAmount ? self.ride.donationAmount.stringValue : @"";
+	[self.teamAssignedPickerView selectRow:(self.ride.teamAssigned ? 1 + [self.teamFetchedResultsController.fetchedObjects indexOfObject:self.ride.teamAssigned] : 0) inComponent:0 animated:NO]; // "None" at index 0
 	
 	// Load passenger fields
 	self.firstNameTextField.text = self.ride.passengerNameFirst;
@@ -336,7 +377,7 @@
 	
 	// Load vehicle fields
 	self.vehicleDescriptionTextField.text = self.ride.vehicleDescription;
-	[self.vehicleTransmissionPickerView selectRow:([self.ride.vehicleTransmission isEqualToString:@"Manual"] ? 1 : 0) inComponent:0 animated:NO];
+	[self.vehicleTransmissionPickerView selectRow:([self.ride.vehicleTransmission isEqualToString:@"Manual"] ? 1 : 0) inComponent:0 animated:NO]; // "Automatic" at index 0
 	[self.seatBeltCountPickerView selectRow:self.ride.vehicleSeatBeltCount.longValue inComponent:0 animated:NO];
 	
 	// Load notes fields
@@ -352,7 +393,7 @@
 
 	// Save dispatch fields
 	self.ride.sourceName = self.sourceTextField.text;
-	self.ride.donationAmount = [NSDecimalNumber decimalNumberWithString:self.donationTextField.text];
+	self.ride.donationAmount = self.donationTextField.text.length > 0 ? [NSDecimalNumber decimalNumberWithString:self.donationTextField.text] : nil;
 
 	// Remove any existing team assigned and assign new one if necessary - notify observers
 	if (self.ride.teamAssigned) {
