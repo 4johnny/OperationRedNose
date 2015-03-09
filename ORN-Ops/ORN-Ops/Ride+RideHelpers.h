@@ -14,10 +14,11 @@
 # pragma mark - Constants
 #
 
-#define RIDE_ENTITY_NAME							@"Ride"
+#define RIDE_ENTITY_NAME								@"Ride"
 
-#define RIDE_UPDATED_NOTIFICATION_NAME				@"rideUpdated"
-#define RIDE_DID_LOCATION_CHANGE_NOTIFICATION_KEY	@"rideDidLocationChange"
+#define RIDE_UPDATED_NOTIFICATION_NAME					@"rideUpdated"
+#define RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY	@"rideUpdatedLocationStart"
+#define RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY		@"rideUpdatedLocationEnd"
 
 #define RIDE_STATUS_STRING_NONE			@"None"
 #define RIDE_STATUS_STRING_NEW			@"New"

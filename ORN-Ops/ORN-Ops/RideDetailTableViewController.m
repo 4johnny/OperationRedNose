@@ -419,7 +419,9 @@
 	
 	// Save location fields
 	// TODO: Validate locations via geocoding
+	BOOL updatedLocationStart = ![self.ride.locationStartAddress isEqualToString:self.startAddressTextField.text];
 	self.ride.locationStartAddress = self.startAddressTextField.text;
+	BOOL updatedLocationEnd = ![self.ride.locationEndAddress isEqualToString:self.endAddressTextField.text];
 	self.ride.locationEndAddress = self.endAddressTextField.text;
 	self.ride.locationTransferFrom = self.transferFromTextField.text;
 	self.ride.locationTransferTo = self.transferToTextField.text;
@@ -436,7 +438,14 @@
 	self.ride.dateTimeStart = self.startTimeDatePicker.date;
 	
 	// Notify observers of updates to ride
-	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:self.ride, RIDE_DID_LOCATION_CHANGE_NOTIFICATION_KEY:[NSNumber numberWithBool:YES]}];
+	NSMutableDictionary* userInfo = [NSMutableDictionary dictionaryWithDictionary:@{RIDE_ENTITY_NAME:self.ride}];
+	if (updatedLocationStart) {
+		userInfo[RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY] = [NSNumber numberWithBool:updatedLocationStart];
+	}
+	if (updatedLocationEnd) {
+		userInfo[RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY] = [NSNumber numberWithBool:updatedLocationEnd];
+	}
+	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:userInfo];
 	
 	// Persist data model to disk
 	[RideDetailTableViewController saveManagedObjectContext];

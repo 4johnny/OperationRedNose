@@ -87,7 +87,6 @@
 @property (nonatomic) NSArray* showRides;
 @property (nonatomic) NSArray* showTeams;
 
-@property (nonatomic) BOOL isSelecting;
 
 @end
 
@@ -391,10 +390,6 @@
 	
 	NSLog(@"didSelectAnnotationView: %@", view);
 	
-	// Break selection cycle due to ride-update notification
-	if (self.isSelecting) return;
-	self.isSelecting = YES;
-	
 	if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) {
 		
 		[self mapView:mapView didSelectRidePointAnnotationWithRide:((RidePointAnnotation*)view.annotation).ride];
@@ -406,8 +401,6 @@
 		[self mapView:mapView didSelectTeamPointAnnotationWithTeam:((TeamPointAnnotation*)view.annotation).team];
 		return;
 	}
-
-	self.isSelecting = NO;
 }
 
 
@@ -524,31 +517,45 @@
 	
 	// Grab args from notification
 	Ride* ride = notification.userInfo[RIDE_ENTITY_NAME];
-	BOOL needsAnimation = (notification.userInfo[RIDE_DID_LOCATION_CHANGE_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_DID_LOCATION_CHANGE_NOTIFICATION_KEY]).boolValue);
+	BOOL updatedLocationStart = (notification.userInfo[RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY]).boolValue);
+	BOOL updatedLocationEnd = (notification.userInfo[RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY]).boolValue);
 	
 	// Find map annotations related to given ride - if none, we are done
 	// NOTE: Should be max 2, one each for start and end locations
-	NSArray* annotationsAffected =
-		[self.mainMapView.annotations filteredArrayUsingPredicate:
-		 [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
+	NSArray* annotationsAffected = [self.mainMapView.annotations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
 		
 		if (![evaluatedObject isKindOfClass:[RidePointAnnotation class]]) return NO;
 		RidePointAnnotation* ridePointAnnotation = evaluatedObject;
-		
 		return ridePointAnnotation.ride == ride;
 	}]];
+	if (annotationsAffected.count == 0) return;
 	
-	// Refresh map annotations - remove, re-init, re-add, and re-select
+	RidePointAnnotation* ridePointAnnotationStart = nil;
+	RidePointAnnotation* ridePointAnnotationEnd = nil;
 	for (RidePointAnnotation* ridePointAnnotation in annotationsAffected) {
 		
-		BOOL isAnnotationSelected = [self.mainMapView.selectedAnnotations containsObject:ridePointAnnotation];
+		if (ridePointAnnotation.rideLocationType == RideLocationType_Start) {
+			ridePointAnnotationStart = ridePointAnnotation;
+		}
 		
-		[self.mainMapView removeAnnotation:ridePointAnnotation];
-		[self.mainMapView addAnnotation:[ridePointAnnotation initWithRide:ride andRideLocationType:ridePointAnnotation.rideLocationType andNeedsAnimation:needsAnimation]];
-		
-		if (isAnnotationSelected) {
-			[self clearAllAnnotationSelections];
-			[self.mainMapView selectAnnotation:ridePointAnnotation animated:needsAnimation];
+		if (ridePointAnnotation.rideLocationType == RideLocationType_End) {
+			ridePointAnnotationEnd = ridePointAnnotation;
+		}
+	}
+	
+	// At least one location changed, so selectively remove and re-add annotations to map
+	if (ridePointAnnotationStart) {
+		ridePointAnnotationStart = [ridePointAnnotationStart initWithRide:ride andRideLocationType:RideLocationType_Start andNeedsAnimation:updatedLocationStart];
+		if (updatedLocationStart) {
+			[self.mainMapView removeAnnotation:ridePointAnnotationStart];
+			[self.mainMapView addAnnotation:ridePointAnnotationStart];
+		}
+	}
+	if (ridePointAnnotationEnd) {
+		ridePointAnnotationEnd = [ridePointAnnotationEnd initWithRide:ride andRideLocationType:RideLocationType_End andNeedsAnimation:updatedLocationEnd];
+		if (updatedLocationEnd) {
+			[self.mainMapView removeAnnotation:ridePointAnnotationEnd];
+			[self.mainMapView addAnnotation:ridePointAnnotationEnd];
 		}
 	}
 }
@@ -558,32 +565,23 @@
 	
 	// Grab args from notification
 	Team* team = notification.userInfo[TEAM_ENTITY_NAME];
-	BOOL needsAnimation = (notification.userInfo[TEAM_DID_LOCATION_CHANGE_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[TEAM_DID_LOCATION_CHANGE_NOTIFICATION_KEY]).boolValue);
+	BOOL updatedLocation = (notification.userInfo[TEAM_UPDATED_LOCATION_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[TEAM_UPDATED_LOCATION_NOTIFICATION_KEY]).boolValue);
 	
 	// Find map annotations related to given team - if none, we are done
 	// NOTE: Should be max 1
-	NSArray* annotationsAffected =
-	[self.mainMapView.annotations filteredArrayUsingPredicate:
-	 [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
+	NSArray* annotationsAffected = [self.mainMapView.annotations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
 		
 		if (![evaluatedObject isKindOfClass:[TeamPointAnnotation class]]) return NO;
 		TeamPointAnnotation* teamPointAnnotation = evaluatedObject;
-		
 		return teamPointAnnotation.team == team;
 	}]];
+	if (annotationsAffected.count == 0) return;
 	
-	// Refresh map annotations - remove, re-init, re-add, and re-select
-	for (TeamPointAnnotation* teamPointAnnotation in annotationsAffected) {
-		
-		BOOL isAnnotationSelected = [self.mainMapView.selectedAnnotations containsObject:teamPointAnnotation];
-		
+	// Re-init annotation - if location changed, remove, re-add to map
+	TeamPointAnnotation* teamPointAnnotation = [annotationsAffected.firstObject initWithTeam:team andNeedsAnimation:updatedLocation];
+	if (updatedLocation) {
 		[self.mainMapView removeAnnotation:teamPointAnnotation];
-		[self.mainMapView addAnnotation:[teamPointAnnotation initWithTeam:team andNeedsAnimation:needsAnimation]];
-		
-		if (isAnnotationSelected) {
-			[self clearAllAnnotationSelections];
-			[self.mainMapView selectAnnotation:teamPointAnnotation animated:needsAnimation];
-		}
+		[self.mainMapView addAnnotation:teamPointAnnotation];
 	}
 }
 
@@ -800,7 +798,9 @@
 		RidePointAnnotation* rideStartPointAnnotation = [RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_Start andNeedsAnimation:YES];
 		[self.mainMapView addAnnotation:rideStartPointAnnotation];
 		[self.mainMapView setCenterCoordinate:CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue) animated:YES];
-		[self.mainMapView selectAnnotation:rideStartPointAnnotation animated:YES];
+		if (self.mainMapView.selectedAnnotations.count == 0) {
+			[self.mainMapView selectAnnotation:rideStartPointAnnotation animated:YES];
+		}
 	}];
 }
 
@@ -984,11 +984,7 @@
 	
 	// If cannot get directions request, we are done with this ride
 	MKDirectionsRequest* directionsRequest = ride.getDirectionsRequest;
-	if (!directionsRequest) {
-		
-		self.isSelecting = NO;
-		return;
-	}
+	if (!directionsRequest) return;
 	
 	// Determine route for ride, and add overlay to map asynchronously
 	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
@@ -997,7 +993,6 @@
 		// NOTES: Completion block executes on main thread. Do not run more than one directions calculation simultaneously on this object.
 		if (error) {
 			NSLog(@"ETA Error: %@ %@", error.localizedDescription, error.userInfo);
-			self.isSelecting = NO;
 			return;
 		}
 		
@@ -1020,7 +1015,6 @@
 		if (ride.teamAssigned) {
 			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME:ride.teamAssigned}];
 		}
-		self.isSelecting = NO;
 		
 		// If ride or team assigned not still selected, we are done
 		MKPointAnnotation* selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
@@ -1064,18 +1058,12 @@
 
 - (void)mapView:(MKMapView*)mapView didSelectTeamPointAnnotationWithTeam:(Team*)team {
 	
-	if (!team.ridesAssigned) {
-		
-		self.isSelecting = NO;
-		return;
-	}
+	if (!team.ridesAssigned) return;
 	
 	for (Ride* ride in team.ridesAssigned) {
 
 		[self mapView:mapView didSelectRidePointAnnotationWithRide:ride];
 	}
-	
-	self.isSelecting = NO;
 }
 
 
