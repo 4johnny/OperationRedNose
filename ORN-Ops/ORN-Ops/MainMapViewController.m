@@ -932,9 +932,17 @@
 			return nil;
 	}
 	
-	// Update/remove left callout accessory
-	ridePinAnnotationView.leftCalloutAccessoryView = [self updateLeftCalloutAccessoryLabel:[MainMapViewController leftCalloutAccessoryLabel] withRidePointAnnotation:ridePointAnnotation];
-	
+	// Add/update/remove left callout accessory
+	// NOTE: For update, we do not assign, since that will re-animate
+	if (!ridePinAnnotationView.leftCalloutAccessoryView) {
+		
+		ridePinAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabel];
+	}
+	if (![self updateLeftCalloutAccessoryLabel:(UILabel*)ridePinAnnotationView.leftCalloutAccessoryView withRidePointAnnotation:ridePointAnnotation]) {
+		
+		ridePinAnnotationView.leftCalloutAccessoryView = nil;
+	}
+
 	return ridePinAnnotationView;
 }
 
