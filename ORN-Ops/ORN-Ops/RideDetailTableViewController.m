@@ -436,7 +436,9 @@
 	
 	// Save time fields
 	self.ride.dateTimeStart = self.startTimeDatePicker.date;
-	
+	//	self.ride.dateTimeEnd = nil;
+	[self.ride calculateDateTimeEnd];
+
 	// Notify observers of updates to ride
 	NSMutableDictionary* userInfo = [NSMutableDictionary dictionaryWithDictionary:@{RIDE_ENTITY_NAME:self.ride}];
 	if (updatedLocationStart) {

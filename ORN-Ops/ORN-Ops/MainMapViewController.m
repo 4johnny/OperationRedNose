@@ -45,10 +45,13 @@
 # pragma mark Map Constants
 #
 
-#define RIDE_START_ANNOTATION_ID			@"rideStartAnnotation"
-#define RIDE_END_ANNOTATION_ID				@"rideEndAnnotation"
-#define TEAM_CURRENT_NORMAL_ANNOTATION_ID	@"teamCurrentNormalAnnotation"
-#define TEAM_CURRENT_MASCOT_ANNOTATION_ID	@"teamCurrentMascotAnnotation"
+#define RIDE_START_ANNOTATION_ID	@"rideStartAnnotation"
+#define RIDE_END_ANNOTATION_ID		@"rideEndAnnotation"
+#define TEAM_NORMAL_ANNOTATION_ID	@"teamNormalAnnotation"
+#define TEAM_MASCOT_ANNOTATION_ID	@"teamMascotAnnotation"
+
+#define MAP_ANNOTATION_DATETIME_FORMAT	@"HH:mm"
+#define MAP_ANNOTATION_DURATION_FORMAT	@"%.0f min"
 
 #
 # pragma mark Command Constants
@@ -184,7 +187,7 @@
 	if (_annotationDateFormatter) return _annotationDateFormatter;
 	
 	_annotationDateFormatter = [[NSDateFormatter alloc] init];
-	_annotationDateFormatter.dateFormat = @"HH:mm";
+	_annotationDateFormatter.dateFormat = MAP_ANNOTATION_DATETIME_FORMAT;
 
 	return _annotationDateFormatter;
 }
@@ -561,13 +564,13 @@
 		
 		if (updatedLocationStart) {
 			
-			// Remove and re-add to map view - will automatically force new annotation view
+			// Remove and re-add to map view - automatically triggers new annotation view
 			[self.mainMapView removeAnnotation:ridePointAnnotationStart];
 			[self.mainMapView addAnnotation:ridePointAnnotationStart];
 			
 		} else {
 			
-			// If annotation view exists for given annotation, update it
+			// If view exists for given annotation, update it
 			MKPinAnnotationView* ridePinAnnotationView = (MKPinAnnotationView*)[self.mainMapView viewForAnnotation:ridePointAnnotationStart];
 			if (ridePinAnnotationView) {
 				
@@ -603,25 +606,37 @@
 
 - (void)teamUpdatedWithNotification:(NSNotification*)notification {
 	
-	// Grab args from notification
-	Team* team = notification.userInfo[TEAM_ENTITY_NAME];
-	BOOL updatedLocation = (notification.userInfo[TEAM_UPDATED_LOCATION_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[TEAM_UPDATED_LOCATION_NOTIFICATION_KEY]).boolValue);
-	
 	// Find map annotations related to given team - if none, we are done
 	// NOTE: Should be max 1
+	Team* team = notification.userInfo[TEAM_ENTITY_NAME];
 	NSArray* annotationsAffected = [self.mainMapView.annotations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
 		
-		if (![evaluatedObject isKindOfClass:[TeamPointAnnotation class]]) return NO;
-		TeamPointAnnotation* teamPointAnnotation = evaluatedObject;
-		return teamPointAnnotation.team == team;
+		return [evaluatedObject isKindOfClass:[TeamPointAnnotation class]] && ((TeamPointAnnotation*)evaluatedObject).team == team;
 	}]];
 	if (annotationsAffected.count == 0) return;
 	
-	// Re-init annotation - if location changed, remove, re-add to map
-	TeamPointAnnotation* teamPointAnnotation = [annotationsAffected.firstObject initWithTeam:team andNeedsAnimation:updatedLocation];
+	// Grab team annotation explicitly
+	TeamPointAnnotation* teamPointAnnotation = annotationsAffected.firstObject;
+	
+	// Update team annotation and its view
+	BOOL updatedLocation = (notification.userInfo[TEAM_UPDATED_LOCATION_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[TEAM_UPDATED_LOCATION_NOTIFICATION_KEY]).boolValue);
+	
+	teamPointAnnotation = [teamPointAnnotation initWithTeam:team andNeedsAnimation:updatedLocation];
+	
 	if (updatedLocation) {
+		
+		// Remove and re-add to map view - automatically triggers new annotation view
 		[self.mainMapView removeAnnotation:teamPointAnnotation];
 		[self.mainMapView addAnnotation:teamPointAnnotation];
+		
+	} else {
+		
+		// If view exists for given annotation, update it
+		MKAnnotationView* teamAnnotationView = [self.mainMapView viewForAnnotation:teamPointAnnotation];
+		if (teamAnnotationView) {
+			
+			[self updateTeamAnnotationView:teamAnnotationView withTeamPointAnnotation:teamPointAnnotation];
+		}
 	}
 }
 
@@ -881,15 +896,8 @@
 
 - (MKAnnotationView*)mapView:(MKMapView*)mapView viewForRidePointAnnotation:(RidePointAnnotation*)ridePointAnnotation {
 
+	// Grab pooled/new ride annotation view
 	MKPinAnnotationView* ridePinAnnotationView = (MKPinAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:ridePointAnnotation andIdentifier:ridePointAnnotation.rideLocationType == RideLocationType_End ? RIDE_END_ANNOTATION_ID : RIDE_START_ANNOTATION_ID];
-
-	// Enable callout view
-	ridePinAnnotationView.canShowCallout = YES;
-	
-	// Add disclosure button to right side of callout
-	UIButton* rightDisclosureButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-	[rightDisclosureButton addTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
-	ridePinAnnotationView.rightCalloutAccessoryView = rightDisclosureButton;
 
 	// Update view based on given annotation
 	[self updateRidePinAnnotationView:ridePinAnnotationView withRidePointAnnotation:ridePointAnnotation];
@@ -906,34 +914,12 @@
 	ridePinAnnotationView.animatesDrop = ridePointAnnotation.needsAnimation;
 	ridePointAnnotation.needsAnimation = NO;
 	
-	switch (ridePointAnnotation.rideLocationType) {
-			
-		case RideLocationType_Start: {
-			
-			// Set pin color based on status
-			// NOTE: Color for start of route is green by convention
-			ridePinAnnotationView.pinColor = ride.teamAssigned ? MKPinAnnotationColorGreen : MKPinAnnotationColorPurple;
-			
-			break;
-		}
-			
-		case RideLocationType_End: {
-			
-			// Set pin color
-			// NOTE: Color for end of route is red by convention
-			// TODO: Consider setting color based on status
-			ridePinAnnotationView.pinColor = MKPinAnnotationColorRed;
-			
-			break;
-		}
-
-		default:
-		case RideLocationType_None:
-			return nil;
-	}
+	// Set pin color based on status
+	// NOTE: By convention, color for route start is green, and end is red.  If no team assigned, start is purple.
+	ridePinAnnotationView.pinColor = ridePointAnnotation.rideLocationType == RideLocationType_End ? MKPinAnnotationColorRed : (ride.teamAssigned ? MKPinAnnotationColorGreen : MKPinAnnotationColorPurple);
 	
 	// Add/update/remove left callout accessory
-	// NOTE: For update, we do not assign, since that will re-animate
+	// NOTE: Do not assign for update, to avoid re-animation
 	if (!ridePinAnnotationView.leftCalloutAccessoryView) {
 		
 		ridePinAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabel];
@@ -947,21 +933,11 @@
 }
 
 
-+ (UILabel*)leftCalloutAccessoryLabel {
-
-	UILabel* leftCalloutAccessoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 53)];
-	leftCalloutAccessoryLabel.font = [UIFont boldSystemFontOfSize:14.0];
-	leftCalloutAccessoryLabel.textAlignment = NSTextAlignmentCenter;
-	leftCalloutAccessoryLabel.textColor = [UIColor whiteColor];
-	leftCalloutAccessoryLabel.alpha = 0.5;
-	
-	return leftCalloutAccessoryLabel;
-}
-
-
 - (UILabel*)updateLeftCalloutAccessoryLabel:(UILabel*)leftCalloutAccessoryLabel withRidePointAnnotation:(RidePointAnnotation*)ridePointAnnotation {
 
 	Ride* ride = ridePointAnnotation.ride;
+	
+	// If time present, add to label with appropriate background color
 	
 	switch (ridePointAnnotation.rideLocationType) {
 			
@@ -970,6 +946,7 @@
 			if (!ride.dateTimeStart) return nil;
 			
 			leftCalloutAccessoryLabel.text = [self.annotationDateFormatter stringFromDate:ride.dateTimeStart];
+			
 			leftCalloutAccessoryLabel.backgroundColor = ride.teamAssigned ? [UIColor greenColor] : [UIColor purpleColor];
 			
 			break;
@@ -980,6 +957,7 @@
 			if (!ride.dateTimeEnd) return nil;
 			
 			leftCalloutAccessoryLabel.text = [self.annotationDateFormatter stringFromDate:ride.dateTimeEnd];
+			
 			leftCalloutAccessoryLabel.backgroundColor = [UIColor redColor];
 			
 			break;
@@ -996,55 +974,68 @@
 
 - (MKAnnotationView*)mapView:(MKMapView*)mapView viewForTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
 	
-	MKAnnotationView* teamAnnotationView = nil;
+	// Grab pooled/new team annotation view
+	MKAnnotationView* teamAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:teamPointAnnotation andIdentifier:teamPointAnnotation.team.isMascot.boolValue ? TEAM_MASCOT_ANNOTATION_ID : TEAM_NORMAL_ANNOTATION_ID];
+
+	// Update view based on given annotation
+	[self updateTeamAnnotationView:teamAnnotationView withTeamPointAnnotation:teamPointAnnotation];
+
+	return teamAnnotationView;
+}
+
+
+- (MKAnnotationView*)updateTeamAnnotationView:(MKAnnotationView*)teamAnnotationView withTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
 	
-	if (teamPointAnnotation.team.isMascot.boolValue) {
-		
-		teamAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:teamPointAnnotation andIdentifier:TEAM_CURRENT_MASCOT_ANNOTATION_ID];
-		
-		teamAnnotationView.image = [UIImage imageNamed:@"ORN-Team-Mascot-Map-Annotation"];
-		
-	} else {
-		
-		teamAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:teamPointAnnotation andIdentifier:TEAM_CURRENT_NORMAL_ANNOTATION_ID];
-		
-		teamAnnotationView.image = [UIImage imageNamed:@"ORN-Team-Map-Annotation"];
-	}
-
-	// Add mins until available to left side of callout
-	if (teamPointAnnotation.team.ridesAssigned && teamPointAnnotation.team.ridesAssigned.count > 0) {
-		
-		// TODO: Use proper calculation for mins until available
-		int minsUntilTeamAvailable = 0;
-		for (Ride* rideAssigned in teamPointAnnotation.team.ridesAssigned) {
-			
-			minsUntilTeamAvailable += rideAssigned.duration.doubleValue / SECONDS_PER_MINUTE;
-		}
-
-		UILabel* leftInfoView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 53)];
-		leftInfoView.font = [UIFont boldSystemFontOfSize:14.0];
-		leftInfoView.textAlignment = NSTextAlignmentCenter;
-		leftInfoView.textColor = [UIColor whiteColor];
-		leftInfoView.alpha = 0.5;
-		
-		leftInfoView.backgroundColor = [UIColor blueColor];
-		
-		leftInfoView.text = [NSString stringWithFormat:@"%d min", minsUntilTeamAvailable];
-		
-		teamAnnotationView.leftCalloutAccessoryView = leftInfoView;
-	}
+	// Team* team = teamPointAnnotation.team;
 	
 	// NOTE: Animation of team annotation is done manually in "mapView:didAddAnnotationViews:"
 
-	// Add callout view to annotation
-	teamAnnotationView.canShowCallout = YES;
-	
-	// Add disclosure button to right side of callout
-	UIButton* rightDisclosureButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-	[rightDisclosureButton addTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
-	teamAnnotationView.rightCalloutAccessoryView = rightDisclosureButton;
+	// Add/update/remove left callout accessory
+	// NOTE: Do not assign for update, to avoid re-animation
+	if (!teamAnnotationView.leftCalloutAccessoryView) {
+		
+		teamAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabel];
+	}
+	if (![self updateLeftCalloutAccessoryLabel:(UILabel*)teamAnnotationView.leftCalloutAccessoryView withTeamPointAnnotation:teamPointAnnotation]) {
+		
+		teamAnnotationView.leftCalloutAccessoryView = nil;
+	}
 	
 	return teamAnnotationView;
+}
+
+
+- (UILabel*)updateLeftCalloutAccessoryLabel:(UILabel*)leftCalloutAccessoryLabel withTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
+	
+	Team* team = teamPointAnnotation.team;
+	
+	// If team assigned to rides, add total busy duration to label
+	
+	if (!team.ridesAssigned || team.ridesAssigned.count == 0) return nil;
+		
+	// TODO: Use proper calculation for duration until available
+	double busyDuration = 0; // seconds
+	for (Ride* rideAssigned in team.ridesAssigned) {
+		
+		busyDuration += rideAssigned.duration.doubleValue;
+	}
+	leftCalloutAccessoryLabel.text = [NSString stringWithFormat:MAP_ANNOTATION_DURATION_FORMAT, busyDuration / (double)SECONDS_PER_MINUTE];
+	
+	leftCalloutAccessoryLabel.backgroundColor = [UIColor blueColor];
+	
+	return leftCalloutAccessoryLabel;
+}
+
+
++ (UILabel*)leftCalloutAccessoryLabel {
+	
+	UILabel* leftCalloutAccessoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 53)];
+	leftCalloutAccessoryLabel.font = [UIFont boldSystemFontOfSize:14.0];
+	leftCalloutAccessoryLabel.textAlignment = NSTextAlignmentCenter;
+	leftCalloutAccessoryLabel.textColor = [UIColor whiteColor];
+	leftCalloutAccessoryLabel.alpha = 0.5;
+	
+	return leftCalloutAccessoryLabel;
 }
 
 
@@ -1073,7 +1064,7 @@
 		
 		// Update expected travel time for ride, since may have changed
 		ride.duration = [NSNumber numberWithDouble:route.expectedTravelTime]; // seconds
-		NSLog(@"ETA: %.0f seconds", route.expectedTravelTime);
+		NSLog(@"ETA: %.0f sec -> %.2f min", route.expectedTravelTime, route.expectedTravelTime / (double)SECONDS_PER_MINUTE);
 		
 		// Determine end time by adding ETA seconds to start time
 		ride.dateTimeEnd = [NSDate dateWithTimeInterval:route.expectedTravelTime sinceDate:ride.dateTimeStart];
@@ -1147,13 +1138,30 @@
 		return annotationView;
 	}
 	
-	// No pooled annotation - create new one
+	// Create new annotation
+	MKAnnotationView* view = nil;
 	
 	if ([identifier isEqualToString:RIDE_START_ANNOTATION_ID] ||
-		[identifier isEqualToString:RIDE_END_ANNOTATION_ID])
-		return [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+		[identifier isEqualToString:RIDE_END_ANNOTATION_ID]) {
+		
+		view = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+		
+	} else if ([identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ||
+			   [identifier isEqualToString:TEAM_NORMAL_ANNOTATION_ID]) {
 	
-	return [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+		view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+		view.image = [UIImage imageNamed:[identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ? @"ORN-Team-Mascot-Map-Annotation" : @"ORN-Team-Map-Annotation"];
+	}
+
+	// Enable callout view for annotation
+	view.canShowCallout = YES;
+	
+	// Add disclosure button to right side of callout
+	UIButton* rightDisclosureButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+	[rightDisclosureButton addTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
+	view.rightCalloutAccessoryView = rightDisclosureButton;
+	
+	return view;
 }
 
 

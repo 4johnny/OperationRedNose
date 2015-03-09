@@ -7,6 +7,7 @@
 //
 
 #import "Ride+RideHelpers.h"
+#import "Team+TeamHelpers.h"
 
 
 #
@@ -89,6 +90,39 @@ insertIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
 	directionsRequest.requestsAlternateRoutes = NO;
 	
 	return directionsRequest;
+}
+
+
+// Calculate ride duration and end time asynchronously
+- (void)calculateDateTimeEnd {
+	
+	// If cannot get directions request, we are done with this ride
+	MKDirectionsRequest* directionsRequest = self.getDirectionsRequest;
+	if (!directionsRequest) return;
+	
+	// Update ride duration and end time with ETA calculation for route
+	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
+	[directions calculateETAWithCompletionHandler:^(MKETAResponse *response, NSError *error) {
+		
+		// NOTES: Completion block executes on main thread. Do not run more than one ETA calculation simultaneously on this object.
+		if (error) {
+			NSLog(@"ETA Error: %@ %@", error.localizedDescription, error.userInfo);
+			return;
+		}
+		
+		// Expected travel time calculated successfully, so store it
+		self.duration = [NSNumber numberWithDouble:response.expectedTravelTime]; // seconds
+		NSLog(@"ETA: %.0f sec -> %.2f min", response.expectedTravelTime, response.expectedTravelTime / (double)SECONDS_PER_MINUTE);
+		
+		// Determine end time by adding ETA seconds to start time
+		self.dateTimeEnd = [NSDate dateWithTimeInterval:response.expectedTravelTime sinceDate:self.dateTimeStart];
+		
+		// Notify that ride and assigned team have updated
+		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:self}];
+		if (self.teamAssigned) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME:self.teamAssigned}];
+		}
+	}];
 }
 
 

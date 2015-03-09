@@ -55,7 +55,7 @@
 	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.756615];
 	ride.locationEndAddress = @"1523 Prairie Ave, Port Coquitlam";
 	ride.locationEndCity = @"Port Coquitlam";
-	[DemoUtil calculateEndTimeForRide:ride];
+	[ride calculateDateTimeEnd];
 	
 	ride =
 	[Ride rideWithManagedObjectContext:managedObjectContext
@@ -68,7 +68,7 @@
 	ride.locationEndLongitude = [NSNumber numberWithDouble:-123.0769722];
 	ride.locationEndAddress = @"1750 Clark Dr, Vancouver";
 	ride.locationEndCity = @"Vancouver";
-	[DemoUtil calculateEndTimeForRide:ride];
+	[ride calculateDateTimeEnd];
 }
 
 
@@ -87,7 +87,7 @@
 	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.979254];
 	ride.locationEndAddress = @"5788 Kingsway, Burnaby";
 	ride.locationEndCity = @"Burnaby";
-	[DemoUtil calculateEndTimeForRide:ride];
+	[ride calculateDateTimeEnd];
 	
 	ride =
 	[Ride rideWithManagedObjectContext:managedObjectContext
@@ -100,7 +100,7 @@
 	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.8527494];
 	ride.locationEndAddress = @"1431 Brunette Ave, Coquitlam";
 	ride.locationEndCity = @"Coquitlam";
-	[DemoUtil calculateEndTimeForRide:ride];
+	[ride calculateDateTimeEnd];
 }
 
 
@@ -119,7 +119,7 @@
 	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.924143];
 	ride.locationEndAddress = @"615 8th St, New Westminster";
 	ride.locationEndCity = @"New Westminster";
-	[DemoUtil calculateEndTimeForRide:ride];
+	[ride calculateDateTimeEnd];
 	
 	ride =
 	[Ride rideWithManagedObjectContext:managedObjectContext
@@ -132,7 +132,7 @@
 	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.941872];
 	ride.locationEndAddress = @"4004 Lozells Ave, Burnaby";
 	ride.locationEndCity = @"Burnaby";
-	[DemoUtil calculateEndTimeForRide:ride];
+	[ride calculateDateTimeEnd];
 	
 	ride =
 	[Ride rideWithManagedObjectContext:managedObjectContext
@@ -145,7 +145,7 @@
 	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.830639];
 	ride.locationEndAddress = @"131 Forest Park Way, Port Moody";
 	ride.locationEndCity = @"Port Moody";
-	[DemoUtil calculateEndTimeForRide:ride];
+	[ride calculateDateTimeEnd];
 }
 
 
@@ -172,7 +172,7 @@
 	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.733142];
 	ride.locationEndAddress = @"590 Dominion Ave, Port Coquitlam";
 	ride.locationEndCity = @"Port Coquitlam";
-	[DemoUtil calculateEndTimeForRide:ride];
+	[ride calculateDateTimeEnd];
 }
 
 
@@ -191,7 +191,7 @@
 	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.7907818];
 	ride.locationEndAddress = @"1330 Pinetree Way, Coquitlam";
 	ride.locationEndCity = @"Coquitlam";
-	[DemoUtil calculateEndTimeForRide:ride];
+	[ride calculateDateTimeEnd];
 }
 
 
@@ -210,7 +210,7 @@
 	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.8739446137635];
 	ride.locationEndAddress = @"1000 Clarke Rd, Port Moody";
 	ride.locationEndCity = @"Port Moody";
-	[DemoUtil calculateEndTimeForRide:ride];
+	[ride calculateDateTimeEnd];
 }
 
 
@@ -403,39 +403,6 @@
 
 	ride.teamAssigned = team;
 	[team addRidesAssignedObject:ride];
-}
-
-
-// Calculate ride duration and end time asynchronously
-+ (void)calculateEndTimeForRide:(Ride*)ride {
-	
-	// If cannot get directions request, we are done with this ride
-	MKDirectionsRequest* directionsRequest = ride.getDirectionsRequest;
-	if (!directionsRequest) return;
-	
-	// Update ride duration and end time with ETA calculation for route
-	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
-	[directions calculateETAWithCompletionHandler:^(MKETAResponse *response, NSError *error) {
-		
-		// NOTES: Completion block executes on main thread. Do not run more than one ETA calculation simultaneously on this object.
-		if (error) {
-			NSLog(@"ETA Error: %@ %@", error.localizedDescription, error.userInfo);
-			return;
-		}
-		
-		// Expected travel time calculated successfully, so store it
-		ride.duration = [NSNumber numberWithDouble:response.expectedTravelTime]; // seconds
-		NSLog(@"ETA: %.0f seconds", response.expectedTravelTime);
-		
-		// Determine end time by adding ETA seconds to start time
-		ride.dateTimeEnd = [NSDate dateWithTimeInterval:response.expectedTravelTime sinceDate:ride.dateTimeStart];
-		
-		// Notify that ride and assigned team have updated
-		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:ride}];
-		if (ride.teamAssigned) {
-			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME:ride.teamAssigned}];
-		}
-	}];
 }
 
 

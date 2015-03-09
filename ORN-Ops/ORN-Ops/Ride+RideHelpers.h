@@ -72,6 +72,7 @@ typedef NS_ENUM(NSInteger, RideLocationType) {
 
 - (NSString*)getPassengerName;
 - (MKDirectionsRequest*)getDirectionsRequest;
+- (void)calculateDateTimeEnd;
 
 + (NSString*)stringFromStatus:(RideStatus)status;
 + (RideStatus)statusFromString:(NSString*)statusString;
