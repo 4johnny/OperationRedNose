@@ -15,6 +15,8 @@
 #import "Ride+RideHelpers.h"
 #import "RidePointAnnotation.h"
 #import "TeamPointAnnotation.h"
+#import "RideTeamAssignedPolyline.h"
+
 
 #import "DemoUtil.h"
 
@@ -456,15 +458,13 @@
 
 - (MKOverlayRenderer*)mapView:(MKMapView*)mapView rendererForOverlay:(id<MKOverlay>)overlay {
 
-	MKPolylineRenderer* renderer = [[MKPolylineRenderer alloc] initWithOverlay:overlay];
+	MKPolylineRenderer* renderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
 	renderer.strokeColor = [UIColor blueColor];
 	renderer.alpha = 0.5;
 	renderer.lineWidth = 5.0;
 
 	// For overlay between team and ride use dotted line
-	// NOTE: For now, differentiate polylines by taking advantage of likely point count
-	MKPolyline* polyline = overlay;
-	if (polyline.pointCount <= 2) {
+	if ([overlay isKindOfClass:[RideTeamAssignedPolyline class]]) {
 		
 		renderer.lineDashPattern = @[@5, @10];
 		//	renderer.lineDashPhase = 6;
@@ -1041,9 +1041,17 @@
 
 - (void)mapView:(MKMapView*)mapView didSelectRidePointAnnotationWithRide:(Ride*)ride {
 
-	// Add polyline from team assigned to ride start, if possible
-	MKPolyline* teamAssignedPolyline = [self configureTeamAssignedOverlayWithTeam:ride.teamAssigned andStartCoordinate:CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue)];
-	
+	// Add polyline from team assigned location to ride start, if possible
+	RideTeamAssignedPolyline* rideTeamAssignedPolylineToRideStart = nil;
+	if (ride.teamAssigned && ride.teamAssigned.locationCurrentLatitude && ride.teamAssigned.locationCurrentLongitude && ride.locationStartLatitude && ride.locationStartLongitude) {
+		
+		CLLocationCoordinate2D startCoordinate = CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue);
+		
+		rideTeamAssignedPolylineToRideStart = [RideTeamAssignedPolyline rideTeamPolylineWithRide:ride andStartCoordinate:&startCoordinate];
+		
+		[self.mainMapView addOverlay:rideTeamAssignedPolylineToRideStart level:MKOverlayLevelAboveLabels];
+	}
+
 	// If cannot get directions request, we are done with this ride
 	MKDirectionsRequest* directionsRequest = ride.getDirectionsRequest;
 	if (!directionsRequest) return;
@@ -1083,27 +1091,24 @@
 		if (!([selectedAnnotation isKindOfClass:[RidePointAnnotation class]] && ((RidePointAnnotation*)selectedAnnotation).ride == ride) &&
 			!([selectedAnnotation isKindOfClass:[TeamPointAnnotation class]] && ((TeamPointAnnotation*)selectedAnnotation).team == ride.teamAssigned)) return;
 
-		// Add polyline to map, from team assigned to actual route start, if possible
-		if (teamAssignedPolyline) {
-			[self.mainMapView removeOverlay:teamAssignedPolyline];
+		// Remove existing ride-team assigned polyline, if present
+		if (rideTeamAssignedPolylineToRideStart) {
+			[self.mainMapView removeOverlay:rideTeamAssignedPolylineToRideStart];
 		}
-		[self configureTeamAssignedOverlayWithTeam:ride.teamAssigned andStartCoordinate:MKCoordinateForMapPoint(route.polyline.points[0])];
 		
-		// Add polyline to map, for ride route - if one happens already to exist for this ride route, reuse it
-		// TODO: Ensure this issue/code is considered
-		// Find route overlays related to given ride - if none, create new one
-		// NOTE: There should be max 1 overlay
-		//	NSArray* annotationsAffected =
-		//	[self.mainMapView.annotations filteredArrayUsingPredicate:
-		//	 [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
-		//
-		//		if (![evaluatedObject isKindOfClass:[RidePointAnnotation class]]) return NO;
-		//		RidePointAnnotation* ridePointAnnotation = evaluatedObject;
-		//
-		//		return ridePointAnnotation.ride == ride;
-		//	}]];
+		// Add polyline from team assigned location to actual route start, if possible
+		if (ride.teamAssigned && ride.teamAssigned.locationCurrentLatitude && ride.teamAssigned.locationCurrentLongitude) {
+			
+			CLLocationCoordinate2D startCoordinate = MKCoordinateForMapPoint(route.polyline.points[0]);
+			
+			RideTeamAssignedPolyline* rideTeamAssignedPolylineToRouteStart = [RideTeamAssignedPolyline rideTeamPolylineWithRide:ride andStartCoordinate:&startCoordinate];
+			
+			[self.mainMapView addOverlay:rideTeamAssignedPolylineToRouteStart level:MKOverlayLevelAboveLabels];
+		}
+		
+		// Add route polyline from ride start to end
 		[self.mainMapView addOverlay:route.polyline level:MKOverlayLevelAboveRoads];
-		
+
 		// TODO: Consider features that also utilize the route steps and advisory notices
 		//		NSLog(@"Route Steps (%d):", (int)route.steps.count);
 		//		for (MKRouteStep* step in route.steps) {
@@ -1184,19 +1189,6 @@
 	return [NSString stringWithFormat:@"%@ (%.3f,%.3f)", placemark.name, placemark.location.coordinate.latitude, placemark.location.coordinate.longitude];
 	
 	//	return ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO);
-}
-
-
-- (MKPolyline*)configureTeamAssignedOverlayWithTeam:(Team*)team andStartCoordinate:(CLLocationCoordinate2D)startCoordinate {
-	
-	if (!team || !team.locationCurrentLatitude || !team.locationCurrentLongitude) return nil;
-		
-	CLLocationCoordinate2D locationCoordinates[2] = { CLLocationCoordinate2DMake(team.locationCurrentLatitude.doubleValue, team.locationCurrentLongitude.doubleValue), startCoordinate };
-	MKPolyline* polyline = [MKPolyline polylineWithCoordinates:locationCoordinates count:2];
-	
-	[self.mainMapView addOverlay:polyline level:MKOverlayLevelAboveLabels];
-
-	return polyline;
 }
 
 

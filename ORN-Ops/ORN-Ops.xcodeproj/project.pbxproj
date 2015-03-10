@@ -12,6 +12,7 @@
 		B24C18711A9EF3D6008505BB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2078B821A9DAF2A004AF662 /* MapKit.framework */; };
 		B24D4FD11A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B24D4FCF1A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld */; };
 		B25220331AA0412C00C3CE00 /* DemoUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = B25220321AA0412C00C3CE00 /* DemoUtil.m */; };
+		B26C11301AAEB4CD005FC313 /* RideTeamAssignedPolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B26C112F1AAEB4CD005FC313 /* RideTeamAssignedPolyline.m */; };
 		B27533451A9DA91700B3110C /* MainTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = B27533441A9DA91700B3110C /* MainTabBarController.m */; };
 		B27B4A751A9AB1FB009277E4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A741A9AB1FB009277E4 /* main.m */; };
 		B27B4A781A9AB1FB009277E4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A771A9AB1FB009277E4 /* AppDelegate.m */; };
@@ -51,6 +52,8 @@
 		B24D4FD01A9D98E0008A0C7A /* ORN-Ops.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ORN-Ops.xcdatamodel"; sourceTree = "<group>"; };
 		B25220311AA0412C00C3CE00 /* DemoUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoUtil.h; sourceTree = "<group>"; };
 		B25220321AA0412C00C3CE00 /* DemoUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoUtil.m; sourceTree = "<group>"; };
+		B26C112E1AAEB4CD005FC313 /* RideTeamAssignedPolyline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RideTeamAssignedPolyline.h; sourceTree = "<group>"; };
+		B26C112F1AAEB4CD005FC313 /* RideTeamAssignedPolyline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RideTeamAssignedPolyline.m; sourceTree = "<group>"; };
 		B27533431A9DA91700B3110C /* MainTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainTabBarController.h; sourceTree = "<group>"; };
 		B27533441A9DA91700B3110C /* MainTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainTabBarController.m; sourceTree = "<group>"; };
 		B27B4A6F1A9AB1FB009277E4 /* ORN-Ops.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ORN-Ops.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -173,6 +176,8 @@
 				B2907B831A9F1903008A0301 /* RidePointAnnotation.m */,
 				B2E76A231AA6D0A3004B55BB /* TeamPointAnnotation.h */,
 				B2E76A241AA6D0A3004B55BB /* TeamPointAnnotation.m */,
+				B26C112E1AAEB4CD005FC313 /* RideTeamAssignedPolyline.h */,
+				B26C112F1AAEB4CD005FC313 /* RideTeamAssignedPolyline.m */,
 			);
 			name = "Map Helpers";
 			sourceTree = "<group>";
@@ -413,6 +418,7 @@
 				B2C756181AA1912B00B148D3 /* RideDetailTableViewController.m in Sources */,
 				B24D4FD11A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld in Sources */,
 				B2C7561B1AA1A83100B148D3 /* TeamsTableViewController.m in Sources */,
+				B26C11301AAEB4CD005FC313 /* RideTeamAssignedPolyline.m in Sources */,
 				B27B4A751A9AB1FB009277E4 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
