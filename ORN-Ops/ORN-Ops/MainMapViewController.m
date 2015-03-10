@@ -806,6 +806,18 @@
 
 - (void)rideUpdatedWithNotification:(NSNotification*)notification {
 	
+	[self updateRideAnnotationsWithNotification:notification];
+}
+
+
+- (void)teamUpdatedWithNotification:(NSNotification*)notification {
+	
+	[self updateTeamAnnotationsWithNotification:notification];
+}
+
+
+- (void)updateRideAnnotationsWithNotification:(NSNotification*)notification {
+
 	// Find map annotations for given ride - if none, we are done
 	// NOTE: Should be max 2, one each for start and end locations
 	Ride* ride = notification.userInfo[RIDE_ENTITY_NAME];
@@ -885,8 +897,8 @@
 }
 
 
-- (void)teamUpdatedWithNotification:(NSNotification*)notification {
-	
+- (void)updateTeamAnnotationsWithNotification:(NSNotification*)notification {
+
 	// Find map annotations related to given team - if none, we are done
 	// NOTE: Should be max 1
 	Team* team = notification.userInfo[TEAM_ENTITY_NAME];
