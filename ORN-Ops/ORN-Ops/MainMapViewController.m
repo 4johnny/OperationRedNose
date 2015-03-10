@@ -876,9 +876,10 @@
 	BOOL updatedTeamAssigned = (notification.userInfo[RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY]).boolValue);
 	
 	// If team assigned has not been updated, we are done.
+	// NOTE: Good enough for now.  Later, start and end locations might also be changing
 	if (!updatedTeamAssigned) return;
 	
-	// Find map overlays for given ride
+	// Find map overlays for given ride-team assigned
 	// NOTE: Should be max 1
 	Ride* ride = notification.userInfo[RIDE_ENTITY_NAME];
 	NSArray* overlaysAffected = [self.mainMapView.overlays filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
@@ -893,6 +894,11 @@
 		rideTeamAssignedPolyline = overlaysAffected.firstObject;
 		[self.mainMapView removeOverlay:rideTeamAssignedPolyline];
 	}
+	
+	// If ride or team assigned not selected, we are done
+	MKPointAnnotation* selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
+	if (!([selectedAnnotation isKindOfClass:[RidePointAnnotation class]] && ((RidePointAnnotation*)selectedAnnotation).ride == ride) &&
+		!([selectedAnnotation isKindOfClass:[TeamPointAnnotation class]] && ((TeamPointAnnotation*)selectedAnnotation).team == ride.teamAssigned)) return;
 	
 	// Add overlay for ride-team, if assigned and possible
 	if (ride.teamAssigned && ride.teamAssigned.locationCurrentLatitude && ride.teamAssigned.locationCurrentLongitude && ride.locationStartLatitude && ride.locationStartLongitude) {
