@@ -11,18 +11,6 @@
 
 
 #
-# pragma mark - Interface
-#
-
-
-@interface RideTeamAssignedPolyline ()
-
-@property (nonatomic) MKPolyline* polyline;
-
-@end
-
-
-#
 # pragma mark - Implementation
 #
 
@@ -36,7 +24,7 @@
 
 
 - (instancetype)initWithRide:(Ride*)ride andStartCoordinate:(CLLocationCoordinate2D*)startCoordinate {
-
+	
 	self = [super init];
 	if (self) {
 		
@@ -46,11 +34,11 @@
 			
 			CLLocationCoordinate2D locationCoordinates[2] = { CLLocationCoordinate2DMake(ride.teamAssigned.locationCurrentLatitude.doubleValue, ride.teamAssigned.locationCurrentLongitude.doubleValue), *startCoordinate };
 			
-			_polyline = [MKPolyline polylineWithCoordinates:locationCoordinates count:2];
+			self = [super initWithPolyline:[MKPolyline polylineWithCoordinates:locationCoordinates count:2]];
 			
 		} else {
 			
-			_polyline = [MKPolyline polylineWithCoordinates:NULL count:0];
+			self = [super initWithPolyline:[MKPolyline polylineWithCoordinates:NULL count:0]];
 		}
 	}
 	
@@ -64,56 +52,9 @@
 }
 
 
-+ (instancetype)rideTeamPolylineWithRide:(Ride*)ride andStartCoordinate:(CLLocationCoordinate2D*)startCoordinate {
++ (instancetype)rideTeamAssignedPolylineWithRide:(Ride*)ride andStartCoordinate:(CLLocationCoordinate2D*)startCoordinate {
 	
 	return [[RideTeamAssignedPolyline alloc] initWithRide:ride andStartCoordinate:startCoordinate];
-}
-
-
-#
-# pragma mark <MKOverlay>
-#
-
-
-- (CLLocationCoordinate2D)coordinate {
-	
-	return _polyline.coordinate;
-}
-
-
-- (MKMapRect)boundingMapRect {
-
-	return _polyline.boundingMapRect;
-}
-
-
-- (BOOL)intersectsMapRect:(MKMapRect)mapRect {
-	
-	return [_polyline intersectsMapRect:mapRect];
-}
-
-
-#
-# pragma mark MKMultiPoint
-#
-// NOTE: Required for rendering by MKPolylineRenderer
-
-
-- (MKMapPoint*)points {
-	
-	return [_polyline points];
-}
-
-
-- (NSUInteger)pointCount {
-	
-	return [_polyline pointCount];
-}
-
-
-- (void)getCoordinates:(CLLocationCoordinate2D*)coords range:(NSRange)range {
-	
-	return [_polyline getCoordinates:coords range:range];
 }
 
 

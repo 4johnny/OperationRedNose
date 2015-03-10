@@ -641,7 +641,7 @@
 		
 		CLLocationCoordinate2D startCoordinate = CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue);
 		
-		rideTeamAssignedPolylineToRideStart = [RideTeamAssignedPolyline rideTeamPolylineWithRide:ride andStartCoordinate:&startCoordinate];
+		rideTeamAssignedPolylineToRideStart = [RideTeamAssignedPolyline rideTeamAssignedPolylineWithRide:ride andStartCoordinate:&startCoordinate];
 		
 		[self.mainMapView addOverlay:rideTeamAssignedPolylineToRideStart level:MKOverlayLevelAboveLabels];
 	}
@@ -695,7 +695,7 @@
 			
 			CLLocationCoordinate2D startCoordinate = MKCoordinateForMapPoint(route.polyline.points[0]);
 			
-			RideTeamAssignedPolyline* rideTeamAssignedPolylineToRouteStart = [RideTeamAssignedPolyline rideTeamPolylineWithRide:ride andStartCoordinate:&startCoordinate];
+			RideTeamAssignedPolyline* rideTeamAssignedPolylineToRouteStart = [RideTeamAssignedPolyline rideTeamAssignedPolylineWithRide:ride andStartCoordinate:&startCoordinate];
 			
 			[self.mainMapView addOverlay:rideTeamAssignedPolylineToRouteStart level:MKOverlayLevelAboveLabels];
 		}
@@ -913,7 +913,7 @@
 			
 		} else {
 			
-			rideTeamAssignedPolyline = [RideTeamAssignedPolyline rideTeamPolylineWithRide:ride andStartCoordinate:&startCoordinate];
+			rideTeamAssignedPolyline = [RideTeamAssignedPolyline rideTeamAssignedPolylineWithRide:ride andStartCoordinate:&startCoordinate];
 		}
 		
 		// Add polyline to overlays
