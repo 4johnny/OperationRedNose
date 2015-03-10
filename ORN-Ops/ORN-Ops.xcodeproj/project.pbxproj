@@ -21,6 +21,7 @@
 		B27B4A861A9AB1FB009277E4 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B27B4A841A9AB1FB009277E4 /* LaunchScreen.xib */; };
 		B27B4A921A9AB1FB009277E4 /* ORN_OpsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A911A9AB1FB009277E4 /* ORN_OpsTests.m */; };
 		B28312261AAF2A8100B7C1A9 /* BasePolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B28312251AAF2A8100B7C1A9 /* BasePolyline.m */; };
+		B28312291AAF322C00B7C1A9 /* RideStartEndPolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B28312281AAF322C00B7C1A9 /* RideStartEndPolyline.m */; };
 		B2907B841A9F1903008A0301 /* RidePointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B2907B831A9F1903008A0301 /* RidePointAnnotation.m */; };
 		B2B711EE1AA85F31000CC6C8 /* Ride.m in Sources */ = {isa = PBXBuildFile; fileRef = B2B711ED1AA85F31000CC6C8 /* Ride.m */; };
 		B2C756151AA1905E00B148D3 /* RidesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756141AA1905E00B148D3 /* RidesTableViewController.m */; };
@@ -70,6 +71,8 @@
 		B27B4A911A9AB1FB009277E4 /* ORN_OpsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ORN_OpsTests.m; sourceTree = "<group>"; };
 		B28312241AAF2A8100B7C1A9 /* BasePolyline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BasePolyline.h; sourceTree = "<group>"; };
 		B28312251AAF2A8100B7C1A9 /* BasePolyline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BasePolyline.m; sourceTree = "<group>"; };
+		B28312271AAF322C00B7C1A9 /* RideStartEndPolyline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RideStartEndPolyline.h; sourceTree = "<group>"; };
+		B28312281AAF322C00B7C1A9 /* RideStartEndPolyline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RideStartEndPolyline.m; sourceTree = "<group>"; };
 		B2907B821A9F1903008A0301 /* RidePointAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RidePointAnnotation.h; sourceTree = "<group>"; };
 		B2907B831A9F1903008A0301 /* RidePointAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RidePointAnnotation.m; sourceTree = "<group>"; };
 		B2B711EC1AA85F31000CC6C8 /* Ride.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ride.h; sourceTree = "<group>"; };
@@ -179,6 +182,8 @@
 				B2907B831A9F1903008A0301 /* RidePointAnnotation.m */,
 				B2E76A231AA6D0A3004B55BB /* TeamPointAnnotation.h */,
 				B2E76A241AA6D0A3004B55BB /* TeamPointAnnotation.m */,
+				B28312271AAF322C00B7C1A9 /* RideStartEndPolyline.h */,
+				B28312281AAF322C00B7C1A9 /* RideStartEndPolyline.m */,
 				B26C112E1AAEB4CD005FC313 /* RideTeamAssignedPolyline.h */,
 				B26C112F1AAEB4CD005FC313 /* RideTeamAssignedPolyline.m */,
 			);
@@ -421,6 +426,7 @@
 				B2E76A221AA64572004B55BB /* Team+TeamHelpers.m in Sources */,
 				B2009CCD1AA57F650065E67B /* Team.m in Sources */,
 				B28312261AAF2A8100B7C1A9 /* BasePolyline.m in Sources */,
+				B28312291AAF322C00B7C1A9 /* RideStartEndPolyline.m in Sources */,
 				B2C756181AA1912B00B148D3 /* RideDetailTableViewController.m in Sources */,
 				B24D4FD11A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld in Sources */,
 				B2C7561B1AA1A83100B148D3 /* TeamsTableViewController.m in Sources */,

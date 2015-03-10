@@ -15,6 +15,7 @@
 #import "Ride+RideHelpers.h"
 #import "RidePointAnnotation.h"
 #import "TeamPointAnnotation.h"
+#import "RideStartEndPolyline.h"
 #import "RideTeamAssignedPolyline.h"
 
 
@@ -701,7 +702,8 @@
 		}
 		
 		// Add route polyline from ride start to end
-		[self.mainMapView addOverlay:route.polyline level:MKOverlayLevelAboveRoads];
+		RideStartEndPolyline* rideStartEndPolyline = [RideStartEndPolyline rideStartEndPolylineWithRide:ride andPolyline:route.polyline];
+		[self.mainMapView addOverlay:rideStartEndPolyline level:MKOverlayLevelAboveRoads];
 		
 		// TODO: Consider features that also utilize the route steps and advisory notices
 		//		NSLog(@"Route Steps (%d):", (int)route.steps.count);
@@ -905,7 +907,7 @@
 		
 		// Get coordinate of route start, if possible; o/w ride start
 		CLLocationCoordinate2D startCoordinate = rideTeamAssignedPolyline ? MKCoordinateForMapPoint(rideTeamAssignedPolyline.points[rideTeamAssignedPolyline.pointCount - 1]) : CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue);
-
+		
 		// Populate polyline - reuse existing object if present
 		if (rideTeamAssignedPolyline) {
 			
@@ -920,7 +922,7 @@
 		[self.mainMapView addOverlay:rideTeamAssignedPolyline level:MKOverlayLevelAboveLabels];
 	}
 }
-
+	
 
 - (void)updateTeamAnnotationsWithNotification:(NSNotification*)notification {
 
