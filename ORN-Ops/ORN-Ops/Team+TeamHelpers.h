@@ -15,8 +15,9 @@
 #define TEAM_ENTITY_NAME	@"Team"
 #define TEAM_TITLE_DEFAULT	@"(Team)"
 
-#define TEAM_UPDATED_NOTIFICATION_NAME			@"teamUpdated"
-#define TEAM_UPDATED_LOCATION_NOTIFICATION_KEY	@"teamUpdatedLocation"
+#define TEAM_UPDATED_NOTIFICATION_NAME					@"teamUpdated"
+#define TEAM_UPDATED_LOCATION_NOTIFICATION_KEY			@"teamUpdatedLocation"
+#define TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY	@"teamUpdatedRidesAssigned"
 
 #
 # pragma mark - Interface

@@ -395,20 +395,29 @@
 	self.ride.sourceName = self.sourceTextField.text;
 	self.ride.donationAmount = self.donationTextField.text.length > 0 ? [NSDecimalNumber decimalNumberWithString:self.donationTextField.text] : nil;
 
-	// Remove any existing team assigned and assign new one if necessary - notify observers
-	if (self.ride.teamAssigned) {
-
-		Team* teamAssigned = self.ride.teamAssigned; // NOTE: Must use local var when removing Core Data relationships
-		[teamAssigned removeRidesAssignedObject:self.ride];
-		[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME:teamAssigned}];
-		self.ride.teamAssigned = nil; // NOTE: Likely redundant
-	}
+	// Save dispatch field: team assigned
+	Team* existingTeamAssigned = self.ride.teamAssigned; // Maybe nil
 	NSInteger selectedTeamRow = [self.teamAssignedPickerView selectedRowInComponent:0];
-	if (selectedTeamRow > 0) {
-		Team* teamAssigned = self.teamFetchedResultsController.fetchedObjects[selectedTeamRow - 1];
-		[teamAssigned addRidesAssignedObject:self.ride];
-		[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME:teamAssigned}];
-		self.ride.teamAssigned = teamAssigned;
+	Team* newteamAssigned = selectedTeamRow > 0 ? self.teamFetchedResultsController.fetchedObjects[selectedTeamRow - 1] : nil; // "None" at index 0
+	BOOL updatedTeamAssigned = (existingTeamAssigned != newteamAssigned);
+	if (updatedTeamAssigned) {
+
+		// Remove team assigned, if present - notify observers
+		if (existingTeamAssigned) {
+			
+			[existingTeamAssigned removeRidesAssignedObject:self.ride];
+			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME:existingTeamAssigned, TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY:[NSNumber numberWithBool:YES]}];
+			self.ride.teamAssigned = nil; // NOTE: Likely redundant due to "smart" Core Data relationships
+		}
+
+		// Add team assigned, if present - notify observers
+		if (newteamAssigned) {
+			
+			[newteamAssigned addRidesAssignedObject:self.ride];
+			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME:newteamAssigned, TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY:[NSNumber numberWithBool:YES]}];
+		}
+		
+		self.ride.teamAssigned = newteamAssigned;
 	}
 	
 	// Save passenger fields
@@ -441,11 +450,14 @@
 
 	// Notify observers of updates to ride
 	NSMutableDictionary* userInfo = [NSMutableDictionary dictionaryWithDictionary:@{RIDE_ENTITY_NAME:self.ride}];
+	if (updatedTeamAssigned) {
+		userInfo[RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY] = [NSNumber numberWithBool:YES];
+	}
 	if (updatedLocationStart) {
-		userInfo[RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY] = [NSNumber numberWithBool:updatedLocationStart];
+		userInfo[RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY] = [NSNumber numberWithBool:YES];
 	}
 	if (updatedLocationEnd) {
-		userInfo[RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY] = [NSNumber numberWithBool:updatedLocationEnd];
+		userInfo[RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY] = [NSNumber numberWithBool:YES];
 	}
 	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:userInfo];
 	
