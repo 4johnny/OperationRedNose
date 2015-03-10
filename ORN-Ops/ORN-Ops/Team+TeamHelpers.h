@@ -12,11 +12,11 @@
 # pragma mark - Constants
 #
 
-#define TEAM_ENTITY_NAME						@"Team"
+#define TEAM_ENTITY_NAME	@"Team"
+#define TEAM_TITLE_DEFAULT	@"(Team)"
 
 #define TEAM_UPDATED_NOTIFICATION_NAME			@"teamUpdated"
 #define TEAM_UPDATED_LOCATION_NOTIFICATION_KEY	@"teamUpdatedLocation"
-
 
 #
 # pragma mark - Interface

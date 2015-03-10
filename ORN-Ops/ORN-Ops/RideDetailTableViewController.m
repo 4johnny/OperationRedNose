@@ -199,7 +199,7 @@
 		
 		Team* team = self.teamFetchedResultsController.fetchedObjects[row - 1];
 		NSString* teamTitle = [team getTeamTitle];
-		return (teamTitle && teamTitle.length > 0) ? teamTitle : @"(Team)";
+		return (teamTitle && teamTitle.length > 0) ? teamTitle : TEAM_TITLE_DEFAULT;
 	}
 	
 	if (pickerView == self.passengerCountPickerView) return [NSString stringWithFormat:@"%d", (int)row + 1];

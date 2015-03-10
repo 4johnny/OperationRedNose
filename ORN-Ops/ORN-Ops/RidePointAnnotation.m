@@ -37,13 +37,13 @@
 				
 			case RideLocationType_Start:
 				self.coordinate = CLLocationCoordinate2DMake(_ride.locationStartLatitude.doubleValue, _ride.locationStartLongitude.doubleValue);
-				titlePrefix = @"Ride Start";
+				titlePrefix = @"Start";
 				self.subtitle = _ride.locationStartAddress;
   		  		break;
 				
 			case RideLocationType_End:
 				self.coordinate = CLLocationCoordinate2DMake(_ride.locationEndLatitude.doubleValue, _ride.locationEndLongitude.doubleValue);
-				titlePrefix = @"Ride End";
+				titlePrefix = @"End";
 				self.subtitle = _ride.locationEndAddress;
 				break;
 				
@@ -54,7 +54,7 @@
 		
 		NSString* passengerName = [_ride getPassengerName];
 		
-		self.title = (passengerName && passengerName.length > 0) ? [NSString stringWithFormat:@"%@: %@", titlePrefix, passengerName] : titlePrefix;
+		self.title = [NSString stringWithFormat:@"%@: %@", titlePrefix, passengerName && passengerName.length > 0 ? passengerName : RIDE_TITLE_DEFAULT];
 	}
 	
 	return self;

@@ -14,7 +14,8 @@
 # pragma mark - Constants
 #
 
-#define RIDE_ENTITY_NAME								@"Ride"
+#define RIDE_ENTITY_NAME	@"Ride"
+#define RIDE_TITLE_DEFAULT	@"(Ride)"
 
 #define RIDE_UPDATED_NOTIFICATION_NAME					@"rideUpdated"
 #define RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY	@"rideUpdatedLocationStart"
