@@ -435,9 +435,10 @@
 	renderer.alpha = 0.5;
 	renderer.lineWidth = 5.0;
 
-	// For overlay between team and ride use dotted line
+	// For overlay between team and ride use thinner, dotted line
 	if ([overlay isKindOfClass:[RideTeamAssignedPolyline class]]) {
 		
+		renderer.lineWidth = 3.0;
 		renderer.lineDashPattern = @[@5, @10];
 		//	renderer.lineDashPhase = 6;
 	}
