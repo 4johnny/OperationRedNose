@@ -65,11 +65,11 @@
                                 </connections>
                             </mapView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Aqa-EQ-eWp">
-                                <rect key="frame" x="383" y="451" width="209" height="29"/>
+                                <rect key="frame" x="467" y="451" width="125" height="29"/>
                                 <segments>
-                                    <segment title="Standard"/>
-                                    <segment title="Hybrid"/>
-                                    <segment title="Satellite"/>
+                                    <segment title="Map"/>
+                                    <segment title="Hyb"/>
+                                    <segment title="Sat"/>
                                 </segments>
                                 <color key="tintColor" red="0.40000000600000002" green="0.80000001190000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
