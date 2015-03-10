@@ -475,6 +475,287 @@
 
 
 #
+# pragma mark <MKMapViewDelegate> Helpers
+#
+
+
+- (MKAnnotationView*)mapView:(MKMapView*)mapView viewForRidePointAnnotation:(RidePointAnnotation*)ridePointAnnotation {
+	
+	// Grab pooled/new ride annotation view
+	MKPinAnnotationView* ridePinAnnotationView = (MKPinAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:ridePointAnnotation andIdentifier:ridePointAnnotation.rideLocationType == RideLocationType_End ? RIDE_END_ANNOTATION_ID : RIDE_START_ANNOTATION_ID];
+	
+	// Update view based on given annotation
+	[self updateRidePinAnnotationView:ridePinAnnotationView withRidePointAnnotation:ridePointAnnotation];
+	
+	return ridePinAnnotationView;
+}
+
+
+- (MKPinAnnotationView*)updateRidePinAnnotationView:(MKPinAnnotationView*)ridePinAnnotationView withRidePointAnnotation:(RidePointAnnotation*)ridePointAnnotation {
+	
+	Ride* ride = ridePointAnnotation.ride;
+	
+	// Animate annotation if triggered, and reset trigger
+	ridePinAnnotationView.animatesDrop = ridePointAnnotation.needsAnimation;
+	ridePointAnnotation.needsAnimation = NO;
+	
+	// Set pin color based on status
+	// NOTE: By convention, color for route start is green, and end is red.  If no team assigned, start is purple.
+	ridePinAnnotationView.pinColor = ridePointAnnotation.rideLocationType == RideLocationType_End ? MKPinAnnotationColorRed : (ride.teamAssigned ? MKPinAnnotationColorGreen : MKPinAnnotationColorPurple);
+	
+	// Add/update/remove left callout accessory
+	// NOTE: Do not assign for update, to avoid re-animation
+	if (!ridePinAnnotationView.leftCalloutAccessoryView) {
+		
+		ridePinAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabel];
+	}
+	if (![self updateLeftCalloutAccessoryLabel:(UILabel*)ridePinAnnotationView.leftCalloutAccessoryView withRidePointAnnotation:ridePointAnnotation]) {
+		
+		ridePinAnnotationView.leftCalloutAccessoryView = nil;
+	}
+	
+	return ridePinAnnotationView;
+}
+
+
+- (UILabel*)updateLeftCalloutAccessoryLabel:(UILabel*)leftCalloutAccessoryLabel withRidePointAnnotation:(RidePointAnnotation*)ridePointAnnotation {
+	
+	Ride* ride = ridePointAnnotation.ride;
+	
+	// If time present, add to label with appropriate background color
+	
+	switch (ridePointAnnotation.rideLocationType) {
+			
+		case RideLocationType_Start: {
+			
+			if (!ride.dateTimeStart) return nil;
+			
+			leftCalloutAccessoryLabel.text = [self.annotationDateFormatter stringFromDate:ride.dateTimeStart];
+			
+			leftCalloutAccessoryLabel.backgroundColor = ride.teamAssigned ? [UIColor greenColor] : [UIColor purpleColor];
+			
+			break;
+		}
+			
+		case RideLocationType_End: {
+			
+			if (!ride.dateTimeEnd) return nil;
+			
+			leftCalloutAccessoryLabel.text = [self.annotationDateFormatter stringFromDate:ride.dateTimeEnd];
+			
+			leftCalloutAccessoryLabel.backgroundColor = [UIColor redColor];
+			
+			break;
+		}
+			
+		default:
+		case RideLocationType_None:
+			break;
+	}
+	
+	return leftCalloutAccessoryLabel;
+}
+
+
+- (MKAnnotationView*)mapView:(MKMapView*)mapView viewForTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
+	
+	// Grab pooled/new team annotation view
+	MKAnnotationView* teamAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:teamPointAnnotation andIdentifier:teamPointAnnotation.team.isMascot.boolValue ? TEAM_MASCOT_ANNOTATION_ID : TEAM_NORMAL_ANNOTATION_ID];
+	
+	// Update view based on given annotation
+	[self updateTeamAnnotationView:teamAnnotationView withTeamPointAnnotation:teamPointAnnotation];
+	
+	return teamAnnotationView;
+}
+
+
+- (MKAnnotationView*)updateTeamAnnotationView:(MKAnnotationView*)teamAnnotationView withTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
+	
+	// Team* team = teamPointAnnotation.team;
+	
+	// NOTE: Animation of team annotation is done manually in "mapView:didAddAnnotationViews:"
+	
+	// Add/update/remove left callout accessory
+	// NOTE: Do not assign for update, to avoid re-animation
+	if (!teamAnnotationView.leftCalloutAccessoryView) {
+		
+		teamAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabel];
+	}
+	if (![self updateLeftCalloutAccessoryLabel:(UILabel*)teamAnnotationView.leftCalloutAccessoryView withTeamPointAnnotation:teamPointAnnotation]) {
+		
+		teamAnnotationView.leftCalloutAccessoryView = nil;
+	}
+	
+	return teamAnnotationView;
+}
+
+
+- (UILabel*)updateLeftCalloutAccessoryLabel:(UILabel*)leftCalloutAccessoryLabel withTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
+	
+	Team* team = teamPointAnnotation.team;
+	
+	// If team assigned to rides, add total busy duration to label
+	
+	if (!team.ridesAssigned || team.ridesAssigned.count == 0) return nil;
+	
+	// TODO: Use proper calculation for busy duration
+	double busyDuration = 0; // seconds
+	for (Ride* rideAssigned in team.ridesAssigned) {
+		
+		busyDuration += rideAssigned.duration.doubleValue;
+	}
+	leftCalloutAccessoryLabel.text = [NSString stringWithFormat:MAP_ANNOTATION_DURATION_FORMAT, busyDuration / (double)SECONDS_PER_MINUTE];
+	
+	leftCalloutAccessoryLabel.backgroundColor = [UIColor blueColor];
+	
+	return leftCalloutAccessoryLabel;
+}
+
+
++ (MKAnnotationView*)dequeueReusableAnnotationViewWithMapView:(MKMapView*)mapView andAnnotation:(id<MKAnnotation>)annotation andIdentifier:(NSString*)identifier {
+	
+	// Reuse pooled annotation if possible
+	MKAnnotationView* annotationView = (MKAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+	if (annotationView) {
+		annotationView.annotation = annotation;
+		return annotationView;
+	}
+	
+	// Create new annotation
+	MKAnnotationView* view = nil;
+	
+	if ([identifier isEqualToString:RIDE_START_ANNOTATION_ID] ||
+		[identifier isEqualToString:RIDE_END_ANNOTATION_ID]) {
+		
+		view = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+		
+	} else if ([identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ||
+			   [identifier isEqualToString:TEAM_NORMAL_ANNOTATION_ID]) {
+		
+		view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+		view.image = [UIImage imageNamed:[identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ? @"ORN-Team-Mascot-Map-Annotation" : @"ORN-Team-Map-Annotation"];
+	}
+	
+	// Enable callout view for annotation
+	view.canShowCallout = YES;
+	
+	// Add disclosure button to right side of callout
+	UIButton* rightDisclosureButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+	[rightDisclosureButton addTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
+	view.rightCalloutAccessoryView = rightDisclosureButton;
+	
+	return view;
+}
+
+
++ (UILabel*)leftCalloutAccessoryLabel {
+	
+	UILabel* leftCalloutAccessoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 53)];
+	leftCalloutAccessoryLabel.font = [UIFont boldSystemFontOfSize:14.0];
+	leftCalloutAccessoryLabel.textAlignment = NSTextAlignmentCenter;
+	leftCalloutAccessoryLabel.textColor = [UIColor whiteColor];
+	leftCalloutAccessoryLabel.alpha = 0.5;
+	
+	return leftCalloutAccessoryLabel;
+}
+
+
+- (void)mapView:(MKMapView*)mapView didSelectRidePointAnnotationWithRide:(Ride*)ride {
+	
+	// Add polyline from team assigned location to ride start, if possible
+	RideTeamAssignedPolyline* rideTeamAssignedPolylineToRideStart = nil;
+	if (ride.teamAssigned && ride.teamAssigned.locationCurrentLatitude && ride.teamAssigned.locationCurrentLongitude && ride.locationStartLatitude && ride.locationStartLongitude) {
+		
+		CLLocationCoordinate2D startCoordinate = CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue);
+		
+		rideTeamAssignedPolylineToRideStart = [RideTeamAssignedPolyline rideTeamPolylineWithRide:ride andStartCoordinate:&startCoordinate];
+		
+		[self.mainMapView addOverlay:rideTeamAssignedPolylineToRideStart level:MKOverlayLevelAboveLabels];
+	}
+	
+	// If cannot get directions request, we are done with this ride
+	MKDirectionsRequest* directionsRequest = ride.getDirectionsRequest;
+	if (!directionsRequest) return;
+	
+	// Determine route for ride, and add overlay to map asynchronously
+	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
+	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse* response, NSError* error) {
+		
+		// NOTES: Completion block executes on main thread. Do not run more than one directions calculation simultaneously on this object.
+		if (error) {
+			NSLog(@"ETA Error: %@ %@", error.localizedDescription, error.userInfo);
+			return;
+		}
+		
+		// Route directions calculated successfully, so grab first one
+		// NOTE: Should be exactly 1, since we did not request alternate routes
+		MKRoute* route = response.routes.firstObject;
+		
+		// Update expected travel time for ride, since may have changed
+		ride.duration = [NSNumber numberWithDouble:route.expectedTravelTime]; // seconds
+		NSLog(@"ETA: %.0f sec -> %.2f min", route.expectedTravelTime, route.expectedTravelTime / (double)SECONDS_PER_MINUTE);
+		
+		// Determine end time by adding ETA seconds to start time
+		ride.dateTimeEnd = [NSDate dateWithTimeInterval:route.expectedTravelTime sinceDate:ride.dateTimeStart];
+		
+		// Store distance in ride
+		ride.distance = [NSNumber numberWithDouble:route.distance]; // meters
+		
+		// Notify that ride and assigned team have updated
+		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:ride}];
+		if (ride.teamAssigned) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME:ride.teamAssigned}];
+		}
+		
+		// If ride or team assigned not still selected, we are done
+		MKPointAnnotation* selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
+		if (!([selectedAnnotation isKindOfClass:[RidePointAnnotation class]] && ((RidePointAnnotation*)selectedAnnotation).ride == ride) &&
+			!([selectedAnnotation isKindOfClass:[TeamPointAnnotation class]] && ((TeamPointAnnotation*)selectedAnnotation).team == ride.teamAssigned)) return;
+		
+		// Remove existing ride-team assigned polyline, if present
+		if (rideTeamAssignedPolylineToRideStart) {
+			[self.mainMapView removeOverlay:rideTeamAssignedPolylineToRideStart];
+		}
+		
+		// Add polyline from team assigned location to actual route start, if possible
+		if (ride.teamAssigned && ride.teamAssigned.locationCurrentLatitude && ride.teamAssigned.locationCurrentLongitude) {
+			
+			CLLocationCoordinate2D startCoordinate = MKCoordinateForMapPoint(route.polyline.points[0]);
+			
+			RideTeamAssignedPolyline* rideTeamAssignedPolylineToRouteStart = [RideTeamAssignedPolyline rideTeamPolylineWithRide:ride andStartCoordinate:&startCoordinate];
+			
+			[self.mainMapView addOverlay:rideTeamAssignedPolylineToRouteStart level:MKOverlayLevelAboveLabels];
+		}
+		
+		// Add route polyline from ride start to end
+		[self.mainMapView addOverlay:route.polyline level:MKOverlayLevelAboveRoads];
+		
+		// TODO: Consider features that also utilize the route steps and advisory notices
+		//		NSLog(@"Route Steps (%d):", (int)route.steps.count);
+		//		for (MKRouteStep* step in route.steps) {
+		//			NSLog(@"\t%@", step.instructions);
+		//		}
+		//
+		//		NSLog(@"Route Advisory Notices (%d):", (int)route.advisoryNotices.count);
+		//		for (NSString* advisoryNotice in route.advisoryNotices) {
+		//			NSLog(@"\t%@", advisoryNotice);
+		//		}
+	}];
+}
+
+
+- (void)mapView:(MKMapView*)mapView didSelectTeamPointAnnotationWithTeam:(Team*)team {
+	
+	if (!team.ridesAssigned) return;
+	
+	for (Ride* ride in team.ridesAssigned) {
+		
+		[self mapView:mapView didSelectRidePointAnnotationWithRide:ride];
+	}
+}
+
+
+#
 # pragma mark <ORNDataModelSource>
 #
 
@@ -844,7 +1125,7 @@
 		NSLog(@"Geocode address: %@", placemark.addressDictionary);
 		
 		// Use first placemark as start location for new ride
-		Ride* ride = [MainMapViewController rideFromPlacemark:placemark inManagedObjectContext:self.managedObjectContext];
+		Ride* ride = [Ride rideWithManagedObjectContext:self.managedObjectContext andPlacemark:placemark];
 		[MainMapViewController saveManagedObjectContext];
 		NSLog(@"Ride: %@", ride);
 		
@@ -891,304 +1172,6 @@
 - (void)clearAllOverlays {
 
 	[self.mainMapView removeOverlays:self.mainMapView.overlays];
-}
-
-
-- (MKAnnotationView*)mapView:(MKMapView*)mapView viewForRidePointAnnotation:(RidePointAnnotation*)ridePointAnnotation {
-
-	// Grab pooled/new ride annotation view
-	MKPinAnnotationView* ridePinAnnotationView = (MKPinAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:ridePointAnnotation andIdentifier:ridePointAnnotation.rideLocationType == RideLocationType_End ? RIDE_END_ANNOTATION_ID : RIDE_START_ANNOTATION_ID];
-
-	// Update view based on given annotation
-	[self updateRidePinAnnotationView:ridePinAnnotationView withRidePointAnnotation:ridePointAnnotation];
-	
-	return ridePinAnnotationView;
-}
-
-
-- (MKPinAnnotationView*)updateRidePinAnnotationView:(MKPinAnnotationView*)ridePinAnnotationView withRidePointAnnotation:(RidePointAnnotation*)ridePointAnnotation {
-	
-	Ride* ride = ridePointAnnotation.ride;
-	
-	// Animate annotation if triggered, and reset trigger
-	ridePinAnnotationView.animatesDrop = ridePointAnnotation.needsAnimation;
-	ridePointAnnotation.needsAnimation = NO;
-	
-	// Set pin color based on status
-	// NOTE: By convention, color for route start is green, and end is red.  If no team assigned, start is purple.
-	ridePinAnnotationView.pinColor = ridePointAnnotation.rideLocationType == RideLocationType_End ? MKPinAnnotationColorRed : (ride.teamAssigned ? MKPinAnnotationColorGreen : MKPinAnnotationColorPurple);
-	
-	// Add/update/remove left callout accessory
-	// NOTE: Do not assign for update, to avoid re-animation
-	if (!ridePinAnnotationView.leftCalloutAccessoryView) {
-		
-		ridePinAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabel];
-	}
-	if (![self updateLeftCalloutAccessoryLabel:(UILabel*)ridePinAnnotationView.leftCalloutAccessoryView withRidePointAnnotation:ridePointAnnotation]) {
-		
-		ridePinAnnotationView.leftCalloutAccessoryView = nil;
-	}
-
-	return ridePinAnnotationView;
-}
-
-
-- (UILabel*)updateLeftCalloutAccessoryLabel:(UILabel*)leftCalloutAccessoryLabel withRidePointAnnotation:(RidePointAnnotation*)ridePointAnnotation {
-
-	Ride* ride = ridePointAnnotation.ride;
-	
-	// If time present, add to label with appropriate background color
-	
-	switch (ridePointAnnotation.rideLocationType) {
-			
-		case RideLocationType_Start: {
-			
-			if (!ride.dateTimeStart) return nil;
-			
-			leftCalloutAccessoryLabel.text = [self.annotationDateFormatter stringFromDate:ride.dateTimeStart];
-			
-			leftCalloutAccessoryLabel.backgroundColor = ride.teamAssigned ? [UIColor greenColor] : [UIColor purpleColor];
-			
-			break;
-		}
-			
-		case RideLocationType_End: {
-			
-			if (!ride.dateTimeEnd) return nil;
-			
-			leftCalloutAccessoryLabel.text = [self.annotationDateFormatter stringFromDate:ride.dateTimeEnd];
-			
-			leftCalloutAccessoryLabel.backgroundColor = [UIColor redColor];
-			
-			break;
-		}
-			
-		default:
-		case RideLocationType_None:
-			break;
-	}
-
-	return leftCalloutAccessoryLabel;
-}
-
-
-- (MKAnnotationView*)mapView:(MKMapView*)mapView viewForTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
-	
-	// Grab pooled/new team annotation view
-	MKAnnotationView* teamAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:teamPointAnnotation andIdentifier:teamPointAnnotation.team.isMascot.boolValue ? TEAM_MASCOT_ANNOTATION_ID : TEAM_NORMAL_ANNOTATION_ID];
-
-	// Update view based on given annotation
-	[self updateTeamAnnotationView:teamAnnotationView withTeamPointAnnotation:teamPointAnnotation];
-
-	return teamAnnotationView;
-}
-
-
-- (MKAnnotationView*)updateTeamAnnotationView:(MKAnnotationView*)teamAnnotationView withTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
-	
-	// Team* team = teamPointAnnotation.team;
-	
-	// NOTE: Animation of team annotation is done manually in "mapView:didAddAnnotationViews:"
-
-	// Add/update/remove left callout accessory
-	// NOTE: Do not assign for update, to avoid re-animation
-	if (!teamAnnotationView.leftCalloutAccessoryView) {
-		
-		teamAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabel];
-	}
-	if (![self updateLeftCalloutAccessoryLabel:(UILabel*)teamAnnotationView.leftCalloutAccessoryView withTeamPointAnnotation:teamPointAnnotation]) {
-		
-		teamAnnotationView.leftCalloutAccessoryView = nil;
-	}
-	
-	return teamAnnotationView;
-}
-
-
-- (UILabel*)updateLeftCalloutAccessoryLabel:(UILabel*)leftCalloutAccessoryLabel withTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
-	
-	Team* team = teamPointAnnotation.team;
-	
-	// If team assigned to rides, add total busy duration to label
-	
-	if (!team.ridesAssigned || team.ridesAssigned.count == 0) return nil;
-		
-	// TODO: Use proper calculation for duration until available
-	double busyDuration = 0; // seconds
-	for (Ride* rideAssigned in team.ridesAssigned) {
-		
-		busyDuration += rideAssigned.duration.doubleValue;
-	}
-	leftCalloutAccessoryLabel.text = [NSString stringWithFormat:MAP_ANNOTATION_DURATION_FORMAT, busyDuration / (double)SECONDS_PER_MINUTE];
-	
-	leftCalloutAccessoryLabel.backgroundColor = [UIColor blueColor];
-	
-	return leftCalloutAccessoryLabel;
-}
-
-
-+ (UILabel*)leftCalloutAccessoryLabel {
-	
-	UILabel* leftCalloutAccessoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 53)];
-	leftCalloutAccessoryLabel.font = [UIFont boldSystemFontOfSize:14.0];
-	leftCalloutAccessoryLabel.textAlignment = NSTextAlignmentCenter;
-	leftCalloutAccessoryLabel.textColor = [UIColor whiteColor];
-	leftCalloutAccessoryLabel.alpha = 0.5;
-	
-	return leftCalloutAccessoryLabel;
-}
-
-
-- (void)mapView:(MKMapView*)mapView didSelectRidePointAnnotationWithRide:(Ride*)ride {
-
-	// Add polyline from team assigned location to ride start, if possible
-	RideTeamAssignedPolyline* rideTeamAssignedPolylineToRideStart = nil;
-	if (ride.teamAssigned && ride.teamAssigned.locationCurrentLatitude && ride.teamAssigned.locationCurrentLongitude && ride.locationStartLatitude && ride.locationStartLongitude) {
-		
-		CLLocationCoordinate2D startCoordinate = CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue);
-		
-		rideTeamAssignedPolylineToRideStart = [RideTeamAssignedPolyline rideTeamPolylineWithRide:ride andStartCoordinate:&startCoordinate];
-		
-		[self.mainMapView addOverlay:rideTeamAssignedPolylineToRideStart level:MKOverlayLevelAboveLabels];
-	}
-
-	// If cannot get directions request, we are done with this ride
-	MKDirectionsRequest* directionsRequest = ride.getDirectionsRequest;
-	if (!directionsRequest) return;
-	
-	// Determine route for ride, and add overlay to map asynchronously
-	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
-	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse* response, NSError* error) {
-		
-		// NOTES: Completion block executes on main thread. Do not run more than one directions calculation simultaneously on this object.
-		if (error) {
-			NSLog(@"ETA Error: %@ %@", error.localizedDescription, error.userInfo);
-			return;
-		}
-		
-		// Route directions calculated successfully, so grab first one
-		// NOTE: Should be exactly 1, since we did not request alternate routes
-		MKRoute* route = response.routes.firstObject;
-		
-		// Update expected travel time for ride, since may have changed
-		ride.duration = [NSNumber numberWithDouble:route.expectedTravelTime]; // seconds
-		NSLog(@"ETA: %.0f sec -> %.2f min", route.expectedTravelTime, route.expectedTravelTime / (double)SECONDS_PER_MINUTE);
-		
-		// Determine end time by adding ETA seconds to start time
-		ride.dateTimeEnd = [NSDate dateWithTimeInterval:route.expectedTravelTime sinceDate:ride.dateTimeStart];
-		
-		// Store distance in ride
-		ride.distance = [NSNumber numberWithDouble:route.distance]; // meters
-		
-		// Notify that ride and assigned team have updated
-		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:ride}];
-		if (ride.teamAssigned) {
-			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME:ride.teamAssigned}];
-		}
-		
-		// If ride or team assigned not still selected, we are done
-		MKPointAnnotation* selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
-		if (!([selectedAnnotation isKindOfClass:[RidePointAnnotation class]] && ((RidePointAnnotation*)selectedAnnotation).ride == ride) &&
-			!([selectedAnnotation isKindOfClass:[TeamPointAnnotation class]] && ((TeamPointAnnotation*)selectedAnnotation).team == ride.teamAssigned)) return;
-
-		// Remove existing ride-team assigned polyline, if present
-		if (rideTeamAssignedPolylineToRideStart) {
-			[self.mainMapView removeOverlay:rideTeamAssignedPolylineToRideStart];
-		}
-		
-		// Add polyline from team assigned location to actual route start, if possible
-		if (ride.teamAssigned && ride.teamAssigned.locationCurrentLatitude && ride.teamAssigned.locationCurrentLongitude) {
-			
-			CLLocationCoordinate2D startCoordinate = MKCoordinateForMapPoint(route.polyline.points[0]);
-			
-			RideTeamAssignedPolyline* rideTeamAssignedPolylineToRouteStart = [RideTeamAssignedPolyline rideTeamPolylineWithRide:ride andStartCoordinate:&startCoordinate];
-			
-			[self.mainMapView addOverlay:rideTeamAssignedPolylineToRouteStart level:MKOverlayLevelAboveLabels];
-		}
-		
-		// Add route polyline from ride start to end
-		[self.mainMapView addOverlay:route.polyline level:MKOverlayLevelAboveRoads];
-
-		// TODO: Consider features that also utilize the route steps and advisory notices
-		//		NSLog(@"Route Steps (%d):", (int)route.steps.count);
-		//		for (MKRouteStep* step in route.steps) {
-		//			NSLog(@"\t%@", step.instructions);
-		//		}
-		//
-		//		NSLog(@"Route Advisory Notices (%d):", (int)route.advisoryNotices.count);
-		//		for (NSString* advisoryNotice in route.advisoryNotices) {
-		//			NSLog(@"\t%@", advisoryNotice);
-		//		}
-	}];
-}
-
-
-- (void)mapView:(MKMapView*)mapView didSelectTeamPointAnnotationWithTeam:(Team*)team {
-	
-	if (!team.ridesAssigned) return;
-	
-	for (Ride* ride in team.ridesAssigned) {
-
-		[self mapView:mapView didSelectRidePointAnnotationWithRide:ride];
-	}
-}
-
-
-+ (MKAnnotationView*)dequeueReusableAnnotationViewWithMapView:(MKMapView*)mapView andAnnotation:(id<MKAnnotation>)annotation andIdentifier:(NSString*)identifier {
-	
-	// Reuse pooled annotation if possible
-	MKAnnotationView* annotationView = (MKAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
-	if (annotationView) {
-		annotationView.annotation = annotation;
-		return annotationView;
-	}
-	
-	// Create new annotation
-	MKAnnotationView* view = nil;
-	
-	if ([identifier isEqualToString:RIDE_START_ANNOTATION_ID] ||
-		[identifier isEqualToString:RIDE_END_ANNOTATION_ID]) {
-		
-		view = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
-		
-	} else if ([identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ||
-			   [identifier isEqualToString:TEAM_NORMAL_ANNOTATION_ID]) {
-	
-		view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
-		view.image = [UIImage imageNamed:[identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ? @"ORN-Team-Mascot-Map-Annotation" : @"ORN-Team-Map-Annotation"];
-	}
-
-	// Enable callout view for annotation
-	view.canShowCallout = YES;
-	
-	// Add disclosure button to right side of callout
-	UIButton* rightDisclosureButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-	[rightDisclosureButton addTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
-	view.rightCalloutAccessoryView = rightDisclosureButton;
-	
-	return view;
-}
-
-
-+ (Ride*)rideFromPlacemark:(CLPlacemark*)placemark inManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
-	
-	return [Ride rideWithManagedObjectContext:managedObjectContext
-				   andLocationStartCoordinate:placemark.location.coordinate
-					  andLocationStartAddress:[MainMapViewController addressStringWithPlacemark:placemark]
-						 andLocationStartCity:placemark.locality];
-}
-
-
-+ (NSString*)addressStringWithPlacemark:(CLPlacemark*)placemark {
-	
-	NSString* street = placemark.addressDictionary[@"Street"];
-	NSString* city = placemark.addressDictionary[@"City"];
-	
-	if (street && city) return [NSString stringWithFormat:@"%@, %@", street, city];
-	
-	return [NSString stringWithFormat:@"%@ (%.3f,%.3f)", placemark.name, placemark.location.coordinate.latitude, placemark.location.coordinate.longitude];
-	
-	//	return ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO);
 }
 
 

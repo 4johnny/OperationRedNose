@@ -67,6 +67,8 @@ typedef NS_ENUM(NSInteger, RideLocationType) {
 					 andLocationStartAddress:(NSString*)locationStartAddress
 						andLocationStartCity:(NSString*)locationStartCity;
 
++ (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext andPlacemark:(CLPlacemark*)placemark;
+	
 #
 # pragma mark Helpers
 #

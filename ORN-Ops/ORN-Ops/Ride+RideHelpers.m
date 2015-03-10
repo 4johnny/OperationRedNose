@@ -56,6 +56,28 @@ insertIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
 }
 
 
++ (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext andPlacemark:(CLPlacemark*)placemark {
+	
+	return [Ride rideWithManagedObjectContext:managedObjectContext
+				   andLocationStartCoordinate:placemark.location.coordinate
+					  andLocationStartAddress:[Ride addressStringWithPlacemark:placemark]
+						 andLocationStartCity:placemark.locality];
+}
+
+
++ (NSString*)addressStringWithPlacemark:(CLPlacemark*)placemark {
+	
+	NSString* street = placemark.addressDictionary[@"Street"];
+	NSString* city = placemark.addressDictionary[@"City"];
+	
+	if (street && city) return [NSString stringWithFormat:@"%@, %@", street, city];
+	
+	return [NSString stringWithFormat:@"%@ (%.3f,%.3f)", placemark.name, placemark.location.coordinate.latitude, placemark.location.coordinate.longitude];
+	
+	//	return ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO);
+}
+
+
 #
 # pragma mark Helpers
 #
