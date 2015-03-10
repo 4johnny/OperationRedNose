@@ -874,6 +874,12 @@
 
 
 - (void)updateRideOverlaysWithNotification:(NSNotification*)notification {
+
+	[self updateRideTeamAssignedOverlaysWithNotification:notification];
+}
+
+
+- (void)updateRideTeamAssignedOverlaysWithNotification:(NSNotification*)notification {
 	
 	BOOL updatedTeamAssigned = (notification.userInfo[RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY]).boolValue);
 	
