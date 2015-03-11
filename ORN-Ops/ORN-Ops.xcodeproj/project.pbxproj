@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		B2009CCD1AA57F650065E67B /* Team.m in Sources */ = {isa = PBXBuildFile; fileRef = B2009CCC1AA57F650065E67B /* Team.m */; };
 		B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2078B861A9DB406004AF662 /* MainMapViewController.m */; };
+		B228F3311AB04CB0001AF527 /* MainMapViewController-Snapshot.m in Sources */ = {isa = PBXBuildFile; fileRef = B228F3301AB04CB0001AF527 /* MainMapViewController-Snapshot.m */; };
 		B24C18711A9EF3D6008505BB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2078B821A9DAF2A004AF662 /* MapKit.framework */; };
 		B24D4FD11A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B24D4FCF1A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld */; };
 		B25220331AA0412C00C3CE00 /* DemoUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = B25220321AA0412C00C3CE00 /* DemoUtil.m */; };
@@ -51,6 +52,7 @@
 		B2078B851A9DB406004AF662 /* MainMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMapViewController.h; sourceTree = "<group>"; };
 		B2078B861A9DB406004AF662 /* MainMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMapViewController.m; sourceTree = "<group>"; };
 		B2078B8E1A9DC043004AF662 /* ORNDataModelSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ORNDataModelSource.h; sourceTree = "<group>"; };
+		B228F3301AB04CB0001AF527 /* MainMapViewController-Snapshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MainMapViewController-Snapshot.m"; sourceTree = "<group>"; };
 		B24D4FD01A9D98E0008A0C7A /* ORN-Ops.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ORN-Ops.xcdatamodel"; sourceTree = "<group>"; };
 		B25220311AA0412C00C3CE00 /* DemoUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoUtil.h; sourceTree = "<group>"; };
 		B25220321AA0412C00C3CE00 /* DemoUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoUtil.m; sourceTree = "<group>"; };
@@ -293,6 +295,7 @@
 			children = (
 				B2078B851A9DB406004AF662 /* MainMapViewController.h */,
 				B2078B861A9DB406004AF662 /* MainMapViewController.m */,
+				B228F3301AB04CB0001AF527 /* MainMapViewController-Snapshot.m */,
 			);
 			name = "Main Map";
 			sourceTree = "<group>";
@@ -412,6 +415,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B228F3311AB04CB0001AF527 /* MainMapViewController-Snapshot.m in Sources */,
 				B2B711EE1AA85F31000CC6C8 /* Ride.m in Sources */,
 				B2907B841A9F1903008A0301 /* RidePointAnnotation.m in Sources */,
 				B2C7561E1AA1A97900B148D3 /* TeamDetailTableViewController.m in Sources */,
