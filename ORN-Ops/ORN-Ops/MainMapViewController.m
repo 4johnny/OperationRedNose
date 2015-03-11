@@ -681,10 +681,8 @@
 			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME:ride.teamAssigned}];
 		}
 		
-		// If ride or team assigned not still selected, we are done
-		MKPointAnnotation* selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
-		if (!([selectedAnnotation isKindOfClass:[RidePointAnnotation class]] && ((RidePointAnnotation*)selectedAnnotation).ride == ride) &&
-			!([selectedAnnotation isKindOfClass:[TeamPointAnnotation class]] && ((TeamPointAnnotation*)selectedAnnotation).team == ride.teamAssigned)) return;
+		// If neither ride nor team assigned is selected, we are done
+		if (![self isSelectedAnnotationForRide:ride] && ![self isSelectedAnnotationForTeam:ride.teamAssigned]) return;
 		
 		// Remove existing ride-team assigned polyline, if present
 		if (rideTeamAssignedPolylineToRideStart) {
@@ -704,17 +702,6 @@
 		// Add route polyline from ride start to end
 		RideStartEndPolyline* rideStartEndPolyline = [RideStartEndPolyline rideStartEndPolylineWithRide:ride andPolyline:route.polyline];
 		[self.mainMapView addOverlay:rideStartEndPolyline level:MKOverlayLevelAboveRoads];
-		
-		// TODO: Consider features that also utilize the route steps and advisory notices
-		//		NSLog(@"Route Steps (%d):", (int)route.steps.count);
-		//		for (MKRouteStep* step in route.steps) {
-		//			NSLog(@"\t%@", step.instructions);
-		//		}
-		//
-		//		NSLog(@"Route Advisory Notices (%d):", (int)route.advisoryNotices.count);
-		//		for (NSString* advisoryNotice in route.advisoryNotices) {
-		//			NSLog(@"\t%@", advisoryNotice);
-		//		}
 	}];
 }
 
@@ -875,16 +862,28 @@
 
 - (void)updateRideOverlaysWithNotification:(NSNotification*)notification {
 
+	[self updateRideStartEndOverlaysWithNotification:notification];
 	[self updateRideTeamAssignedOverlaysWithNotification:notification];
+}
+
+
+- (void)updateRideStartEndOverlaysWithNotification:(NSNotification*)notification {
+	
+//	// Find map overlays for given ride start-end route
+//	// NOTE: Should be max 1
+//	Ride* ride = notification.userInfo[RIDE_ENTITY_NAME];
+//	NSArray* overlaysAffected = [self.mainMapView.overlays filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
+//		
+//		return [evaluatedObject isKindOfClass:[RideStartEndPolyline class]] && ((RideStartEndPolyline*)evaluatedObject).ride == ride;
+//	}]];
 }
 
 
 - (void)updateRideTeamAssignedOverlaysWithNotification:(NSNotification*)notification {
 	
-	BOOL updatedTeamAssigned = (notification.userInfo[RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY]).boolValue);
-	
 	// If team assigned has not been updated, we are done.
 	// NOTE: Good enough for now.  Later, start and end locations might also be changing
+	BOOL updatedTeamAssigned = (notification.userInfo[RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY]).boolValue);
 	if (!updatedTeamAssigned) return;
 	
 	// Find map overlays for given ride-team assigned
@@ -903,10 +902,8 @@
 		[self.mainMapView removeOverlay:rideTeamAssignedPolyline];
 	}
 	
-	// If ride or team assigned not selected, we are done
-	MKPointAnnotation* selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
-	if (!([selectedAnnotation isKindOfClass:[RidePointAnnotation class]] && ((RidePointAnnotation*)selectedAnnotation).ride == ride) &&
-		!([selectedAnnotation isKindOfClass:[TeamPointAnnotation class]] && ((TeamPointAnnotation*)selectedAnnotation).team == ride.teamAssigned)) return;
+	// If neither ride nor team assigned is selected, we are done
+	if (![self isSelectedAnnotationForRide:ride] && ![self isSelectedAnnotationForTeam:ride.teamAssigned]) return;
 	
 	// Add overlay for ride-team, if assigned and possible
 	if (ride.teamAssigned && ride.teamAssigned.locationCurrentLatitude && ride.teamAssigned.locationCurrentLongitude && ride.locationStartLatitude && ride.locationStartLongitude) {
@@ -928,7 +925,7 @@
 		[self.mainMapView addOverlay:rideTeamAssignedPolyline level:MKOverlayLevelAboveLabels];
 	}
 }
-	
+
 
 - (void)updateTeamAnnotationsWithNotification:(NSNotification*)notification {
 
@@ -941,12 +938,9 @@
 	}]];
 	if (annotationsAffected.count == 0) return;
 	
-	// Grab team annotation explicitly
-	TeamPointAnnotation* teamPointAnnotation = annotationsAffected.firstObject;
-	
 	// Update team annotation and its view
 	BOOL updatedLocation = (notification.userInfo[TEAM_UPDATED_LOCATION_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[TEAM_UPDATED_LOCATION_NOTIFICATION_KEY]).boolValue);
-	
+	TeamPointAnnotation* teamPointAnnotation = annotationsAffected.firstObject;
 	teamPointAnnotation = [teamPointAnnotation initWithTeam:team andNeedsAnimation:updatedLocation];
 	
 	if (updatedLocation) {
@@ -1217,6 +1211,27 @@
 - (void)clearAllOverlays {
 
 	[self.mainMapView removeOverlays:self.mainMapView.overlays];
+}
+
+
+- (BOOL)isSelectedAnnotationForRide:(Ride*)ride {
+	
+	if (!ride) return NO;
+	
+	// NOTE: In current MapKit, only one annotation can be selected at a time
+	MKPointAnnotation* selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
+	
+	return selectedAnnotation && [selectedAnnotation isKindOfClass:[RidePointAnnotation class]] && ((RidePointAnnotation*)selectedAnnotation).ride == ride;
+}
+
+
+- (BOOL)isSelectedAnnotationForTeam:(Team*)team {
+	
+	if (!team) return NO;
+	
+	MKPointAnnotation* selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
+	
+	return selectedAnnotation && [selectedAnnotation isKindOfClass:[TeamPointAnnotation class]] && ((TeamPointAnnotation*)selectedAnnotation).team == team;
 }
 
 
