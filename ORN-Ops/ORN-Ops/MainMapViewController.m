@@ -589,9 +589,11 @@
 + (MKAnnotationView*)dequeueReusableAnnotationViewWithMapView:(MKMapView*)mapView andAnnotation:(id<MKAnnotation>)annotation andIdentifier:(NSString*)identifier {
 	
 	// Reuse pooled annotation if possible
-	MKAnnotationView* annotationView = (MKAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+	MKAnnotationView* annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
 	if (annotationView) {
+		
 		annotationView.annotation = annotation;
+		annotationView.leftCalloutAccessoryView = nil;
 		return annotationView;
 	}
 	
