@@ -216,11 +216,10 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideUpdatedWithNotification:) name:RIDE_UPDATED_NOTIFICATION_NAME object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(teamUpdatedWithNotification:) name:TEAM_UPDATED_NOTIFICATION_NAME object:nil];
 	
-	// Configure map with annotations, and zoom to show them all
-	// NOTE: Delay so that orientation is established
-	[self configureRegionView];
+	// Zoom map to jurisdiction region and configure with persisted annotations
+	// NOTE: Delay to wait for orientation to be established
+	[self configureJurisdictionRegionView];
 	[self performSelector:@selector(configureViewWithAnimation:) withObject:[NSNumber numberWithBool:YES] afterDelay:0.5];
-	[self performSelector:@selector(showAllAnnotations) withObject:nil afterDelay:1];
 }
 
 
@@ -671,7 +670,7 @@
 - (IBAction)avatarBarButtonPressed:(UIBarButtonItem *)sender {
 	
 	// Re-orientate map back to initial perspective
-	[self configureRegionView];
+	[self configureJurisdictionRegionView];
 }
 
 
@@ -803,7 +802,7 @@
 			
 			// Reset map
 			[self clearAllAnnotations];
-			[self configureRegionView];
+			[self configureJurisdictionRegionView];
 		}];
 		UIAlertController* deleteAllAlertController = [UIAlertController alertControllerWithTitle:@"!!! Warning !!!" message:@"About to delete all data, which cannot be undone!  Are you absolutely sure?!" preferredStyle:UIAlertControllerStyleAlert];
 		UIAlertAction* cancelAlertAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil];
@@ -890,7 +889,7 @@
 }
 
 
-- (void)configureRegionView {
+- (void)configureJurisdictionRegionView {
 	
 	MKCoordinateRegion centerRegion = MKCoordinateRegionMake(JURISDICTION_COORDINATE, MKCoordinateSpanMake(MAP_SPAN_LOCATION_DELTA_CITY, MAP_SPAN_LOCATION_DELTA_CITY));
 	
