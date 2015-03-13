@@ -21,15 +21,15 @@
 
 // TODO: Consider whether team property should be weak
 @property (nonatomic) Team* team;
-@property (nonatomic) BOOL needsAnimation;
+@property (nonatomic) BOOL needsAnimatesDrop;
 
 #
 # pragma mark Initializers
 #
 
-- (instancetype)initWithTeam:(Team*)team andNeedsAnimation:(BOOL)needsAnimation;
+- (instancetype)initWithTeam:(Team*)team andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
 - (instancetype)init;
 
-+ (instancetype)teamPointAnnotationWithTeam:(Team*)team andNeedsAnimation:(BOOL)needsAnimation;
++ (instancetype)teamPointAnnotationWithTeam:(Team*)team andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
 
 @end

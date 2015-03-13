@@ -22,13 +22,13 @@
 #
 
 
-- (instancetype)initWithTeam:(Team*)team andNeedsAnimation:(BOOL)needsAnimation {
+- (instancetype)initWithTeam:(Team*)team andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
 
 	self = [super init];
 	if (self) {
 		
 		_team = team;
-		_needsAnimation = needsAnimation;
+		_needsAnimatesDrop = needsAnimatesDrop;
 
 		self.coordinate = CLLocationCoordinate2DMake(_team.locationCurrentLatitude.doubleValue, _team.locationCurrentLongitude.doubleValue);
 		
@@ -44,13 +44,13 @@
 
 - (instancetype)init {
 	
-	return [self initWithTeam:nil andNeedsAnimation:NO];
+	return [self initWithTeam:nil andNeedsAnimatesDrop:NO];
 }
 
 
-+ (instancetype)teamPointAnnotationWithTeam:(Team*)team andNeedsAnimation:(BOOL)needsAnimation {
++ (instancetype)teamPointAnnotationWithTeam:(Team*)team andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
 	
-	return [[TeamPointAnnotation alloc] initWithTeam:team andNeedsAnimation:needsAnimation];
+	return [[TeamPointAnnotation alloc] initWithTeam:team andNeedsAnimatesDrop:needsAnimatesDrop];
 }
 
 

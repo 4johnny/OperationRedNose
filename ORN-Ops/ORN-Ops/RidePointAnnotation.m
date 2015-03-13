@@ -22,14 +22,14 @@
 #
 
 
-- (instancetype)initWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimation:(BOOL)needsAnimation {
+- (instancetype)initWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
 	
 	self = [super init];
 	if (self) {
 
 		_ride = ride;
 		_rideLocationType = rideLocationType;
-		_needsAnimation = needsAnimation;
+		_needsAnimatesDrop = needsAnimatesDrop;
 		
 		NSString* titlePrefix = nil;
 		
@@ -63,13 +63,13 @@
 
 - (instancetype)init {
 	
-	return [self initWithRide:nil andRideLocationType:RideLocationType_None andNeedsAnimation:NO];
+	return [self initWithRide:nil andRideLocationType:RideLocationType_None andNeedsAnimatesDrop:NO];
 }
 
 
-+ (instancetype)ridePointAnnotationWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimation:(BOOL)needsAnimation {
++ (instancetype)ridePointAnnotationWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
 
-	return [[RidePointAnnotation alloc] initWithRide:ride andRideLocationType:rideLocationType andNeedsAnimation:needsAnimation];
+	return [[RidePointAnnotation alloc] initWithRide:ride andRideLocationType:rideLocationType andNeedsAnimatesDrop:needsAnimatesDrop];
 }
 
 

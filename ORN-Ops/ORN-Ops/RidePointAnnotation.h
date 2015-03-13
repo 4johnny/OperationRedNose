@@ -22,15 +22,15 @@
 // TODO: Consider whether ride property should be weak
 @property (nonatomic) Ride* ride;
 @property (nonatomic) RideLocationType rideLocationType;
-@property (nonatomic) BOOL needsAnimation;
+@property (nonatomic) BOOL needsAnimatesDrop;
 
 #
 # pragma mark Initializers
 #
 
-- (instancetype)initWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimation:(BOOL)needsAnimation;
+- (instancetype)initWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
 - (instancetype)init;
 
-+ (instancetype)ridePointAnnotationWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimation:(BOOL)needsAnimation;
++ (instancetype)ridePointAnnotationWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
 
 @end
