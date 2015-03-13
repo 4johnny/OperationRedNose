@@ -143,7 +143,7 @@
 
 + (void)saveManagedObjectContext {
 	
-	AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+	AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
 	[appDelegate saveManagedObjectContext];
 }
 

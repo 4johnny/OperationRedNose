@@ -556,13 +556,17 @@
 	self.okAlertController.title = title;
 	self.okAlertController.message = message;
 	
-	[self presentViewController:self.okAlertController animated:YES completion:nil];
+	// Present via known top-level controller to allow for async callback alerts
+	AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+	UITabBarController* mainTabBarController = (UITabBarController*)appDelegate.window. rootViewController;
+	
+	[mainTabBarController presentViewController:self.okAlertController animated:YES completion:nil];
 }
 
 
 + (void)saveManagedObjectContext {
 	
-	AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+	AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
 	[appDelegate saveManagedObjectContext];
 }
 
