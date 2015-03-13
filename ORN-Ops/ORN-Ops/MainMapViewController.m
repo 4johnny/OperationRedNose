@@ -203,22 +203,15 @@
 	[super viewDidLoad];
 	// Do any additional setup after loading the view.
 	
-	// Trigger keyboard preload to avoid UX delay
-	[Util preloadKeyboardViaTextField:self.addressTextField];
-	
 	// Configure avatar in navigation item
 	// NOTE: Must be done in code - otherwise we just get a template
 	self.avatarBarButtonItem.image = [[UIImage imageNamed:@"ORN-Bar-Button-Item"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 	
-	// Wire up observers for notifications for rides and teams
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideCreatedWithNotification:) name:RIDE_CREATED_NOTIFICATION_NAME object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideUpdatedWithNotification:) name:RIDE_UPDATED_NOTIFICATION_NAME object:nil];
-//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(teamUpdatedWithNotification:) name:TEAM_UPDATED_NOTIFICATION_NAME object:nil];
+	[Util preloadKeyboardViaTextField:self.addressTextField];
 	
-	// Zoom map to jurisdiction region and load persisted data model
-	// NOTE: Delay to wait for orientation to be established
-	[self configureJurisdictionRegionView];
-	[self performSelector:@selector(loadPersistedDataModel) withObject:nil afterDelay:0.5];
+	[self addNotificationObservers];
+	
+	[self configureView];
 }
 
 
@@ -271,7 +264,7 @@
 	
 #endif
 	
-	// Trigger action handler
+	// Trigger action handler for return button
 	[self addressTextFieldReturnButtonPressed:textField];
 	
 	return NO; // Do not perform default text-field behaviour
@@ -966,19 +959,36 @@
 #
 
 
-- (void)loadPersistedDataModel {
+- (void)addNotificationObservers {
 	
-	[self loadRidesPersistedDataModel];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideCreatedWithNotification:) name:RIDE_CREATED_NOTIFICATION_NAME object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideUpdatedWithNotification:) name:RIDE_UPDATED_NOTIFICATION_NAME object:nil];
+	//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(teamUpdatedWithNotification:) name:TEAM_UPDATED_NOTIFICATION_NAME object:nil];
+}
+
+
+- (void)configureView {
+	
+	// Zoom map to jurisdiction region and load persisted data model
+	// NOTE: Delay to wait for orientation to be established
+	[self configureJurisdictionRegionView];
+	[self performSelector:@selector(loadDataModel) withObject:nil afterDelay:1.0];
+}
+
+
+- (void)loadDataModel {
+	
+	[self loadRidesDataModel];
 	
 //	[self configureTeamsViewWithNeedsAnimatesDrop:needsAnimatesDrop];
 }
 
 
-- (void)loadRidesPersistedDataModel {
+- (void)loadRidesDataModel {
 	
 	for (Ride* ride in self.rideFetchedResultsController.fetchedObjects) {
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME : ride}];
+		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME : ride, RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : [NSNumber numberWithBool:YES]}];
 	}
 }
 

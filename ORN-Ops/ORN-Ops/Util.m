@@ -22,6 +22,9 @@
 #
 
 
+/*
+ Preload keyboard to avoid delay upon user first attempt
+ */
 + (void)preloadKeyboardViaTextField:(UITextField*)textfield {
 	
 	// NOTE: Text field needs to be already in view hierarchy
