@@ -22,65 +22,80 @@
 # pragma mark Initializers
 #
 
-- (instancetype)initWithEntity:(NSEntityDescription*)entityDescription
-insertIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
-   withLocationStartCoordinate:(CLLocationCoordinate2D)locationStartCoordinate
-	   andLocationStartAddress:(NSString*)locationStartAddress
-		  andLocationStartCity:(NSString*)locationStartCity {
-	
-	self = [super initWithEntity:entityDescription insertIntoManagedObjectContext:managedObjectContext];
+- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext andPlacemark:(CLPlacemark*)placemark {
+
+	self = [super initWithEntity:[NSEntityDescription entityForName:RIDE_ENTITY_NAME	 inManagedObjectContext:managedObjectContext] insertIntoManagedObjectContext:managedObjectContext];
 	if (self) {
-		
+
 		self.dateTimeStart = [NSDate date];
-		
-		self.locationStartLatitude = [NSNumber numberWithDouble:locationStartCoordinate.latitude];
-		self.locationStartLongitude = [NSNumber numberWithDouble:locationStartCoordinate.longitude];
-		self.locationStartAddress = locationStartAddress;
-		self.locationStartCity = locationStartCity;
+		[self updateLocationWithPlacemark:placemark andRideLocationType:RideLocationType_Start];
 	}
 	
 	return self;
 }
 
 
-+ (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
-				  andLocationStartCoordinate:(CLLocationCoordinate2D)locationStartCoordinate
-					 andLocationStartAddress:(NSString*)locationStartAddress
-						andLocationStartCity:(NSString*)locationStartCity {
-	
-	return [[Ride alloc] initWithEntity:[NSEntityDescription entityForName:RIDE_ENTITY_NAME inManagedObjectContext:managedObjectContext]
-		 insertIntoManagedObjectContext:managedObjectContext
-			withLocationStartCoordinate:locationStartCoordinate
-				andLocationStartAddress:locationStartAddress
-				   andLocationStartCity:locationStartCity];
-}
-
-
 + (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext andPlacemark:(CLPlacemark*)placemark {
 	
-	return [Ride rideWithManagedObjectContext:managedObjectContext
-				   andLocationStartCoordinate:placemark.location.coordinate
-					  andLocationStartAddress:[Ride addressStringWithPlacemark:placemark]
-						 andLocationStartCity:placemark.locality];
-}
-
-
-+ (NSString*)addressStringWithPlacemark:(CLPlacemark*)placemark {
-	
-	NSString* street = placemark.addressDictionary[@"Street"];
-	NSString* city = placemark.addressDictionary[@"City"];
-	
-	if (street && city) return [NSString stringWithFormat:@"%@, %@", street, city];
-	
-	return [NSString stringWithFormat:@"%@ (%.3f,%.3f)", placemark.name, placemark.location.coordinate.latitude, placemark.location.coordinate.longitude];
-	
-	//	return ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO);
+	return [[Ride alloc] initWithManagedObjectContext:managedObjectContext andPlacemark:placemark];
 }
 
 
 #
 # pragma mark Helpers
 #
+
+
+- (void)updateLocationWithPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType {
+	
+	switch (rideLocationType) {
+			
+		default:
+		case RideLocationType_Start:
+			
+			self.locationStartLatitude = [NSNumber numberWithDouble:placemark.location.coordinate.latitude];
+			self.locationStartLongitude = [NSNumber numberWithDouble:placemark.location.coordinate.longitude];
+			self.locationStartAddress = [Ride addressStringWithPlacemark:placemark];
+			self.locationStartCity = placemark.locality;
+			
+			break;
+			
+		case RideLocationType_End:
+			
+			self.locationEndLatitude = [NSNumber numberWithDouble:placemark.location.coordinate.latitude];
+			self.locationEndLongitude = [NSNumber numberWithDouble:placemark.location.coordinate.longitude];
+			self.locationEndAddress = [Ride addressStringWithPlacemark:placemark];
+			self.locationEndCity = placemark.locality;
+			
+			break;
+	}
+}
+
+
+- (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType {
+	
+	switch (rideLocationType) {
+			
+		default:
+		case RideLocationType_Start:
+			
+			self.locationStartLatitude = nil;
+			self.locationStartLongitude = nil;
+			self.locationStartAddress = nil;
+			self.locationStartCity = nil;
+			
+			break;
+			
+		case RideLocationType_End:
+			
+			self.locationEndLatitude = nil;
+			self.locationEndLongitude = nil;
+			self.locationEndAddress = nil;
+			self.locationEndCity = nil;
+			
+			break;
+	}
+}
 
 
 - (NSString*)getPassengerName {
@@ -145,6 +160,19 @@ insertIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
 			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME:self.teamAssigned}];
 		}
 	}];
+}
+
+
++ (NSString*)addressStringWithPlacemark:(CLPlacemark*)placemark {
+	
+	NSString* street = placemark.addressDictionary[@"Street"];
+	NSString* city = placemark.addressDictionary[@"City"];
+	
+	if (street && city) return [NSString stringWithFormat:@"%@, %@", street, city];
+	
+	return [NSString stringWithFormat:@"%@ (%.3f,%.3f)", placemark.name, placemark.location.coordinate.latitude, placemark.location.coordinate.longitude];
+	
+	//	return ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO);
 }
 
 

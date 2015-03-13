@@ -23,19 +23,34 @@
 #define MAP_SPAN_LOCATION_DELTA_CITY			0.2 // degrees
 #define MAP_SPAN_LOCATION_DELTA_LOCALE			2.0 // degrees
 
-#define VANCOUVER_LATITUDE		49.25
-#define VANCOUVER_LONGITUDE		-123.1
-#define VANCOUVER_COORDINATE	CLLocationCoordinate2DMake(VANCOUVER_LATITUDE, VANCOUVER_LONGITUDE)
+#
+# pragma mark Jurisdication Constants
+#
 
-#define BURNABY_LATITUDE		49.266667
-#define BURNABY_LONGITUDE		-122.966667
-#define BURNABY_COORDINATE		CLLocationCoordinate2DMake(BURNABY_LATITUDE, BURNABY_LONGITUDE)
+#define VANCOUVER_LATITUDE			49.25
+#define VANCOUVER_LONGITUDE			-123.1
+#define VANCOUVER_COORDINATE		CLLocationCoordinate2DMake(VANCOUVER_LATITUDE, VANCOUVER_LONGITUDE)
+
+#define BURNABY_LATITUDE			49.266667
+#define BURNABY_LONGITUDE			-122.966667
+#define BURNABY_COORDINATE			CLLocationCoordinate2DMake(BURNABY_LATITUDE, BURNABY_LONGITUDE)
+
+#define CHARITY_NAME				@"KidSport"
+#define JURISDICTION_NAME			@"Tri-Cities, Burnaby, New Westminster"
+#define JURISDICTION_COORDINATE		BURNABY_COORDINATE
+#define JURISDICTION_SEARCH_RADIUS	100000 // metres
 
 #
 # pragma mark - Interface
 #
 
 @interface Util : NSObject
+
+#
+# pragma mark Strings
+#
+
++ (BOOL)compareString:(NSString*)firstString toString:(NSString*)secondString;
 
 #
 # pragma mark Responder

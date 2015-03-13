@@ -40,6 +40,9 @@
 
 @property (strong, nonatomic) NSFetchedResultsController* teamFetchedResultsController;
 
+@property (nonatomic) CLGeocoder* geocoder;
+@property (nonatomic) UIAlertController* okAlertController;
+
 
 @end
 
@@ -84,19 +87,41 @@
 }
 
 
+- (CLGeocoder*)geocoder {
+	
+	if (_geocoder) return _geocoder;
+	
+	_geocoder = [[CLGeocoder alloc] init];
+	
+	return _geocoder;
+}
+
+
+- (UIAlertController*)okAlertController {
+	
+	if (_okAlertController) return _okAlertController;
+	
+	UIAlertAction* okAlertAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+	_okAlertController = [UIAlertController alertControllerWithTitle:@"Error" message:nil preferredStyle:UIAlertControllerStyleAlert];
+	[_okAlertController addAction:okAlertAction];
+	
+	return _okAlertController;
+}
+
+
 #
 # pragma mark UIViewController
 #
 
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	[super viewDidLoad];
+	
+	// Uncomment the following line to preserve selection between presentations.
+	// self.clearsSelectionOnViewWillAppear = NO;
+	
+	// Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+	// self.navigationItem.rightBarButtonItem = self.editButtonItem;
 	
 	// HACK: Recreate start-time date picker in code, since UI bug causes middle components to white out on iPad
 	// TODO: Remove hack code if/when Apple fixes bug
@@ -110,36 +135,36 @@
 	self.startTimeDatePicker.minuteInterval = minuteInterval;
 	[superview addSubview:self.startTimeDatePicker];
 	// END HACK
-
+	
 	[self configureView];
 }
 
 
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-
+	
 	[self.navigationController setToolbarHidden:NO];
 }
 
 
 - (void)viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-
+	
 	[self.navigationController setToolbarHidden:YES];
 }
 
 
 - (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+	[super didReceiveMemoryWarning];
+	// Dispose of any resources that can be recreated.
 }
 
 /*
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 
 #
@@ -147,13 +172,13 @@
 #
 
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView*)pickerView {
-
+	
 	return 1;
 }
 
 
 - (NSInteger)pickerView:(UIPickerView*)pickerView numberOfRowsInComponent:(NSInteger)component {
-
+	
 	if (pickerView == self.teamAssignedPickerView) return self.teamFetchedResultsController.fetchedObjects.count + 1;
 	if (pickerView == self.passengerCountPickerView) return 10;
 	if (pickerView == self.vehicleTransmissionPickerView) return 2;
@@ -169,7 +194,7 @@
 
 
 - (void)pickerView:(UIPickerView*)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
-
+	
 	[self.view endEditing:YES];
 }
 
@@ -181,7 +206,7 @@
 
 
 - (CGFloat)pickerView:(UIPickerView*)pickerView widthForComponent:(NSInteger)component {
-
+	
 	if (pickerView == self.teamAssignedPickerView) return 300;
 	if (pickerView == self.passengerCountPickerView) return 35;
 	if (pickerView == self.vehicleTransmissionPickerView) return 150;
@@ -192,7 +217,7 @@
 
 
 - (NSString*)pickerView:(UIPickerView*)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-
+	
 	if (pickerView == self.teamAssignedPickerView) {
 		
 		if (row == 0) return @"- None -";
@@ -210,7 +235,7 @@
 				
 			default:
 			case 0:
-			    return @"Automatic";
+				return @"Automatic";
 				
 			case 1:
 				return @"Manual";
@@ -224,7 +249,7 @@
 
 
 - (NSAttributedString*)pickerView:(UIPickerView*)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component {
-
+	
 	if (pickerView == self.teamAssignedPickerView) {
 		
 		// Left-align team titles
@@ -241,11 +266,11 @@
 
 
 /*
-- (UIView*)pickerView:(UIPickerView*)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView*)view {
+ - (UIView*)pickerView:(UIPickerView*)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView*)view {
 	
 	return view;
-}
-*/
+ }
+ */
 
 
 #
@@ -267,7 +292,7 @@
 		// Reject replacement string exceeding max length
 		// NOTE: Optimization to avoid further checks below
 		if (string.length > DONATION_TEXT_LENGTH_MAX) return NO;
-
+		
 		// Reject non-decimal chars
 		NSCharacterSet* nonDecimalSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789."].invertedSet;
 		if ([string rangeOfCharacterFromSet:nonDecimalSet].location != NSNotFound) return NO;
@@ -287,7 +312,7 @@
 			if (decimalNumbers.length > 2) return NO;
 		}
 	}
-
+	
 	return YES;
 }
 
@@ -309,7 +334,7 @@
 
 
 - (IBAction)backgroundTapped:(UITapGestureRecognizer*)sender {
-
+	
 	[self.view endEditing:YES];
 }
 
@@ -330,7 +355,7 @@
 
 
 - (void)configureView {
-
+	
 	[self configureRangeForStartTimeDatePicker];
 	
 	[self loadDataModelIntoView];
@@ -357,7 +382,7 @@
 
 // Load ride data model into view fields
 - (void)loadDataModelIntoView {
-
+	
 	// Load dispatch fields
 	self.sourceTextField.text = self.ride.sourceName;
 	self.donationTextField.text = self.ride.donationAmount ? self.ride.donationAmount.stringValue : @"";
@@ -390,18 +415,18 @@
 
 // Save ride data model from view fields
 - (void)saveDataModelFromView {
-
+	
 	// Save dispatch fields
 	self.ride.sourceName = self.sourceTextField.text;
 	self.ride.donationAmount = self.donationTextField.text.length > 0 ? [NSDecimalNumber decimalNumberWithString:self.donationTextField.text] : nil;
-
+	
 	// Save dispatch field: team assigned
 	Team* existingTeamAssigned = self.ride.teamAssigned; // Maybe nil
 	NSInteger selectedTeamRow = [self.teamAssignedPickerView selectedRowInComponent:0];
 	Team* newTeamAssigned = selectedTeamRow > 0 ? self.teamFetchedResultsController.fetchedObjects[selectedTeamRow - 1] : nil; // "None" at index 0
 	BOOL updatedTeamAssigned = (existingTeamAssigned != newTeamAssigned);
 	if (updatedTeamAssigned) {
-
+		
 		// Remove ride from existing team assigned, if present - notify observers
 		if (existingTeamAssigned) {
 			
@@ -409,7 +434,7 @@
 			
 			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME : existingTeamAssigned, TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY : [NSNumber numberWithBool:YES]}];
 		}
-
+		
 		// Add ride to new team assigned, if present - notify observers
 		if (newTeamAssigned) {
 			
@@ -429,11 +454,33 @@
 	self.ride.passengerCount = [NSNumber numberWithLong:[self.passengerCountPickerView selectedRowInComponent:0]];
 	
 	// Save location fields
-	// TODO: Validate locations via geocoding
-	BOOL updatedLocationStart = ![self.ride.locationStartAddress isEqualToString:self.startAddressTextField.text];
-	self.ride.locationStartAddress = self.startAddressTextField.text;
-	BOOL updatedLocationEnd = ![self.ride.locationEndAddress isEqualToString:self.endAddressTextField.text];
-	self.ride.locationEndAddress = self.endAddressTextField.text;
+	// NOTE: Try asych geocode
+	BOOL updatedStartLocation = NO;
+	if (![Util compareString:self.ride.locationStartAddress toString:self.startAddressTextField.text]) {
+		
+		if (self.startAddressTextField.text.length > 0) {
+			
+			[self tryUpdateRide:self.ride withAddressString:self.startAddressTextField.text andRideLocationType:RideLocationType_Start];
+			
+		} else {
+			
+			[self.ride clearLocationWithRideLocationType:RideLocationType_Start];
+			updatedStartLocation = YES;
+		}
+	}
+	BOOL updatedEndLocation = NO;
+	if (![Util compareString:self.ride.locationEndAddress toString:self.endAddressTextField.text]) {
+		
+		if (self.endAddressTextField.text.length > 0) {
+			
+			[self tryUpdateRide:self.ride withAddressString:self.endAddressTextField.text andRideLocationType:RideLocationType_End];
+			
+		} else {
+			
+			[self.ride clearLocationWithRideLocationType:RideLocationType_End];
+			updatedEndLocation = YES;
+		}
+	}
 	self.ride.locationTransferFrom = self.transferFromTextField.text;
 	self.ride.locationTransferTo = self.transferToTextField.text;
 	
@@ -449,18 +496,67 @@
 	self.ride.dateTimeStart = self.startTimeDatePicker.date;
 	//	self.ride.dateTimeEnd = nil;
 	[self.ride calculateDateTimeEnd];
-
-	// Notify observers of updates to ride
-	NSDictionary* userInfo =
-	@{RIDE_ENTITY_NAME : self.ride,
-	  RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedTeamAssigned],
-	  RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY :[NSNumber numberWithBool:updatedLocationStart],
-	  RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedLocationEnd]
-	  };
-	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:userInfo];
-
+	
 	// Persist data model to disk
 	[RideDetailTableViewController saveManagedObjectContext];
+	
+	// Notify observers of updates to ride
+	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:
+	 @{RIDE_ENTITY_NAME : self.ride,
+	   RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedTeamAssigned],
+	   RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedStartLocation],
+	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedEndLocation],
+	   }];
+}
+
+
+- (void)tryUpdateRide:(Ride*)ride withAddressString:(NSString*)addressString andRideLocationType:(RideLocationType)rideLocationType {
+	
+	// Geocode given address string relative to jurisdiction
+	
+	CLCircularRegion* jurisdictionRegion = [[CLCircularRegion alloc] initWithCenter:JURISDICTION_COORDINATE radius:JURISDICTION_SEARCH_RADIUS identifier:@"ORN Jurisdication Region"];
+	
+	[self.geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray* placemarks, NSError* error) {
+		
+		// NOTES: Completion block executes on main thread. Do not run more than one reverse-geocode simultaneously.
+		
+		// If there is a problem, log it; alert the user; and we are done.
+		if (error || placemarks.count < 1) {
+			
+			if (error) {
+				NSLog(@"Geocode Error: %@ %@", error.localizedDescription, error.userInfo);
+			} else if (placemarks.count < 1) {
+				NSLog(@"Geocode Error: No placemarks for address string: %@", addressString);
+			}
+			
+			[self presentAlertWithTitle:@"Error" andMessage:[NSString stringWithFormat:@"Cannot geocode address: %@", addressString]];
+			
+			return;
+		}
+		
+		// Address resolved successfully to have at least one placemark
+		CLPlacemark* placemark = placemarks[0];
+		NSLog(@"Geocode location: %@", placemark.location);
+		NSLog(@"Geocode locality: %@", placemark.locality);
+		NSLog(@"Geocode address: %@", placemark.addressDictionary);
+		
+		// Use first placemark as location
+		[ride updateLocationWithPlacemark:placemark andRideLocationType:rideLocationType];
+		[RideDetailTableViewController saveManagedObjectContext];
+		NSLog(@"Ride: %@", ride);
+		
+		// Notify observers
+		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME : ride, (rideLocationType == RideLocationType_End ? RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY) : [NSNumber numberWithBool:YES]}];
+	}];
+}
+
+
+- (void)presentAlertWithTitle:(NSString*)title andMessage:(NSString*)message {
+	
+	self.okAlertController.title = title;
+	self.okAlertController.message = message;
+	
+	[self presentViewController:self.okAlertController animated:YES completion:nil];
 }
 
 

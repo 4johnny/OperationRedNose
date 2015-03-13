@@ -27,15 +27,6 @@
 #
 
 #
-# pragma mark Jurisdication Constants
-#
-
-#define CHARITY_NAME				@"KidSport"
-#define JURISDICTION_NAME			@"Tri-Cities, Burnaby, New Westminster"
-#define JURISDICTION_COORDINATE		BURNABY_COORDINATE
-#define JURISDICTION_SEARCH_RADIUS	100000 // metres
-
-#
 # pragma mark Data Model Constants
 #
 
@@ -88,6 +79,7 @@
 
 @property (nonatomic) CLGeocoder* geocoder;
 @property (nonatomic) UIAlertController* okAlertController;
+
 @property (nonatomic) NSDateFormatter* annotationDateFormatter;
 
 
@@ -299,9 +291,9 @@
 }
 
 
-- (void)mapView:(MKMapView*)mapView didAddAnnotationViews:(NSArray*)views {
-	
-	// Animate dropping for team point annotations
+//- (void)mapView:(MKMapView*)mapView didAddAnnotationViews:(NSArray*)views {
+//	
+//	// Animate dropping for team point annotations
 //	for (MKAnnotationView* view in views) {
 //		
 //		// If not team annotation, we are done with this view
@@ -349,10 +341,12 @@
 //			}];
 //		}];
 //	}
-}
+//}
 
 
 - (void)mapView:(MKMapView*)mapView annotationView:(MKAnnotationView*)view calloutAccessoryControlTapped:(UIControl*)control {
+	
+	[self.addressTextField resignFirstResponder];
 	
 	// If user location, we are done
 	if ([view.annotation isKindOfClass:[MKUserLocation class]]) return;
@@ -393,9 +387,9 @@
 }
 
 
-- (void)mapView:(MKMapView*)mapView didSelectAnnotationView:(MKAnnotationView*)view {
-
-	// If user location, we are done
+//- (void)mapView:(MKMapView*)mapView didSelectAnnotationView:(MKAnnotationView*)view {
+//
+//	// If user location, we are done
 //	if ([view.annotation isKindOfClass:[MKUserLocation class]]) return;
 //	
 //	if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) {
@@ -409,14 +403,14 @@
 //		[self mapView:mapView didSelectTeamPointAnnotationWithTeam:((TeamPointAnnotation*)view.annotation).team];
 //		return;
 //	}
-}
+//}
 
 
-- (void)mapView:(MKMapView*)mapView didDeselectAnnotationView:(MKAnnotationView*)view {
-	
-	// Remove route overlays
+//- (void)mapView:(MKMapView*)mapView didDeselectAnnotationView:(MKAnnotationView*)view {
+//	
+//	// Remove route overlays
 //	[self clearAllOverlays];
-}
+//}
 
 
 //- (MKOverlayRenderer*)mapView:(MKMapView*)mapView rendererForOverlay:(id<MKOverlay>)overlay {
@@ -753,21 +747,31 @@
  */
 - (BOOL)configureRideAnnotations:(NSArray*)rideAnnotations withRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andIsLocationUpdated:(BOOL)isLocationUpdated andNeedsCenter:(BOOL)needsCenter andNeedsSelection:(BOOL)needsSelection {
 	
-	RidePointAnnotation* ridePointAnnotation = [self ridePointAnnotationWithAnnotations:rideAnnotations andRideLocationType:rideLocationType];
+	RidePointAnnotation* ridePointAnnotation = [self getRidePointAnnotationFromRidePointAnnotations:rideAnnotations andRideLocationType:rideLocationType];
 	
-	if (ride.locationStartLatitude && ride.locationStartLongitude) {
+	NSNumber* locationLatitude = ride.locationStartLatitude;
+	NSNumber* locationLongitude = ride.locationStartLongitude;
+	if (rideLocationType == RideLocationType_End) {
 		
+		locationLatitude = ride.locationEndLatitude;
+		locationLongitude = ride.locationEndLongitude;
+	}
+	
+	if (locationLatitude && locationLongitude) {
+		
+		// Updated existing annotation or create new one
 		if (ridePointAnnotation) {
 			
-			(void)[ridePointAnnotation initWithRide:ride andRideLocationType:RideLocationType_Start andNeedsAnimatesDrop:isLocationUpdated];
+			(void)[ridePointAnnotation initWithRide:ride andRideLocationType:rideLocationType andNeedsAnimatesDrop:isLocationUpdated];
 			
 		} else {
 			
-			ridePointAnnotation = [RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:RideLocationType_Start andNeedsAnimatesDrop:isLocationUpdated];
+			ridePointAnnotation = [RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:rideLocationType andNeedsAnimatesDrop:isLocationUpdated];
 			
 			[self.mainMapView addAnnotation:ridePointAnnotation];
 		}
 		
+		// Update existing annotation view or trigger new one
 		if (isLocationUpdated) {
 			
 			// Remove and re-add annotation to map view - automatically triggers new annotation view
@@ -786,7 +790,7 @@
 		
 		if (needsCenter) {
 			
-			[self.mainMapView setCenterCoordinate:CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue) animated:YES];
+			[self.mainMapView setCenterCoordinate:CLLocationCoordinate2DMake(locationLatitude.doubleValue, locationLongitude.doubleValue) animated:YES];
 		}
 		
 		if (needsSelection) {
@@ -987,8 +991,13 @@
 - (void)loadRidesDataModel {
 	
 	for (Ride* ride in self.rideFetchedResultsController.fetchedObjects) {
-		
-		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME : ride, RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : [NSNumber numberWithBool:YES]}];
+
+		NSDictionary* userInfo =
+		@{RIDE_ENTITY_NAME : ride,
+		  RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : [NSNumber numberWithBool:YES],
+		  RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : [NSNumber numberWithBool:YES]
+		  };
+		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:userInfo];
 	}
 }
 
@@ -1027,7 +1036,7 @@
 				NSLog(@"Geocode Error: No placemarks for address string: %@", addressString);
 			}
 			
-			[self presentAlertWithTitle:@"Error" andMessage:@"Cannot find address."];
+			[self presentAlertWithTitle:@"Error" andMessage:[NSString stringWithFormat:@"Cannot geocode address: %@", addressString]];
 			
 			return;
 		}
@@ -1058,7 +1067,7 @@
 }
 
 
-- (RidePointAnnotation*)ridePointAnnotationWithAnnotations:(NSArray*)annotations andRideLocationType:(RideLocationType)rideLocationType {
+- (RidePointAnnotation*)getRidePointAnnotationFromRidePointAnnotations:(NSArray*)annotations andRideLocationType:(RideLocationType)rideLocationType {
 
 	// Return first start annotation found
 	// NOTE: Should be max 1

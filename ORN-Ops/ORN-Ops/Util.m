@@ -18,6 +18,19 @@
 
 
 #
+# pragma mark Strings
+#
+
+
++ (BOOL)compareString:(NSString*)firstString toString:(NSString*)secondString {
+	
+	if (firstString.length == 0 && secondString.length == 0) return YES; // NOTE: Handles nil
+	
+	return (firstString && [firstString isEqualToString:secondString]);
+}
+
+
+#
 # pragma mark Responder
 #
 
