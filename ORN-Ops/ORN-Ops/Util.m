@@ -7,6 +7,7 @@
 //
 
 #import "Util.h"
+#import "ORNDataModelSource.h"
 
 
 #
@@ -43,6 +44,25 @@
 	// NOTE: Text field needs to be already in view hierarchy
 	[textfield becomeFirstResponder];
 	[textfield resignFirstResponder];
+}
+
+
+#
+# pragma mark <ORNDataModelSource>
+#
+
+
++ (NSManagedObjectContext*)managedObjectContext {
+	
+	id<ORNDataModelSource> dataModelSource = (id<ORNDataModelSource>)[UIApplication sharedApplication].delegate;
+	return dataModelSource.managedObjectContext;
+}
+
+
++ (void)saveManagedObjectContext {
+	
+	id<ORNDataModelSource> dataModelSource = (id<ORNDataModelSource>)[UIApplication sharedApplication].delegate;
+	[dataModelSource saveManagedObjectContext];
 }
 
 

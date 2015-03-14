@@ -13,12 +13,6 @@
 # pragma mark - Interface
 #
 
-@interface MainTabBarController : UITabBarController <ORNDataModelSource, UITabBarControllerDelegate>
-
-#
-# pragma mark <ORNDataModelSource>
-#
-
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@interface MainTabBarController : UITabBarController <UITabBarControllerDelegate>
 
 @end

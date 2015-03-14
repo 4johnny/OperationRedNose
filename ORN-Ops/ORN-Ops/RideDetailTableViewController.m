@@ -17,6 +17,7 @@
 
 #define DONATION_TEXT_LENGTH_MAX	8 // NOTE: Limit to ensure number fits in NSDecimal
 
+
 #
 # pragma mark Data Model Constants
 #
@@ -29,20 +30,16 @@
 # pragma mark - Interface
 #
 
-
 @interface RideDetailTableViewController ()
-
 
 #
 # pragma mark Properties
 #
 
-
 @property (strong, nonatomic) NSFetchedResultsController* teamFetchedResultsController;
 
 @property (nonatomic) CLGeocoder* geocoder;
 @property (nonatomic) UIAlertController* okAlertController;
-
 
 @end
 
@@ -498,7 +495,7 @@
 	[self.ride calculateDateTimeEnd];
 	
 	// Persist data model to disk
-	[RideDetailTableViewController saveManagedObjectContext];
+	[Util saveManagedObjectContext];
 	
 	// Notify observers of updates to ride
 	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:
@@ -542,7 +539,7 @@
 		
 		// Use first placemark as location
 		[ride updateLocationWithPlacemark:placemark andRideLocationType:rideLocationType];
-		[RideDetailTableViewController saveManagedObjectContext];
+		[Util saveManagedObjectContext];
 		NSLog(@"Ride: %@", ride);
 		
 		// Notify observers
@@ -557,17 +554,10 @@
 	self.okAlertController.message = message;
 	
 	// Present via known top-level controller to allow for async callback alerts
-	AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
-	UITabBarController* mainTabBarController = (UITabBarController*)appDelegate.window. rootViewController;
+	id<UIApplicationDelegate> appDelegate = [UIApplication sharedApplication].delegate;
+	UIViewController* appRootViewController = (UIViewController*)appDelegate.window.rootViewController;
 	
-	[mainTabBarController presentViewController:self.okAlertController animated:YES completion:nil];
-}
-
-
-+ (void)saveManagedObjectContext {
-	
-	AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
-	[appDelegate saveManagedObjectContext];
+	[appRootViewController presentViewController:self.okAlertController animated:YES completion:nil];
 }
 
 

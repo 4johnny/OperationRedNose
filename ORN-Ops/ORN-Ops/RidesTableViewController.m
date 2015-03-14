@@ -31,7 +31,6 @@
 # pragma mark - Interface
 #
 
-
 @interface RidesTableViewController ()
 
 @property (strong, nonatomic) NSFetchedResultsController* fetchedResultsController;
@@ -64,7 +63,7 @@
 
 	// Perform fetch
 	// NOTE: nil for section name key path means "no sections".
-	_fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+	_fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[Util managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
 	_fetchedResultsController.delegate = self;
 	NSError *error = nil;
 	if (![_fetchedResultsController performFetch:&error]) {
@@ -263,18 +262,6 @@
  [self.tableView reloadData];
  }
  */
-
-
-#
-# pragma mark <ORNDataModelSource>
-#
-
-
-+ (void)saveManagedObjectContext {
-	
-	AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
-	[appDelegate saveManagedObjectContext];
-}
 
 
 #

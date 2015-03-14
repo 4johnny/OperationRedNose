@@ -22,7 +22,7 @@
 
 @required
 
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (readonly, strong, nonatomic) NSManagedObjectContext* managedObjectContext;
 
 #
 # pragma mark Methods
@@ -30,7 +30,7 @@
 
 @required
 
-+ (void)saveManagedObjectContext;
+- (void)saveManagedObjectContext;
 
 @end
 

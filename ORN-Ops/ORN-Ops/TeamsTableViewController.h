@@ -13,12 +13,6 @@
 # pragma mark - Interface
 #
 
-@interface TeamsTableViewController : UITableViewController <ORNDataModelSource>
-
-#
-# pragma mark <ORNDataModelSource>
-#
-
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@interface TeamsTableViewController : UITableViewController
 
 @end

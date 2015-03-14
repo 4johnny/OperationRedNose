@@ -8,13 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
+#import "ORNDataModelSource.h"
 
 
 #
 # pragma mark - Interface
 #
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, ORNDataModelSource>
 
 #
 # pragma mark Properties
@@ -27,6 +28,7 @@
 #
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext* managedObjectContext;
+
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator* persistentStoreCoordinator;
 @property (readonly, strong, nonatomic) NSManagedObjectModel* managedObjectModel;
 
@@ -35,6 +37,7 @@
 #
 
 - (void)saveManagedObjectContext;
+
 - (void)deleteAllObjectsWithEntityName:(NSString*)entityName;
 
 #

@@ -64,14 +64,17 @@ typedef NS_ENUM(NSInteger, RideLocationType) {
 # pragma mark Initializers
 #
 
-- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext andPlacemark:(CLPlacemark*)placemark;
-	
-+ (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext andPlacemark:(CLPlacemark*)placemark;
+- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext andDateTime:(NSDate*)dateTime andPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType;
+- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
+
++ (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext andDateTime:(NSDate*)dateTime andPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType;
++ (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
 
 #
 # pragma mark Helpers
 #
 
+- (void)updateLocationWithLatitude:(CLLocationDegrees)latitude andLogitude:(CLLocationDegrees)longitude andAddress:(NSString*)address andCity:(NSString*)city andRideLocationType:(RideLocationType)rideLocationType;
 - (void)updateLocationWithPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType;
 - (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType;
 

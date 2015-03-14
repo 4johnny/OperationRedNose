@@ -22,22 +22,51 @@
 # pragma mark Initializers
 #
 
-- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext andPlacemark:(CLPlacemark*)placemark {
+- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext andDateTime:(NSDate*)dateTime andPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType {
 
 	self = [super initWithEntity:[NSEntityDescription entityForName:RIDE_ENTITY_NAME	 inManagedObjectContext:managedObjectContext] insertIntoManagedObjectContext:managedObjectContext];
+	
 	if (self) {
 
-		self.dateTimeStart = [NSDate date];
-		[self updateLocationWithPlacemark:placemark andRideLocationType:RideLocationType_Start];
+		switch (rideLocationType) {
+				
+			case RideLocationType_Start:
+				self.dateTimeStart = dateTime;
+				break;
+				
+			case RideLocationType_End:
+				self.dateTimeEnd = dateTime;
+			
+			default:
+			case RideLocationType_None:
+				break;
+		}
+		
+		if (placemark && rideLocationType != RideLocationType_None) {
+			
+			[self updateLocationWithPlacemark:placemark andRideLocationType:rideLocationType];
+		}
 	}
 	
 	return self;
 }
 
 
-+ (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext andPlacemark:(CLPlacemark*)placemark {
+- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
-	return [[Ride alloc] initWithManagedObjectContext:managedObjectContext andPlacemark:placemark];
+	return [self initWithManagedObjectContext:managedObjectContext andDateTime:nil andPlacemark:nil andRideLocationType:RideLocationType_None];
+}
+
+
++ (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext andDateTime:(NSDate*)dateTime andPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType {
+	
+	return [[Ride alloc] initWithManagedObjectContext:managedObjectContext andDateTime:dateTime andPlacemark:placemark andRideLocationType:rideLocationType];
+}
+
+
++ (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
+	
+	return [[Ride alloc] initWithManagedObjectContext:managedObjectContext];
 }
 
 
@@ -46,29 +75,35 @@
 #
 
 
-- (void)updateLocationWithPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType {
-	
+- (void)updateLocationWithLatitude:(CLLocationDegrees)latitude andLogitude:(CLLocationDegrees)longitude andAddress:(NSString*)address andCity:(NSString*)city andRideLocationType:(RideLocationType)rideLocationType {
+
 	switch (rideLocationType) {
 			
 		default:
 		case RideLocationType_Start:
 			
-			self.locationStartLatitude = [NSNumber numberWithDouble:placemark.location.coordinate.latitude];
-			self.locationStartLongitude = [NSNumber numberWithDouble:placemark.location.coordinate.longitude];
-			self.locationStartAddress = [Ride addressStringWithPlacemark:placemark];
-			self.locationStartCity = placemark.locality;
+			self.locationStartLatitude = [NSNumber numberWithDouble:latitude];
+			self.locationStartLongitude = [NSNumber numberWithDouble:longitude];
+			self.locationStartAddress = address;
+			self.locationStartCity = city;
 			
 			break;
 			
 		case RideLocationType_End:
 			
-			self.locationEndLatitude = [NSNumber numberWithDouble:placemark.location.coordinate.latitude];
-			self.locationEndLongitude = [NSNumber numberWithDouble:placemark.location.coordinate.longitude];
-			self.locationEndAddress = [Ride addressStringWithPlacemark:placemark];
-			self.locationEndCity = placemark.locality;
+			self.locationEndLatitude = [NSNumber numberWithDouble:latitude];
+			self.locationEndLongitude = [NSNumber numberWithDouble:longitude];
+			self.locationEndAddress = address;
+			self.locationEndCity = city;
 			
 			break;
 	}
+}
+
+
+- (void)updateLocationWithPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType {
+	
+	[self updateLocationWithLatitude:placemark.location.coordinate.latitude andLogitude:placemark.location.coordinate.longitude andAddress:[Ride addressStringWithPlacemark:placemark] andCity:placemark.locality andRideLocationType:rideLocationType];
 }
 
 

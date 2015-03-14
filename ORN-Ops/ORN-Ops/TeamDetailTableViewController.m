@@ -14,7 +14,6 @@
 # pragma mark - Interface
 #
 
-
 @interface TeamDetailTableViewController ()
 
 @end
@@ -87,21 +86,8 @@
 	
 	[self.view endEditing:YES];
 
-	
 	//	[TeamDetailTableViewController saveManagedObjectContext];
 	[self.navigationController popViewControllerAnimated:YES];
-}
-
-
-#
-# pragma mark Helpers
-#
-
-
-+ (void)saveManagedObjectContext {
-	
-	AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
-	[appDelegate saveManagedObjectContext];
 }
 
 

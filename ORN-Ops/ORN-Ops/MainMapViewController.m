@@ -65,14 +65,11 @@
 # pragma mark - Interface
 #
 
-
 @interface MainMapViewController ()
-
 
 #
 # pragma mark Properties
 #
-
 
 @property (strong, nonatomic) NSFetchedResultsController* rideFetchedResultsController;
 @property (strong, nonatomic) NSFetchedResultsController* teamFetchedResultsController;
@@ -81,7 +78,6 @@
 @property (nonatomic) UIAlertController* okAlertController;
 
 @property (nonatomic) NSDateFormatter* annotationDateFormatter;
-
 
 @end
 
@@ -111,7 +107,7 @@
 	//fetchRequest.fetchLimit = PAGE_LIMIT;
 	
 	// NOTE: nil for section name key path means "no sections"
-	_rideFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+	_rideFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[Util managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
 	_rideFetchedResultsController.delegate = self;
 	
 	NSError *error = nil;
@@ -634,18 +630,6 @@
 
 
 #
-# pragma mark <ORNDataModelSource>
-#
-
-
-+ (void)saveManagedObjectContext {
-	
-	AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
-	[appDelegate saveManagedObjectContext];
-}
-
-
-#
 # pragma mark Action Handlers
 #
 
@@ -807,7 +791,7 @@
 		}
 	}
 	
-	return ridePointAnnotation;
+	return (ridePointAnnotation != nil);
 }
 
 
@@ -886,7 +870,7 @@
 			
 			// Delete all rides and teams
 			// TODO: Intead, just ask AppDelegate to delete and recreate the backing DB file
-			AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+			AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
 			[appDelegate deleteAllObjectsWithEntityName:RIDE_ENTITY_NAME];
 			[appDelegate deleteAllObjectsWithEntityName:TEAM_ENTITY_NAME];
 			
@@ -903,31 +887,31 @@
 		
 		isCommandHandled = YES;
 		
-//	} else if ([COMMAND_DEMO isEqualToString:commandString]) {
-//		
-//		// Run all demo commands
-//		[self handleCommandString:COMMAND_DEMO_RIDES];
+	} else if ([COMMAND_DEMO isEqualToString:commandString]) {
+		
+		// Run all demo commands
+		[self handleCommandString:COMMAND_DEMO_RIDES];
 //		[self handleCommandString:COMMAND_DEMO_TEAMS];
 //		[self handleCommandString:COMMAND_DEMO_ASSIGN];
-//		
-//		isCommandHandled = YES;
-//		
-//	} else if ([COMMAND_DEMO_RIDES isEqualToString:commandString]) {
-//		
-//		// Load all demo rides
-//		[DemoUtil loadDemoRidesIntoManagedObjectContext:self.managedObjectContext];
-//		self.rideFetchedResultsController = nil; // Trip refetch
-//		[self configureRidesViewWithNeedsAnimatesDrop:YES];
-//		[self showAllAnnotations];
-//		
-//		needsDataModelSave = YES;
-//		isCommandHandled = YES;
-//		
+		
+		isCommandHandled = YES;
+		
+	} else if ([COMMAND_DEMO_RIDES isEqualToString:commandString]) {
+		
+		// Load all demo rides
+		[DemoUtil loadDemoRides];
+		//self.rideFetchedResultsController = nil; // Trigger refetch
+		[self loadDataModel];
+		[self showAllAnnotations];
+		
+		needsDataModelSave = YES;
+		isCommandHandled = YES;
+		
 //	} else if ([COMMAND_DEMO_TEAMS isEqualToString:commandString]) {
 //		
 //		// Load all demo teams
 //		[DemoUtil loadDemoTeamsIntoManagedObjectContext:self.managedObjectContext];
-//		self.teamFetchedResultsController = nil; // Trip refetch
+//		self.teamFetchedResultsController = nil; // Trigger refetch
 //		[self configureTeamsViewWithNeedsAnimatesDrop:YES];
 //		[self showAllAnnotations];
 //		
@@ -950,7 +934,8 @@
 		NSLog(@"Handled Command: %@", commandString);
 		
 		if (needsDataModelSave) {
-			[MainMapViewController saveManagedObjectContext];
+			
+			[Util saveManagedObjectContext];
 		}
 	}
 	
@@ -1048,8 +1033,8 @@
 		NSLog(@"Geocode address: %@", placemark.addressDictionary);
 		
 		// Use first placemark as start location for new ride
-		Ride* ride = [Ride rideWithManagedObjectContext:self.managedObjectContext andPlacemark:placemark];
-		[MainMapViewController saveManagedObjectContext];
+		Ride* ride = [Ride rideWithManagedObjectContext:[Util managedObjectContext] andDateTime:[NSDate date] andPlacemark:placemark andRideLocationType:RideLocationType_Start];
+		[Util saveManagedObjectContext];
 		NSLog(@"Ride: %@", ride);
 
 		// Notify observers
@@ -1142,10 +1127,10 @@
 	self.okAlertController.message = message;
 	
 	// Present via known top-level controller to allow for async callback alerts
-	AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
-	UITabBarController* mainTabBarController = (UITabBarController*)appDelegate.window. rootViewController;
+	id<UIApplicationDelegate> appDelegate = [UIApplication sharedApplication].delegate;
+	UIViewController* appRootViewController = (UIViewController*)appDelegate.window.rootViewController;
 	
-	[mainTabBarController presentViewController:self.okAlertController animated:YES completion:nil];
+	[appRootViewController presentViewController:self.okAlertController animated:YES completion:nil];
 }
 
 

@@ -58,4 +58,11 @@
 
 + (void)preloadKeyboardViaTextField:(UITextField*)textfield;
 
+#
+# pragma mark <ORNDataModelSource>
+#
+
++ (NSManagedObjectContext*)managedObjectContext;
++ (void)saveManagedObjectContext;
+
 @end

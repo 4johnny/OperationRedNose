@@ -17,7 +17,7 @@
 # pragma mark - Interface
 #
 
-@interface MainMapViewController : UIViewController <ORNDataModelSource, NSFetchedResultsControllerDelegate, UITextFieldDelegate, MKMapViewDelegate>
+@interface MainMapViewController : UIViewController <NSFetchedResultsControllerDelegate, UITextFieldDelegate, MKMapViewDelegate>
 
 #
 # pragma mark Outlets
@@ -27,11 +27,5 @@
 @property (weak, nonatomic) IBOutlet UITextField *addressTextField;
 @property (strong, nonatomic) IBOutlet MKMapView *mainMapView;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *mapTypeSegmentedControl;
-
-#
-# pragma mark <ORNDataModelSource>
-#
-
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 @end

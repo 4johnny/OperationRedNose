@@ -15,12 +15,6 @@
 # pragma mark - Interface
 #
 
-@interface RidesTableViewController : UITableViewController <ORNDataModelSource, NSFetchedResultsControllerDelegate>
-
-#
-# pragma mark <ORNDataModelSource>
-#
-
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@interface RidesTableViewController : UITableViewController <NSFetchedResultsControllerDelegate>
 
 @end

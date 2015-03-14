@@ -16,14 +16,12 @@
 # pragma mark - Constants
 #
 
-
 #define TEAMS_CELL_REUSE_ID	@"teamsTableViewCell"
 
 
 #
 # pragma mark - Interface
 #
-
 
 @interface TeamsTableViewController ()
 
@@ -78,22 +76,22 @@
 
 
 // Return the number of sections.
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+- (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView {
 	
     return 1;
 }
 
 
 // Return the number of rows in the section.
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section {
 	
     return 0;
 }
 
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath {
 	
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:TEAMS_CELL_REUSE_ID forIndexPath:indexPath];
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:TEAMS_CELL_REUSE_ID forIndexPath:indexPath];
     
     // Configure the cell
     
@@ -102,14 +100,14 @@
 
 /*
 // Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+- (BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath {
     // Return NO if you do not want the specified item to be editable.
     return YES;
 }
 */
 /*
 // Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView*)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath {
  
     if (editingStyle == UITableViewCellEditingStyleDelete) {
  
@@ -124,28 +122,16 @@
 */
 /*
 // Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+- (void)tableView:(UITableView*)tableView moveRowAtIndexPath:(NSIndexPath*)fromIndexPath toIndexPath:(NSIndexPath*)toIndexPath {
 }
 */
 /*
 // Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+- (BOOL)tableView:(UITableView*)tableView canMoveRowAtIndexPath:(NSIndexPath*)indexPath {
     // Return NO if you do not want the item to be re-orderable.
     return YES;
 }
 */
-
-
-#
-# pragma mark <ORNDataModelSource>
-#
-
-
-+ (void)saveManagedObjectContext {
-	
-	AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
-	[appDelegate saveManagedObjectContext];
-}
 
 
 #

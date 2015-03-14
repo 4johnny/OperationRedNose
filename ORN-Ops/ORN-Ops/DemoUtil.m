@@ -24,192 +24,240 @@
 #
 
 
-+ (void)loadDemoRidesIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadDemoRides {
 	
-	[DemoUtil loadVancouverDemoRidesIntoManagedObjectContext:managedObjectContext];
-	[DemoUtil loadBurnabyDemoRidesIntoManagedObjectContext:managedObjectContext];
-	[DemoUtil loadNewWestminsterDemoRidesIntoManagedObjectContext:managedObjectContext];
-	[DemoUtil loadTriCitiesDemoRidesIntoManagedObjectContext:managedObjectContext];
+	[DemoUtil loadVancouverDemoRides];
+	[DemoUtil loadBurnabyDemoRides];
+	[DemoUtil loadNewWestminsterDemoRides];
+	[DemoUtil loadTriCitiesDemoRides];
 }
 
 
-+ (void)loadVancouverDemoRidesIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadVancouverDemoRides {
 
+	NSManagedObjectContext* moc = [Util managedObjectContext];
 	Ride* ride;
 
 	// NOTE: Ride missing passenger info and end location
-	ride =
-	[Ride rideWithManagedObjectContext:managedObjectContext
-			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.287826, -123.123834)
-			   andLocationStartAddress:@"580 Bute St, Vancouver"
-				  andLocationStartCity:@"Vancouver"];
-	
-	ride =
-	[Ride rideWithManagedObjectContext:managedObjectContext
-			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.2818704, -123.1081611)
-			   andLocationStartAddress:@"128 W Hastings St, Vancouver"
-				  andLocationStartCity:@"Vancouver"];
+	ride = [Ride rideWithManagedObjectContext:moc];
+	ride.dateTimeStart = [NSDate date];
+	[ride updateLocationWithLatitude:49.287826
+						 andLogitude:-123.123834
+						  andAddress:@"580 Bute St, Vancouver"
+							 andCity:@"Vancouver"
+				 andRideLocationType:RideLocationType_Start];
+
+	// Vancouver to Port Coquitlam
+	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Rob";
 	ride.passengerNameLast = @"Jankovic";
-	ride.locationEndLatitude = [NSNumber numberWithDouble:49.271438];
-	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.756615];
-	ride.locationEndAddress = @"1523 Prairie Ave, Port Coquitlam";
-	ride.locationEndCity = @"Port Coquitlam";
+	ride.dateTimeStart = [NSDate date];
+	[ride updateLocationWithLatitude:49.2818704
+						 andLogitude:-123.1081611
+						  andAddress:@"128 W Hastings St, Vancouver"
+							 andCity:@"Vancouver"
+				 andRideLocationType:RideLocationType_Start];
+	[ride updateLocationWithLatitude:49.271438
+						 andLogitude:-122.756615
+						  andAddress:@"1523 Prairie Ave, Port Coquitlam"
+							 andCity:@"Port Coquitlam"
+				 andRideLocationType:RideLocationType_End];
 	[ride calculateDateTimeEnd];
 	
-	ride =
-	[Ride rideWithManagedObjectContext:managedObjectContext
-			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.27665770574511, -123.0847680657702)
-			   andLocationStartAddress:@"1 Venables St, Vancouver"
-				  andLocationStartCity:@"Vancouver"];
+	// Vancouver to Vancouver
+	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Joe";
 	ride.passengerNameLast = @"Roberts";
-	ride.locationEndLatitude = [NSNumber numberWithDouble:49.2688777];
-	ride.locationEndLongitude = [NSNumber numberWithDouble:-123.0769722];
-	ride.locationEndAddress = @"1750 Clark Dr, Vancouver";
-	ride.locationEndCity = @"Vancouver";
+	ride.dateTimeStart = [NSDate date];
+	[ride updateLocationWithLatitude:49.27665770574511
+						 andLogitude:-123.0847680657702
+						  andAddress:@"1 Venables St, Vancouver"
+							 andCity:@"Vancouver"
+				 andRideLocationType:RideLocationType_Start];
+	[ride updateLocationWithLatitude:49.2688777
+						 andLogitude:-123.0769722
+						  andAddress:@"1750 Clark Dr, Vancouver"
+							 andCity:@"Vancouver"
+				 andRideLocationType:RideLocationType_End];
 	[ride calculateDateTimeEnd];
 }
 
 
-+ (void)loadBurnabyDemoRidesIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadBurnabyDemoRides {
 	
+	NSManagedObjectContext* moc = [Util managedObjectContext];
 	Ride* ride;
 	
-	ride =
-	[Ride rideWithManagedObjectContext:managedObjectContext
-			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.24274, -123.014073)
-			   andLocationStartAddress:@"4078 Moscrop St, Burnaby"
-				  andLocationStartCity:@"Burnaby"];
+	// Burnaby to Burnaby
+	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Janet";
 	ride.passengerNameLast = @"Peterson";
-	ride.locationEndLatitude = [NSNumber numberWithDouble:49.22162];
-	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.979254];
-	ride.locationEndAddress = @"5788 Kingsway, Burnaby";
-	ride.locationEndCity = @"Burnaby";
+	ride.dateTimeStart = [NSDate date];
+	[ride updateLocationWithLatitude:49.24274
+						 andLogitude:-123.014073
+						  andAddress:@"4078 Moscrop St, Burnaby"
+							 andCity:@"Burnaby"
+				 andRideLocationType:RideLocationType_Start];
+	[ride updateLocationWithLatitude:49.22162
+						 andLogitude:-122.979254
+						  andAddress:@"5788 Kingsway, Burnaby"
+							 andCity:@"Burnaby"
+				 andRideLocationType:RideLocationType_End];
 	[ride calculateDateTimeEnd];
 	
-	ride =
-	[Ride rideWithManagedObjectContext:managedObjectContext
-			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.2660725, -123.0024237)
-			   andLocationStartAddress:@"4512 Lougheed Hwy, Burnaby"
-				  andLocationStartCity:@"Burnaby"];
+	// Burnaby to Coquitlam
+	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Morris";
 	ride.passengerNameLast = @"Sander";
-	ride.locationEndLatitude = [NSNumber numberWithDouble:49.2407423];
-	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.8527494];
-	ride.locationEndAddress = @"1431 Brunette Ave, Coquitlam";
-	ride.locationEndCity = @"Coquitlam";
+	ride.dateTimeStart = [NSDate date];
+	[ride updateLocationWithLatitude:49.2660725
+						 andLogitude:-123.0024237
+						  andAddress:@"4512 Lougheed Hwy, Burnaby"
+							 andCity:@"Burnaby"
+				 andRideLocationType:RideLocationType_Start];
+	[ride updateLocationWithLatitude:49.2407423
+						 andLogitude:-122.8527494
+						  andAddress:@"1431 Brunette Ave, Coquitlam"
+							 andCity:@"Coquitlam"
+				 andRideLocationType:RideLocationType_End];
 	[ride calculateDateTimeEnd];
 }
 
 
-+ (void)loadNewWestminsterDemoRidesIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadNewWestminsterDemoRides {
 	
+	NSManagedObjectContext* moc = [Util managedObjectContext];
 	Ride* ride;
 	
-	ride =
-	[Ride rideWithManagedObjectContext:managedObjectContext
-			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.18302, -122.953496)
-			   andLocationStartAddress:@"1242 Ewen Ave, New Westminster"
-				  andLocationStartCity:@"New Westminster"];
+	// New Westminster to New Westminster
+	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Dorothy";
 	ride.passengerNameLast = @"Kansas";
-	ride.locationEndLatitude = [NSNumber numberWithDouble:49.211765];
-	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.924143];
-	ride.locationEndAddress = @"615 8th St, New Westminster";
-	ride.locationEndCity = @"New Westminster";
+	ride.dateTimeStart = [NSDate date];
+	[ride updateLocationWithLatitude:49.18302
+						 andLogitude:-122.953496
+						  andAddress:@"1242 Ewen Ave, New Westminster"
+							 andCity:@"New Westminster"
+				 andRideLocationType:RideLocationType_Start];
+	[ride updateLocationWithLatitude:49.211765
+						 andLogitude:-122.924143
+						  andAddress:@"615 8th St, New Westminster"
+							 andCity:@"New Westminster"
+				 andRideLocationType:RideLocationType_End];
 	[ride calculateDateTimeEnd];
 	
-	ride =
-	[Ride rideWithManagedObjectContext:managedObjectContext
-			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.231407, -122.893559)
-			   andLocationStartAddress:@"308 Braid St, New Westminster"
-				  andLocationStartCity:@"New Westminster"];
+	// New Westminster to Burnaby
+	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Jeff";
 	ride.passengerNameLast = @"Donofrio";
-	ride.locationEndLatitude = [NSNumber numberWithDouble:49.247717];
-	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.941872];
-	ride.locationEndAddress = @"4004 Lozells Ave, Burnaby";
-	ride.locationEndCity = @"Burnaby";
+	ride.dateTimeStart = [NSDate date];
+	[ride updateLocationWithLatitude:49.231407
+						 andLogitude:-122.893559
+						  andAddress:@"308 Braid St, New Westminster"
+							 andCity:@"New Westminster"
+				 andRideLocationType:RideLocationType_Start];
+	[ride updateLocationWithLatitude:49.247717
+						 andLogitude:-122.941872
+						  andAddress:@"4004 Lozells Ave, Burnaby"
+							 andCity:@"Burnaby"
+				 andRideLocationType:RideLocationType_End];
 	[ride calculateDateTimeEnd];
 	
-	ride =
-	[Ride rideWithManagedObjectContext:managedObjectContext
-			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.202296, -122.9382)
-			   andLocationStartAddress:@"1700 Stewardson Way, New Westminster"
-				  andLocationStartCity:@"New Westminster"];
+	// New Westminster to Port Moody
+	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Adrianna";
 	ride.passengerNameLast = @"Butler";
-	ride.locationEndLatitude = [NSNumber numberWithDouble:49.304498];
-	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.830639];
-	ride.locationEndAddress = @"131 Forest Park Way, Port Moody";
-	ride.locationEndCity = @"Port Moody";
+	ride.dateTimeStart = [NSDate date];
+	[ride updateLocationWithLatitude:49.202296
+						 andLogitude:-122.9382
+						  andAddress:@"1700 Stewardson Way, New Westminster"
+							 andCity:@"New Westminster"
+				 andRideLocationType:RideLocationType_Start];
+	[ride updateLocationWithLatitude:49.304498
+						 andLogitude:-122.830639
+						  andAddress:@"131 Forest Park Way, Port Moody"
+							 andCity:@"Port Moody"
+				 andRideLocationType:RideLocationType_End];
 	[ride calculateDateTimeEnd];
 }
 
 
-+ (void)loadTriCitiesDemoRidesIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadTriCitiesDemoRides {
  
-	[DemoUtil loadCoquitlamDemoRidesIntoManagedObjectContext:managedObjectContext];
-	[DemoUtil loadPortCoquitlamDemoRidesIntoManagedObjectContext:managedObjectContext];
-	[DemoUtil loadPortMoodyDemoRidesIntoManagedObjectContext:managedObjectContext];
+	[DemoUtil loadCoquitlamDemoRides];
+	[DemoUtil loadPortCoquitlamDemoRides];
+	[DemoUtil loadPortMoodyDemoRides];
 }
 
 
-+ (void)loadCoquitlamDemoRidesIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadCoquitlamDemoRides {
 	
+	NSManagedObjectContext* moc = [Util managedObjectContext];
 	Ride* ride;
 	
-	ride =
-	[Ride rideWithManagedObjectContext:managedObjectContext
-			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.26374147501311, -122.8691647300472)
-			   andLocationStartAddress:@"949 Como Lake Ave, Coquitlam"
-				  andLocationStartCity:@"Coquitlam"];
+	// Coquitlam to Port Coquitlam
+	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Danny";
 	ride.passengerNameLast = @"Tao";
-	ride.locationEndLatitude = [NSNumber numberWithDouble:49.257502];
-	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.733142];
-	ride.locationEndAddress = @"590 Dominion Ave, Port Coquitlam";
-	ride.locationEndCity = @"Port Coquitlam";
+	ride.dateTimeStart = [NSDate date];
+	[ride updateLocationWithLatitude:49.26374147501311
+						 andLogitude:-122.8691647300472
+						  andAddress:@"949 Como Lake Ave, Coquitlam"
+							 andCity:@"Coquitlam"
+				 andRideLocationType:RideLocationType_Start];
+	[ride updateLocationWithLatitude:49.257502
+						 andLogitude:-122.733142
+						  andAddress:@"590 Dominion Ave, Port Coquitlam"
+							 andCity:@"Port Coquitlam"
+				 andRideLocationType:RideLocationType_End];
 	[ride calculateDateTimeEnd];
 }
 
 
-+ (void)loadPortCoquitlamDemoRidesIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadPortCoquitlamDemoRides {
 	
+	NSManagedObjectContext* moc = [Util managedObjectContext];
 	Ride* ride;
 	
-	ride =
-	[Ride rideWithManagedObjectContext:managedObjectContext
-			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.25625588056973, -122.7782533932433)
-			   andLocationStartAddress:@"2211 Central Ave, Port Coquitlam"
-				  andLocationStartCity:@"Port Coquitlam"];
+	// Port Coquitlam to Coquitlam
+	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Tara";
 	ride.passengerNameLast = @"Hughes";
-	ride.locationEndLatitude = [NSNumber numberWithDouble:49.2931232];
-	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.7907818];
-	ride.locationEndAddress = @"1330 Pinetree Way, Coquitlam";
-	ride.locationEndCity = @"Coquitlam";
+	ride.dateTimeStart = [NSDate date];
+	[ride updateLocationWithLatitude:49.25625588056973
+						 andLogitude:-122.7782533932433
+						  andAddress:@"2211 Central Ave, Port Coquitlam"
+							 andCity:@"Port Coquitlam"
+				 andRideLocationType:RideLocationType_Start];
+	[ride updateLocationWithLatitude:49.2931232
+						 andLogitude:-122.7907818
+						  andAddress:@"1330 Pinetree Way, Coquitlam"
+							 andCity:@"Coquitlam"
+				 andRideLocationType:RideLocationType_End];
 	[ride calculateDateTimeEnd];
 }
 
 
-+ (void)loadPortMoodyDemoRidesIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadPortMoodyDemoRides {
 	
+	NSManagedObjectContext* moc = [Util managedObjectContext];
 	Ride* ride;
-	
-	ride =
-	[Ride rideWithManagedObjectContext:managedObjectContext
-			andLocationStartCoordinate:CLLocationCoordinate2DMake(49.30258801423837, -122.8759178752116)
-			   andLocationStartAddress:@"1970 Ioco Rd, Port Moody"
-				  andLocationStartCity:@"Port Moody"];
+
+	// Port Moody to Port Moody
+	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Farai";
 	ride.passengerNameLast = @"Cole";
-	ride.locationEndLatitude = [NSNumber numberWithDouble:49.27457909172165];
-	ride.locationEndLongitude = [NSNumber numberWithDouble:-122.8739446137635];
-	ride.locationEndAddress = @"1000 Clarke Rd, Port Moody";
-	ride.locationEndCity = @"Port Moody";
+	ride.dateTimeStart = [NSDate date];
+	[ride updateLocationWithLatitude:49.30258801423837
+						 andLogitude:-122.8759178752116
+						  andAddress:@"1970 Ioco Rd, Port Moody"
+							 andCity:@"Port Moody"
+				 andRideLocationType:RideLocationType_Start];
+	[ride updateLocationWithLatitude:49.27457909172165
+						 andLogitude:-122.8739446137635
+						  andAddress:@"1000 Clarke Rd, Port Moody"
+							 andCity:@"Port Moody"
+				 andRideLocationType:RideLocationType_End];
 	[ride calculateDateTimeEnd];
 }
 
@@ -219,20 +267,21 @@
 #
 
 
-+ (void)loadDemoTeamsIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadDemoTeams {
 	
-	[DemoUtil loadVancouverDemoTeamsIntoManagedObjectContext:managedObjectContext];
-	[DemoUtil loadBurnabyDemoTeamsIntoManagedObjectContext:managedObjectContext];
-	[DemoUtil loadNewWestminsterDemoTeamsIntoManagedObjectContext:managedObjectContext];
-	[DemoUtil loadTriCitiesDemoTeamsIntoManagedObjectContext:managedObjectContext];
+	[DemoUtil loadVancouverDemoTeams];
+	[DemoUtil loadBurnabyDemoTeams];
+	[DemoUtil loadNewWestminsterDemoTeams];
+	[DemoUtil loadTriCitiesDemoTeams];
 }
 
 
-+ (void)loadVancouverDemoTeamsIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadVancouverDemoTeams {
 
+	NSManagedObjectContext* moc = [Util managedObjectContext];
 	Team* team;
 
-	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team = [Team teamWithManagedObjectContext:moc];
 	team.name = @"1";
 	team.members = @"Selma, Akbar, George";
 	team.isMascot = [NSNumber numberWithBool:NO];
@@ -241,7 +290,7 @@
 	team.locationCurrentAddress = @"1001 W Georgia St, Vancouver";
 	team.isActive = [NSNumber numberWithBool:YES];
 	
-	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team = [Team teamWithManagedObjectContext:moc];
 	team.name = @"2";
 	team.members = @"Matthew, Bethanie, Kelila";
 	team.isMascot = [NSNumber numberWithBool:NO];
@@ -252,11 +301,12 @@
 }
 
 
-+ (void)loadBurnabyDemoTeamsIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadBurnabyDemoTeams {
 	
+	NSManagedObjectContext* moc = [Util managedObjectContext];
 	Team* team;
 	
-	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team = [Team teamWithManagedObjectContext:moc];
 	team.name = @"3";
 	team.members = @"Cornel, Lucas, Kaylynn";
 	team.isMascot = [NSNumber numberWithBool:NO];
@@ -265,7 +315,7 @@
 	team.locationCurrentAddress = @"3730 Burke St, Burnaby";
 	team.isActive = [NSNumber numberWithBool:YES];
 	
-	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team = [Team teamWithManagedObjectContext:moc];
 	team.name = @"4";
 	team.members = @"Serena, Hector, Maciej";
 	team.isMascot = [NSNumber numberWithBool:NO];
@@ -276,11 +326,12 @@
 }
 
 
-+ (void)loadNewWestminsterDemoTeamsIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadNewWestminsterDemoTeams {
 	
+	NSManagedObjectContext* moc = [Util managedObjectContext];
 	Team* team;
 	
-	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team = [Team teamWithManagedObjectContext:moc];
 	team.name = @"5";
 	team.members = @"Lea, Mark, Terese";
 	team.isMascot = [NSNumber numberWithBool:NO];
@@ -289,7 +340,7 @@
 	team.locationCurrentAddress = @"934 17th St, New Westminster";
 	team.isActive = [NSNumber numberWithBool:YES];
 	
-	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team = [Team teamWithManagedObjectContext:moc];
 	team.name = @"6";
 	team.members = @"Greg, Désiré, Romana";
 	team.isMascot = [NSNumber numberWithBool:NO];
@@ -300,20 +351,21 @@
 }
 
 
-+ (void)loadTriCitiesDemoTeamsIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadTriCitiesDemoTeams {
 	
-	[DemoUtil loadCoquitlamDemoTeamsIntoManagedObjectContext:managedObjectContext];
-	[DemoUtil loadPortCoquitlamDemoTeamsIntoManagedObjectContext:managedObjectContext];
-	[DemoUtil loadPortMoodyDemoTeamsIntoManagedObjectContext:managedObjectContext];
+	[DemoUtil loadCoquitlamDemoTeams];
+	[DemoUtil loadPortCoquitlamDemoTeams];
+	[DemoUtil loadPortMoodyDemoTeams];
 }
 
 
-+ (void)loadCoquitlamDemoTeamsIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadCoquitlamDemoTeams {
 
+	NSManagedObjectContext* moc = [Util managedObjectContext];
 	Team* team;
  
 	// NOTE: Team is mascot
-	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team = [Team teamWithManagedObjectContext:moc];
 	team.name = @"7";
 	team.members = @"Abe, Jarek, Larisa";
 	team.isMascot = [NSNumber numberWithBool:YES];
@@ -322,7 +374,7 @@
 	team.locationCurrentAddress = @"501 N Rd, Coquitlam";
 	team.isActive = [NSNumber numberWithBool:YES];
 
-	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team = [Team teamWithManagedObjectContext:moc];
 	team.name = @"8";
 	team.members = @"Vera, Leonard, Ashley";
 	team.isMascot = [NSNumber numberWithBool:NO];
@@ -333,12 +385,13 @@
 }
 
 
-+ (void)loadPortCoquitlamDemoTeamsIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadPortCoquitlamDemoTeams {
 	
+	NSManagedObjectContext* moc = [Util managedObjectContext];
 	Team* team;
 	
 	// NOTE: Team missing members
-	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team = [Team teamWithManagedObjectContext:moc];
 	team.name = @"9";
 	team.isMascot = [NSNumber numberWithBool:NO];
 	team.locationCurrentLatitude = [NSNumber numberWithDouble:49.253409];
@@ -347,7 +400,7 @@
 	team.isActive = [NSNumber numberWithBool:YES];
 
 	// NOTE: Team missing name
-	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team = [Team teamWithManagedObjectContext:moc];
 	team.members = @"Martin, Jolene, Anatoly";
 	team.isMascot = [NSNumber numberWithBool:NO];
 	team.locationCurrentLatitude = [NSNumber numberWithDouble:49.284196];
@@ -357,12 +410,13 @@
 }
 
 
-+ (void)loadPortMoodyDemoTeamsIntoManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
++ (void)loadPortMoodyDemoTeams {
 	
+	NSManagedObjectContext* moc = [Util managedObjectContext];
 	Team* team;
 	
 	// NOTE: Team missing name and members
-	team = [Team teamWithManagedObjectContext:managedObjectContext];
+	team = [Team teamWithManagedObjectContext:moc];
 	team.isMascot = [NSNumber numberWithBool:NO];
 	team.locationCurrentLatitude = [NSNumber numberWithDouble:49.298383];
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-122.843201];
