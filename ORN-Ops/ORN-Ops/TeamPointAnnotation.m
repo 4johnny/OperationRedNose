@@ -32,9 +32,7 @@
 
 		self.coordinate = CLLocationCoordinate2DMake(_team.locationCurrentLatitude.doubleValue, _team.locationCurrentLongitude.doubleValue);
 		
-		NSString* teamTitle = [_team getTeamTitle];
-		self.title = teamTitle && teamTitle.length > 0 ? teamTitle : TEAM_TITLE_DEFAULT;
-		
+		self.title = [_team getTitle];
 		self.subtitle = _team.locationCurrentAddress;
 	}
 	

@@ -34,14 +34,13 @@
 #
 
 
-- (NSString*)getTeamTitle {
+- (NSString*)getTitle {
 
-	// If name or members are empty, return other one
-	if (!self.name || self.name.length <= 0) return self.members;
-	if (!self.members || self.members.length <= 0) return self.name;
-	
-	// Combine name and members
-	return [NSString stringWithFormat:@"%@: %@", self.name, self.members];
+	if (self.name.length > 0 && self.members.length == 0) return self.name;
+	if (self.name.length == 0 && self.members.length > 0) return self.members;
+	if (self.name.length > 0 && self.members.length > 0) return [NSString stringWithFormat:@"%@: %@", self.name, self.members];
+
+	return TEAM_TITLE_DEFAULT;
 }
 
 

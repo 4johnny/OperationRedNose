@@ -52,9 +52,7 @@
 			    break;
 		}
 		
-		NSString* passengerName = [_ride getPassengerName];
-		
-		self.title = [NSString stringWithFormat:@"%@: %@", titlePrefix, passengerName && passengerName.length > 0 ? passengerName : RIDE_TITLE_DEFAULT];
+		self.title = [NSString stringWithFormat:@"%@: %@", titlePrefix, [_ride getTitle]];
 	}
 	
 	return self;

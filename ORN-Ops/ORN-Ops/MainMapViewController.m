@@ -700,26 +700,34 @@
 
 
 /*
- Configure ride annotations and their views, consistent with given ride
+ Configure ride annotations and their views, consistent with given ride notification
  Returns whether at least one annotation is present
- NOTE: Start annotation takes precedence for center and selection
  */
-- (BOOL)configureRideAnnotationsWithNotification:(NSNotification*)notification andNeedsCenter:(BOOL)needsCenter andNeedsSelection:(BOOL)needsSelection {
+- (BOOL)configureRideAnnotationsWithNotification:(NSNotification*)notification
+								  andNeedsCenter:(BOOL)needsCenter
+							   andNeedsSelection:(BOOL)needsSelection {
 	
 	Ride* ride = notification.userInfo[RIDE_ENTITY_NAME];
 	NSArray* annotations = [self annotationsForRide:ride];
 	
 	// Configure start annotation
-	
 	BOOL isLocationUpdated = (notification.userInfo[RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY]).boolValue);
-	
-	BOOL startAnnotationPresent = [self configureRideAnnotations:annotations withRide:ride andRideLocationType:RideLocationType_Start andIsLocationUpdated:isLocationUpdated andNeedsCenter:needsCenter andNeedsSelection:needsSelection];
+	BOOL startAnnotationPresent = [self configureViewWithRide:ride
+										  andRideLocationType:RideLocationType_Start
+										 usingRideAnnotations:annotations
+										 andIsLocationUpdated:isLocationUpdated
+											   andNeedsCenter:needsCenter
+											andNeedsSelection:needsSelection];
 	
 	// Configure end annotation
-	
+	// NOTE: Start annotation takes precedence for center and selection
 	isLocationUpdated = (notification.userInfo[RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY]).boolValue);
-	
-	BOOL endAnnotationPresent = [self configureRideAnnotations:annotations withRide:ride andRideLocationType:RideLocationType_End andIsLocationUpdated:isLocationUpdated andNeedsCenter:(needsCenter && !startAnnotationPresent) andNeedsSelection:(needsSelection && !startAnnotationPresent)];
+	BOOL endAnnotationPresent = [self configureViewWithRide:ride
+										andRideLocationType:RideLocationType_End
+									   usingRideAnnotations:annotations
+									   andIsLocationUpdated:isLocationUpdated
+											 andNeedsCenter:(needsCenter && !startAnnotationPresent)
+										  andNeedsSelection:(needsSelection && !startAnnotationPresent)];
 	
 	return startAnnotationPresent || endAnnotationPresent;
 }
@@ -729,7 +737,12 @@
  Configure ride annotation and its view, consistent with given ride
  Returns whether annotation is present
  */
-- (BOOL)configureRideAnnotations:(NSArray*)rideAnnotations withRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andIsLocationUpdated:(BOOL)isLocationUpdated andNeedsCenter:(BOOL)needsCenter andNeedsSelection:(BOOL)needsSelection {
+- (BOOL)configureViewWithRide:(Ride*)ride
+		  andRideLocationType:(RideLocationType)rideLocationType
+		 usingRideAnnotations:(NSArray*)rideAnnotations
+		 andIsLocationUpdated:(BOOL)isLocationUpdated
+			   andNeedsCenter:(BOOL)needsCenter
+			andNeedsSelection:(BOOL)needsSelection {
 	
 	RidePointAnnotation* ridePointAnnotation = [self getRidePointAnnotationFromRidePointAnnotations:rideAnnotations andRideLocationType:rideLocationType];
 	

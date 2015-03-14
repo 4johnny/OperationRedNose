@@ -21,9 +21,10 @@
 #define RIDE_SORT_KEY			@"dateTimeStart"
 #define RIDE_SORT_ASCENDING		YES
 
-#define TIME_FORMAT				@"HH:mm"
+#define RIDES_CELL_REUSE_ID			@"ridesTableViewCell"
+#define RIDES_CELL_DATETIME_FORMAT	@"HH:mm"
+#define RIDES_CELL_FIELD_EMPTY		@"?"
 
-#define RIDES_CELL_REUSE_ID		@"ridesTableViewCell"
 #define SHOW_RIDE_DETAIL_SEQUE	@"showRideDetailSeque"
 
 
@@ -34,6 +35,8 @@
 @interface RidesTableViewController ()
 
 @property (strong, nonatomic) NSFetchedResultsController* fetchedResultsController;
+
+@property (nonatomic) NSDateFormatter* cellDateFormatter;
 
 @end
 
@@ -77,6 +80,17 @@
 }
 
 
+- (NSDateFormatter*)cellDateFormatter {
+	
+	if (_cellDateFormatter) return _cellDateFormatter;
+	
+	_cellDateFormatter = [[NSDateFormatter alloc] init];
+	_cellDateFormatter.dateFormat = RIDES_CELL_DATETIME_FORMAT;
+	
+	return _cellDateFormatter;
+}
+
+
 #
 # pragma mark UIViewController
 #
@@ -90,11 +104,8 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-	
-	// Wire up observers for update notifications for rides and teams
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideUpdatedWithNotification:) name:RIDE_UPDATED_NOTIFICATION_NAME object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(teamUpdatedWithNotification:) name:TEAM_UPDATED_NOTIFICATION_NAME object:nil];
-	
+
+	[self addNotificationObservers];
 }
 
 
@@ -286,6 +297,14 @@
 #
 
 
+- (void)addNotificationObservers {
+
+	// Wire up observers for update notifications for rides and teams
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideUpdatedWithNotification:) name:RIDE_UPDATED_NOTIFICATION_NAME object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(teamUpdatedWithNotification:) name:TEAM_UPDATED_NOTIFICATION_NAME object:nil];
+}
+
+
 - (void)insertNewObject:(id)sender {
 	
 	NSManagedObjectContext *context = self.fetchedResultsController.managedObjectContext;
@@ -307,15 +326,33 @@
 }
 
 
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath*)indexPath {
 	
 	Ride* ride = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
-	NSDateFormatter* startTimeDateFormatter = [[NSDateFormatter alloc] init];
-	startTimeDateFormatter.dateFormat = TIME_FORMAT;
-
-	cell.textLabel.text = ride.locationStartAddress;
-	cell.detailTextLabel.text = [startTimeDateFormatter stringFromDate:ride.dateTimeStart];
+	// Text
+	
+	NSString* rideTitle = [ride getTitle];
+	NSString* teamAssignedTitle = ride.teamAssigned ? [ride.teamAssigned getTitle] : RIDES_CELL_FIELD_EMPTY;
+	NSString* sourceTitle = ride.sourceName.length > 0 ? ride.sourceName : RIDES_CELL_FIELD_EMPTY;
+	
+	cell.textLabel.text = [NSString stringWithFormat:@"%@ | Team: %@ | Source: %@", rideTitle, teamAssignedTitle, sourceTitle];
+	cell.textLabel.numberOfLines = 0;
+	cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
+	
+	// Detail Text
+	
+	NSString* startDateString = ride.dateTimeStart ? [self.cellDateFormatter stringFromDate:ride.dateTimeStart]: RIDES_CELL_FIELD_EMPTY;
+	NSString* startAddress = ride.locationStartAddress.length > 0 ? ride.locationStartAddress : RIDES_CELL_FIELD_EMPTY;
+	NSString* startDetail = [NSString stringWithFormat:@"Start: %@ -> %@", startDateString, startAddress];
+	
+	NSString* endDateString = ride.dateTimeEnd ? [self.cellDateFormatter stringFromDate:ride.dateTimeEnd]: RIDES_CELL_FIELD_EMPTY;
+	NSString* endAddress = ride.locationEndAddress.length > 0 ? ride.locationEndAddress : RIDES_CELL_FIELD_EMPTY;
+	NSString* endDetail = [NSString stringWithFormat:@"End: %@ -> %@", endDateString, endAddress];
+	
+	cell.detailTextLabel.text = [NSString stringWithFormat:@"%@\n%@", startDetail, endDetail];
+	cell.detailTextLabel.numberOfLines = 0;
+	cell.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
 }
 
 

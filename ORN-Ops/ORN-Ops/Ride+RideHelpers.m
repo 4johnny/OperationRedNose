@@ -144,6 +144,14 @@
 }
 
 
+- (NSString*)getTitle {
+	
+	NSString* passengerName = [self getPassengerName];
+	
+	return passengerName.length > 0 ? passengerName : RIDE_TITLE_DEFAULT;
+}
+
+
 - (MKDirectionsRequest*)getDirectionsRequest {
 	
 	if (!self.locationStartLatitude || !self.locationStartLongitude ||

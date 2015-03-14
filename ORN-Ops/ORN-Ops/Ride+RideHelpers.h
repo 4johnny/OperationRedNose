@@ -16,6 +16,7 @@
 
 #define RIDE_ENTITY_NAME	@"Ride"
 #define RIDE_TITLE_DEFAULT	@"(Ride)"
+#define RIDE_TITLE_NONE		@"-None-"
 
 #define RIDE_CREATED_NOTIFICATION_NAME					@"rideCreated"
 #define RIDE_UPDATED_NOTIFICATION_NAME					@"rideUpdated"
@@ -79,6 +80,7 @@ typedef NS_ENUM(NSInteger, RideLocationType) {
 - (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType;
 
 - (NSString*)getPassengerName;
+- (NSString*)getTitle;
 - (MKDirectionsRequest*)getDirectionsRequest;
 - (void)calculateDateTimeEnd;
 
