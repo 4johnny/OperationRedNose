@@ -11,6 +11,7 @@
 		B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2078B861A9DB406004AF662 /* MainMapViewController.m */; };
 		B228F3311AB04CB0001AF527 /* MainMapViewController-Snapshot.m in Sources */ = {isa = PBXBuildFile; fileRef = B228F3301AB04CB0001AF527 /* MainMapViewController-Snapshot.m */; };
 		B24580B51AB5460B0090758E /* NSString+StringHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B24580B41AB5460B0090758E /* NSString+StringHelpers.m */; };
+		B24580B81AB584C00090758E /* BaseNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = B24580B71AB584C00090758E /* BaseNavigationController.m */; };
 		B24C18711A9EF3D6008505BB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2078B821A9DAF2A004AF662 /* MapKit.framework */; };
 		B24D4FD11A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B24D4FCF1A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld */; };
 		B25220331AA0412C00C3CE00 /* DemoUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = B25220321AA0412C00C3CE00 /* DemoUtil.m */; };
@@ -56,6 +57,8 @@
 		B228F3301AB04CB0001AF527 /* MainMapViewController-Snapshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MainMapViewController-Snapshot.m"; sourceTree = "<group>"; };
 		B24580B31AB5460B0090758E /* NSString+StringHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+StringHelpers.h"; sourceTree = "<group>"; };
 		B24580B41AB5460B0090758E /* NSString+StringHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+StringHelpers.m"; sourceTree = "<group>"; };
+		B24580B61AB584C00090758E /* BaseNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseNavigationController.h; sourceTree = "<group>"; };
+		B24580B71AB584C00090758E /* BaseNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseNavigationController.m; sourceTree = "<group>"; };
 		B24D4FD01A9D98E0008A0C7A /* ORN-Ops.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ORN-Ops.xcdatamodel"; sourceTree = "<group>"; };
 		B25220311AA0412C00C3CE00 /* DemoUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoUtil.h; sourceTree = "<group>"; };
 		B25220321AA0412C00C3CE00 /* DemoUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoUtil.m; sourceTree = "<group>"; };
@@ -128,6 +131,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		B24580B91AB58C1B0090758E /* General */ = {
+			isa = PBXGroup;
+			children = (
+				B24580B61AB584C00090758E /* BaseNavigationController.h */,
+				B24580B71AB584C00090758E /* BaseNavigationController.m */,
+			);
+			name = General;
+			sourceTree = "<group>";
+		};
 		B24D4FD21A9D98E9008A0C7A /* Generated */ = {
 			isa = PBXGroup;
 			children = (
@@ -172,6 +184,7 @@
 		B25220361AA0444200C3CE00 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				B24580B91AB58C1B0090758E /* General */,
 				B2C756221AA1AD4200B148D3 /* Main Tab Bar */,
 				B2C756211AA1AD1400B148D3 /* Main Map */,
 				B2C756201AA1AD0A00B148D3 /* Rides */,
@@ -191,6 +204,8 @@
 				B28312281AAF322C00B7C1A9 /* RideStartEndPolyline.m */,
 				B26C112E1AAEB4CD005FC313 /* RideTeamAssignedPolyline.h */,
 				B26C112F1AAEB4CD005FC313 /* RideTeamAssignedPolyline.m */,
+				B28312241AAF2A8100B7C1A9 /* BasePolyline.h */,
+				B28312251AAF2A8100B7C1A9 /* BasePolyline.m */,
 			);
 			name = "Map Helpers";
 			sourceTree = "<group>";
@@ -241,8 +256,6 @@
 			children = (
 				B27B4A761A9AB1FB009277E4 /* AppDelegate.h */,
 				B27B4A771A9AB1FB009277E4 /* AppDelegate.m */,
-				B28312241AAF2A8100B7C1A9 /* BasePolyline.h */,
-				B28312251AAF2A8100B7C1A9 /* BasePolyline.m */,
 				B2C756231AA1BA8B00B148D3 /* Util.h */,
 				B2C756241AA1BA8B00B148D3 /* Util.m */,
 				B24580B31AB5460B0090758E /* NSString+StringHelpers.h */,
@@ -420,6 +433,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B24580B81AB584C00090758E /* BaseNavigationController.m in Sources */,
 				B228F3311AB04CB0001AF527 /* MainMapViewController-Snapshot.m in Sources */,
 				B2B711EE1AA85F31000CC6C8 /* Ride.m in Sources */,
 				B2907B841A9F1903008A0301 /* RidePointAnnotation.m in Sources */,

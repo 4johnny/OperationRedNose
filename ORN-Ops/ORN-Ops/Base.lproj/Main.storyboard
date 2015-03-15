@@ -28,12 +28,16 @@
         <!--Main Map Navigation Controller-->
         <scene sceneID="2uj-KS-lbg">
             <objects>
-                <navigationController storyboardIdentifier="mainMapNavigationController" title="Main Map Navigation Controller" id="KC7-5p-1m8" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="mainMapNavigationController" title="Main Map Navigation Controller" id="KC7-5p-1m8" customClass="BaseNavigationController" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Map" image="ORN-Map-Tab-Icon" id="C0O-X8-QZp"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="PY8-TU-oFh">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <gestureRecognizers/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="oIr-vV-FyS" appends="YES" id="A1o-CJ-LwH"/>
+                        </connections>
                     </navigationBar>
                     <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="Ycl-4m-8sP">
                         <autoresizingMask key="autoresizingMask"/>
@@ -43,6 +47,12 @@
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7aZ-9q-CkM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer cancelsTouchesInView="NO" id="oIr-vV-FyS">
+                    <connections>
+                        <action selector="navigationBarTapped:" destination="KC7-5p-1m8" id="LtP-hy-IBd"/>
+                        <outlet property="delegate" destination="KC7-5p-1m8" id="fXq-qN-myd"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="729" y="0.0"/>
         </scene>
@@ -78,6 +88,7 @@
                             </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="eJC-AT-fJw" firstAttribute="top" secondItem="7AY-3h-6lr" secondAttribute="bottom" id="2Q2-w0-fOr"/>
                             <constraint firstItem="jEk-3Z-jcE" firstAttribute="top" secondItem="eJC-AT-fJw" secondAttribute="bottom" id="BZM-Kl-9WS"/>
@@ -97,6 +108,7 @@
                         <textField key="titleView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter ride start location" textAlignment="center" minimumFontSize="17" clearButtonMode="unlessEditing" id="OpH-64-v2x">
                             <rect key="frame" x="150" y="7" width="300" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <gestureRecognizers/>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                             <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" returnKeyType="go" enablesReturnKeyAutomatically="YES"/>
                             <connections>
@@ -420,18 +432,27 @@
         <!--Teams Navigation Controller-->
         <scene sceneID="7vX-Vp-Rir">
             <objects>
-                <navigationController storyboardIdentifier="teamsNavigationController" title="Teams Navigation Controller" id="kRe-vU-Y7a" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="teamsNavigationController" title="Teams Navigation Controller" id="kRe-vU-Y7a" customClass="BaseNavigationController" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Teams" image="ORN-Teams-Tab-Icon" id="zOE-tf-hrL"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Rpj-c3-GSa">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="N7Z-Y4-uox" appends="YES" id="jch-x1-AJO"/>
+                        </connections>
                     </navigationBar>
                     <connections>
                         <segue destination="e91-Dg-yiD" kind="relationship" relationship="rootViewController" id="wnw-MF-Vgd"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Z4f-NH-xDK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer cancelsTouchesInView="NO" id="N7Z-Y4-uox">
+                    <connections>
+                        <action selector="navigationBarTapped:" destination="kRe-vU-Y7a" id="McT-eu-WZa"/>
+                        <outlet property="delegate" destination="kRe-vU-Y7a" id="Cwg-GP-MYb"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="729" y="1488"/>
         </scene>
@@ -830,12 +851,15 @@
         <!--Rides Navigation Controller-->
         <scene sceneID="fB9-LO-za9">
             <objects>
-                <navigationController storyboardIdentifier="ridesNavigationController" title="Rides Navigation Controller" id="pld-vm-oCy" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="ridesNavigationController" title="Rides Navigation Controller" id="pld-vm-oCy" customClass="BaseNavigationController" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Rides" image="ORN-Rides-Tab-Icon" id="gZ7-HR-NQq"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Sqk-Py-Gq4">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="p0x-hN-Z5s" appends="YES" id="Ei5-XR-4zA"/>
+                        </connections>
                     </navigationBar>
                     <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="67j-0p-JPk">
                         <autoresizingMask key="autoresizingMask"/>
@@ -845,6 +869,12 @@
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aeY-fb-Doq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer cancelsTouchesInView="NO" id="p0x-hN-Z5s">
+                    <connections>
+                        <action selector="navigationBarTapped:" destination="pld-vm-oCy" id="u2a-m0-Srj"/>
+                        <outlet property="delegate" destination="pld-vm-oCy" id="rLo-zk-grS"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="729" y="746"/>
         </scene>
