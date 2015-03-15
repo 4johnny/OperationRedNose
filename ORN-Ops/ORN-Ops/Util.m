@@ -19,15 +19,13 @@
 
 
 #
-# pragma mark Strings
+# pragma mark Dates
 #
 
 
-+ (BOOL)compareString:(NSString*)firstString toString:(NSString*)secondString {
++ (BOOL)compareDate:(NSDate*)firstDate toDate:(NSDate*)secondDate {
 	
-	if (firstString.length == 0 && secondString.length == 0) return YES; // NOTE: Handles nil
-	
-	return (firstString && [firstString isEqualToString:secondString]);
+	return (!firstDate && !secondDate) || [firstDate isEqualToDate:secondDate];
 }
 
 
@@ -44,6 +42,45 @@
 	// NOTE: Text field needs to be already in view hierarchy
 	[textfield becomeFirstResponder];
 	[textfield resignFirstResponder];
+}
+
+
+#
+# pragma mark Alert
+#
+
+
++ (UIAlertController*)sharedOKAlertController {
+	
+	// Singleton
+	
+	static UIAlertController* sharedOKAlertController = nil;
+	
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		
+		UIAlertAction* okAlertAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+		sharedOKAlertController = [UIAlertController alertControllerWithTitle:@"Error" message:nil preferredStyle:UIAlertControllerStyleAlert];
+		[sharedOKAlertController addAction:okAlertAction];
+	});
+	
+	return sharedOKAlertController;
+}
+
+
++ (void)presentOKAlertWithTitle:(NSString*)title andMessage:(NSString*)message {
+	
+	// TODO: Singleton for now, but may need to alloc new controllers for each alert
+	UIAlertController* okAlertController = [Util sharedOKAlertController];
+	
+	okAlertController.title = title;
+	okAlertController.message = message;
+	
+	// Present via known top-level controller to allow for async callback alerts
+	id<UIApplicationDelegate> appDelegate = [UIApplication sharedApplication].delegate;
+	UIViewController* appRootViewController = (UIViewController*)appDelegate.window.rootViewController;
+	
+	[appRootViewController presentViewController:okAlertController animated:YES completion:nil];
 }
 
 

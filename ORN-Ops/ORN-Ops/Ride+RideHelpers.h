@@ -75,14 +75,15 @@ typedef NS_ENUM(NSInteger, RideLocationType) {
 # pragma mark Helpers
 #
 
+- (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType;
 - (void)updateLocationWithLatitude:(CLLocationDegrees)latitude andLogitude:(CLLocationDegrees)longitude andAddress:(NSString*)address andCity:(NSString*)city andRideLocationType:(RideLocationType)rideLocationType;
 - (void)updateLocationWithPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType;
-- (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType;
+- (void)tryUpdateLocationWithAddressString:(NSString*)addressString andRideLocationType:(RideLocationType)rideLocationType andGeocoder:(CLGeocoder*)geocoder;
+- (void)tryUpdateDateTimeEnd;
 
 - (NSString*)getPassengerName;
 - (NSString*)getTitle;
 - (MKDirectionsRequest*)getDirectionsRequest;
-- (void)calculateDateTimeEnd;
 
 + (NSString*)stringFromStatus:(RideStatus)status;
 + (RideStatus)statusFromString:(NSString*)statusString;

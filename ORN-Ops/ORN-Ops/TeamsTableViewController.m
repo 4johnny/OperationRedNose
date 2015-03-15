@@ -49,10 +49,8 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-	
-	// Wire up observers for update notifications for teams and rides
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(teamUpdatedWithNotification:) name:TEAM_UPDATED_NOTIFICATION_NAME object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideUpdatedWithNotification:) name:RIDE_UPDATED_NOTIFICATION_NAME object:nil];
+
+	[self addNotificationObservers];
 }
 
 
@@ -145,9 +143,29 @@
 }
 
 
+- (void)rideCreatedWithNotification:(NSNotification*)notification {
+
+	[self.tableView reloadData];
+}
+
+
 - (void)rideUpdatedWithNotification:(NSNotification*)notification {
 	
 	[self.tableView reloadData];
+}
+
+
+#
+# pragma mark Helpers
+#
+
+
+- (void)addNotificationObservers {
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(teamUpdatedWithNotification:) name:TEAM_UPDATED_NOTIFICATION_NAME object:nil];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideCreatedWithNotification:) name:RIDE_CREATED_NOTIFICATION_NAME object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideUpdatedWithNotification:) name:RIDE_UPDATED_NOTIFICATION_NAME object:nil];
 }
 
 

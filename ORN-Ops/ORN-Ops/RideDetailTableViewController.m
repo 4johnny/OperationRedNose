@@ -94,18 +94,6 @@
 }
 
 
-- (UIAlertController*)okAlertController {
-	
-	if (_okAlertController) return _okAlertController;
-	
-	UIAlertAction* okAlertAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
-	_okAlertController = [UIAlertController alertControllerWithTitle:@"Error" message:nil preferredStyle:UIAlertControllerStyleAlert];
-	[_okAlertController addAction:okAlertAction];
-	
-	return _okAlertController;
-}
-
-
 #
 # pragma mark UIViewController
 #
@@ -414,7 +402,7 @@
 - (void)saveDataModelFromView {
 	
 	// Save dispatch fields
-	self.ride.sourceName = self.sourceTextField.text;
+	self.ride.sourceName = [self.sourceTextField.text trim];
 	self.ride.donationAmount = self.donationTextField.text.length > 0 ? [NSDecimalNumber decimalNumberWithString:self.donationTextField.text] : nil;
 	
 	// Save dispatch field: team assigned
@@ -445,19 +433,20 @@
 	}
 	
 	// Save passenger fields
-	self.ride.passengerNameFirst = self.firstNameTextField.text;
-	self.ride.passengerNameLast = self.lastNameTextField.text;
-	self.ride.passengerPhoneNumber = self.phoneNumberTextField.text;
+	self.ride.passengerNameFirst = [self.firstNameTextField.text trimAll];
+	self.ride.passengerNameLast = [self.lastNameTextField.text trimAll];
+	self.ride.passengerPhoneNumber = [self.phoneNumberTextField.text trimAll];
 	self.ride.passengerCount = [NSNumber numberWithLong:[self.passengerCountPickerView selectedRowInComponent:0]];
 	
 	// Save location fields
 	// NOTE: Try asych geocode
 	BOOL updatedStartLocation = NO;
-	if (![Util compareString:self.ride.locationStartAddress toString:self.startAddressTextField.text]) {
+	NSString* viewAddressString = [self.startAddressTextField.text trimAll];
+	if (![NSString compareString:self.ride.locationStartAddress toString:viewAddressString]) {
 		
-		if (self.startAddressTextField.text.length > 0) {
+		if (viewAddressString.length > 0) {
 			
-			[self tryUpdateRide:self.ride withAddressString:self.startAddressTextField.text andRideLocationType:RideLocationType_Start];
+			[self.ride tryUpdateLocationWithAddressString:viewAddressString andRideLocationType:RideLocationType_Start andGeocoder:self.geocoder];
 			
 		} else {
 			
@@ -466,11 +455,12 @@
 		}
 	}
 	BOOL updatedEndLocation = NO;
-	if (![Util compareString:self.ride.locationEndAddress toString:self.endAddressTextField.text]) {
+	viewAddressString = [self.endAddressTextField.text trimAll];
+	if (![NSString compareString:self.ride.locationEndAddress toString:viewAddressString]) {
 		
-		if (self.endAddressTextField.text.length > 0) {
+		if (viewAddressString.length > 0) {
 			
-			[self tryUpdateRide:self.ride withAddressString:self.endAddressTextField.text andRideLocationType:RideLocationType_End];
+			[self.ride tryUpdateLocationWithAddressString:viewAddressString andRideLocationType:RideLocationType_End andGeocoder:self.geocoder];
 			
 		} else {
 			
@@ -478,22 +468,25 @@
 			updatedEndLocation = YES;
 		}
 	}
-	self.ride.locationTransferFrom = self.transferFromTextField.text;
-	self.ride.locationTransferTo = self.transferToTextField.text;
+	self.ride.locationTransferFrom = [self.transferFromTextField.text trimAll];
+	self.ride.locationTransferTo = [self.transferToTextField.text trimAll];
 	
 	// Save vehicle fields
-	self.ride.vehicleDescription = self.vehicleDescriptionTextField.text;
+	self.ride.vehicleDescription = [self.vehicleDescriptionTextField.text trimAll];
 	self.ride.vehicleTransmission = [self.vehicleTransmissionPickerView selectedRowInComponent:0] == 1 ? @"Manual" : @"Automatic";
 	self.ride.vehicleSeatBeltCount = [NSNumber numberWithLong:[self.seatBeltCountPickerView selectedRowInComponent:0]];
 	
 	// Save notes fields
-	self.ride.notes = self.notesTextView.text;
+	self.ride.notes = [self.notesTextView.text trimAll];
 	
 	// Save time fields
-	self.ride.dateTimeStart = self.startTimeDatePicker.date;
-	//	self.ride.dateTimeEnd = nil;
-	[self.ride calculateDateTimeEnd];
-	
+	if (![Util compareDate:self.ride.dateTimeStart toDate:self.startTimeDatePicker.date]) {
+		
+		self.ride.dateTimeStart = self.startTimeDatePicker.date;
+		self.ride.dateTimeEnd = nil;
+		[self.ride tryUpdateDateTimeEnd];
+	}
+
 	// Persist data model to disk
 	[Util saveManagedObjectContext];
 	
@@ -504,60 +497,6 @@
 	   RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedStartLocation],
 	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedEndLocation],
 	   }];
-}
-
-
-- (void)tryUpdateRide:(Ride*)ride withAddressString:(NSString*)addressString andRideLocationType:(RideLocationType)rideLocationType {
-	
-	// Geocode given address string relative to jurisdiction
-	
-	CLCircularRegion* jurisdictionRegion = [[CLCircularRegion alloc] initWithCenter:JURISDICTION_COORDINATE radius:JURISDICTION_SEARCH_RADIUS identifier:@"ORN Jurisdication Region"];
-	
-	[self.geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray* placemarks, NSError* error) {
-		
-		// NOTES: Completion block executes on main thread. Do not run more than one reverse-geocode simultaneously.
-		
-		// If there is a problem, log it; alert the user; and we are done.
-		if (error || placemarks.count < 1) {
-			
-			if (error) {
-				NSLog(@"Geocode Error: %@ %@", error.localizedDescription, error.userInfo);
-			} else if (placemarks.count < 1) {
-				NSLog(@"Geocode Error: No placemarks for address string: %@", addressString);
-			}
-			
-			[self presentAlertWithTitle:@"Error" andMessage:[NSString stringWithFormat:@"Cannot geocode address: %@", addressString]];
-			
-			return;
-		}
-		
-		// Address resolved successfully to have at least one placemark
-		CLPlacemark* placemark = placemarks[0];
-		NSLog(@"Geocode location: %@", placemark.location);
-		NSLog(@"Geocode locality: %@", placemark.locality);
-		NSLog(@"Geocode address: %@", placemark.addressDictionary);
-		
-		// Use first placemark as location
-		[ride updateLocationWithPlacemark:placemark andRideLocationType:rideLocationType];
-		[Util saveManagedObjectContext];
-		NSLog(@"Ride: %@", ride);
-		
-		// Notify observers
-		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME : ride, (rideLocationType == RideLocationType_End ? RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY) : [NSNumber numberWithBool:YES]}];
-	}];
-}
-
-
-- (void)presentAlertWithTitle:(NSString*)title andMessage:(NSString*)message {
-	
-	self.okAlertController.title = title;
-	self.okAlertController.message = message;
-	
-	// Present via known top-level controller to allow for async callback alerts
-	id<UIApplicationDelegate> appDelegate = [UIApplication sharedApplication].delegate;
-	UIViewController* appRootViewController = (UIViewController*)appDelegate.window.rootViewController;
-	
-	[appRootViewController presentViewController:self.okAlertController animated:YES completion:nil];
 }
 
 

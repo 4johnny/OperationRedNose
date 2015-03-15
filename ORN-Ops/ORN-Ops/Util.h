@@ -47,10 +47,10 @@
 @interface Util : NSObject
 
 #
-# pragma mark Strings
+# pragma mark Dates
 #
 
-+ (BOOL)compareString:(NSString*)firstString toString:(NSString*)secondString;
++ (BOOL)compareDate:(NSDate*)firstDate toDate:(NSDate*)secondDate;
 
 #
 # pragma mark Responder
@@ -58,6 +58,13 @@
 
 + (void)preloadKeyboardViaTextField:(UITextField*)textfield;
 
+#
+# pragma mark Alert
+#
+
++ (UIAlertController*)sharedOKAlertController;
++ (void)presentOKAlertWithTitle:(NSString*)title andMessage:(NSString*)message;
+	
 #
 # pragma mark <ORNDataModelSource>
 #

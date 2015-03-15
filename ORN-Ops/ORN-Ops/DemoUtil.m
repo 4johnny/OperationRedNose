@@ -62,7 +62,7 @@
 						  andAddress:@"1523 Prairie Ave, Port Coquitlam"
 							 andCity:@"Port Coquitlam"
 				 andRideLocationType:RideLocationType_End];
-	[ride calculateDateTimeEnd];
+	[ride tryUpdateDateTimeEnd];
 	
 	// Vancouver to Vancouver
 	ride = [Ride rideWithManagedObjectContext:moc];
@@ -79,7 +79,7 @@
 						  andAddress:@"1750 Clark Dr, Vancouver"
 							 andCity:@"Vancouver"
 				 andRideLocationType:RideLocationType_End];
-	[ride calculateDateTimeEnd];
+	[ride tryUpdateDateTimeEnd];
 }
 
 
@@ -103,7 +103,7 @@
 						  andAddress:@"5788 Kingsway, Burnaby"
 							 andCity:@"Burnaby"
 				 andRideLocationType:RideLocationType_End];
-	[ride calculateDateTimeEnd];
+	[ride tryUpdateDateTimeEnd];
 	
 	// Burnaby to Coquitlam
 	ride = [Ride rideWithManagedObjectContext:moc];
@@ -120,7 +120,7 @@
 						  andAddress:@"1431 Brunette Ave, Coquitlam"
 							 andCity:@"Coquitlam"
 				 andRideLocationType:RideLocationType_End];
-	[ride calculateDateTimeEnd];
+	[ride tryUpdateDateTimeEnd];
 }
 
 
@@ -144,7 +144,7 @@
 						  andAddress:@"615 8th St, New Westminster"
 							 andCity:@"New Westminster"
 				 andRideLocationType:RideLocationType_End];
-	[ride calculateDateTimeEnd];
+	[ride tryUpdateDateTimeEnd];
 	
 	// New Westminster to Burnaby
 	ride = [Ride rideWithManagedObjectContext:moc];
@@ -161,7 +161,7 @@
 						  andAddress:@"4004 Lozells Ave, Burnaby"
 							 andCity:@"Burnaby"
 				 andRideLocationType:RideLocationType_End];
-	[ride calculateDateTimeEnd];
+	[ride tryUpdateDateTimeEnd];
 	
 	// New Westminster to Port Moody
 	ride = [Ride rideWithManagedObjectContext:moc];
@@ -178,7 +178,7 @@
 						  andAddress:@"131 Forest Park Way, Port Moody"
 							 andCity:@"Port Moody"
 				 andRideLocationType:RideLocationType_End];
-	[ride calculateDateTimeEnd];
+	[ride tryUpdateDateTimeEnd];
 }
 
 
@@ -210,7 +210,7 @@
 						  andAddress:@"590 Dominion Ave, Port Coquitlam"
 							 andCity:@"Port Coquitlam"
 				 andRideLocationType:RideLocationType_End];
-	[ride calculateDateTimeEnd];
+	[ride tryUpdateDateTimeEnd];
 }
 
 
@@ -234,7 +234,7 @@
 						  andAddress:@"1330 Pinetree Way, Coquitlam"
 							 andCity:@"Coquitlam"
 				 andRideLocationType:RideLocationType_End];
-	[ride calculateDateTimeEnd];
+	[ride tryUpdateDateTimeEnd];
 }
 
 
@@ -258,7 +258,7 @@
 						  andAddress:@"1000 Clarke Rd, Port Moody"
 							 andCity:@"Port Moody"
 				 andRideLocationType:RideLocationType_End];
-	[ride calculateDateTimeEnd];
+	[ride tryUpdateDateTimeEnd];
 }
 
 

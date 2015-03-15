@@ -75,7 +75,6 @@
 @property (strong, nonatomic) NSFetchedResultsController* teamFetchedResultsController;
 
 @property (nonatomic) CLGeocoder* geocoder;
-@property (nonatomic) UIAlertController* okAlertController;
 
 @property (nonatomic) NSDateFormatter* annotationDateFormatter;
 
@@ -156,18 +155,6 @@
 	_geocoder = [[CLGeocoder alloc] init];
 	
 	return _geocoder;
-}
-
-
-- (UIAlertController*)okAlertController {
-	
-	if (_okAlertController) return _okAlertController;
-	
-	UIAlertAction* okAlertAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
-	_okAlertController = [UIAlertController alertControllerWithTitle:@"Error" message:nil preferredStyle:UIAlertControllerStyleAlert];
-	[_okAlertController addAction:okAlertAction];
-	
-	return _okAlertController;
 }
 
 
@@ -686,7 +673,7 @@
 		
 		if (!annotationShown) {
 			
-			[self presentAlertWithTitle:@"Alert" andMessage:@"Ride created but no start or end location annotations to show."];
+			[Util presentOKAlertWithTitle:@"Alert" andMessage:@"Ride created but no start or end location annotations to show."];
 		}
 	}
 }
@@ -858,17 +845,17 @@
 	
 	if ([COMMAND_HELP isEqualToString:commandString]) {
 		
-		[self presentAlertWithTitle:@"ORN Commands"
-						 andMessage:[NSString stringWithFormat:
-									 @"%@\n%@\n%@\n%@\n%@\n%@\n%@",
-									 COMMAND_HELP,
-									 COMMAND_SHOW_ALL,
-									 COMMAND_DELETE_ALL,
-									 COMMAND_DEMO,
-									 COMMAND_DEMO_RIDES,
-									 COMMAND_DEMO_TEAMS,
-									 COMMAND_DEMO_ASSIGN
-									 ]];
+		[Util presentOKAlertWithTitle:@"ORN Commands"
+						   andMessage:[NSString stringWithFormat:
+									   @"%@\n%@\n%@\n%@\n%@\n%@\n%@",
+									   COMMAND_HELP,
+									   COMMAND_SHOW_ALL,
+									   COMMAND_DELETE_ALL,
+									   COMMAND_DEMO,
+									   COMMAND_DEMO_RIDES,
+									   COMMAND_DEMO_TEAMS,
+									   COMMAND_DEMO_ASSIGN
+									   ]];
 		isCommandHandled = YES;
 		
 	} else if ([COMMAND_SHOW_ALL isEqualToString:commandString]) {
@@ -965,7 +952,8 @@
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideCreatedWithNotification:) name:RIDE_CREATED_NOTIFICATION_NAME object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideUpdatedWithNotification:) name:RIDE_UPDATED_NOTIFICATION_NAME object:nil];
-	//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(teamUpdatedWithNotification:) name:TEAM_UPDATED_NOTIFICATION_NAME object:nil];
+
+//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(teamUpdatedWithNotification:) name:TEAM_UPDATED_NOTIFICATION_NAME object:nil];
 }
 
 
@@ -1018,8 +1006,10 @@
 - (void)createRideWithAddressString:(NSString*)addressString {
 	
 	// Geocode given address string relative to jurisdiction
+	addressString = [addressString trimAll];
 	
 	CLCircularRegion* jurisdictionRegion = [[CLCircularRegion alloc] initWithCenter:JURISDICTION_COORDINATE radius:JURISDICTION_SEARCH_RADIUS identifier:@"ORN Jurisdication Region"];
+	
 	
 	[self.geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray* placemarks, NSError* error) {
 		
@@ -1034,7 +1024,7 @@
 				NSLog(@"Geocode Error: No placemarks for address string: %@", addressString);
 			}
 			
-			[self presentAlertWithTitle:@"Error" andMessage:[NSString stringWithFormat:@"Cannot geocode address: %@", addressString]];
+			[Util presentOKAlertWithTitle:@"Error" andMessage:[NSString stringWithFormat:@"Cannot geocode address: %@", addressString]];
 			
 			return;
 		}
@@ -1131,19 +1121,6 @@
 - (void)clearAllOverlays {
 	
 	[self.mainMapView removeOverlays:self.mainMapView.overlays];
-}
-
-
-- (void)presentAlertWithTitle:(NSString*)title andMessage:(NSString*)message {
-	
-	self.okAlertController.title = title;
-	self.okAlertController.message = message;
-	
-	// Present via known top-level controller to allow for async callback alerts
-	id<UIApplicationDelegate> appDelegate = [UIApplication sharedApplication].delegate;
-	UIViewController* appRootViewController = (UIViewController*)appDelegate.window.rootViewController;
-	
-	[appRootViewController presentViewController:self.okAlertController animated:YES completion:nil];
 }
 
 

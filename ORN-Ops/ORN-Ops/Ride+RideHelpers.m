@@ -75,6 +75,32 @@
 #
 
 
+- (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType {
+	
+	switch (rideLocationType) {
+			
+		default:
+		case RideLocationType_Start:
+			
+			self.locationStartLatitude = nil;
+			self.locationStartLongitude = nil;
+			self.locationStartAddress = nil;
+			self.locationStartCity = nil;
+			
+			break;
+			
+		case RideLocationType_End:
+			
+			self.locationEndLatitude = nil;
+			self.locationEndLongitude = nil;
+			self.locationEndAddress = nil;
+			self.locationEndCity = nil;
+			
+			break;
+	}
+}
+
+
 - (void)updateLocationWithLatitude:(CLLocationDegrees)latitude andLogitude:(CLLocationDegrees)longitude andAddress:(NSString*)address andCity:(NSString*)city andRideLocationType:(RideLocationType)rideLocationType {
 
 	switch (rideLocationType) {
@@ -107,29 +133,81 @@
 }
 
 
-- (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType {
+- (void)tryUpdateLocationWithAddressString:(NSString*)addressString andRideLocationType:(RideLocationType)rideLocationType andGeocoder:(CLGeocoder*)geocoder {
 	
-	switch (rideLocationType) {
+	// Geocode given address string relative to jurisdiction
+	
+	CLCircularRegion* jurisdictionRegion = [[CLCircularRegion alloc] initWithCenter:JURISDICTION_COORDINATE radius:JURISDICTION_SEARCH_RADIUS identifier:@"ORN Jurisdication Region"];
+	
+	[geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray* placemarks, NSError* error) {
+		
+		// NOTES: Completion block executes on main thread. Do not run more than one reverse-geocode simultaneously.
+		
+		// If there is a problem, log it; alert the user; and we are done.
+		if (error || placemarks.count < 1) {
 			
-		default:
-		case RideLocationType_Start:
+			if (error) {
+				NSLog(@"Geocode Error: %@ %@", error.localizedDescription, error.userInfo);
+			} else if (placemarks.count < 1) {
+				NSLog(@"Geocode Error: No placemarks for address string: %@", addressString);
+			}
 			
-			self.locationStartLatitude = nil;
-			self.locationStartLongitude = nil;
-			self.locationStartAddress = nil;
-			self.locationStartCity = nil;
+			[Util presentOKAlertWithTitle:@"Error" andMessage:[NSString stringWithFormat:@"Cannot geocode address: %@", addressString]];
 			
-			break;
-			
-		case RideLocationType_End:
-			
-			self.locationEndLatitude = nil;
-			self.locationEndLongitude = nil;
-			self.locationEndAddress = nil;
-			self.locationEndCity = nil;
-			
-			break;
-	}
+			return;
+		}
+		
+		// Address resolved successfully to have at least one placemark
+		CLPlacemark* placemark = placemarks[0];
+		NSLog(@"Geocode location: %@", placemark.location);
+		NSLog(@"Geocode locality: %@", placemark.locality);
+		NSLog(@"Geocode address: %@", placemark.addressDictionary);
+		
+		// Use first placemark as location
+		[self updateLocationWithPlacemark:placemark andRideLocationType:rideLocationType];
+		[Util saveManagedObjectContext];
+		NSLog(@"Ride: %@", self);
+		
+		// Notify observers
+		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME : self, (rideLocationType == RideLocationType_End ? RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY) : [NSNumber numberWithBool:YES]}];
+	}];
+}
+
+
+/*
+ Calculate ride duration and end time asynchronously
+ */
+- (void)tryUpdateDateTimeEnd {
+	
+	// If cannot get directions request, we are done with this ride
+	MKDirectionsRequest* directionsRequest = self.getDirectionsRequest;
+	if (!directionsRequest) return;
+	
+	// Update ride duration and end time with ETA calculation for route
+	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
+	[directions calculateETAWithCompletionHandler:^(MKETAResponse *response, NSError *error) {
+		
+		// NOTES: Completion block executes on main thread. Do not run more than one ETA calculation simultaneously on this object.
+		if (error) {
+			NSLog(@"ETA Error: %@ %@", error.localizedDescription, error.userInfo);
+			return;
+		}
+		
+		// Expected travel time calculated successfully, so store it
+		self.duration = [NSNumber numberWithDouble:response.expectedTravelTime]; // seconds
+		NSLog(@"ETA: %.0f sec -> %.2f min", response.expectedTravelTime, response.expectedTravelTime / (double)SECONDS_PER_MINUTE);
+		
+		// Determine end time by adding ETA seconds to start time
+		self.dateTimeEnd = [NSDate dateWithTimeInterval:response.expectedTravelTime sinceDate:self.dateTimeStart];
+		[Util saveManagedObjectContext];
+		NSLog(@"Ride: %@", self);
+		
+		// Notify that ride and assigned team have updated
+		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:self}];
+		if (self.teamAssigned) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME:self.teamAssigned}];
+		}
+	}];
 }
 
 
@@ -170,39 +248,6 @@
 	directionsRequest.requestsAlternateRoutes = NO;
 	
 	return directionsRequest;
-}
-
-
-// Calculate ride duration and end time asynchronously
-- (void)calculateDateTimeEnd {
-	
-	// If cannot get directions request, we are done with this ride
-	MKDirectionsRequest* directionsRequest = self.getDirectionsRequest;
-	if (!directionsRequest) return;
-	
-	// Update ride duration and end time with ETA calculation for route
-	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
-	[directions calculateETAWithCompletionHandler:^(MKETAResponse *response, NSError *error) {
-		
-		// NOTES: Completion block executes on main thread. Do not run more than one ETA calculation simultaneously on this object.
-		if (error) {
-			NSLog(@"ETA Error: %@ %@", error.localizedDescription, error.userInfo);
-			return;
-		}
-		
-		// Expected travel time calculated successfully, so store it
-		self.duration = [NSNumber numberWithDouble:response.expectedTravelTime]; // seconds
-		NSLog(@"ETA: %.0f sec -> %.2f min", response.expectedTravelTime, response.expectedTravelTime / (double)SECONDS_PER_MINUTE);
-		
-		// Determine end time by adding ETA seconds to start time
-		self.dateTimeEnd = [NSDate dateWithTimeInterval:response.expectedTravelTime sinceDate:self.dateTimeStart];
-		
-		// Notify that ride and assigned team have updated
-		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:self}];
-		if (self.teamAssigned) {
-			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME:self.teamAssigned}];
-		}
-	}];
 }
 
 
