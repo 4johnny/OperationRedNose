@@ -622,7 +622,7 @@
 
 - (IBAction)avatarBarButtonPressed:(UIBarButtonItem *)sender {
 	
-	[self configureJurisdictionRegionView];
+	[self configureJurisdictionRegionViewWithAnimated:YES];
 }
 
 
@@ -875,7 +875,7 @@
 			
 			// Reset map
 			[self clearAllAnnotations];
-			[self configureJurisdictionRegionView];
+			[self configureJurisdictionRegionViewWithAnimated:NO];
 		}];
 		UIAlertController* deleteAllAlertController = [UIAlertController alertControllerWithTitle:@"!!! Warning !!!" message:@"About to delete all data, which cannot be undone!  Are you absolutely sure?!" preferredStyle:UIAlertControllerStyleAlert];
 		UIAlertAction* cancelAlertAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil];
@@ -955,8 +955,8 @@
 	
 	// Zoom map to jurisdiction region and load persisted data model
 	// NOTE: Delay to wait for orientation to be established
-	[self configureJurisdictionRegionView];
-	[self performSelector:@selector(loadDataModel) withObject:nil afterDelay:1.0];
+	[self performSelector:@selector(configureJurisdictionRegionView) withObject:nil afterDelay:1.0];
+	[self performSelector:@selector(loadDataModel) withObject:nil afterDelay:2.5];
 }
 
 
@@ -1082,11 +1082,17 @@
 //}
 
 
-- (void)configureJurisdictionRegionView {
+- (void)configureJurisdictionRegionViewWithAnimated:(BOOL)animated {
 	
 	MKCoordinateRegion centerRegion = MKCoordinateRegionMake(JURISDICTION_COORDINATE, MKCoordinateSpanMake(MAP_SPAN_LOCATION_DELTA_CITY, MAP_SPAN_LOCATION_DELTA_CITY));
 	
-	[self.mainMapView setRegion:centerRegion animated:YES];
+	[self.mainMapView setRegion:centerRegion animated:animated];
+}
+
+
+- (void)configureJurisdictionRegionView {
+	
+	[self configureJurisdictionRegionViewWithAnimated:YES];
 }
 
 
