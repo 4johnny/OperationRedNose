@@ -434,15 +434,16 @@
 	self.ride.passengerPhoneNumber = [self.phoneNumberTextField.text trimAll];
 	self.ride.passengerCount = [NSNumber numberWithLong:self.passengerCountSegmentedControl.selectedSegmentIndex + 1];
 	
-	// Save location fields
-	// NOTE: Try asych geocode
+	// Save location fields - try async geocode
 	BOOL updatedStartLocation = NO;
 	NSString* viewAddressString = [self.startAddressTextField.text trimAll];
 	if (![NSString compareString:self.ride.locationStartAddress toString:viewAddressString]) {
 		
+		[self.ride clearRoute];
+		
 		if (viewAddressString.length > 0) {
 			
-			[self.ride tryUpdateLocationWithAddressString:viewAddressString andRideLocationType:RideLocationType_Start andGeocoder:self.geocoder];
+			[self.ride tryUpdateLocationWithAddressString:viewAddressString andRideLocationType:RideLocationType_Start andGeocoder:self.geocoder]; // async
 			
 		} else {
 			
@@ -454,9 +455,11 @@
 	viewAddressString = [self.endAddressTextField.text trimAll];
 	if (![NSString compareString:self.ride.locationEndAddress toString:viewAddressString]) {
 		
+		[self.ride clearRoute];
+		
 		if (viewAddressString.length > 0) {
 			
-			[self.ride tryUpdateLocationWithAddressString:viewAddressString andRideLocationType:RideLocationType_End andGeocoder:self.geocoder];
+			[self.ride tryUpdateLocationWithAddressString:viewAddressString andRideLocationType:RideLocationType_End andGeocoder:self.geocoder]; // async
 			
 		} else {
 			
@@ -475,12 +478,13 @@
 	// Save notes fields
 	self.ride.notes = [self.notesTextView.text trimAll];
 	
-	// Save time fields
+	// Save time fields - try async calculate route duration
 	if (![Util compareDate:self.ride.dateTimeStart toDate:self.startTimeDatePicker.date]) {
 		
 		self.ride.dateTimeStart = self.startTimeDatePicker.date;
-		self.ride.dateTimeEnd = nil;
-		[self.ride tryUpdateDateTimeEnd];
+		self.ride.routeDuration = nil;
+		self.ride.routeDateTimeEnd = nil;
+		[self.ride tryUpdateRouteDurationAndDateTimeEnd]; // async
 	}
 
 	// Persist data model to disk

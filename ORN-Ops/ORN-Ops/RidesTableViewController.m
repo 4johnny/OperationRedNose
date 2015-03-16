@@ -343,7 +343,7 @@
 	NSString* teamAssignedTitle = ride.teamAssigned ? [ride.teamAssigned getTitle] : RIDES_CELL_FIELD_EMPTY;
 	NSString* sourceTitle = ride.sourceName.length > 0 ? ride.sourceName : RIDES_CELL_FIELD_EMPTY;
 	
-	cell.textLabel.text = [NSString stringWithFormat:@"%@ | Team: %@ | Source: %@", rideTitle, teamAssignedTitle, sourceTitle];
+	cell.textLabel.text = [NSString stringWithFormat:@"%@ (%d) | Team: %@ | Source: %@", rideTitle, (int)ride.passengerCount.longValue, teamAssignedTitle, sourceTitle];
 	cell.textLabel.numberOfLines = 0;
 	cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	
@@ -353,11 +353,15 @@
 	NSString* startAddress = ride.locationStartAddress.length > 0 ? ride.locationStartAddress : RIDES_CELL_FIELD_EMPTY;
 	NSString* startDetail = [NSString stringWithFormat:@"Start: %@ -> %@", startDateString, startAddress];
 	
-	NSString* endDateString = ride.dateTimeEnd ? [self.cellDateFormatter stringFromDate:ride.dateTimeEnd]: RIDES_CELL_FIELD_EMPTY;
+	NSString* endDateString = ride.routeDateTimeEnd ? [self.cellDateFormatter stringFromDate:ride.routeDateTimeEnd]: RIDES_CELL_FIELD_EMPTY;
 	NSString* endAddress = ride.locationEndAddress.length > 0 ? ride.locationEndAddress : RIDES_CELL_FIELD_EMPTY;
 	NSString* endDetail = [NSString stringWithFormat:@"End: %@ -> %@", endDateString, endAddress];
 	
-	cell.detailTextLabel.text = [NSString stringWithFormat:@"%@\n%@", startDetail, endDetail];
+	NSString* durationString = ride.routeDuration ? [NSString stringWithFormat:@"%.0f", ride.routeDuration.doubleValue / (double)SECONDS_PER_MINUTE] : RIDES_CELL_FIELD_EMPTY;
+	NSString* distanceString = ride.routeDistance ? [NSString stringWithFormat:@"%.1f", ride.routeDistance.doubleValue] : RIDES_CELL_FIELD_EMPTY;
+	NSString* routeDetail = [NSString stringWithFormat:@"%@ min | %@ km", durationString, distanceString];
+	
+	cell.detailTextLabel.text = [NSString stringWithFormat:@"%@\n%@\n%@", startDetail, endDetail, routeDetail];
 	cell.detailTextLabel.numberOfLines = 0;
 	cell.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
 }

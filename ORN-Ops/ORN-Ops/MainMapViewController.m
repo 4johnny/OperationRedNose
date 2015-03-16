@@ -899,9 +899,7 @@
 		
 		// Load all demo rides
 		[DemoUtil loadDemoRides];
-		//self.rideFetchedResultsController = nil; // Trigger refetch
-		[self loadDataModel];
-		[self showAllAnnotations];
+		[self configureView];
 		
 		needsDataModelSave = YES;
 		isCommandHandled = YES;
@@ -910,10 +908,8 @@
 //		
 //		// Load all demo teams
 //		[DemoUtil loadDemoTeamsIntoManagedObjectContext:self.managedObjectContext];
-//		self.teamFetchedResultsController = nil; // Trigger refetch
 //		[self configureTeamsViewWithNeedsAnimatesDrop:YES];
-//		[self showAllAnnotations];
-//		
+//
 //		needsDataModelSave = YES;
 //		isCommandHandled = YES;
 //		
@@ -923,7 +919,6 @@
 //		[DemoUtil loadDemoAssignTeams:self.teamFetchedResultsController.fetchedObjects toRides:self.rideFetchedResultsController.fetchedObjects];
 //		[self configureRidesViewWithNeedsAnimatesDrop:NO];
 //		[self configureTeamsViewWithNeedsAnimatesDrop:NO];
-//		[self showAllAnnotations];
 //		
 //		needsDataModelSave = YES;
 //		isCommandHandled = YES;
@@ -1008,8 +1003,7 @@
 	addressString = [addressString trimAll];
 	
 	CLCircularRegion* jurisdictionRegion = [[CLCircularRegion alloc] initWithCenter:JURISDICTION_COORDINATE radius:JURISDICTION_SEARCH_RADIUS identifier:@"ORN Jurisdication Region"];
-	
-	
+
 	[self.geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray* placemarks, NSError* error) {
 		
 		// NOTES: Completion block executes on main thread. Do not run more than one reverse-geocode simultaneously.

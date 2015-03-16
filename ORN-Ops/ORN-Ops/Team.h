@@ -2,7 +2,7 @@
 //  Team.h
 //  ORN-Ops
 //
-//  Created by Johnny on 2015-03-02.
+//  Created by Johnny on 2015-03-15.
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
@@ -16,6 +16,7 @@
 @property (nonatomic, retain) NSNumber * isActive;
 @property (nonatomic, retain) NSNumber * isMascot;
 @property (nonatomic, retain) NSString * locationCurrentAddress;
+@property (nonatomic, retain) NSString * locationCurrentCity;
 @property (nonatomic, retain) NSNumber * locationCurrentLatitude;
 @property (nonatomic, retain) NSNumber * locationCurrentLongitude;
 @property (nonatomic, retain) NSString * members;

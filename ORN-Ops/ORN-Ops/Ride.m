@@ -2,7 +2,7 @@
 //  Ride.m
 //  ORN-Ops
 //
-//  Created by Johnny on 2015-03-05.
+//  Created by Johnny on 2015-03-15.
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
@@ -12,11 +12,8 @@
 
 @implementation Ride
 
-@dynamic dateTimeEnd;
 @dynamic dateTimeStart;
-@dynamic distance;
 @dynamic donationAmount;
-@dynamic duration;
 @dynamic locationEndAddress;
 @dynamic locationEndCity;
 @dynamic locationEndLatitude;
@@ -32,6 +29,9 @@
 @dynamic passengerNameFirst;
 @dynamic passengerNameLast;
 @dynamic passengerPhoneNumber;
+@dynamic routeDateTimeEnd;
+@dynamic routeDistance;
+@dynamic routeDuration;
 @dynamic sourceName;
 @dynamic status;
 @dynamic vehicleDescription;

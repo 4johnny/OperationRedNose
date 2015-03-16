@@ -76,10 +76,13 @@ typedef NS_ENUM(NSInteger, RideLocationType) {
 #
 
 - (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType;
+- (void)clearRoute;
+
 - (void)updateLocationWithLatitude:(CLLocationDegrees)latitude andLogitude:(CLLocationDegrees)longitude andAddress:(NSString*)address andCity:(NSString*)city andRideLocationType:(RideLocationType)rideLocationType;
 - (void)updateLocationWithPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType;
+
 - (void)tryUpdateLocationWithAddressString:(NSString*)addressString andRideLocationType:(RideLocationType)rideLocationType andGeocoder:(CLGeocoder*)geocoder;
-- (void)tryUpdateDateTimeEnd;
+- (void)tryUpdateRouteDurationAndDateTimeEnd;
 
 - (NSString*)getPassengerName;
 - (NSString*)getTitle;

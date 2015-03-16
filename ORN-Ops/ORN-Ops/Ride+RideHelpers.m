@@ -35,7 +35,7 @@
 				break;
 				
 			case RideLocationType_End:
-				self.dateTimeEnd = dateTime;
+				self.routeDateTimeEnd = dateTime;
 			
 			default:
 			case RideLocationType_None:
@@ -101,6 +101,14 @@
 }
 
 
+- (void)clearRoute {
+
+	self.routeDuration = nil;
+	self.routeDateTimeEnd = nil;
+	self.routeDistance = nil;
+}
+
+
 - (void)updateLocationWithLatitude:(CLLocationDegrees)latitude andLogitude:(CLLocationDegrees)longitude andAddress:(NSString*)address andCity:(NSString*)city andRideLocationType:(RideLocationType)rideLocationType {
 
 	switch (rideLocationType) {
@@ -133,9 +141,10 @@
 }
 
 
+/*
+ Geocode given address string relative to jurisdiction, asynchronously
+ */
 - (void)tryUpdateLocationWithAddressString:(NSString*)addressString andRideLocationType:(RideLocationType)rideLocationType andGeocoder:(CLGeocoder*)geocoder {
-	
-	// Geocode given address string relative to jurisdiction
 	
 	CLCircularRegion* jurisdictionRegion = [[CLCircularRegion alloc] initWithCenter:JURISDICTION_COORDINATE radius:JURISDICTION_SEARCH_RADIUS identifier:@"ORN Jurisdication Region"];
 	
@@ -163,8 +172,9 @@
 		NSLog(@"Geocode locality: %@", placemark.locality);
 		NSLog(@"Geocode address: %@", placemark.addressDictionary);
 		
-		// Use first placemark as location
+		// Use first placemark as location - try async calculate route duration
 		[self updateLocationWithPlacemark:placemark andRideLocationType:rideLocationType];
+		[self tryUpdateRouteDurationAndDateTimeEnd]; // async
 		[Util saveManagedObjectContext];
 		NSLog(@"Ride: %@", self);
 		
@@ -175,9 +185,9 @@
 
 
 /*
- Calculate ride duration and end time asynchronously
+ Calculate ride duration and end time, asynchronously
  */
-- (void)tryUpdateDateTimeEnd {
+- (void)tryUpdateRouteDurationAndDateTimeEnd {
 	
 	// If cannot get directions request, we are done with this ride
 	MKDirectionsRequest* directionsRequest = self.getDirectionsRequest;
@@ -194,11 +204,11 @@
 		}
 		
 		// Expected travel time calculated successfully, so store it
-		self.duration = [NSNumber numberWithDouble:response.expectedTravelTime]; // seconds
+		self.routeDuration = [NSNumber numberWithDouble:response.expectedTravelTime]; // seconds
 		NSLog(@"ETA: %.0f sec -> %.2f min", response.expectedTravelTime, response.expectedTravelTime / (double)SECONDS_PER_MINUTE);
 		
 		// Determine end time by adding ETA seconds to start time
-		self.dateTimeEnd = [NSDate dateWithTimeInterval:response.expectedTravelTime sinceDate:self.dateTimeStart];
+		self.routeDateTimeEnd = [NSDate dateWithTimeInterval:response.expectedTravelTime sinceDate:self.dateTimeStart];
 		[Util saveManagedObjectContext];
 		NSLog(@"Ride: %@", self);
 		
@@ -239,7 +249,7 @@
 	MKPlacemark* startPlacemark = [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(self.locationStartLatitude.doubleValue, self.locationStartLongitude.doubleValue) addressDictionary:nil];
 	MKPlacemark* endPlacemark = [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(self.locationEndLatitude.doubleValue, self.locationEndLongitude.doubleValue) addressDictionary:nil];
 	
-	// Create directions request for route by car for given time of day
+	// Create directions request for route by car for given start time
 	MKDirectionsRequest* directionsRequest = [[MKDirectionsRequest alloc] init];
 	directionsRequest.source = [[MKMapItem alloc] initWithPlacemark:startPlacemark];
 	directionsRequest.destination = [[MKMapItem alloc] initWithPlacemark:endPlacemark];

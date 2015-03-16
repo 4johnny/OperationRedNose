@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B2009CCD1AA57F650065E67B /* Team.m in Sources */ = {isa = PBXBuildFile; fileRef = B2009CCC1AA57F650065E67B /* Team.m */; };
 		B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2078B861A9DB406004AF662 /* MainMapViewController.m */; };
+		B209BFB01AB689090093E8E5 /* Team.m in Sources */ = {isa = PBXBuildFile; fileRef = B209BFAF1AB689090093E8E5 /* Team.m */; };
+		B209BFB31AB6890A0093E8E5 /* Ride.m in Sources */ = {isa = PBXBuildFile; fileRef = B209BFB21AB6890A0093E8E5 /* Ride.m */; };
 		B228F3311AB04CB0001AF527 /* MainMapViewController-Snapshot.m in Sources */ = {isa = PBXBuildFile; fileRef = B228F3301AB04CB0001AF527 /* MainMapViewController-Snapshot.m */; };
 		B24580B51AB5460B0090758E /* NSString+StringHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B24580B41AB5460B0090758E /* NSString+StringHelpers.m */; };
 		B24580B81AB584C00090758E /* BaseNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = B24580B71AB584C00090758E /* BaseNavigationController.m */; };
@@ -26,7 +27,6 @@
 		B28312261AAF2A8100B7C1A9 /* BasePolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B28312251AAF2A8100B7C1A9 /* BasePolyline.m */; };
 		B28312291AAF322C00B7C1A9 /* RideStartEndPolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B28312281AAF322C00B7C1A9 /* RideStartEndPolyline.m */; };
 		B2907B841A9F1903008A0301 /* RidePointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B2907B831A9F1903008A0301 /* RidePointAnnotation.m */; };
-		B2B711EE1AA85F31000CC6C8 /* Ride.m in Sources */ = {isa = PBXBuildFile; fileRef = B2B711ED1AA85F31000CC6C8 /* Ride.m */; };
 		B2C756151AA1905E00B148D3 /* RidesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756141AA1905E00B148D3 /* RidesTableViewController.m */; };
 		B2C756181AA1912B00B148D3 /* RideDetailTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756171AA1912B00B148D3 /* RideDetailTableViewController.m */; };
 		B2C7561B1AA1A83100B148D3 /* TeamsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C7561A1AA1A83100B148D3 /* TeamsTableViewController.m */; };
@@ -48,12 +48,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		B2009CCB1AA57F650065E67B /* Team.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Team.h; sourceTree = "<group>"; };
-		B2009CCC1AA57F650065E67B /* Team.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Team.m; sourceTree = "<group>"; };
 		B2078B821A9DAF2A004AF662 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		B2078B851A9DB406004AF662 /* MainMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMapViewController.h; sourceTree = "<group>"; };
 		B2078B861A9DB406004AF662 /* MainMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMapViewController.m; sourceTree = "<group>"; };
 		B2078B8E1A9DC043004AF662 /* ORNDataModelSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ORNDataModelSource.h; sourceTree = "<group>"; };
+		B209BFAE1AB689090093E8E5 /* Team.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Team.h; sourceTree = "<group>"; };
+		B209BFAF1AB689090093E8E5 /* Team.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Team.m; sourceTree = "<group>"; };
+		B209BFB11AB6890A0093E8E5 /* Ride.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ride.h; sourceTree = "<group>"; };
+		B209BFB21AB6890A0093E8E5 /* Ride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ride.m; sourceTree = "<group>"; };
 		B228F3301AB04CB0001AF527 /* MainMapViewController-Snapshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MainMapViewController-Snapshot.m"; sourceTree = "<group>"; };
 		B24580B31AB5460B0090758E /* NSString+StringHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+StringHelpers.h"; sourceTree = "<group>"; };
 		B24580B41AB5460B0090758E /* NSString+StringHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+StringHelpers.m"; sourceTree = "<group>"; };
@@ -83,8 +85,6 @@
 		B28312281AAF322C00B7C1A9 /* RideStartEndPolyline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RideStartEndPolyline.m; sourceTree = "<group>"; };
 		B2907B821A9F1903008A0301 /* RidePointAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RidePointAnnotation.h; sourceTree = "<group>"; };
 		B2907B831A9F1903008A0301 /* RidePointAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RidePointAnnotation.m; sourceTree = "<group>"; };
-		B2B711EC1AA85F31000CC6C8 /* Ride.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ride.h; sourceTree = "<group>"; };
-		B2B711ED1AA85F31000CC6C8 /* Ride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ride.m; sourceTree = "<group>"; };
 		B2C756131AA1905E00B148D3 /* RidesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RidesTableViewController.h; sourceTree = "<group>"; };
 		B2C756141AA1905E00B148D3 /* RidesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RidesTableViewController.m; sourceTree = "<group>"; };
 		B2C756161AA1912B00B148D3 /* RideDetailTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RideDetailTableViewController.h; sourceTree = "<group>"; };
@@ -143,10 +143,10 @@
 		B24D4FD21A9D98E9008A0C7A /* Generated */ = {
 			isa = PBXGroup;
 			children = (
-				B2B711EC1AA85F31000CC6C8 /* Ride.h */,
-				B2B711ED1AA85F31000CC6C8 /* Ride.m */,
-				B2009CCB1AA57F650065E67B /* Team.h */,
-				B2009CCC1AA57F650065E67B /* Team.m */,
+				B209BFB11AB6890A0093E8E5 /* Ride.h */,
+				B209BFB21AB6890A0093E8E5 /* Ride.m */,
+				B209BFAE1AB689090093E8E5 /* Team.h */,
+				B209BFAF1AB689090093E8E5 /* Team.m */,
 			);
 			name = Generated;
 			sourceTree = "<group>";
@@ -433,13 +433,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B209BFB01AB689090093E8E5 /* Team.m in Sources */,
 				B24580B81AB584C00090758E /* BaseNavigationController.m in Sources */,
 				B228F3311AB04CB0001AF527 /* MainMapViewController-Snapshot.m in Sources */,
-				B2B711EE1AA85F31000CC6C8 /* Ride.m in Sources */,
 				B2907B841A9F1903008A0301 /* RidePointAnnotation.m in Sources */,
 				B2C7561E1AA1A97900B148D3 /* TeamDetailTableViewController.m in Sources */,
 				B24580B51AB5460B0090758E /* NSString+StringHelpers.m in Sources */,
 				B2E76A251AA6D0A3004B55BB /* TeamPointAnnotation.m in Sources */,
+				B209BFB31AB6890A0093E8E5 /* Ride.m in Sources */,
 				B25220331AA0412C00C3CE00 /* DemoUtil.m in Sources */,
 				B27533451A9DA91700B3110C /* MainTabBarController.m in Sources */,
 				B2C756251AA1BA8B00B148D3 /* Util.m in Sources */,
@@ -448,7 +449,6 @@
 				B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */,
 				B2C756151AA1905E00B148D3 /* RidesTableViewController.m in Sources */,
 				B2E76A221AA64572004B55BB /* Team+TeamHelpers.m in Sources */,
-				B2009CCD1AA57F650065E67B /* Team.m in Sources */,
 				B28312261AAF2A8100B7C1A9 /* BasePolyline.m in Sources */,
 				B28312291AAF322C00B7C1A9 /* RideStartEndPolyline.m in Sources */,
 				B2C756181AA1912B00B148D3 /* RideDetailTableViewController.m in Sources */,
