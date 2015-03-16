@@ -371,13 +371,13 @@
 	// Load dispatch fields
 	self.sourceTextField.text = self.ride.sourceName;
 	self.donationTextField.text = self.ride.donationAmount ? self.ride.donationAmount.stringValue : @"";
-	[self.teamAssignedPickerView selectRow:(self.ride.teamAssigned ? 1 + [self.teamFetchedResultsController.fetchedObjects indexOfObject:self.ride.teamAssigned] : 0) inComponent:0 animated:NO]; // "None" at index 0
+	[self.teamAssignedPickerView selectRow:(self.ride.teamAssigned ? [self.teamFetchedResultsController.fetchedObjects indexOfObject:self.ride.teamAssigned] + 1 : 0) inComponent:0 animated:NO]; // "None" at index 0
 	
 	// Load passenger fields
 	self.firstNameTextField.text = self.ride.passengerNameFirst;
 	self.lastNameTextField.text = self.ride.passengerNameLast;
 	self.phoneNumberTextField.text = self.ride.passengerPhoneNumber;
-	[self.passengerCountPickerView selectRow:self.ride.passengerCount.longValue inComponent:0 animated:NO];
+	[self.passengerCountPickerView selectRow:(self.ride.passengerCount.longValue - 1) inComponent:0 animated:NO];
 	
 	// Load location fields
 	self.startAddressTextField.text = self.ride.locationStartAddress;
@@ -436,7 +436,7 @@
 	self.ride.passengerNameFirst = [self.firstNameTextField.text trimAll];
 	self.ride.passengerNameLast = [self.lastNameTextField.text trimAll];
 	self.ride.passengerPhoneNumber = [self.phoneNumberTextField.text trimAll];
-	self.ride.passengerCount = [NSNumber numberWithLong:[self.passengerCountPickerView selectedRowInComponent:0]];
+	self.ride.passengerCount = [NSNumber numberWithLong:[self.passengerCountPickerView selectedRowInComponent:0] + 1];
 	
 	// Save location fields
 	// NOTE: Try asych geocode
