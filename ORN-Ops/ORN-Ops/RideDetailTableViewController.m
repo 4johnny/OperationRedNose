@@ -165,7 +165,6 @@
 - (NSInteger)pickerView:(UIPickerView*)pickerView numberOfRowsInComponent:(NSInteger)component {
 	
 	if (pickerView == self.teamAssignedPickerView) return self.teamFetchedResultsController.fetchedObjects.count + 1;
-	if (pickerView == self.passengerCountPickerView) return 10;
 	if (pickerView == self.vehicleTransmissionPickerView) return 2;
 	if (pickerView == self.seatBeltCountPickerView) return 11;
 	
@@ -193,7 +192,6 @@
 - (CGFloat)pickerView:(UIPickerView*)pickerView widthForComponent:(NSInteger)component {
 	
 	if (pickerView == self.teamAssignedPickerView) return 300;
-	if (pickerView == self.passengerCountPickerView) return 35;
 	if (pickerView == self.vehicleTransmissionPickerView) return 150;
 	if (pickerView == self.seatBeltCountPickerView) return 35;
 	
@@ -211,9 +209,7 @@
 		
 		return [team getTitle];
 	}
-	
-	if (pickerView == self.passengerCountPickerView) return [NSString stringWithFormat:@"%d", (int)row + 1];
-	
+
 	if (pickerView == self.vehicleTransmissionPickerView) {
 		
 		switch (row) {
@@ -377,7 +373,7 @@
 	self.firstNameTextField.text = self.ride.passengerNameFirst;
 	self.lastNameTextField.text = self.ride.passengerNameLast;
 	self.phoneNumberTextField.text = self.ride.passengerPhoneNumber;
-	[self.passengerCountPickerView selectRow:(self.ride.passengerCount.longValue - 1) inComponent:0 animated:NO];
+	self.passengerCountSegmentedControl.selectedSegmentIndex = self.ride.passengerCount.longValue - 1;
 	
 	// Load location fields
 	self.startAddressTextField.text = self.ride.locationStartAddress;
@@ -436,7 +432,7 @@
 	self.ride.passengerNameFirst = [self.firstNameTextField.text trimAll];
 	self.ride.passengerNameLast = [self.lastNameTextField.text trimAll];
 	self.ride.passengerPhoneNumber = [self.phoneNumberTextField.text trimAll];
-	self.ride.passengerCount = [NSNumber numberWithLong:[self.passengerCountPickerView selectedRowInComponent:0] + 1];
+	self.ride.passengerCount = [NSNumber numberWithLong:self.passengerCountSegmentedControl.selectedSegmentIndex + 1];
 	
 	// Save location fields
 	// NOTE: Try asych geocode

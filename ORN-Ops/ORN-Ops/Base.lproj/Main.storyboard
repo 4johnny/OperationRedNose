@@ -518,7 +518,7 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Passenger" id="6ib-tf-wHn">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="267" id="ZwG-k0-NeR">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="161" id="ZwG-k0-NeR">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZwG-k0-NeR" id="OJ1-z4-CeL">
                                             <autoresizingMask key="autoresizingMask"/>
@@ -545,26 +545,33 @@
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" enablesReturnKeyAutomatically="YES"/>
                                                 </textField>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Phone #:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IpA-o9-76V">
-                                                    <rect key="frame" x="8" y="88" width="110" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" clearButtonMode="unlessEditing" translatesAutoresizingMaskIntoConstraints="NO" id="9cU-35-FSH">
                                                     <rect key="frame" x="127" y="84" width="465" height="30"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="phonePad" enablesReturnKeyAutomatically="YES"/>
                                                 </textField>
-                                                <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7SS-wk-obR">
-                                                    <rect key="frame" x="126" y="114" width="147" height="162"/>
-                                                    <connections>
-                                                        <outlet property="dataSource" destination="EOY-Bm-UjH" id="WYZ-co-f6u"/>
-                                                        <outlet property="delegate" destination="EOY-Bm-UjH" id="n5o-Ne-tul"/>
-                                                    </connections>
-                                                </pickerView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="# Passengers:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gdl-Wo-pnC">
-                                                    <rect key="frame" x="8" y="184" width="110" height="21"/>
+                                                    <rect key="frame" x="9" y="125" width="110" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="6gg-hv-cop">
+                                                    <rect key="frame" x="127" y="122" width="206" height="29"/>
+                                                    <segments>
+                                                        <segment title="1"/>
+                                                        <segment title="2"/>
+                                                        <segment title="3"/>
+                                                        <segment title="4"/>
+                                                        <segment title="5"/>
+                                                        <segment title="6"/>
+                                                        <segment title="7"/>
+                                                        <segment title="8"/>
+                                                        <segment title="9"/>
+                                                    </segments>
+                                                </segmentedControl>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Phone #:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IpA-o9-76V">
+                                                    <rect key="frame" x="8" y="88" width="110" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -754,7 +761,7 @@
                         <outlet property="firstNameTextField" destination="z4N-Lk-ham" id="QdL-HV-YQ5"/>
                         <outlet property="lastNameTextField" destination="Rue-M5-nfb" id="OAc-GN-Mma"/>
                         <outlet property="notesTextView" destination="VEt-fW-EOg" id="Ytj-rc-mfn"/>
-                        <outlet property="passengerCountPickerView" destination="7SS-wk-obR" id="cPC-aw-Fpu"/>
+                        <outlet property="passengerCountSegmentedControl" destination="6gg-hv-cop" id="g2w-wW-vCL"/>
                         <outlet property="phoneNumberTextField" destination="9cU-35-FSH" id="qaN-Ib-AlD"/>
                         <outlet property="seatBeltCountPickerView" destination="0X3-eY-y0R" id="x7Y-fE-9OU"/>
                         <outlet property="sourceTextField" destination="dfs-3U-IDE" id="Cvg-5W-XbN"/>

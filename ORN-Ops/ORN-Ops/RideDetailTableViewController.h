@@ -40,7 +40,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *firstNameTextField;
 @property (weak, nonatomic) IBOutlet UITextField *lastNameTextField;
 @property (weak, nonatomic) IBOutlet UITextField *phoneNumberTextField;
-@property (weak, nonatomic) IBOutlet UIPickerView *passengerCountPickerView;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *passengerCountSegmentedControl;
 
 // Location
 @property (weak, nonatomic) IBOutlet UITextField *startAddressTextField;
