@@ -165,7 +165,6 @@
 - (NSInteger)pickerView:(UIPickerView*)pickerView numberOfRowsInComponent:(NSInteger)component {
 	
 	if (pickerView == self.teamAssignedPickerView) return self.teamFetchedResultsController.fetchedObjects.count + 1;
-	if (pickerView == self.seatBeltCountPickerView) return 11;
 	
 	return 0;
 }
@@ -191,7 +190,6 @@
 - (CGFloat)pickerView:(UIPickerView*)pickerView widthForComponent:(NSInteger)component {
 	
 	if (pickerView == self.teamAssignedPickerView) return 300;
-	if (pickerView == self.seatBeltCountPickerView) return 35;
 	
 	return 0; // points
 }
@@ -207,9 +205,7 @@
 		
 		return [team getTitle];
 	}
-	
-	if (pickerView == self.seatBeltCountPickerView) return [NSString stringWithFormat:@"%d", (int)row];
-	
+
 	return nil;
 }
 
@@ -369,7 +365,7 @@
 	// Load vehicle fields
 	self.vehicleDescriptionTextField.text = self.ride.vehicleDescription;
 	self.vehicleTransmissionSegmentedControl.selectedSegmentIndex = self.ride.vehicleTransmission.integerValue == VehicleTransmission_Manual ? 1 : 0; // enum VehicleTransmission
-	[self.seatBeltCountPickerView selectRow:self.ride.vehicleSeatBeltCount.longValue inComponent:0 animated:NO];
+	self.seatBeltCountSegmentedControl.selectedSegmentIndex = self.ride.vehicleSeatBeltCount.integerValue;
 	
 	// Load notes fields
 	self.notesTextView.text = self.ride.notes;
@@ -458,7 +454,7 @@
 	// Save vehicle fields
 	self.ride.vehicleDescription = [self.vehicleDescriptionTextField.text trimAll];
 	self.ride.vehicleTransmission = [NSNumber numberWithInteger:self.vehicleTransmissionSegmentedControl.selectedSegmentIndex + 1]; // enum VehicleTransmission
-	self.ride.vehicleSeatBeltCount = [NSNumber numberWithInteger:[self.seatBeltCountPickerView selectedRowInComponent:0]];
+	self.ride.vehicleSeatBeltCount = [NSNumber numberWithInteger:self.seatBeltCountSegmentedControl.selectedSegmentIndex];
 	
 	// Save notes fields
 	self.ride.notes = [self.notesTextView.text trimAll];
