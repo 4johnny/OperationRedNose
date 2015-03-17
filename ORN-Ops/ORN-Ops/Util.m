@@ -85,6 +85,17 @@
 
 
 #
+# pragma mark Notifications
+#
+
+
++ (BOOL)isValueFromNotification:(NSNotification*)notification withKey:(NSString*)key {
+	
+	return notification.userInfo[key] && ((NSNumber*)notification.userInfo[key]).boolValue;
+}
+
+
+#
 # pragma mark <ORNDataModelSource>
 #
 

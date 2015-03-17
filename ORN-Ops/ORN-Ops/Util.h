@@ -64,7 +64,13 @@
 
 + (UIAlertController*)sharedOKAlertController;
 + (void)presentOKAlertWithTitle:(NSString*)title andMessage:(NSString*)message;
-	
+
+#
+# pragma mark Notifications
+#
+
++ (BOOL)isValueFromNotification:(NSNotification*)notification withKey:(NSString*)key;
+
 #
 # pragma mark <ORNDataModelSource>
 #

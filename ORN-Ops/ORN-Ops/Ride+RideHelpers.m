@@ -16,6 +16,7 @@
 
 #define RIDE_CREATED_NOTIFICATION_NAME					@"rideCreated"
 #define RIDE_UPDATED_NOTIFICATION_NAME					@"rideUpdated"
+
 #define RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY	@"rideUpdatedLocationStart"
 #define RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY		@"rideUpdatedLocationEnd"
 #define RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY		@"rideUpdatedTeamAssigned"
@@ -96,19 +97,19 @@
 
 + (BOOL)isUpdatedLocationStartFromNotification:(NSNotification*)notification {
 	
-	return notification.userInfo[RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY]).boolValue;
+	return [Util isValueFromNotification:notification withKey:RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY];
 }
 
 
 + (BOOL)isUpdatedLocationEndFromNotification:(NSNotification*)notification {
 	
-	return notification.userInfo[RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY]).boolValue;
+	return [Util isValueFromNotification:notification withKey:RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY];
 }
 
 
 + (BOOL)isUpdatedTeamAssignedFromNotification:(NSNotification*)notification {
 	
-	return notification.userInfo[RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY]).boolValue;
+	return [Util isValueFromNotification:notification withKey:RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY];
 }
 
 

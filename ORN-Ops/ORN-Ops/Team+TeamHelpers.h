@@ -16,10 +16,6 @@
 #define TEAM_TITLE_DEFAULT	@"(Team)"
 #define TEAM_TITLE_NONE		@"-None-"
 
-#define TEAM_UPDATED_NOTIFICATION_NAME					@"teamUpdated"
-#define TEAM_UPDATED_LOCATION_NOTIFICATION_KEY			@"teamUpdatedLocation"
-#define TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY	@"teamUpdatedRidesAssigned"
-
 #
 # pragma mark - Interface
 #
@@ -31,6 +27,23 @@
 #
 
 + (instancetype)teamWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
+
+#
+# pragma mark Notifications
+#
+
++ (void)addCreatedObserver:(id)observer withSelector:(SEL)selector;
++ (void)addUpdatedObserver:(id)observer withSelector:(SEL)selector;
+
++ (Team*)teamFromNotification:(NSNotification*)notification;
++ (BOOL)isUpdatedLocationFromNotification:(NSNotification*)notification;
++ (BOOL)isUpdatedRidesAssignedFromNotification:(NSNotification*)notification;
+
+- (void)postNotificationCreatedWithSender:(id)sender;
+- (void)postNotificationUpdatedWithSender:(id)sender;
+
+- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocation:(BOOL)updatedLocation;
+- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedRidesAssigned:(BOOL)updatedRidesAssigned;
 
 #
 # pragma mark Helpers

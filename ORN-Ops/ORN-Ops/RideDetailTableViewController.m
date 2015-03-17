@@ -393,16 +393,14 @@
 		if (existingTeamAssigned) {
 			
 			[existingTeamAssigned removeRidesAssignedObject:self.ride];
-			
-			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME : existingTeamAssigned, TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY : [NSNumber numberWithBool:YES]}];
+			[existingTeamAssigned postNotificationUpdatedWithSender:self andUpdatedRidesAssigned:YES];
 		}
 		
 		// Add ride to new team assigned, if present - notify observers
 		if (newTeamAssigned) {
 			
 			[newTeamAssigned addRidesAssignedObject:self.ride];
-			
-			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME : newTeamAssigned, TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY : [NSNumber numberWithBool:YES]}];
+			[newTeamAssigned postNotificationUpdatedWithSender:self andUpdatedRidesAssigned:YES];
 		}
 		
 		// Add new team assigned to ride

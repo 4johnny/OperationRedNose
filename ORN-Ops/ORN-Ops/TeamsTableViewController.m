@@ -16,7 +16,7 @@
 # pragma mark - Constants
 #
 
-#define TEAMS_CELL_REUSE_ID	@"teamsTableViewCell"
+#define TEAMS_CELL_REUSE_ID		@"teamsTableViewCell"
 
 
 #
@@ -61,7 +61,7 @@
 
 
 /*
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ - (void)prepareForSegue:(UIStoryboardSegue*)segue sender:(id)sender {
  // Get the new view controller using [segue destinationViewController].
  // Pass the selected object to the new view controller.
  }
@@ -96,6 +96,7 @@
     return cell;
 }
 
+
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath {
@@ -103,6 +104,7 @@
     return YES;
 }
 */
+
 /*
 // Override to support editing the table view.
 - (void)tableView:(UITableView*)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath {
@@ -118,11 +120,13 @@
     }   
 }
 */
+
 /*
 // Override to support rearranging the table view.
 - (void)tableView:(UITableView*)tableView moveRowAtIndexPath:(NSIndexPath*)fromIndexPath toIndexPath:(NSIndexPath*)toIndexPath {
 }
 */
+
 /*
 // Override to support conditional rearranging of the table view.
 - (BOOL)tableView:(UITableView*)tableView canMoveRowAtIndexPath:(NSIndexPath*)indexPath {
@@ -137,22 +141,28 @@
 #
 
 
+- (void)teamCreatedWithNotification:(NSNotification*)notification {
+	
+	[self.tableView reloadData];
+}
+
+
 - (void)teamUpdatedWithNotification:(NSNotification*)notification {
 	
 	[self.tableView reloadData];
 }
 
 
-- (void)rideCreatedWithNotification:(NSNotification*)notification {
-
-	[self.tableView reloadData];
-}
-
-
-- (void)rideUpdatedWithNotification:(NSNotification*)notification {
-	
-	[self.tableView reloadData];
-}
+//- (void)rideCreatedWithNotification:(NSNotification*)notification {
+//
+//	[self.tableView reloadData];
+//}
+//
+//
+//- (void)rideUpdatedWithNotification:(NSNotification*)notification {
+//	
+//	[self.tableView reloadData];
+//}
 
 
 #
@@ -162,10 +172,11 @@
 
 - (void)addNotificationObservers {
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(teamUpdatedWithNotification:) name:TEAM_UPDATED_NOTIFICATION_NAME object:nil];
+	[Team addCreatedObserver:self withSelector:@selector(teamCreatedWithNotification:)];
+	[Team addUpdatedObserver:self withSelector:@selector(teamUpdatedWithNotification:)];
 	
-	[Ride addCreatedObserver:self withSelector:@selector(rideCreatedWithNotification:)];
-	[Ride addUpdatedObserver:self withSelector:@selector(rideUpdatedWithNotification:)];	
+//	[Ride addCreatedObserver:self withSelector:@selector(rideCreatedWithNotification:)];
+//	[Ride addUpdatedObserver:self withSelector:@selector(rideUpdatedWithNotification:)];	
 }
 
 

@@ -816,9 +816,14 @@
 # pragma mark Team Notification Handlers
 
 
+//- (void)teamCreatedWithNotification:(NSNotification*)notification {
+//	
+//}
+//
+//
 //- (void)teamUpdatedWithNotification:(NSNotification*)notification {
 //	
-//	[self configureTeamAnnotationsWithNotification:notification];
+////	[self configureTeamAnnotationsWithNotification:notification];
 //}
 //
 //
@@ -947,7 +952,8 @@
 	[Ride addCreatedObserver:self withSelector:@selector(rideCreatedWithNotification:)];
 	[Ride addUpdatedObserver:self withSelector:@selector(rideUpdatedWithNotification:)];
 
-//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(teamUpdatedWithNotification:) name:TEAM_UPDATED_NOTIFICATION_NAME object:nil];
+//	[Team addCreatedObserver:self withSelector:@selector(teamCreatedWithNotification:)];
+//	[Team addUpdatedObserver:self withSelector:@selector(teamUpdatedWithNotification:)];
 }
 
 

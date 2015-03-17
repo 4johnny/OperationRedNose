@@ -88,8 +88,8 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 + (BOOL)isUpdatedTeamAssignedFromNotification:(NSNotification*)notification;
 
 - (void)postNotificationCreatedWithSender:(id)sender;
-
 - (void)postNotificationUpdatedWithSender:(id)sender;
+
 - (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocationStart:(BOOL)updatedLocationStart andUpdatedLocationEnd:(BOOL)updatedLocationEnd;
 - (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocationStart:(BOOL)updatedLocationStart andUpdatedLocationEnd:(BOOL)updatedLocationEnd andUpdatedTeamAssigned:(BOOL)updatedTeamAssigned;
 
