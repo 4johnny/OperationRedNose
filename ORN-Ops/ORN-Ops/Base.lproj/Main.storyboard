@@ -644,13 +644,6 @@
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="W79-5P-bVM" id="A4H-6m-w2R">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bgr-2L-eeA">
-                                                    <rect key="frame" x="127" y="-5" width="147" height="162"/>
-                                                    <connections>
-                                                        <outlet property="dataSource" destination="EOY-Bm-UjH" id="8jy-um-55a"/>
-                                                        <outlet property="delegate" destination="EOY-Bm-UjH" id="68S-lq-oaL"/>
-                                                    </connections>
-                                                </pickerView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Description:" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vRY-Or-Hni">
                                                     <rect key="frame" x="8" y="12" width="111" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -662,12 +655,6 @@
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" enablesReturnKeyAutomatically="YES"/>
                                                 </textField>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Transmission:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OEU-FO-oRz">
-                                                    <rect key="frame" x="8" y="65" width="111" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                                 <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0X3-eY-y0R">
                                                     <rect key="frame" x="127" y="116" width="147" height="162"/>
                                                     <connections>
@@ -677,6 +664,19 @@
                                                 </pickerView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="# Seat Belts:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YNK-YK-nnm">
                                                     <rect key="frame" x="8" y="186" width="111" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="3bf-4k-Fcn">
+                                                    <rect key="frame" x="127" y="46" width="153" height="29"/>
+                                                    <segments>
+                                                        <segment title="Automatic"/>
+                                                        <segment title="Manual"/>
+                                                    </segments>
+                                                </segmentedControl>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Transmission:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OEU-FO-oRz">
+                                                    <rect key="frame" x="8" y="49" width="111" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -771,7 +771,7 @@
                         <outlet property="transferFromTextField" destination="QXi-YE-uih" id="VXL-cC-gGC"/>
                         <outlet property="transferToTextField" destination="I2S-Hh-jlz" id="RsQ-cn-ohv"/>
                         <outlet property="vehicleDescriptionTextField" destination="di8-Pe-bJF" id="iNE-AF-c1p"/>
-                        <outlet property="vehicleTransmissionPickerView" destination="Bgr-2L-eeA" id="Npw-nG-P4A"/>
+                        <outlet property="vehicleTransmissionSegmentedControl" destination="3bf-4k-Fcn" id="Qfc-A2-ImI"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HqI-Ln-EfF" userLabel="First Responder" sceneMemberID="firstResponder"/>

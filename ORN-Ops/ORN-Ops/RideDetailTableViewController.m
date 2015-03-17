@@ -165,7 +165,6 @@
 - (NSInteger)pickerView:(UIPickerView*)pickerView numberOfRowsInComponent:(NSInteger)component {
 	
 	if (pickerView == self.teamAssignedPickerView) return self.teamFetchedResultsController.fetchedObjects.count + 1;
-	if (pickerView == self.vehicleTransmissionPickerView) return 2;
 	if (pickerView == self.seatBeltCountPickerView) return 11;
 	
 	return 0;
@@ -192,7 +191,6 @@
 - (CGFloat)pickerView:(UIPickerView*)pickerView widthForComponent:(NSInteger)component {
 	
 	if (pickerView == self.teamAssignedPickerView) return 300;
-	if (pickerView == self.vehicleTransmissionPickerView) return 150;
 	if (pickerView == self.seatBeltCountPickerView) return 35;
 	
 	return 0; // points
@@ -208,19 +206,6 @@
 		Team* team = self.teamFetchedResultsController.fetchedObjects[row - 1];
 		
 		return [team getTitle];
-	}
-
-	if (pickerView == self.vehicleTransmissionPickerView) {
-		
-		switch (row) {
-				
-			default:
-			case 0:
-				return @"Automatic";
-				
-			case 1:
-				return @"Manual";
-		}
 	}
 	
 	if (pickerView == self.seatBeltCountPickerView) return [NSString stringWithFormat:@"%d", (int)row];
@@ -383,7 +368,7 @@
 	
 	// Load vehicle fields
 	self.vehicleDescriptionTextField.text = self.ride.vehicleDescription;
-	[self.vehicleTransmissionPickerView selectRow:([self.ride.vehicleTransmission isEqualToString:@"Manual"] ? 1 : 0) inComponent:0 animated:NO]; // "Automatic" at index 0
+	self.vehicleTransmissionSegmentedControl.selectedSegmentIndex = [self.ride.vehicleTransmission isEqualToString:@"Manual"] ? 1 : 0; // "Automatic" at index 0
 	[self.seatBeltCountPickerView selectRow:self.ride.vehicleSeatBeltCount.longValue inComponent:0 animated:NO];
 	
 	// Load notes fields
@@ -472,7 +457,7 @@
 	
 	// Save vehicle fields
 	self.ride.vehicleDescription = [self.vehicleDescriptionTextField.text trimAll];
-	self.ride.vehicleTransmission = [self.vehicleTransmissionPickerView selectedRowInComponent:0] == 1 ? @"Manual" : @"Automatic";
+	self.ride.vehicleTransmission = self.vehicleTransmissionSegmentedControl.selectedSegmentIndex == 1 ? @"Manual" : @"Automatic";
 	self.ride.vehicleSeatBeltCount = [NSNumber numberWithLong:[self.seatBeltCountPickerView selectedRowInComponent:0]];
 	
 	// Save notes fields

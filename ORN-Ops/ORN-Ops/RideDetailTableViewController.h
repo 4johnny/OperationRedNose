@@ -53,7 +53,7 @@
 
 // Vehicle
 @property (weak, nonatomic) IBOutlet UITextField *vehicleDescriptionTextField;
-@property (weak, nonatomic) IBOutlet UIPickerView *vehicleTransmissionPickerView;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *vehicleTransmissionSegmentedControl;
 @property (weak, nonatomic) IBOutlet UIPickerView *seatBeltCountPickerView;
 
 // Notes
