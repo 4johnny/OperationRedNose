@@ -435,7 +435,7 @@
 	self.ride.passengerCount = [NSNumber numberWithLong:self.passengerCountSegmentedControl.selectedSegmentIndex + 1];
 	
 	// Save location fields - try async geocode
-	BOOL updatedStartLocation = NO;
+	BOOL updatedLocationStart = NO;
 	NSString* viewAddressString = [self.startAddressTextField.text trimAll];
 	if (![NSString compareString:self.ride.locationStartAddress toString:viewAddressString]) {
 		
@@ -443,15 +443,15 @@
 		
 		if (viewAddressString.length > 0) {
 			
-			[self.ride tryUpdateLocationWithAddressString:viewAddressString andRideLocationType:RideLocationType_Start andGeocoder:self.geocoder]; // async
+			[self.ride tryUpdateLocationWithAddressString:viewAddressString andRideLocationType:RideLocationType_Start andGeocoder:self.geocoder andSender:self]; // async
 			
 		} else {
 			
 			[self.ride clearLocationWithRideLocationType:RideLocationType_Start];
-			updatedStartLocation = YES;
+			updatedLocationStart = YES;
 		}
 	}
-	BOOL updatedEndLocation = NO;
+	BOOL updatedLocationEnd = NO;
 	viewAddressString = [self.endAddressTextField.text trimAll];
 	if (![NSString compareString:self.ride.locationEndAddress toString:viewAddressString]) {
 		
@@ -459,12 +459,12 @@
 		
 		if (viewAddressString.length > 0) {
 			
-			[self.ride tryUpdateLocationWithAddressString:viewAddressString andRideLocationType:RideLocationType_End andGeocoder:self.geocoder]; // async
+			[self.ride tryUpdateLocationWithAddressString:viewAddressString andRideLocationType:RideLocationType_End andGeocoder:self.geocoder andSender:self]; // async
 			
 		} else {
 			
 			[self.ride clearLocationWithRideLocationType:RideLocationType_End];
-			updatedEndLocation = YES;
+			updatedLocationEnd = YES;
 		}
 	}
 	self.ride.locationTransferFrom = [self.transferFromTextField.text trimAll];
@@ -483,20 +483,12 @@
 		
 		self.ride.dateTimeStart = self.startTimeDatePicker.date;
 		self.ride.routeDuration = nil;
-		self.ride.routeDateTimeEnd = nil;
-		[self.ride tryUpdateRouteDurationAndDateTimeEnd]; // async
+		[self.ride tryUpdateRouteDurationWithSender:self]; // async
 	}
 
-	// Persist data model to disk
+	// Persist data model to disk and notify observers
 	[Util saveManagedObjectContext];
-	
-	// Notify observers of updates to ride
-	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:
-	 @{RIDE_ENTITY_NAME : self.ride,
-	   RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedTeamAssigned],
-	   RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedStartLocation],
-	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedEndLocation],
-	   }];
+	[self.ride postNotificationUpdatedWithSender:self andUpdatedLocationStart:updatedLocationStart andUpdatedLocationEnd:updatedLocationEnd andUpdatedTeamAssigned:updatedTeamAssigned];
 }
 
 

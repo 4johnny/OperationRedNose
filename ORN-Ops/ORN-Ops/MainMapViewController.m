@@ -693,11 +693,11 @@
 								  andNeedsCenter:(BOOL)needsCenter
 							   andNeedsSelection:(BOOL)needsSelection {
 	
-	Ride* ride = notification.userInfo[RIDE_ENTITY_NAME];
+	Ride* ride = [Ride rideFromNotification:notification];
 	NSArray* annotations = [self annotationsForRide:ride];
 	
 	// Configure start annotation
-	BOOL isLocationUpdated = (notification.userInfo[RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY]).boolValue);
+	BOOL isLocationUpdated = [Ride isUpdatedLocationStartFromNotification:notification];
 	BOOL startAnnotationPresent = [self configureViewWithRide:ride
 										  andRideLocationType:RideLocationType_Start
 										 usingRideAnnotations:annotations
@@ -707,7 +707,7 @@
 	
 	// Configure end annotation
 	// NOTE: Start annotation takes precedence for center and selection
-	isLocationUpdated = (notification.userInfo[RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY]).boolValue);
+	isLocationUpdated = [Ride isUpdatedLocationEndFromNotification:notification];
 	BOOL endAnnotationPresent = [self configureViewWithRide:ride
 										andRideLocationType:RideLocationType_End
 									   usingRideAnnotations:annotations
@@ -898,8 +898,8 @@
 	} else if ([COMMAND_DEMO_RIDES isEqualToString:commandString]) {
 		
 		// Load all demo rides
+		[self configureJurisdictionRegionView];
 		[DemoUtil loadDemoRides];
-		[self configureView];
 		
 		needsDataModelSave = YES;
 		isCommandHandled = YES;
@@ -944,8 +944,8 @@
 
 - (void)addNotificationObservers {
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideCreatedWithNotification:) name:RIDE_CREATED_NOTIFICATION_NAME object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideUpdatedWithNotification:) name:RIDE_UPDATED_NOTIFICATION_NAME object:nil];
+	[Ride addCreatedObserver:self withSelector:@selector(rideCreatedWithNotification:)];
+	[Ride addUpdatedObserver:self withSelector:@selector(rideUpdatedWithNotification:)];
 
 //	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(teamUpdatedWithNotification:) name:TEAM_UPDATED_NOTIFICATION_NAME object:nil];
 }
@@ -972,12 +972,7 @@
 	
 	for (Ride* ride in self.rideFetchedResultsController.fetchedObjects) {
 
-		NSDictionary* userInfo =
-		@{RIDE_ENTITY_NAME : ride,
-		  RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : [NSNumber numberWithBool:YES],
-		  RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : [NSNumber numberWithBool:YES]
-		  };
-		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:userInfo];
+		[ride postNotificationUpdatedWithSender:self andUpdatedLocationStart:YES andUpdatedLocationEnd:YES];
 	}
 }
 
@@ -1031,10 +1026,8 @@
 		// Use first placemark as start location for new ride
 		Ride* ride = [Ride rideWithManagedObjectContext:[Util managedObjectContext] andDateTime:[NSDate date] andPlacemark:placemark andRideLocationType:RideLocationType_Start];
 		[Util saveManagedObjectContext];
+		[ride postNotificationCreatedWithSender:self];
 		NSLog(@"Ride: %@", ride);
-
-		// Notify observers
-		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_CREATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME : ride}];
 	}];
 }
 

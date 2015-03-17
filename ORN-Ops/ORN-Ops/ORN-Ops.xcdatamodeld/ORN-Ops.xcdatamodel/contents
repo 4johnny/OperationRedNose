@@ -18,7 +18,6 @@
         <attribute name="passengerNameFirst" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="passengerNameLast" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="passengerPhoneNumber" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="routeDateTimeEnd" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="routeDistance" optional="YES" attributeType="Double" minValueString="0" syncable="YES"/>
         <attribute name="routeDuration" optional="YES" attributeType="Double" minValueString="0" syncable="YES"/>
         <attribute name="sourceName" optional="YES" attributeType="String" syncable="YES"/>
@@ -42,7 +41,7 @@
         <relationship name="ridesAssigned" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Ride" inverseName="teamAssigned" inverseEntity="Ride" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Ride" positionX="-63" positionY="116" width="135" height="433"/>
-        <element name="Team" positionX="162" positionY="356" width="144" height="208"/>
+        <element name="Ride" positionX="-63" positionY="116" width="135" height="418"/>
+        <element name="Team" positionX="162" positionY="341" width="144" height="208"/>
     </elements>
 </model>

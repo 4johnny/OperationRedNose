@@ -11,6 +11,17 @@
 
 
 #
+# pragma mark - Constants
+#
+
+#define RIDE_CREATED_NOTIFICATION_NAME					@"rideCreated"
+#define RIDE_UPDATED_NOTIFICATION_NAME					@"rideUpdated"
+#define RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY	@"rideUpdatedLocationStart"
+#define RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY		@"rideUpdatedLocationEnd"
+#define RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY		@"rideUpdatedTeamAssigned"
+
+
+#
 # pragma mark - Implementation
 #
 
@@ -28,18 +39,8 @@
 	
 	if (self) {
 
-		switch (rideLocationType) {
-				
-			case RideLocationType_Start:
-				self.dateTimeStart = dateTime;
-				break;
-				
-			case RideLocationType_End:
-				self.routeDateTimeEnd = dateTime;
-			
-			default:
-			case RideLocationType_None:
-				break;
+		if (rideLocationType == RideLocationType_Start) {
+			self.dateTimeStart = dateTime;
 		}
 		
 		if (placemark && rideLocationType != RideLocationType_None) {
@@ -67,6 +68,84 @@
 + (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
 	return [[Ride alloc] initWithManagedObjectContext:managedObjectContext];
+}
+
+
+#
+# pragma mark Notifications
+#
+
+
++ (void)addCreatedObserver:(id)observer withSelector:(SEL)selector {
+
+	[[NSNotificationCenter defaultCenter] addObserver:observer selector:selector name:RIDE_CREATED_NOTIFICATION_NAME object:nil];
+}
+
+
++ (void)addUpdatedObserver:(id)observer withSelector:(SEL)selector {
+	
+	[[NSNotificationCenter defaultCenter] addObserver:observer selector:selector name:RIDE_UPDATED_NOTIFICATION_NAME object:nil];
+}
+
+
++ (Ride*)rideFromNotification:(NSNotification*)notification {
+	
+	return notification.userInfo[RIDE_ENTITY_NAME];
+}
+
+
++ (BOOL)isUpdatedLocationStartFromNotification:(NSNotification*)notification {
+	
+	return notification.userInfo[RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY]).boolValue;
+}
+
+
++ (BOOL)isUpdatedLocationEndFromNotification:(NSNotification*)notification {
+	
+	return notification.userInfo[RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY]).boolValue;
+}
+
+
++ (BOOL)isUpdatedTeamAssignedFromNotification:(NSNotification*)notification {
+	
+	return notification.userInfo[RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY] && ((NSNumber*)notification.userInfo[RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY]).boolValue;
+}
+
+
+- (void)postNotificationCreatedWithSender:(id)sender  {
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_CREATED_NOTIFICATION_NAME object:sender userInfo:
+	 @{RIDE_ENTITY_NAME : self,
+	   RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : [NSNumber numberWithBool:YES],
+	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : [NSNumber numberWithBool:YES]
+	   }];
+}
+
+
+- (void)postNotificationUpdatedWithSender:(id)sender {
+
+	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:sender userInfo:@{RIDE_ENTITY_NAME : self}];
+}
+
+
+- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocationStart:(BOOL)updatedLocationStart andUpdatedLocationEnd:(BOOL)updatedLocationEnd {
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:sender userInfo:
+	 @{RIDE_ENTITY_NAME : self,
+	   RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedLocationStart],
+	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedLocationEnd]
+	   }];
+}
+
+
+- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocationStart:(BOOL)updatedLocationStart andUpdatedLocationEnd:(BOOL)updatedLocationEnd andUpdatedTeamAssigned:(BOOL)updatedTeamAssigned {
+
+	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:sender userInfo:
+	 @{RIDE_ENTITY_NAME : self,
+	   RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedLocationStart],
+	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedLocationEnd],
+	   RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedTeamAssigned]
+	   }];
 }
 
 
@@ -104,7 +183,6 @@
 - (void)clearRoute {
 
 	self.routeDuration = nil;
-	self.routeDateTimeEnd = nil;
 	self.routeDistance = nil;
 }
 
@@ -144,7 +222,7 @@
 /*
  Geocode given address string relative to jurisdiction, asynchronously
  */
-- (void)tryUpdateLocationWithAddressString:(NSString*)addressString andRideLocationType:(RideLocationType)rideLocationType andGeocoder:(CLGeocoder*)geocoder {
+- (void)tryUpdateLocationWithAddressString:(NSString*)addressString andRideLocationType:(RideLocationType)rideLocationType andGeocoder:(CLGeocoder*)geocoder andSender:(id)sender {
 	
 	CLCircularRegion* jurisdictionRegion = [[CLCircularRegion alloc] initWithCenter:JURISDICTION_COORDINATE radius:JURISDICTION_SEARCH_RADIUS identifier:@"ORN Jurisdication Region"];
 	
@@ -174,28 +252,26 @@
 		
 		// Use first placemark as location - try async calculate route duration
 		[self updateLocationWithPlacemark:placemark andRideLocationType:rideLocationType];
-		[self tryUpdateRouteDurationAndDateTimeEnd]; // async
+		[self tryUpdateRouteDurationWithSender:sender]; // async
 		[Util saveManagedObjectContext];
+		[self postNotificationUpdatedWithSender:sender andUpdatedLocationStart:(rideLocationType == RideLocationType_Start) andUpdatedLocationEnd:(rideLocationType == RideLocationType_End)];
 		NSLog(@"Ride: %@", self);
-		
-		// Notify observers
-		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME : self, (rideLocationType == RideLocationType_End ? RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY) : [NSNumber numberWithBool:YES]}];
 	}];
 }
 
 
 /*
- Calculate ride duration and end time, asynchronously
+ Calculate ride route duration, asynchronously
  */
-- (void)tryUpdateRouteDurationAndDateTimeEnd {
+- (void)tryUpdateRouteDurationWithSender:(id)sender {
 	
 	// If cannot get directions request, we are done with this ride
 	MKDirectionsRequest* directionsRequest = self.getDirectionsRequest;
 	if (!directionsRequest) return;
 	
-	// Update ride duration and end time with ETA calculation for route
+	// Update ride duration with ETA calculation for route
 	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
-	[directions calculateETAWithCompletionHandler:^(MKETAResponse *response, NSError *error) {
+	[directions calculateETAWithCompletionHandler:^(MKETAResponse* response, NSError* error) {
 		
 		// NOTES: Completion block executes on main thread. Do not run more than one ETA calculation simultaneously on this object.
 		if (error) {
@@ -206,17 +282,12 @@
 		// Expected travel time calculated successfully, so store it
 		self.routeDuration = [NSNumber numberWithDouble:response.expectedTravelTime]; // seconds
 		NSLog(@"ETA: %.0f sec -> %.2f min", response.expectedTravelTime, response.expectedTravelTime / (double)SECONDS_PER_MINUTE);
-		
-		// Determine end time by adding ETA seconds to start time
-		self.routeDateTimeEnd = [NSDate dateWithTimeInterval:response.expectedTravelTime sinceDate:self.dateTimeStart];
 		[Util saveManagedObjectContext];
+		[self postNotificationUpdatedWithSender:sender];
+//		if (self.teamAssigned) {
+//			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:sender userInfo:@{TEAM_ENTITY_NAME:self.teamAssigned}];
+//		}
 		NSLog(@"Ride: %@", self);
-		
-		// Notify that ride and assigned team have updated
-		[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:self userInfo:@{RIDE_ENTITY_NAME:self}];
-		if (self.teamAssigned) {
-			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:self userInfo:@{TEAM_ENTITY_NAME:self.teamAssigned}];
-		}
 	}];
 }
 
@@ -258,6 +329,12 @@
 	directionsRequest.requestsAlternateRoutes = NO;
 	
 	return directionsRequest;
+}
+
+
+- (NSDate*)getRouteDateTimeEnd {
+
+	return self.dateTimeStart && self.routeDuration ? [NSDate dateWithTimeInterval:self.routeDuration.doubleValue sinceDate:self.dateTimeStart] : nil;
 }
 
 

@@ -18,12 +18,6 @@
 #define RIDE_TITLE_DEFAULT	@"(Ride)"
 #define RIDE_TITLE_NONE		@"-None-"
 
-#define RIDE_CREATED_NOTIFICATION_NAME					@"rideCreated"
-#define RIDE_UPDATED_NOTIFICATION_NAME					@"rideUpdated"
-#define RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY	@"rideUpdatedLocationStart"
-#define RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY		@"rideUpdatedLocationEnd"
-#define RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY		@"rideUpdatedTeamAssigned"
-
 #define RIDE_STATUS_STRING_NONE			@"None"
 #define RIDE_STATUS_STRING_NEW			@"New"
 #define RIDE_STATUS_STRING_CONFIRMED	@"Confirmed"
@@ -72,6 +66,24 @@ typedef NS_ENUM(NSInteger, RideLocationType) {
 + (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
 
 #
+# pragma mark Notifications
+#
+
++ (void)addCreatedObserver:(id)observer withSelector:(SEL)selector;
++ (void)addUpdatedObserver:(id)observer withSelector:(SEL)selector;
+
++ (Ride*)rideFromNotification:(NSNotification*)notification;
++ (BOOL)isUpdatedLocationStartFromNotification:(NSNotification*)notification;
++ (BOOL)isUpdatedLocationEndFromNotification:(NSNotification*)notification;
++ (BOOL)isUpdatedTeamAssignedFromNotification:(NSNotification*)notification;
+
+- (void)postNotificationCreatedWithSender:(id)sender;
+
+- (void)postNotificationUpdatedWithSender:(id)sender;
+- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocationStart:(BOOL)updatedLocationStart andUpdatedLocationEnd:(BOOL)updatedLocationEnd;
+- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocationStart:(BOOL)updatedLocationStart andUpdatedLocationEnd:(BOOL)updatedLocationEnd andUpdatedTeamAssigned:(BOOL)updatedTeamAssigned;
+
+#
 # pragma mark Helpers
 #
 
@@ -81,12 +93,13 @@ typedef NS_ENUM(NSInteger, RideLocationType) {
 - (void)updateLocationWithLatitude:(CLLocationDegrees)latitude andLogitude:(CLLocationDegrees)longitude andAddress:(NSString*)address andCity:(NSString*)city andRideLocationType:(RideLocationType)rideLocationType;
 - (void)updateLocationWithPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType;
 
-- (void)tryUpdateLocationWithAddressString:(NSString*)addressString andRideLocationType:(RideLocationType)rideLocationType andGeocoder:(CLGeocoder*)geocoder;
-- (void)tryUpdateRouteDurationAndDateTimeEnd;
+- (void)tryUpdateLocationWithAddressString:(NSString*)addressString andRideLocationType:(RideLocationType)rideLocationType andGeocoder:(CLGeocoder*)geocoder andSender:(id)sender;
+- (void)tryUpdateRouteDurationWithSender:(id)sender;
 
 - (NSString*)getPassengerName;
 - (NSString*)getTitle;
 - (MKDirectionsRequest*)getDirectionsRequest;
+- (NSDate*)getRouteDateTimeEnd;
 
 + (NSString*)stringFromStatus:(RideStatus)status;
 + (RideStatus)statusFromString:(NSString*)statusString;

@@ -305,10 +305,10 @@
 
 - (void)addNotificationObservers {
 
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideCreatedWithNotification:) name:RIDE_CREATED_NOTIFICATION_NAME object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rideUpdatedWithNotification:) name:RIDE_UPDATED_NOTIFICATION_NAME object:nil];
+	[Ride addCreatedObserver:self withSelector:@selector(rideCreatedWithNotification:)];
+	[Ride addUpdatedObserver:self withSelector:@selector(rideUpdatedWithNotification:)];
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(teamUpdatedWithNotification:) name:TEAM_UPDATED_NOTIFICATION_NAME object:nil];
+//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(teamUpdatedWithNotification:) name:TEAM_UPDATED_NOTIFICATION_NAME object:nil];
 }
 
 
@@ -353,7 +353,8 @@
 	NSString* startAddress = ride.locationStartAddress.length > 0 ? ride.locationStartAddress : RIDES_CELL_FIELD_EMPTY;
 	NSString* startDetail = [NSString stringWithFormat:@"Start: %@ -> %@", startDateString, startAddress];
 	
-	NSString* endDateString = ride.routeDateTimeEnd ? [self.cellDateFormatter stringFromDate:ride.routeDateTimeEnd]: RIDES_CELL_FIELD_EMPTY;
+	NSDate* routeDateTimeEnd = [ride getRouteDateTimeEnd];
+	NSString* endDateString = routeDateTimeEnd ? [self.cellDateFormatter stringFromDate:routeDateTimeEnd]: RIDES_CELL_FIELD_EMPTY;
 	NSString* endAddress = ride.locationEndAddress.length > 0 ? ride.locationEndAddress : RIDES_CELL_FIELD_EMPTY;
 	NSString* endDetail = [NSString stringWithFormat:@"End: %@ -> %@", endDateString, endAddress];
 	
