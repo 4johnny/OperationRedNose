@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2078B861A9DB406004AF662 /* MainMapViewController.m */; };
 		B209BFB01AB689090093E8E5 /* Team.m in Sources */ = {isa = PBXBuildFile; fileRef = B209BFAF1AB689090093E8E5 /* Team.m */; };
-		B220A8771AB7B8CB00FEE202 /* Ride.m in Sources */ = {isa = PBXBuildFile; fileRef = B220A8761AB7B8CB00FEE202 /* Ride.m */; };
+		B225A5AF1AB7F3620077B8C7 /* Ride.m in Sources */ = {isa = PBXBuildFile; fileRef = B225A5AE1AB7F3620077B8C7 /* Ride.m */; };
 		B228F3311AB04CB0001AF527 /* MainMapViewController-Snapshot.m in Sources */ = {isa = PBXBuildFile; fileRef = B228F3301AB04CB0001AF527 /* MainMapViewController-Snapshot.m */; };
 		B24580B51AB5460B0090758E /* NSString+StringHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B24580B41AB5460B0090758E /* NSString+StringHelpers.m */; };
 		B24580B81AB584C00090758E /* BaseNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = B24580B71AB584C00090758E /* BaseNavigationController.m */; };
@@ -54,8 +54,8 @@
 		B2078B8E1A9DC043004AF662 /* ORNDataModelSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ORNDataModelSource.h; sourceTree = "<group>"; };
 		B209BFAE1AB689090093E8E5 /* Team.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Team.h; sourceTree = "<group>"; };
 		B209BFAF1AB689090093E8E5 /* Team.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Team.m; sourceTree = "<group>"; };
-		B220A8751AB7B8CB00FEE202 /* Ride.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ride.h; sourceTree = "<group>"; };
-		B220A8761AB7B8CB00FEE202 /* Ride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ride.m; sourceTree = "<group>"; };
+		B225A5AD1AB7F3620077B8C7 /* Ride.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ride.h; sourceTree = "<group>"; };
+		B225A5AE1AB7F3620077B8C7 /* Ride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ride.m; sourceTree = "<group>"; };
 		B228F3301AB04CB0001AF527 /* MainMapViewController-Snapshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "MainMapViewController-Snapshot.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		B24580B31AB5460B0090758E /* NSString+StringHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+StringHelpers.h"; sourceTree = "<group>"; };
 		B24580B41AB5460B0090758E /* NSString+StringHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+StringHelpers.m"; sourceTree = "<group>"; };
@@ -143,8 +143,8 @@
 		B24D4FD21A9D98E9008A0C7A /* Generated */ = {
 			isa = PBXGroup;
 			children = (
-				B220A8751AB7B8CB00FEE202 /* Ride.h */,
-				B220A8761AB7B8CB00FEE202 /* Ride.m */,
+				B225A5AD1AB7F3620077B8C7 /* Ride.h */,
+				B225A5AE1AB7F3620077B8C7 /* Ride.m */,
 				B209BFAE1AB689090093E8E5 /* Team.h */,
 				B209BFAF1AB689090093E8E5 /* Team.m */,
 			);
@@ -440,7 +440,7 @@
 				B2C7561E1AA1A97900B148D3 /* TeamDetailTableViewController.m in Sources */,
 				B24580B51AB5460B0090758E /* NSString+StringHelpers.m in Sources */,
 				B2E76A251AA6D0A3004B55BB /* TeamPointAnnotation.m in Sources */,
-				B220A8771AB7B8CB00FEE202 /* Ride.m in Sources */,
+				B225A5AF1AB7F3620077B8C7 /* Ride.m in Sources */,
 				B25220331AA0412C00C3CE00 /* DemoUtil.m in Sources */,
 				B27533451A9DA91700B3110C /* MainTabBarController.m in Sources */,
 				B2C756251AA1BA8B00B148D3 /* Util.m in Sources */,

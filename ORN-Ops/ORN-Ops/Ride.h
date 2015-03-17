@@ -36,7 +36,7 @@
 @property (nonatomic, retain) NSNumber * status;
 @property (nonatomic, retain) NSString * vehicleDescription;
 @property (nonatomic, retain) NSNumber * vehicleSeatBeltCount;
-@property (nonatomic, retain) NSString * vehicleTransmission;
+@property (nonatomic, retain) NSNumber * vehicleTransmission;
 @property (nonatomic, retain) Team *teamAssigned;
 
 @end

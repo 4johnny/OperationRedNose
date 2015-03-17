@@ -368,7 +368,7 @@
 	
 	// Load vehicle fields
 	self.vehicleDescriptionTextField.text = self.ride.vehicleDescription;
-	self.vehicleTransmissionSegmentedControl.selectedSegmentIndex = [self.ride.vehicleTransmission isEqualToString:@"Manual"] ? 1 : 0; // "Automatic" at index 0
+	self.vehicleTransmissionSegmentedControl.selectedSegmentIndex = self.ride.vehicleTransmission.integerValue == VehicleTransmission_Manual ? 1 : 0; // enum VehicleTransmission
 	[self.seatBeltCountPickerView selectRow:self.ride.vehicleSeatBeltCount.longValue inComponent:0 animated:NO];
 	
 	// Load notes fields
@@ -457,8 +457,8 @@
 	
 	// Save vehicle fields
 	self.ride.vehicleDescription = [self.vehicleDescriptionTextField.text trimAll];
-	self.ride.vehicleTransmission = self.vehicleTransmissionSegmentedControl.selectedSegmentIndex == 1 ? @"Manual" : @"Automatic";
-	self.ride.vehicleSeatBeltCount = [NSNumber numberWithLong:[self.seatBeltCountPickerView selectedRowInComponent:0]];
+	self.ride.vehicleTransmission = [NSNumber numberWithInteger:self.vehicleTransmissionSegmentedControl.selectedSegmentIndex + 1]; // enum VehicleTransmission
+	self.ride.vehicleSeatBeltCount = [NSNumber numberWithInteger:[self.seatBeltCountPickerView selectedRowInComponent:0]];
 	
 	// Save notes fields
 	self.ride.notes = [self.notesTextView.text trimAll];
