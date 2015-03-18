@@ -15,7 +15,8 @@
 # pragma mark - Constants
 #
 
-#define DONATION_TEXT_LENGTH_MAX	8 // NOTE: Limit to ensure number fits in NSDecimal
+#define DONATION_TEXT_LENGTH_MAX	8 // NOTE: Arbitrary limit to ensure number fits in NSDecimal
+#define DONATION_TEXT_DECIMAL_COUNT	2
 
 
 #
@@ -271,7 +272,7 @@
 		NSRange range = [newString rangeOfString:@"."];
 		if (range.location != NSNotFound) {
 			NSString* decimalNumbers = [newString substringFromIndex:range.location + 1];
-			if (decimalNumbers.length > 2) return NO;
+			if (decimalNumbers.length > DONATION_TEXT_DECIMAL_COUNT) return NO;
 		}
 	}
 	
