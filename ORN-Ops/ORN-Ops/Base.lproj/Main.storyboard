@@ -468,7 +468,7 @@
                         <sections>
                             <tableViewSection headerTitle="Dispatch" id="j0Z-V6-tcg">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="235" id="TIY-Ve-7qH">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="128" id="TIY-Ve-7qH">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="TIY-Ve-7qH" id="pV4-TZ-XLg">
                                             <autoresizingMask key="autoresizingMask"/>
@@ -498,15 +498,13 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fD5-6F-yV7">
-                                                    <rect key="frame" x="127" y="75" width="300" height="162"/>
-                                                    <connections>
-                                                        <outlet property="dataSource" destination="EOY-Bm-UjH" id="lGN-B9-DrL"/>
-                                                        <outlet property="delegate" destination="EOY-Bm-UjH" id="nlQ-pL-DWc"/>
-                                                    </connections>
-                                                </pickerView>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3cO-Ch-uLF" customClass="PickerTextField">
+                                                    <rect key="frame" x="127" y="84" width="465" height="30"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                </textField>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Team:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QyG-aL-jzr">
-                                                    <rect key="frame" x="8" y="145" width="111" height="21"/>
+                                                    <rect key="frame" x="8" y="88" width="111" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -518,7 +516,7 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Passenger" id="6ib-tf-wHn">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="161" id="ZwG-k0-NeR">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="165" id="ZwG-k0-NeR">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZwG-k0-NeR" id="OJ1-z4-CeL">
                                             <autoresizingMask key="autoresizingMask"/>
@@ -583,7 +581,7 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Location" id="oIT-Po-O8x">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="158" id="Bgy-9r-LNI">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="164" id="Bgy-9r-LNI">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Bgy-9r-LNI" id="hZR-Je-Ww1">
                                             <autoresizingMask key="autoresizingMask"/>
@@ -775,7 +773,7 @@
                         <outlet property="sourceTextField" destination="dfs-3U-IDE" id="Cvg-5W-XbN"/>
                         <outlet property="startAddressTextField" destination="3TX-fo-Cgp" id="VcG-mw-772"/>
                         <outlet property="startTimeDatePicker" destination="VSV-Fr-3SI" id="qJO-YS-Cf0"/>
-                        <outlet property="teamAssignedPickerView" destination="fD5-6F-yV7" id="J1q-Xd-Xk7"/>
+                        <outlet property="teamAssignedPickerTextField" destination="3cO-Ch-uLF" id="gdn-fc-Jxu"/>
                         <outlet property="transferFromTextField" destination="QXi-YE-uih" id="VXL-cC-gGC"/>
                         <outlet property="transferToTextField" destination="I2S-Hh-jlz" id="RsQ-cn-ohv"/>
                         <outlet property="vehicleDescriptionTextField" destination="di8-Pe-bJF" id="iNE-AF-c1p"/>

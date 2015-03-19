@@ -154,89 +154,6 @@
 
 
 #
-# pragma mark <UIPickerViewDataSource>
-#
-
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView*)pickerView {
-	
-	return 1;
-}
-
-
-- (NSInteger)pickerView:(UIPickerView*)pickerView numberOfRowsInComponent:(NSInteger)component {
-	
-	if (pickerView == self.teamAssignedPickerView) return self.teamFetchedResultsController.fetchedObjects.count + 1;
-	
-	return 0;
-}
-
-
-#
-# pragma mark <UIPickerViewDelegate>
-#
-
-
-- (void)pickerView:(UIPickerView*)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
-	
-	[self.view endEditing:YES];
-}
-
-
-- (CGFloat)pickerView:(UIPickerView*)pickerView rowHeightForComponent:(NSInteger)component {
-	
-	return 20; // points
-}
-
-
-- (CGFloat)pickerView:(UIPickerView*)pickerView widthForComponent:(NSInteger)component {
-	
-	if (pickerView == self.teamAssignedPickerView) return 300;
-	
-	return 0; // points
-}
-
-
-- (NSString*)pickerView:(UIPickerView*)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-	
-	if (pickerView == self.teamAssignedPickerView) {
-		
-		if (row == 0) return TEAM_TITLE_NONE;
-		
-		Team* team = self.teamFetchedResultsController.fetchedObjects[row - 1];
-		
-		return [team getTitle];
-	}
-
-	return nil;
-}
-
-
-- (NSAttributedString*)pickerView:(UIPickerView*)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component {
-	
-	if (pickerView == self.teamAssignedPickerView) {
-		
-		// Left-align team titles
-		NSString* title = [self pickerView:pickerView titleForRow:row forComponent:component];
-		NSMutableParagraphStyle* mutableParagraphStyle = [[NSMutableParagraphStyle alloc] init];
-		mutableParagraphStyle.alignment = NSTextAlignmentLeft;
-		NSMutableAttributedString* attributedTitle = [[NSMutableAttributedString alloc] initWithString:title attributes:@{NSParagraphStyleAttributeName:mutableParagraphStyle}];
-		
-		return attributedTitle;
-	}
-	
-	return nil; // NOTE: Falls back to "pickerView:titleForRow:forComponent:"
-}
-
-
-/*
- - (UIView*)pickerView:(UIPickerView*)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView*)view {
-	
-	return view;
- }
- */
-
-
-#
 # pragma mark <UITextFieldDelegate>
 #
 
@@ -319,13 +236,31 @@
 
 - (void)configureView {
 	
+	[self configureTeamAssignedPickerTextField];
 	[self configureRangeForStartTimeDatePicker];
 	
 	[self loadDataModelIntoView];
 }
 
 
-// Constrain start-time date picker to range between 1 day before and after now
+- (void)configureTeamAssignedPickerTextField {
+
+	NSMutableArray* teamTitles = [NSMutableArray arrayWithCapacity:self.teamFetchedResultsController.fetchedObjects.count + 1];
+	
+	[teamTitles addObject:TEAM_TITLE_NONE];
+	
+	for (Team* team in self.teamFetchedResultsController.fetchedObjects) {
+		
+		[teamTitles addObject:[team getTitle]];
+	}
+	
+	self.teamAssignedPickerTextField.titles = teamTitles;
+}
+
+
+/*
+ Constrain start-time date picker to range between 1 day before and after now
+ */
 - (void)configureRangeForStartTimeDatePicker {
 	
 	// Get date-time for now, and Gregorian calendar
@@ -349,7 +284,7 @@
 	// Load dispatch fields
 	self.sourceTextField.text = self.ride.sourceName;
 	self.donationTextField.text = self.ride.donationAmount ? self.ride.donationAmount.stringValue : @"";
-	[self.teamAssignedPickerView selectRow:(self.ride.teamAssigned ? [self.teamFetchedResultsController.fetchedObjects indexOfObject:self.ride.teamAssigned] + 1 : 0) inComponent:0 animated:NO]; // "None" at index 0
+	self.teamAssignedPickerTextField.selectedRow = self.ride.teamAssigned ? [self.teamFetchedResultsController.fetchedObjects indexOfObject:self.ride.teamAssigned] + 1 : 0; // "None" at index 0
 	
 	// Load passenger fields
 	self.firstNameTextField.text = self.ride.passengerNameFirst;
@@ -385,8 +320,7 @@
 	
 	// Save dispatch field: team assigned
 	Team* existingTeamAssigned = self.ride.teamAssigned; // Maybe nil
-	NSInteger selectedTeamRow = [self.teamAssignedPickerView selectedRowInComponent:0];
-	Team* newTeamAssigned = selectedTeamRow > 0 ? self.teamFetchedResultsController.fetchedObjects[selectedTeamRow - 1] : nil; // "None" at index 0
+	Team* newTeamAssigned = self.teamAssignedPickerTextField.selectedRow > 0 ? self.teamFetchedResultsController.fetchedObjects[self.teamAssignedPickerTextField.selectedRow - 1] : nil; // "None" at index 0
 	BOOL updatedTeamAssigned = (existingTeamAssigned != newTeamAssigned);
 	if (updatedTeamAssigned) {
 		

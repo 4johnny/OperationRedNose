@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "Ride+RideHelpers.h"
+#import "PickerTextField.h"
 
 #
 # pragma mark - Constants
@@ -19,7 +20,7 @@
 # pragma mark - Interface
 #
 
-@interface RideDetailTableViewController : UITableViewController <UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, NSFetchedResultsControllerDelegate>
+@interface RideDetailTableViewController : UITableViewController <UITextFieldDelegate, NSFetchedResultsControllerDelegate>
 
 #
 # pragma mark Properties
@@ -34,7 +35,7 @@
 // Dispatch
 @property (weak, nonatomic) IBOutlet UITextField *sourceTextField;
 @property (weak, nonatomic) IBOutlet UITextField *donationTextField;
-@property (weak, nonatomic) IBOutlet UIPickerView *teamAssignedPickerView;
+@property (weak, nonatomic) IBOutlet PickerTextField *teamAssignedPickerTextField;
 
 // Passenger
 @property (weak, nonatomic) IBOutlet UITextField *firstNameTextField;

@@ -895,7 +895,7 @@
 		
 		// Run all demo commands
 		[self handleCommandString:COMMAND_DEMO_RIDES];
-//		[self handleCommandString:COMMAND_DEMO_TEAMS];
+		[self handleCommandString:COMMAND_DEMO_TEAMS];
 //		[self handleCommandString:COMMAND_DEMO_ASSIGN];
 		
 		isCommandHandled = YES;
@@ -909,15 +909,15 @@
 		needsDataModelSave = YES;
 		isCommandHandled = YES;
 		
-//	} else if ([COMMAND_DEMO_TEAMS isEqualToString:commandString]) {
-//		
-//		// Load all demo teams
-//		[DemoUtil loadDemoTeamsIntoManagedObjectContext:self.managedObjectContext];
-//		[self configureTeamsViewWithNeedsAnimatesDrop:YES];
-//
-//		needsDataModelSave = YES;
-//		isCommandHandled = YES;
-//		
+	} else if ([COMMAND_DEMO_TEAMS isEqualToString:commandString]) {
+		
+		// Load all demo teams
+		[self configureJurisdictionRegionView];
+		[DemoUtil loadDemoTeams];
+
+		needsDataModelSave = YES;
+		isCommandHandled = YES;
+		
 //	} else if ([COMMAND_DEMO_ASSIGN isEqualToString:commandString]) {
 //		
 //		// Assign teams to rides
