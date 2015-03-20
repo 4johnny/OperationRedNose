@@ -60,7 +60,7 @@
 #
 
 
-- (void)setTitles:(NSArray *)titles {
+- (void)setTitles:(NSArray*)titles {
 
 	_titles = titles;
 }
@@ -114,7 +114,7 @@
 
 - (CGRect)rightViewRectForBounds:(CGRect)bounds {
 
-	// Right-hand side of text field
+	// Right-hand side of text field for down arrow button
 	return CGRectMake(bounds.size.width - 30, 0, 30, bounds.size.height);
 }
 
@@ -155,7 +155,7 @@
 
 - (void)pickerView:(UIPickerView*)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
 	
-	self.attributedText = [self pickerView:self.pickerView attributedTitleForRow:row forComponent:component];
+	self.text = [self pickerView:self.pickerView titleForRow:row forComponent:component];
 }
 
 
@@ -169,11 +169,27 @@
 	
 	// Left-align titles
 	NSString* title = [self pickerView:pickerView titleForRow:row forComponent:component];
-	NSMutableParagraphStyle* mutableParagraphStyle = [[NSMutableParagraphStyle alloc] init];
-	mutableParagraphStyle.alignment = NSTextAlignmentLeft;
-	NSMutableAttributedString* attributedTitle = [[NSMutableAttributedString alloc] initWithString:title attributes:@{NSParagraphStyleAttributeName:mutableParagraphStyle}];
+	NSMutableParagraphStyle* paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+	paragraphStyle.alignment = NSTextAlignmentLeft;
+	NSMutableAttributedString* attributedTitle = [[NSMutableAttributedString alloc] initWithString:title attributes:@{NSParagraphStyleAttributeName:paragraphStyle}];
 	
 	return attributedTitle;
+}
+
+
+- (UIView*)pickerView:(UIPickerView*)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView*)view {
+
+	UILabel* label = (UILabel*)view;
+	if (!label) {
+		
+		label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [pickerView rowSizeForComponent:component].width - 16, [pickerView rowSizeForComponent:component].height)];
+		
+		label.text = [self pickerView:pickerView titleForRow:row forComponent:component];
+		label.backgroundColor = [UIColor whiteColor];
+		label.font = [UIFont fontWithName:label.font.fontName size:20];
+	}
+	
+	return label;
 }
 
 
