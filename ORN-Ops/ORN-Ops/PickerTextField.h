@@ -7,12 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BasePickerTextField.h"
 
 #
 # pragma mark - Interface
 #
 
-@interface PickerTextField : UITextField <UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
+@interface PickerTextField : BasePickerTextField <UIPickerViewDataSource, UIPickerViewDelegate>
 
 #
 # pragma mark Properties

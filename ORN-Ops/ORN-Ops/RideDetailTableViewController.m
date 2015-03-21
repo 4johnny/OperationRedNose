@@ -18,6 +18,11 @@
 #define DONATION_TEXT_LENGTH_MAX	8 // NOTE: Arbitrary limit to ensure number fits in NSDecimal
 #define DONATION_TEXT_DECIMAL_COUNT	2
 
+#define TIME_MINUTE_INTERVAL	15
+
+#define DATE_PICKER_LOCALE				@"en_CA"
+#define DATE_PICKER_DATETIME_FORMAT		@"EEE MMM dd HH:mm"
+
 
 #
 # pragma mark Data Model Constants
@@ -108,19 +113,10 @@
 	
 	// Uncomment the following line to display an Edit button in the navigation bar for this view controller.
 	// self.navigationItem.rightBarButtonItem = self.editButtonItem;
-	
-	// HACK: Recreate start-time date picker in code, since UI bug causes middle components to white out on iPad
-	// TODO: Remove hack code if/when Apple fixes bug
-	UIView* superview = self.startTimeDatePicker.superview;
-	[self.startTimeDatePicker removeFromSuperview];
-	NSLocale* locale = self.startTimeDatePicker.locale;
-	NSInteger minuteInterval = self.startTimeDatePicker.minuteInterval;
-	UIDatePicker* startTimeDatePicker = [[UIDatePicker alloc] initWithFrame:self.startTimeDatePicker.frame];
-	self.startTimeDatePicker = startTimeDatePicker; // NOTE: Need local strong var since Outlet is weak
-	self.startTimeDatePicker.locale = locale;
-	self.startTimeDatePicker.minuteInterval = minuteInterval;
-	[superview addSubview:self.startTimeDatePicker];
-	// END HACK
+
+	// Extend edge "under bottom bars" to improve aesthetics when popping view controller
+	// NOTE: Done manually so that storyboard easier to design with
+	self.edgesForExtendedLayout = UIRectEdgeBottom;
 	
 	[self configureView];
 }
@@ -237,7 +233,7 @@
 - (void)configureView {
 	
 	[self configureTeamAssignedPickerTextField];
-	[self configureRangeForStartTimeDatePicker];
+	[self configureStartTimeDatePickerTextField];
 	
 	[self loadDataModelIntoView];
 }
@@ -259,9 +255,14 @@
 
 
 /*
- Constrain start-time date picker to range between 1 day before and after now
+ Constrain start-time date picker
  */
-- (void)configureRangeForStartTimeDatePicker {
+- (void)configureStartTimeDatePickerTextField {
+
+	// Basic config
+	self.startTimeDatePickerTextField.minuteInterval = TIME_MINUTE_INTERVAL;
+	self.startTimeDatePickerTextField.locale = [NSLocale localeWithLocaleIdentifier:DATE_PICKER_LOCALE];
+	self.startTimeDatePickerTextField.dateFormat = DATE_PICKER_DATETIME_FORMAT;
 	
 	// Get date-time for now, and Gregorian calendar
 	NSDate* now = [NSDate date];
@@ -270,11 +271,11 @@
 	// Minimum date-time is one day before now
 	NSDateComponents* offsetComponents = [[NSDateComponents alloc] init];
 	offsetComponents.day = -1;
-	self.startTimeDatePicker.minimumDate = [gregorianCalendar dateByAddingComponents:offsetComponents toDate:now options:0];
+	self.startTimeDatePickerTextField.minimumDate = [gregorianCalendar dateByAddingComponents:offsetComponents toDate:now options:0];
 	
 	// Maximum date-time is one day from now
 	offsetComponents.day = 1;
-	self.startTimeDatePicker.maximumDate = [gregorianCalendar dateByAddingComponents:offsetComponents toDate:now options:0];
+	self.startTimeDatePickerTextField.maximumDate = [gregorianCalendar dateByAddingComponents:offsetComponents toDate:now options:0];
 }
 
 
@@ -282,9 +283,10 @@
 - (void)loadDataModelIntoView {
 	
 	// Load dispatch fields
+	self.startTimeDatePickerTextField.date = self.ride.dateTimeStart;
+	self.teamAssignedPickerTextField.selectedRow = self.ride.teamAssigned ? [self.teamFetchedResultsController.fetchedObjects indexOfObject:self.ride.teamAssigned] + 1 : 0; // "None" at index 0
 	self.sourceTextField.text = self.ride.sourceName;
 	self.donationTextField.text = self.ride.donationAmount ? self.ride.donationAmount.stringValue : @"";
-	self.teamAssignedPickerTextField.selectedRow = self.ride.teamAssigned ? [self.teamFetchedResultsController.fetchedObjects indexOfObject:self.ride.teamAssigned] + 1 : 0; // "None" at index 0
 	
 	// Load passenger fields
 	self.firstNameTextField.text = self.ride.passengerNameFirst;
@@ -305,18 +307,19 @@
 	
 	// Load notes fields
 	self.notesTextView.text = self.ride.notes;
-	
-	// Load time fields
-	self.startTimeDatePicker.date = self.ride.dateTimeStart;
 }
 
 
 // Save ride data model from view fields
 - (void)saveDataModelFromView {
 	
-	// Save dispatch fields
-	self.ride.sourceName = [self.sourceTextField.text trim];
-	self.ride.donationAmount = self.donationTextField.text.length > 0 ? [NSDecimalNumber decimalNumberWithString:self.donationTextField.text] : nil;
+	// Save dispatch field: start time - try async calculate route duration
+	if (![Util compareDate:self.ride.dateTimeStart toDate:self.startTimeDatePickerTextField.date]) {
+		
+		self.ride.dateTimeStart = self.startTimeDatePickerTextField.date;
+		self.ride.routeDuration = nil;
+		[self.ride tryUpdateRouteDurationWithSender:self]; // async
+	}
 	
 	// Save dispatch field: team assigned
 	Team* existingTeamAssigned = self.ride.teamAssigned; // Maybe nil
@@ -341,6 +344,10 @@
 		// Add new team assigned to ride
 		self.ride.teamAssigned = newTeamAssigned;
 	}
+	
+	// Save other dispatch fields
+	self.ride.sourceName = [self.sourceTextField.text trim];
+	self.ride.donationAmount = self.donationTextField.text.length > 0 ? [NSDecimalNumber decimalNumberWithString:self.donationTextField.text] : nil;
 	
 	// Save passenger fields
 	self.ride.passengerNameFirst = [self.firstNameTextField.text trimAll];
@@ -392,14 +399,6 @@
 	// Save notes fields
 	self.ride.notes = [self.notesTextView.text trimAll];
 	
-	// Save time fields - try async calculate route duration
-	if (![Util compareDate:self.ride.dateTimeStart toDate:self.startTimeDatePicker.date]) {
-		
-		self.ride.dateTimeStart = self.startTimeDatePicker.date;
-		self.ride.routeDuration = nil;
-		[self.ride tryUpdateRouteDurationWithSender:self]; // async
-	}
-
 	// Persist data model to disk and notify observers
 	[Util saveManagedObjectContext];
 	[self.ride postNotificationUpdatedWithSender:self andUpdatedLocationStart:updatedLocationStart andUpdatedLocationEnd:updatedLocationEnd andUpdatedTeamAssigned:updatedTeamAssigned];

@@ -15,6 +15,9 @@
 
 #define SECONDS_PER_MINUTE	60
 
+#define ARROW_BUTTON_WIDTH	30
+#define DOWN_ARROW_STRING	@"▼"
+
 #
 # pragma mark Map Constants
 #
@@ -77,5 +80,11 @@
 
 + (NSManagedObjectContext*)managedObjectContext;
 + (void)saveManagedObjectContext;
+
+#
+# pragma mark Controls
+#
+
++ (UIButton*)downArrowButton;
 
 @end

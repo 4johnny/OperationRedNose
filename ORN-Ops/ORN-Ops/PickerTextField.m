@@ -10,12 +10,18 @@
 
 
 #
+# pragma mark - Constants
+#
+
+#define LAYOUT_BUFFER_POINTS	8
+
+#
 # pragma mark - Interface
 #
 
 @interface PickerTextField ()
 
-@property (readonly, nonatomic) UIPickerView* pickerView;
+@property (readonly, nonatomic) UIPickerView* pickerView; // decorated picker view
 
 @end
 
@@ -29,39 +35,12 @@
 
 
 #
-# pragma mark Initializers
-#
-
-
-- (instancetype)initWithCoder:(NSCoder*)coder {
-	self = [super initWithCoder:coder];
-	
-	if (self) {
-		
-		self.delegate = self;
-		
-		UIButton* rightViewDownArrowButton = [UIButton buttonWithType:UIButtonTypeSystem];
-		[rightViewDownArrowButton setTitle:@"▼" forState:UIControlStateNormal];
-		self.rightView = rightViewDownArrowButton;
-		self.rightViewMode = UITextFieldViewModeAlways;
-
-		_pickerView = [[UIPickerView alloc] initWithFrame:CGRectZero];
-		_pickerView.delegate = self;
-		_pickerView.showsSelectionIndicator = YES;
-		self.inputView = _pickerView;
-	}
-	
-	return self;
-}
-
-
-#
 # pragma mark Property Accessors
 #
 
 
 - (void)setTitles:(NSArray*)titles {
-
+	
 	_titles = titles;
 }
 
@@ -76,6 +55,27 @@
 	
 	[self.pickerView selectRow:selectedRow inComponent:0 animated:NO];
 	self.attributedText = [self pickerView:self.pickerView attributedTitleForRow:selectedRow forComponent:0];
+}
+
+
+#
+# pragma mark Initializers
+#
+
+
+- (instancetype)initWithCoder:(NSCoder*)coder {
+	self = [super initWithCoder:coder];
+	
+	if (self) {
+		
+		// Create picker view to be decorated - wire up delegate
+		_pickerView = [[UIPickerView alloc] initWithFrame:CGRectZero];
+		_pickerView.showsSelectionIndicator = YES;
+		_pickerView.delegate = self;
+		self.inputView = _pickerView;
+	}
+	
+	return self;
 }
 
 
@@ -98,37 +98,6 @@
  // Drawing code
  }
  */
-
-
-#
-# pragma mark UITextField
-#
-
-
-- (CGRect)caretRectForPosition:(UITextPosition*)position {
-	
-	// Hide caret
-	return CGRectZero;
-}
-
-
-- (CGRect)rightViewRectForBounds:(CGRect)bounds {
-
-	// Right-hand side of text field for down arrow button
-	return CGRectMake(bounds.size.width - 30, 0, 30, bounds.size.height);
-}
-
-
-#
-# pragma mark <UITextFieldDelegate>
-#
-
-
-- (BOOL)textField:(UITextField*)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString*)string {
-	
-	// Disable input via external keyboard
-	return NO;
-}
 
 
 #
@@ -182,7 +151,7 @@
 	UILabel* label = (UILabel*)view;
 	if (!label) {
 		
-		label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [pickerView rowSizeForComponent:component].width - 16, [pickerView rowSizeForComponent:component].height)];
+		label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [pickerView rowSizeForComponent:component].width - (2 * LAYOUT_BUFFER_POINTS), [pickerView rowSizeForComponent:component].height)];
 		
 		label.text = [self pickerView:pickerView titleForRow:row forComponent:component];
 		label.backgroundColor = [UIColor whiteColor];

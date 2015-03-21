@@ -114,4 +114,17 @@
 }
 
 
+#
+# pragma mark Controls
+#
+
++ (UIButton*)downArrowButton {
+	
+	UIButton* downArrowButton = [UIButton buttonWithType:UIButtonTypeSystem];
+	[downArrowButton setTitle:DOWN_ARROW_STRING forState:UIControlStateNormal];
+	
+	return downArrowButton;
+}
+
+
 @end

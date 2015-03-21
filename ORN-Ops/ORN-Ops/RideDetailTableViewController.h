@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Ride+RideHelpers.h"
 #import "PickerTextField.h"
+#import "DatePickerTextField.h"
 
 #
 # pragma mark - Constants
@@ -33,9 +34,10 @@
 #
 
 // Dispatch
+@property (weak, nonatomic) IBOutlet DatePickerTextField *startTimeDatePickerTextField;
+@property (weak, nonatomic) IBOutlet PickerTextField *teamAssignedPickerTextField;
 @property (weak, nonatomic) IBOutlet UITextField *sourceTextField;
 @property (weak, nonatomic) IBOutlet UITextField *donationTextField;
-@property (weak, nonatomic) IBOutlet PickerTextField *teamAssignedPickerTextField;
 
 // Passenger
 @property (weak, nonatomic) IBOutlet UITextField *firstNameTextField;
@@ -48,9 +50,6 @@
 @property (weak, nonatomic) IBOutlet UITextField *endAddressTextField;
 @property (weak, nonatomic) IBOutlet UITextField *transferFromTextField;
 @property (weak, nonatomic) IBOutlet UITextField *transferToTextField;
-
-// Time
-@property (weak, nonatomic) IBOutlet UIDatePicker *startTimeDatePicker;
 
 // Vehicle
 @property (weak, nonatomic) IBOutlet UITextField *vehicleDescriptionTextField;
