@@ -29,6 +29,7 @@
 		B28312261AAF2A8100B7C1A9 /* BasePolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B28312251AAF2A8100B7C1A9 /* BasePolyline.m */; };
 		B28312291AAF322C00B7C1A9 /* RideStartEndPolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B28312281AAF322C00B7C1A9 /* RideStartEndPolyline.m */; };
 		B2907B841A9F1903008A0301 /* RidePointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B2907B831A9F1903008A0301 /* RidePointAnnotation.m */; };
+		B29CD76B1ABE9D3200B21579 /* NSDate+DateHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B29CD76A1ABE9D3200B21579 /* NSDate+DateHelpers.m */; };
 		B2B116BF1AB9191500F22B00 /* PickerTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B2B116BE1AB9191500F22B00 /* PickerTextField.m */; };
 		B2C756151AA1905E00B148D3 /* RidesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756141AA1905E00B148D3 /* RidesTableViewController.m */; };
 		B2C756181AA1912B00B148D3 /* RideDetailTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756171AA1912B00B148D3 /* RideDetailTableViewController.m */; };
@@ -92,6 +93,8 @@
 		B28312281AAF322C00B7C1A9 /* RideStartEndPolyline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RideStartEndPolyline.m; sourceTree = "<group>"; };
 		B2907B821A9F1903008A0301 /* RidePointAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RidePointAnnotation.h; sourceTree = "<group>"; };
 		B2907B831A9F1903008A0301 /* RidePointAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RidePointAnnotation.m; sourceTree = "<group>"; };
+		B29CD7691ABE9D3200B21579 /* NSDate+DateHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+DateHelpers.h"; sourceTree = "<group>"; };
+		B29CD76A1ABE9D3200B21579 /* NSDate+DateHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+DateHelpers.m"; sourceTree = "<group>"; };
 		B2B116BD1AB9191500F22B00 /* PickerTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PickerTextField.h; sourceTree = "<group>"; };
 		B2B116BE1AB9191500F22B00 /* PickerTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PickerTextField.m; sourceTree = "<group>"; };
 		B2C756131AA1905E00B148D3 /* RidesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RidesTableViewController.h; sourceTree = "<group>"; };
@@ -177,11 +180,8 @@
 			isa = PBXGroup;
 			children = (
 				B24D4FD21A9D98E9008A0C7A /* Generated */,
+				B29CD76D1ABE9D9C00B21579 /* Categories */,
 				B24D4FCF1A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld */,
-				B2DECCAC1AA14A8F001FFC8F /* Ride+RideHelpers.h */,
-				B2DECCAD1AA14A8F001FFC8F /* Ride+RideHelpers.m */,
-				B2E76A201AA64572004B55BB /* Team+TeamHelpers.h */,
-				B2E76A211AA64572004B55BB /* Team+TeamHelpers.m */,
 			);
 			name = "Data Model";
 			sourceTree = "<group>";
@@ -265,10 +265,11 @@
 				B25220351AA0441A00C3CE00 /* Storyboards */,
 				B25220361AA0444200C3CE00 /* Controllers */,
 				B25220371AA044B000C3CE00 /* Map Helpers */,
-				B25220301A9F391D00C3CE00 /* Data Model */,
-				B261725E1A9E595D00BB7D67 /* Protocols */,
 				B241B1DB1ABD35CA0075C99E /* Controls */,
+				B25220301A9F391D00C3CE00 /* Data Model */,
 				B25220341AA0415400C3CE00 /* Demo */,
+				B261725E1A9E595D00BB7D67 /* Protocols */,
+				B29CD76C1ABE9D6600B21579 /* Categories */,
 				B27B4A721A9AB1FB009277E4 /* Supporting Files */,
 			);
 			path = "ORN-Ops";
@@ -281,8 +282,6 @@
 				B27B4A771A9AB1FB009277E4 /* AppDelegate.m */,
 				B2C756231AA1BA8B00B148D3 /* Util.h */,
 				B2C756241AA1BA8B00B148D3 /* Util.m */,
-				B24580B31AB5460B0090758E /* NSString+StringHelpers.h */,
-				B24580B41AB5460B0090758E /* NSString+StringHelpers.m */,
 				B2C756261AA1BBD000B148D3 /* PrefixHeader.pch */,
 				B27B4A841A9AB1FB009277E4 /* LaunchScreen.xib */,
 				B27B4A821A9AB1FB009277E4 /* Images.xcassets */,
@@ -307,6 +306,28 @@
 				B27B4A901A9AB1FB009277E4 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B29CD76C1ABE9D6600B21579 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				B24580B31AB5460B0090758E /* NSString+StringHelpers.h */,
+				B24580B41AB5460B0090758E /* NSString+StringHelpers.m */,
+				B29CD7691ABE9D3200B21579 /* NSDate+DateHelpers.h */,
+				B29CD76A1ABE9D3200B21579 /* NSDate+DateHelpers.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
+		B29CD76D1ABE9D9C00B21579 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				B2DECCAC1AA14A8F001FFC8F /* Ride+RideHelpers.h */,
+				B2DECCAD1AA14A8F001FFC8F /* Ride+RideHelpers.m */,
+				B2E76A201AA64572004B55BB /* Team+TeamHelpers.h */,
+				B2E76A211AA64572004B55BB /* Team+TeamHelpers.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 		B2C7561F1AA1ACFE00B148D3 /* Teams */ = {
@@ -468,6 +489,7 @@
 				B25220331AA0412C00C3CE00 /* DemoUtil.m in Sources */,
 				B27533451A9DA91700B3110C /* MainTabBarController.m in Sources */,
 				B2C756251AA1BA8B00B148D3 /* Util.m in Sources */,
+				B29CD76B1ABE9D3200B21579 /* NSDate+DateHelpers.m in Sources */,
 				B2DECCAE1AA14A8F001FFC8F /* Ride+RideHelpers.m in Sources */,
 				B241B1DE1ABD408D0075C99E /* DatePickerTextField.m in Sources */,
 				B2B116BF1AB9191500F22B00 /* PickerTextField.m in Sources */,

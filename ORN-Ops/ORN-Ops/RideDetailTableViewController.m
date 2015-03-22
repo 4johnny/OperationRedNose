@@ -314,7 +314,7 @@
 - (void)saveDataModelFromView {
 	
 	// Save dispatch field: start time - try async calculate route duration
-	if (![Util compareDate:self.ride.dateTimeStart toDate:self.startTimeDatePickerTextField.date]) {
+	if (![NSDate compareDate:self.ride.dateTimeStart toDate:self.startTimeDatePickerTextField.date]) {
 		
 		self.ride.dateTimeStart = self.startTimeDatePickerTextField.date;
 		self.ride.routeDuration = nil;

@@ -13,7 +13,8 @@
 # pragma mark - Constants
 #
 
-#define LAYOUT_BUFFER_POINTS	8
+#define TITLE_FONT_SIZE		24
+#define ROW_HEIGHT_BUFFER	8
 
 #
 # pragma mark - Interface
@@ -22,6 +23,8 @@
 @interface PickerTextField ()
 
 @property (readonly, nonatomic) UIPickerView* pickerView; // decorated picker view
+
+@property (nonatomic) CGFloat maxTitleLabelWidth;
 
 @end
 
@@ -42,6 +45,8 @@
 - (void)setTitles:(NSArray*)titles {
 	
 	_titles = titles;
+	
+	self.maxTitleLabelWidth = -1;
 }
 
 
@@ -55,6 +60,18 @@
 	
 	[self.pickerView selectRow:selectedRow inComponent:0 animated:NO];
 	self.attributedText = [self pickerView:self.pickerView attributedTitleForRow:selectedRow forComponent:0];
+}
+
+
+- (CGFloat)maxTitleLabelWidth {
+
+	if (!(_maxTitleLabelWidth < 0)) return _maxTitleLabelWidth;
+	
+	NSString* longestTitle = [NSString longestStringInStrings:self.titles];
+	UILabel* longestTitleLabel = [PickerTextField labelWithTitle:longestTitle];
+	_maxTitleLabelWidth = [longestTitleLabel sizeThatFits:CG_SIZE_MAX].width;
+	
+	return _maxTitleLabelWidth;
 }
 
 
@@ -146,17 +163,36 @@
 }
 
 
+- (CGFloat)pickerView:(UIPickerView*)pickerView rowHeightForComponent:(NSInteger)component {
+	
+	return TITLE_FONT_SIZE + ROW_HEIGHT_BUFFER;
+}
+
+
 - (UIView*)pickerView:(UIPickerView*)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView*)view {
 
 	UILabel* label = (UILabel*)view;
 	if (!label) {
 		
-		label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [pickerView rowSizeForComponent:component].width - (2 * LAYOUT_BUFFER_POINTS), [pickerView rowSizeForComponent:component].height)];
-		
-		label.text = [self pickerView:pickerView titleForRow:row forComponent:component];
-		label.backgroundColor = [UIColor whiteColor];
-		label.font = [UIFont fontWithName:label.font.fontName size:20];
+		label = [PickerTextField labelWithTitle:[self pickerView:pickerView titleForRow:row forComponent:component]];
+		CGFloat labelWidth = MIN(self.maxTitleLabelWidth, pickerView.bounds.size.width);
+		label.frame = CGRectMake(0, 0, labelWidth, [self pickerView:pickerView rowHeightForComponent:component]);
 	}
+	
+	return label;
+}
+
+
+#
+# pragma mark Helpers
+#
+
+
++ (UILabel*)labelWithTitle:(NSString*)title {
+
+	UILabel* label = [[UILabel alloc] init];
+	label.text = title;
+	label.font = [UIFont fontWithName:label.font.fontName size:TITLE_FONT_SIZE];
 	
 	return label;
 }

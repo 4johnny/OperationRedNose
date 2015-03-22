@@ -38,4 +38,19 @@
 }
 
 
++ (NSString*)longestStringInStrings:(NSArray*)strings {
+	
+	NSString* longestString = nil;
+	
+	for (NSString* string in strings) {
+		
+		if (string.length <= longestString.length) continue;
+		
+		longestString = string;
+	}
+	
+	return longestString;
+}
+
+
 @end

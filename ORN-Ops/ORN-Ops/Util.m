@@ -19,17 +19,6 @@
 
 
 #
-# pragma mark Dates
-#
-
-
-+ (BOOL)compareDate:(NSDate*)firstDate toDate:(NSDate*)secondDate {
-	
-	return (!firstDate && !secondDate) || [firstDate isEqualToDate:secondDate];
-}
-
-
-#
 # pragma mark Responder
 #
 

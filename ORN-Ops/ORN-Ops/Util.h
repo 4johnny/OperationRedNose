@@ -18,6 +18,8 @@
 #define ARROW_BUTTON_WIDTH	30
 #define DOWN_ARROW_STRING	@"▼"
 
+#define CG_SIZE_MAX		CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
+
 #
 # pragma mark Map Constants
 #
@@ -48,12 +50,6 @@
 #
 
 @interface Util : NSObject
-
-#
-# pragma mark Dates
-#
-
-+ (BOOL)compareDate:(NSDate*)firstDate toDate:(NSDate*)secondDate;
 
 #
 # pragma mark Responder

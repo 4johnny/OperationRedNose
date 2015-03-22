@@ -17,6 +17,7 @@
 - (NSString*)trim;
 - (NSString*)trimAll;
 
++ (NSString*)longestStringInStrings:(NSArray*)strings;
 + (BOOL)compareString:(NSString*)firstString toString:(NSString*)secondString;
 
 @end
