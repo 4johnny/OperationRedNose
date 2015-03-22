@@ -152,10 +152,10 @@
 		B241B1DB1ABD35CA0075C99E /* Controls */ = {
 			isa = PBXGroup;
 			children = (
-				B241B1DF1ABD65330075C99E /* BasePickerTextField.h */,
-				B241B1E01ABD65330075C99E /* BasePickerTextField.m */,
 				B2EB5B6E1ABEE9F800FB3B5D /* BaseTextView.h */,
 				B2EB5B6F1ABEE9F800FB3B5D /* BaseTextView.m */,
+				B241B1DF1ABD65330075C99E /* BasePickerTextField.h */,
+				B241B1E01ABD65330075C99E /* BasePickerTextField.m */,
 				B2B116BD1AB9191500F22B00 /* PickerTextField.h */,
 				B2B116BE1AB9191500F22B00 /* PickerTextField.m */,
 				B241B1DC1ABD408D0075C99E /* DatePickerTextField.h */,
