@@ -37,8 +37,10 @@
 		B2C7561E1AA1A97900B148D3 /* TeamDetailTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C7561D1AA1A97900B148D3 /* TeamDetailTableViewController.m */; };
 		B2C756251AA1BA8B00B148D3 /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756241AA1BA8B00B148D3 /* Util.m */; };
 		B2DECCAE1AA14A8F001FFC8F /* Ride+RideHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2DECCAD1AA14A8F001FFC8F /* Ride+RideHelpers.m */; };
+		B2E12A9C1ABEE74F00CB5202 /* UIView+ViewHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E12A9B1ABEE74F00CB5202 /* UIView+ViewHelpers.m */; };
 		B2E76A221AA64572004B55BB /* Team+TeamHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E76A211AA64572004B55BB /* Team+TeamHelpers.m */; };
 		B2E76A251AA6D0A3004B55BB /* TeamPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E76A241AA6D0A3004B55BB /* TeamPointAnnotation.m */; };
+		B2EB5B701ABEE9F800FB3B5D /* BaseTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = B2EB5B6F1ABEE9F800FB3B5D /* BaseTextView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -110,10 +112,14 @@
 		B2C756261AA1BBD000B148D3 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		B2DECCAC1AA14A8F001FFC8F /* Ride+RideHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = "Ride+RideHelpers.h"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		B2DECCAD1AA14A8F001FFC8F /* Ride+RideHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "Ride+RideHelpers.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		B2E12A9A1ABEE74F00CB5202 /* UIView+ViewHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+ViewHelpers.h"; sourceTree = "<group>"; };
+		B2E12A9B1ABEE74F00CB5202 /* UIView+ViewHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ViewHelpers.m"; sourceTree = "<group>"; };
 		B2E76A201AA64572004B55BB /* Team+TeamHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Team+TeamHelpers.h"; sourceTree = "<group>"; };
 		B2E76A211AA64572004B55BB /* Team+TeamHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Team+TeamHelpers.m"; sourceTree = "<group>"; };
 		B2E76A231AA6D0A3004B55BB /* TeamPointAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeamPointAnnotation.h; sourceTree = "<group>"; };
 		B2E76A241AA6D0A3004B55BB /* TeamPointAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeamPointAnnotation.m; sourceTree = "<group>"; };
+		B2EB5B6E1ABEE9F800FB3B5D /* BaseTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseTextView.h; sourceTree = "<group>"; };
+		B2EB5B6F1ABEE9F800FB3B5D /* BaseTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseTextView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +154,8 @@
 			children = (
 				B241B1DF1ABD65330075C99E /* BasePickerTextField.h */,
 				B241B1E01ABD65330075C99E /* BasePickerTextField.m */,
+				B2EB5B6E1ABEE9F800FB3B5D /* BaseTextView.h */,
+				B2EB5B6F1ABEE9F800FB3B5D /* BaseTextView.m */,
 				B2B116BD1AB9191500F22B00 /* PickerTextField.h */,
 				B2B116BE1AB9191500F22B00 /* PickerTextField.m */,
 				B241B1DC1ABD408D0075C99E /* DatePickerTextField.h */,
@@ -315,6 +323,8 @@
 				B24580B41AB5460B0090758E /* NSString+StringHelpers.m */,
 				B29CD7691ABE9D3200B21579 /* NSDate+DateHelpers.h */,
 				B29CD76A1ABE9D3200B21579 /* NSDate+DateHelpers.m */,
+				B2E12A9A1ABEE74F00CB5202 /* UIView+ViewHelpers.h */,
+				B2E12A9B1ABEE74F00CB5202 /* UIView+ViewHelpers.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -496,8 +506,10 @@
 				B27B4A781A9AB1FB009277E4 /* AppDelegate.m in Sources */,
 				B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */,
 				B2C756151AA1905E00B148D3 /* RidesTableViewController.m in Sources */,
+				B2E12A9C1ABEE74F00CB5202 /* UIView+ViewHelpers.m in Sources */,
 				B2E76A221AA64572004B55BB /* Team+TeamHelpers.m in Sources */,
 				B28312261AAF2A8100B7C1A9 /* BasePolyline.m in Sources */,
+				B2EB5B701ABEE9F800FB3B5D /* BaseTextView.m in Sources */,
 				B28312291AAF322C00B7C1A9 /* RideStartEndPolyline.m in Sources */,
 				B2C756181AA1912B00B148D3 /* RideDetailTableViewController.m in Sources */,
 				B24D4FD11A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld in Sources */,
