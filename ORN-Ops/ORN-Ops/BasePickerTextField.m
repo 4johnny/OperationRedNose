@@ -39,8 +39,10 @@
 		// Wire up text field delegate
 		self.delegate = self;
 		
-		// Down-arrow on right side of text field
-		self.rightView = [Util downArrowButton];
+		// Arrow on right side of text field
+		UIButton* arrowButton = [Util downArrowButton];
+		[arrowButton addTarget:self action:@selector(arrowPressed:) forControlEvents:UIControlEventTouchUpInside];
+		self.rightView = arrowButton;
 		self.rightViewMode = UITextFieldViewModeAlways;
 	}
 	
@@ -89,6 +91,17 @@
 	
 	// Disable input via external keyboard
 	return NO;
+}
+
+
+#
+# pragma mark Action Handlers
+#
+
+
+- (IBAction)arrowPressed:(UIButton*)sender {
+	
+	[self becomeFirstResponder];
 }
 
 
