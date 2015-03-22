@@ -193,6 +193,18 @@
 }
 
 
+/*
+ User hit keyboard return key
+ */
+- (BOOL)textFieldShouldReturn:(UITextField*)textField {
+	
+	// Remove focus and keyboard
+	[textField resignFirstResponder];
+
+	return NO; // Do not perform default text-field behaviour
+}
+
+
 #
 # pragma mark <NSFetchedResultsControllerDelegate>
 #

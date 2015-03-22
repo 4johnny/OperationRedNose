@@ -257,8 +257,10 @@
 #
 
 
-// User hit keyboard return key
-// NOTE: Text field is *not* empty due to "auto-enable" of return key
+/*
+ User hit keyboard return key
+ NOTE: Text field is *not* empty due to "auto-enable" of return key
+ */
 - (BOOL)textFieldShouldReturn:(UITextField*)textField {
 	
 	// Remove focus and keyboard
