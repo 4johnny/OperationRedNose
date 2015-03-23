@@ -1028,7 +1028,7 @@
 		NSLog(@"Geocode address: %@", placemark.addressDictionary);
 		
 		// Use first placemark as start location for new ride
-		Ride* ride = [Ride rideWithManagedObjectContext:[Util managedObjectContext] andDateTime:[NSDate date] andPlacemark:placemark andRideLocationType:RideLocationType_Start];
+		Ride* ride = [Ride rideWithManagedObjectContext:[Util managedObjectContext] andDateTime:[NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL] andPlacemark:placemark andRideLocationType:RideLocationType_Start];
 		[Util saveManagedObjectContext];
 		[ride postNotificationCreatedWithSender:self];
 		NSLog(@"Ride: %@", ride);

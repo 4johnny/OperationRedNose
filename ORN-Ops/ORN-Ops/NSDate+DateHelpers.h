@@ -14,6 +14,22 @@
 
 @interface NSDate (DateHelpers)
 
+#
+# pragma mark Initializers
+#
+
++ (instancetype)dateRoundedToMinuteInterval:(NSInteger)minuteInterval;
+
+#
+# pragma mark Methods
+#
+
+- (NSDate*)roundToMinuteInterval:(NSInteger)minuteInterval;
+
+#
+# pragma mark Class Methods
+#
+
 + (BOOL)compareDate:(NSDate*)firstDate toDate:(NSDate*)secondDate;
 
 @end

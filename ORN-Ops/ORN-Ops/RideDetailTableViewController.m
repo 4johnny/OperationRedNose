@@ -18,8 +18,6 @@
 #define DONATION_TEXT_LENGTH_MAX	8 // NOTE: Arbitrary limit to ensure number fits in NSDecimal
 #define DONATION_TEXT_DECIMAL_COUNT	2
 
-#define TIME_MINUTE_INTERVAL	15
-
 #define DATE_PICKER_LOCALE				@"en_CA"
 #define DATE_PICKER_DATETIME_FORMAT		@"EEE MMM dd HH:mm"
 
@@ -276,18 +274,18 @@
 	self.startTimeDatePickerTextField.locale = [NSLocale localeWithLocaleIdentifier:DATE_PICKER_LOCALE];
 	self.startTimeDatePickerTextField.dateFormat = DATE_PICKER_DATETIME_FORMAT;
 	
-	// Get date-time for now, and Gregorian calendar
-	NSDate* now = [NSDate date];
-	NSCalendar* gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+	// Get date-time for now
+	NSDate* now = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	
 	// Minimum date-time is one day before now
+	NSCalendar* currentCalendar = [NSCalendar currentCalendar];
 	NSDateComponents* offsetComponents = [[NSDateComponents alloc] init];
 	offsetComponents.day = -1;
-	self.startTimeDatePickerTextField.minimumDate = [gregorianCalendar dateByAddingComponents:offsetComponents toDate:now options:0];
+	self.startTimeDatePickerTextField.minimumDate = [currentCalendar dateByAddingComponents:offsetComponents toDate:now options:0];
 	
 	// Maximum date-time is one day from now
 	offsetComponents.day = 1;
-	self.startTimeDatePickerTextField.maximumDate = [gregorianCalendar dateByAddingComponents:offsetComponents toDate:now options:0];
+	self.startTimeDatePickerTextField.maximumDate = [currentCalendar dateByAddingComponents:offsetComponents toDate:now options:0];
 }
 
 

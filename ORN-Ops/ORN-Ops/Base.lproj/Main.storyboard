@@ -105,7 +105,7 @@
                                 <action selector="avatarBarButtonPressed:" destination="Cgj-Rd-EZz" id="COn-L8-3Ui"/>
                             </connections>
                         </barButtonItem>
-                        <textField key="titleView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter ride start location" textAlignment="center" minimumFontSize="17" clearButtonMode="unlessEditing" id="OpH-64-v2x">
+                        <textField key="titleView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter ride start location" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" id="OpH-64-v2x">
                             <rect key="frame" x="150" y="7" width="300" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <gestureRecognizers/>

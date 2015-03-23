@@ -325,7 +325,7 @@
 	NSEntityDescription *entity = self.fetchedResultsController.fetchRequest.entity;
 	
 	Ride* newRide = [NSEntityDescription insertNewObjectForEntityForName:entity.name inManagedObjectContext:context];
-	newRide.dateTimeStart = [NSDate date];
+	newRide.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	NSLog(@"Created new Ride entity: %@", newRide);
 	
 	// Save the context
