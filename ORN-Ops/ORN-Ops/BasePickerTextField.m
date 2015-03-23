@@ -13,7 +13,16 @@
 # pragma mark - Interface
 #
 
+#define SHADOW_RADIUS	0.5
+
+
+#
+# pragma mark - Interface
+#
+
 @interface BasePickerTextField ()
+
+@property (nonatomic) id<UITextFieldDelegate> externalDelegate; // original delegate wired internally
 
 @end
 
@@ -27,6 +36,23 @@
 
 
 #
+# pragma mark Property Accessors
+#
+
+
+- (id<UITextFieldDelegate>)delegate {
+
+	return self.externalDelegate;
+}
+
+
+- (void)setDelegate:(id<UITextFieldDelegate>)delegate {
+
+	self.externalDelegate = delegate;
+}
+
+
+#
 # pragma mark Initializers
 #
 
@@ -36,8 +62,9 @@
 	
 	if (self) {
 		
-		// Wire up text field delegate
-		self.delegate = self;
+		// Intercept delegate internally
+		// NOTE: Delegate messages are also passed on to external delegate
+		super.delegate = self;
 		
 		// Arrow on right side of text field
 		UIButton* arrowButton = [Util downArrowButton];
@@ -53,6 +80,7 @@
 #
 # pragma mark UIView
 #
+
 
 /*
 // Only override drawRect: if you perform custom drawing.
@@ -87,10 +115,72 @@
 #
 
 
+- (BOOL)textFieldShouldBeginEditing:(UITextField*)textField {
+	
+	BOOL shouldBeginEditing = !self.externalDelegate || [self.externalDelegate textFieldShouldBeginEditing:textField];
+	
+	if (shouldBeginEditing) {
+		
+	 	// Add shadow, since hiding caret
+		textField.layer.masksToBounds = NO;
+		textField.layer.shadowOpacity = 1.0;
+		textField.layer.shadowRadius = SHADOW_RADIUS; // default 3.0
+		textField.layer.shadowOffset = CGSizeMake(SHADOW_RADIUS, SHADOW_RADIUS); // default (0.0, -3.0)
+		textField.layer.shadowColor = [UIColor blueColor].CGColor;
+	}
+	
+	return shouldBeginEditing;
+}
+
+
+- (void)textFieldDidBeginEditing:(UITextField*)textField {
+
+	[self.externalDelegate textFieldDidBeginEditing:textField];
+}
+
+
+- (BOOL)textFieldShouldEndEditing:(UITextField*)textField {
+
+	BOOL shouldEndEditing = !self.externalDelegate || [self.externalDelegate textFieldShouldEndEditing:textField];
+	
+	return shouldEndEditing;
+}
+
+
+- (void)textFieldDidEndEditing:(UITextField*)textField {
+
+	[self.externalDelegate textFieldDidEndEditing:textField];
+	
+	// Remove shadow
+	textField.layer.masksToBounds = YES;
+	textField.layer.shadowOpacity = 0.0;
+}
+
+
 - (BOOL)textField:(UITextField*)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString*)string {
 	
+	BOOL shouldChangeCharacters = !self.externalDelegate || [self.externalDelegate textField:textField shouldChangeCharactersInRange:range replacementString:string];
+
 	// Disable input via external keyboard
+	// NOTE: Ignore external delegate
+	(void)shouldChangeCharacters;
 	return NO;
+}
+
+
+- (BOOL)textFieldShouldClear:(UITextField*)textField {
+
+	BOOL shouldClear = !self.externalDelegate || [self.externalDelegate textFieldShouldClear:textField];
+	
+	return shouldClear;
+}
+
+
+- (BOOL)textFieldShouldReturn:(UITextField*)textField {
+	
+	BOOL shouldReturn = !self.externalDelegate || [self.externalDelegate textFieldShouldReturn:textField];
+
+	return shouldReturn;
 }
 
 
