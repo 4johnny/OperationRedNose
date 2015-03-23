@@ -107,6 +107,16 @@
 }
 
 
+- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocation:(BOOL)updatedLocation andUpdatedRidesAssigned:(BOOL)updatedRidesAssigned {
+
+	[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:sender userInfo:
+	 @{TEAM_ENTITY_NAME : self,
+	   TEAM_UPDATED_LOCATION_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedLocation],
+	   TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedRidesAssigned]
+	   }];
+}
+
+
 #
 # pragma mark Helpers
 #

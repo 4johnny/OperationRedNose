@@ -139,6 +139,15 @@
 }
 
 
+- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedTeamAssigned:(BOOL)updatedTeamAssigned {
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:sender userInfo:
+	 @{RIDE_ENTITY_NAME : self,
+	   RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedTeamAssigned]
+	   }];
+}
+
+
 - (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocationStart:(BOOL)updatedLocationStart andUpdatedLocationEnd:(BOOL)updatedLocationEnd andUpdatedTeamAssigned:(BOOL)updatedTeamAssigned {
 
 	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:sender userInfo:

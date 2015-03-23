@@ -300,6 +300,7 @@
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-123.121104];
 	team.locationCurrentAddress = @"1001 W Georgia St, Vancouver";
 	team.isActive = [NSNumber numberWithBool:YES];
+	[team postNotificationCreatedWithSender:self];
 	
 	team = [Team teamWithManagedObjectContext:moc];
 	team.name = @"2";
@@ -309,6 +310,7 @@
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-123.069709];
 	team.locationCurrentAddress = @"2201 Commercial Dr, Vancouver";
 	team.isActive = [NSNumber numberWithBool:YES];
+	[team postNotificationCreatedWithSender:self];
 }
 
 
@@ -325,6 +327,7 @@
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-123.022298];
 	team.locationCurrentAddress = @"3730 Burke St, Burnaby";
 	team.isActive = [NSNumber numberWithBool:YES];
+	[team postNotificationCreatedWithSender:self];
 	
 	team = [Team teamWithManagedObjectContext:moc];
 	team.name = @"4";
@@ -334,6 +337,7 @@
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-122.989567];
 	team.locationCurrentAddress = @"4688 Canada Way, Burnaby";
 	team.isActive = [NSNumber numberWithBool:YES];
+	[team postNotificationCreatedWithSender:self];
 }
 
 
@@ -350,6 +354,7 @@
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-122.945530];
 	team.locationCurrentAddress = @"934 17th St, New Westminster";
 	team.isActive = [NSNumber numberWithBool:YES];
+	[team postNotificationCreatedWithSender:self];
 	
 	team = [Team teamWithManagedObjectContext:moc];
 	team.name = @"6";
@@ -359,6 +364,7 @@
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-122.892918];
 	team.locationCurrentAddress = @"209 Columbia St E";
 	team.isActive = [NSNumber numberWithBool:YES];
+	[team postNotificationCreatedWithSender:self];
 }
 
 
@@ -384,6 +390,7 @@
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-122.892760];
 	team.locationCurrentAddress = @"501 N Rd, Coquitlam";
 	team.isActive = [NSNumber numberWithBool:YES];
+	[team postNotificationCreatedWithSender:self];
 
 	team = [Team teamWithManagedObjectContext:moc];
 	team.name = @"8";
@@ -393,6 +400,7 @@
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-122.797337];
 	team.locationCurrentAddress = @"2991 Lougheed Hwy, Coquitlam";
 	team.isActive = [NSNumber numberWithBool:YES];
+	[team postNotificationCreatedWithSender:self];
 }
 
 
@@ -409,6 +417,7 @@
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-122.764039];
 	team.locationCurrentAddress = @"13 McLean Ave, Port Coquitlam";
 	team.isActive = [NSNumber numberWithBool:YES];
+	[team postNotificationCreatedWithSender:self];
 
 	// NOTE: Team missing name
 	team = [Team teamWithManagedObjectContext:moc];
@@ -418,6 +427,7 @@
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-122.734451];
 	team.locationCurrentAddress = @"4016 Joseph Pl, Port Coquitlam";
 	team.isActive = [NSNumber numberWithBool:YES];
+	[team postNotificationCreatedWithSender:self];
 }
 
 
@@ -433,6 +443,7 @@
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-122.843201];
 	team.locationCurrentAddress = @"1300 David Ave, Port Moody";
 	team.isActive = [NSNumber numberWithBool:YES];
+	[team postNotificationCreatedWithSender:self];
 }
 
 
@@ -445,17 +456,17 @@
 
 	// Assign specific teams to specific rides
 	
-	[DemoUtil assignTeam:teams[2] toRide:rides[0]];
-	[DemoUtil assignTeam:teams[2] toRide:rides[1]];
+	[DemoUtil assignTeam:teams[0] toRide:rides[10]];
+	[DemoUtil assignTeam:teams[2] toRide:rides[0]]; // Team with two rides
+	[DemoUtil assignTeam:teams[2] toRide:rides[1]]; // Team with two rides
 	[DemoUtil assignTeam:teams[3] toRide:rides[2]];
 	[DemoUtil assignTeam:teams[4] toRide:rides[3]];
 	[DemoUtil assignTeam:teams[5] toRide:rides[4]];
-	[DemoUtil assignTeam:teams[6] toRide:rides[5]];
+	[DemoUtil assignTeam:teams[6] toRide:rides[5]]; // Team with two rides
+	[DemoUtil assignTeam:teams[6] toRide:rides[7]]; // Team with two rides
 	[DemoUtil assignTeam:teams[7] toRide:rides[6]];
-	[DemoUtil assignTeam:teams[6] toRide:rides[7]];
 	[DemoUtil assignTeam:teams[8] toRide:rides[8]];
 	[DemoUtil assignTeam:teams[10] toRide:rides[9]];
-	[DemoUtil assignTeam:teams[0] toRide:rides[10]];
 }
 
 
@@ -467,7 +478,8 @@
 + (void)assignTeam:(Team*)team toRide:(Ride*)ride {
 
 	ride.teamAssigned = team;
-	[team addRidesAssignedObject:ride];
+	[team postNotificationUpdatedWithSender:self andUpdatedRidesAssigned:YES];
+	[ride postNotificationUpdatedWithSender:self andUpdatedTeamAssigned:YES];
 }
 
 
