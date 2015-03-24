@@ -77,6 +77,8 @@
 
 @property (nonatomic) NSDateFormatter* annotationDateFormatter;
 
+@property (nonatomic) UIColor* calloutAccessoryColorGreen;
+
 @end
 
 
@@ -165,6 +167,16 @@
 	_annotationDateFormatter.dateFormat = MAP_ANNOTATION_DATETIME_FORMAT;
 
 	return _annotationDateFormatter;
+}
+
+
+- (UIColor*)calloutAccessoryColorGreen {
+
+	if (_calloutAccessoryColorGreen) return _calloutAccessoryColorGreen;
+	
+	_calloutAccessoryColorGreen = [UIColor colorWithHue:120.0/360.0 saturation:1.0 brightness:0.8 alpha:1];
+	
+	return _calloutAccessoryColorGreen;
 }
 
 
@@ -442,57 +454,58 @@
 	ridePinAnnotationView.pinColor = ridePointAnnotation.rideLocationType == RideLocationType_End ? MKPinAnnotationColorRed : (ride.teamAssigned ? MKPinAnnotationColorGreen : MKPinAnnotationColorPurple);
 	
 	// Add/update/remove left callout accessory
-	// NOTE: Do not assign for update, to avoid re-animation
-//	if (!ridePinAnnotationView.leftCalloutAccessoryView) {
-//		
-//		ridePinAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabel];
-//	}
-//	if (![self configureLeftCalloutAccessoryLabel:(UILabel*)ridePinAnnotationView.leftCalloutAccessoryView withRidePointAnnotation:ridePointAnnotation]) {
-//		
-//		ridePinAnnotationView.leftCalloutAccessoryView = nil;
-//	}
+	// NOTE: Do not set for update, to avoid re-animation
+	if (!ridePinAnnotationView.leftCalloutAccessoryView) {
+		
+		ridePinAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabel];
+	}
+	if (![self configureLeftCalloutAccessoryLabel:(UILabel*)ridePinAnnotationView.leftCalloutAccessoryView withRidePointAnnotation:ridePointAnnotation]) {
+		
+		ridePinAnnotationView.leftCalloutAccessoryView = nil;
+	}
 	
 	return ridePinAnnotationView;
 }
 
 
-//- (UILabel*)configureLeftCalloutAccessoryLabel:(UILabel*)leftCalloutAccessoryLabel withRidePointAnnotation:(RidePointAnnotation*)ridePointAnnotation {
-//	
-//	Ride* ride = ridePointAnnotation.ride;
-//	
-//	// If time present, add to label with appropriate background color
-//	
-//	switch (ridePointAnnotation.rideLocationType) {
-//			
-//		case RideLocationType_Start: {
-//			
-//			if (!ride.dateTimeStart) return nil;
-//			
-//			leftCalloutAccessoryLabel.text = [self.annotationDateFormatter stringFromDate:ride.dateTimeStart];
-//			
-//			leftCalloutAccessoryLabel.backgroundColor = ride.teamAssigned ? [UIColor greenColor] : [UIColor purpleColor];
-//			
-//			break;
-//		}
-//			
-//		case RideLocationType_End: {
-//			
-//			if (!ride.dateTimeEnd) return nil;
-//			
-//			leftCalloutAccessoryLabel.text = [self.annotationDateFormatter stringFromDate:ride.dateTimeEnd];
-//			
-//			leftCalloutAccessoryLabel.backgroundColor = [UIColor redColor];
-//			
-//			break;
-//		}
-//			
-//		default:
-//		case RideLocationType_None:
-//			break;
-//	}
-//	
-//	return leftCalloutAccessoryLabel;
-//}
+- (UILabel*)configureLeftCalloutAccessoryLabel:(UILabel*)leftCalloutAccessoryLabel withRidePointAnnotation:(RidePointAnnotation*)ridePointAnnotation {
+	
+	Ride* ride = ridePointAnnotation.ride;
+	
+	// If time present, add to label with appropriate background color
+	
+	switch (ridePointAnnotation.rideLocationType) {
+			
+		case RideLocationType_Start: {
+			
+			if (!ride.dateTimeStart) return nil;
+			
+			leftCalloutAccessoryLabel.text = [self.annotationDateFormatter stringFromDate:ride.dateTimeStart];
+			
+			leftCalloutAccessoryLabel.backgroundColor = ride.teamAssigned ? self.calloutAccessoryColorGreen : [UIColor purpleColor];
+			
+			break;
+		}
+			
+		case RideLocationType_End: {
+			
+			NSDate* routeDateTimeEnd = ride.getRouteDateTimeEnd;
+			if (!routeDateTimeEnd) return nil;
+			
+			leftCalloutAccessoryLabel.text = [self.annotationDateFormatter stringFromDate:routeDateTimeEnd];
+			
+			leftCalloutAccessoryLabel.backgroundColor = [UIColor redColor];
+			
+			break;
+		}
+			
+		default:
+		case RideLocationType_None:
+			break;
+	}
+	
+	return leftCalloutAccessoryLabel;
+}
 
 
 //- (MKAnnotationView*)mapView:(MKMapView*)mapView viewForTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
@@ -588,16 +601,16 @@
 }
 
 
-//+ (UILabel*)leftCalloutAccessoryLabel {
-//	
-//	UILabel* leftCalloutAccessoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 53)];
-//	leftCalloutAccessoryLabel.font = [UIFont boldSystemFontOfSize:14.0];
-//	leftCalloutAccessoryLabel.textAlignment = NSTextAlignmentCenter;
-//	leftCalloutAccessoryLabel.textColor = [UIColor whiteColor];
-//	leftCalloutAccessoryLabel.alpha = 0.5;
-//	
-//	return leftCalloutAccessoryLabel;
-//}
++ (UILabel*)leftCalloutAccessoryLabel {
+	
+	UILabel* leftCalloutAccessoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 53)];
+	leftCalloutAccessoryLabel.font = [UIFont boldSystemFontOfSize:16.0];
+	leftCalloutAccessoryLabel.textAlignment = NSTextAlignmentCenter;
+	leftCalloutAccessoryLabel.textColor = [UIColor whiteColor];
+	leftCalloutAccessoryLabel.alpha = 0.5;
+	
+	return leftCalloutAccessoryLabel;
+}
 
 
 - (void)mapView:(MKMapView*)mapView didSelectRidePointAnnotationWithRide:(Ride*)ride {
@@ -646,7 +659,8 @@
 }
 
 
-- (void)addressTextFieldReturnButtonPressed:(UITextField*)sender {
+- (IBAction)addressTextFieldReturnButtonPressed:(UITextField*)sender {
+	// NOTE: Cannot wire to keyboard button, so called directly via text-field delegate
 	
 	[self createRideWithAddressString:sender.text];
 }
