@@ -1005,7 +1005,7 @@
 
 	[self.geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray* placemarks, NSError* error) {
 		
-		// NOTES: Completion block executes on main thread. Do not run more than one reverse-geocode simultaneously.
+		// NOTES: Completion block executes on main thread. Do not run more than one geocode simultaneously.
 		
 		// If there is a problem, log it; alert the user; and we are done.
 		if (error || placemarks.count < 1) {

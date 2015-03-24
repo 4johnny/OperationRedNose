@@ -50,17 +50,19 @@
 	
 	NSDateComponents* dateComponents = [currentCalendar components:unitFlags fromDate:self];
 
-	if (dateComponents.second >= SECONDS_PER_MINUTE / 2.0) {
+	// Round seconds into minutes directly
+	// NOTE: Not worrying about leap-seconds
+	if (dateComponents.second >= SECONDS_PER_MINUTE / 2) {
 		
 		dateComponents.minute++;
-		dateComponents.second = 0;
 	}
-	
-	NSInteger remainder = dateComponents.minute % minuteInterval;
-	
+	dateComponents.second = 0;
+
+	// Determine minutes duration to add back into date
 	NSDateComponents* offsetComponents = [[NSDateComponents alloc] init];
-	offsetComponents.minute = (remainder >= minuteInterval / 2.0) ? minuteInterval - remainder : -remainder;
-	
+	offsetComponents.minute = floor((dateComponents.minute + minuteInterval / 2.0) / minuteInterval) * minuteInterval;
+	dateComponents.minute = 0;
+
 	return [currentCalendar dateByAddingComponents:offsetComponents toDate:[currentCalendar dateFromComponents:dateComponents] options:0];
 }
 

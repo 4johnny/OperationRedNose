@@ -40,7 +40,7 @@
 
 	// Vancouver to nowhere - also missing passenger info
 	ride = [Ride rideWithManagedObjectContext:moc];
-	ride.dateTimeStart = [NSDate date];
+	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.287826
 						 andLogitude:-123.123834
 						  andAddress:@"580 Bute St, Vancouver"
@@ -52,7 +52,7 @@
 	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Rob";
 	ride.passengerNameLast = @"Jankovic";
-	ride.dateTimeStart = [NSDate date];
+	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.2818704
 						 andLogitude:-123.1081611
 						  andAddress:@"128 W Hastings St, Vancouver"
@@ -70,7 +70,7 @@
 	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Joe";
 	ride.passengerNameLast = @"Roberts";
-	ride.dateTimeStart = [NSDate date];
+	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.27665770574511
 						 andLogitude:-123.0847680657702
 						  andAddress:@"1 Venables St, Vancouver"
@@ -95,7 +95,7 @@
 	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Janet";
 	ride.passengerNameLast = @"Peterson";
-	ride.dateTimeStart = [NSDate date];
+	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.24274
 						 andLogitude:-123.014073
 						  andAddress:@"4078 Moscrop St, Burnaby"
@@ -113,7 +113,7 @@
 	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Morris";
 	ride.passengerNameLast = @"Sander";
-	ride.dateTimeStart = [NSDate date];
+	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.2660725
 						 andLogitude:-123.0024237
 						  andAddress:@"4512 Lougheed Hwy, Burnaby"
@@ -138,7 +138,7 @@
 	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Dorothy";
 	ride.passengerNameLast = @"Kansas";
-	ride.dateTimeStart = [NSDate date];
+	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.18302
 						 andLogitude:-122.953496
 						  andAddress:@"1242 Ewen Ave, New Westminster"
@@ -156,7 +156,7 @@
 	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Jeff";
 	ride.passengerNameLast = @"Donofrio";
-	ride.dateTimeStart = [NSDate date];
+	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.231407
 						 andLogitude:-122.893559
 						  andAddress:@"308 Braid St, New Westminster"
@@ -174,7 +174,7 @@
 	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Adrianna";
 	ride.passengerNameLast = @"Butler";
-	ride.dateTimeStart = [NSDate date];
+	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.202296
 						 andLogitude:-122.9382
 						  andAddress:@"1700 Stewardson Way, New Westminster"
@@ -207,7 +207,7 @@
 	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Danny";
 	ride.passengerNameLast = @"Tao";
-	ride.dateTimeStart = [NSDate date];
+	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.26374147501311
 						 andLogitude:-122.8691647300472
 						  andAddress:@"949 Como Lake Ave, Coquitlam"
@@ -232,7 +232,7 @@
 	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Tara";
 	ride.passengerNameLast = @"Hughes";
-	ride.dateTimeStart = [NSDate date];
+	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.25625588056973
 						 andLogitude:-122.7782533932433
 						  andAddress:@"2211 Central Ave, Port Coquitlam"
@@ -257,7 +257,7 @@
 	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Farai";
 	ride.passengerNameLast = @"Cole";
-	ride.dateTimeStart = [NSDate date];
+	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.30258801423837
 						 andLogitude:-122.8759178752116
 						  andAddress:@"1970 Ioco Rd, Port Moody"
