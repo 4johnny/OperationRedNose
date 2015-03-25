@@ -98,7 +98,7 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 - (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocationStart:(BOOL)updatedLocationStart andUpdatedLocationEnd:(BOOL)updatedLocationEnd andUpdatedTeamAssigned:(BOOL)updatedTeamAssigned;
 
 #
-# pragma mark Helpers
+# pragma mark Instance Helpers
 #
 
 - (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType;
@@ -115,7 +115,12 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 - (MKDirectionsRequest*)getDirectionsRequest;
 - (NSDate*)getRouteDateTimeEnd;
 
-+ (NSString*)stringFromStatus:(RideStatus)status;
-+ (RideStatus)statusFromString:(NSString*)statusString;
+#
+# pragma mark Class Helpers
+#
+
++ (void)tryCreateRideWithAddressString:(NSString*)addressString andGeocoder:(CLGeocoder*)geocoder andSender:(id)sender;
+//+ (NSString*)stringFromStatus:(RideStatus)status;
+//+ (RideStatus)statusFromString:(NSString*)statusString;
 
 @end

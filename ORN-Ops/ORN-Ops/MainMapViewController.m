@@ -279,63 +279,35 @@
 	
 	if ([annotation isKindOfClass:[RidePointAnnotation class]]) return [self mapView:mapView viewForRidePointAnnotation:(RidePointAnnotation*)annotation];
 	
-//	if ([annotation isKindOfClass:[TeamPointAnnotation class]]) return [self mapView:mapView viewForTeamPointAnnotation:(TeamPointAnnotation*)annotation];
+	if ([annotation isKindOfClass:[TeamPointAnnotation class]]) return [self mapView:mapView viewForTeamPointAnnotation:(TeamPointAnnotation*)annotation];
 	
 	return nil;
 }
 
 
-//- (void)mapView:(MKMapView*)mapView didAddAnnotationViews:(NSArray*)views {
-//	
-//	// Animate dropping for team point annotations
-//	for (MKAnnotationView* view in views) {
-//		
-//		// If not team annotation, we are done with this view
-//		if (![view.annotation isKindOfClass:[TeamPointAnnotation class]]) continue;
-//		
-//		// If team annotation does not need animating, we are done with this view
-//		TeamPointAnnotation* teamPointAnnotation = view.annotation;
-//		if (!teamPointAnnotation.needsAnimatesDrop) continue;
-//		
-//		// Animation for team annotation has been triggered, so reset trigger
-//		teamPointAnnotation.needsAnimatesDrop = NO;
-//		
-//		// If annotation is not inside visible map rect, we are done with this view
-//		MKMapPoint point =  MKMapPointForCoordinate(view.annotation.coordinate);
-//		if (!MKMapRectContainsPoint(mapView.visibleMapRect, point)) continue;
-//		
-//		// Remember end frame for annotation
-//		CGRect endFrame = view.frame;
-//		
-//		// Move annotation out of view
-//		view.frame = CGRectMake(view.frame.origin.x, view.frame.origin.y - self.view.frame.size.height, view.frame.size.width, view.frame.size.height);
-//		
-//		// Animate drop, completing with squash effect
-//		[UIView animateWithDuration:0.25 delay:(0.04 * [views indexOfObject:view]) options: UIViewAnimationOptionCurveLinear animations:^{
-//			
-//			view.frame = endFrame;
-//			
-//		} completion:^(BOOL finished) {
-//			
-//			if (!finished) return; // Exit block
-//			
-//			// Animate squash, completing with un-squash
-//			[UIView animateWithDuration:0.05 animations:^{
-//				
-//				view.transform = CGAffineTransformMakeScale(1.0, 0.8);
-//				
-//			} completion:^(BOOL finished){
-//				
-//				if (!finished) return; // Exit block
-//					
-//				[UIView animateWithDuration:0.1 animations:^{
-//					
-//					view.transform = CGAffineTransformIdentity;
-//				}];
-//			}];
-//		}];
-//	}
-//}
+- (void)mapView:(MKMapView*)mapView didAddAnnotationViews:(NSArray*)views {
+	
+	// Animate dropping for team point annotations
+	for (MKAnnotationView* view in views) {
+		
+		// If not team annotation, we are done with this view
+		if (![view.annotation isKindOfClass:[TeamPointAnnotation class]]) continue;
+		
+		// If team annotation does not need animating, we are done with this view
+		TeamPointAnnotation* teamPointAnnotation = view.annotation;
+		if (!teamPointAnnotation.needsAnimatesDrop) continue;
+		
+		// Animation for team annotation has been triggered, so reset trigger
+		teamPointAnnotation.needsAnimatesDrop = NO;
+		
+		// If annotation is not inside visible map rect, we are done with this view
+		MKMapPoint point =  MKMapPointForCoordinate(view.annotation.coordinate);
+		if (!MKMapRectContainsPoint(mapView.visibleMapRect, point)) continue;
+
+		// Animate dropping view
+		[Util animateDropView:view withDropHeight:self.view.frame.size.height withDuration:0.25 withDelay:(0.04 * [views indexOfObject:view])];
+	}
+}
 
 
 - (void)mapView:(MKMapView*)mapView annotationView:(MKAnnotationView*)view calloutAccessoryControlTapped:(UIControl*)control {
@@ -508,59 +480,57 @@
 }
 
 
-//- (MKAnnotationView*)mapView:(MKMapView*)mapView viewForTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
-//	
-//	// Grab pooled/new team annotation view
-//	MKAnnotationView* teamAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:teamPointAnnotation andIdentifier:teamPointAnnotation.team.isMascot.boolValue ? TEAM_MASCOT_ANNOTATION_ID : TEAM_NORMAL_ANNOTATION_ID];
-//	
-//	// Update view based on given annotation
-//	[self updateTeamAnnotationView:teamAnnotationView withTeamPointAnnotation:teamPointAnnotation];
-//	
-//	return teamAnnotationView;
-//}
+- (MKAnnotationView*)mapView:(MKMapView*)mapView viewForTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
+	
+	MKAnnotationView* teamAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:teamPointAnnotation andIdentifier:teamPointAnnotation.team.isMascot.boolValue ? TEAM_MASCOT_ANNOTATION_ID : TEAM_NORMAL_ANNOTATION_ID];
+	
+	[self configureTeamAnnotationView:teamAnnotationView withTeamPointAnnotation:teamPointAnnotation];
+	
+	return teamAnnotationView;
+}
 
 
-//- (MKAnnotationView*)configureTeamAnnotationView:(MKAnnotationView*)teamAnnotationView withTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
-//	
-//	// Team* team = teamPointAnnotation.team;
-//	
-//	// NOTE: Animation of team annotation is done manually in "mapView:didAddAnnotationViews:"
-//	
-//	// Add/update/remove left callout accessory
-//	// NOTE: Do not assign for update, to avoid re-animation
-//	if (!teamAnnotationView.leftCalloutAccessoryView) {
-//		
-//		teamAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabel];
-//	}
-//	if (![self configureLeftCalloutAccessoryLabel:(UILabel*)teamAnnotationView.leftCalloutAccessoryView withTeamPointAnnotation:teamPointAnnotation]) {
-//		
-//		teamAnnotationView.leftCalloutAccessoryView = nil;
-//	}
-//	
-//	return teamAnnotationView;
-//}
+- (MKAnnotationView*)configureTeamAnnotationView:(MKAnnotationView*)teamAnnotationView withTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
+	
+	// Team* team = teamPointAnnotation.team;
+	
+	// NOTE: Animation of team annotation is done manually in "mapView:didAddAnnotationViews:"
+	
+	// Add/update/remove left callout accessory
+	// NOTE: Do not set for update, to avoid re-animation
+	if (!teamAnnotationView.leftCalloutAccessoryView) {
+		
+		teamAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabel];
+	}
+	if (![self configureLeftCalloutAccessoryLabel:(UILabel*)teamAnnotationView.leftCalloutAccessoryView withTeamPointAnnotation:teamPointAnnotation]) {
+		
+		teamAnnotationView.leftCalloutAccessoryView = nil;
+	}
+	
+	return teamAnnotationView;
+}
 
 
-//- (UILabel*)configureLeftCalloutAccessoryLabel:(UILabel*)leftCalloutAccessoryLabel withTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
-//	
-//	Team* team = teamPointAnnotation.team;
-//	
-//	// If team assigned to rides, add total busy duration to label
-//	
-//	if (!team.ridesAssigned || team.ridesAssigned.count == 0) return nil;
-//	
-//	// TODO: Use proper calculation for busy duration
-//	double busyDuration = 0; // seconds
-//	for (Ride* rideAssigned in team.ridesAssigned) {
-//		
-//		busyDuration += rideAssigned.duration.doubleValue;
-//	}
-//	leftCalloutAccessoryLabel.text = [NSString stringWithFormat:MAP_ANNOTATION_DURATION_FORMAT, busyDuration / (double)SECONDS_PER_MINUTE];
-//	
-//	leftCalloutAccessoryLabel.backgroundColor = [UIColor blueColor];
-//	
-//	return leftCalloutAccessoryLabel;
-//}
+- (UILabel*)configureLeftCalloutAccessoryLabel:(UILabel*)leftCalloutAccessoryLabel withTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
+	
+	Team* team = teamPointAnnotation.team;
+	
+	// If team assigned to rides, add total busy duration to label
+	
+	if (!team.ridesAssigned || team.ridesAssigned.count == 0) return nil;
+	
+	// TODO: Use proper calculation for busy duration
+	double busyDuration = 0; // seconds
+	for (Ride* rideAssigned in team.ridesAssigned) {
+		
+		busyDuration += rideAssigned.routeDuration.doubleValue;
+	}
+	leftCalloutAccessoryLabel.text = [NSString stringWithFormat:MAP_ANNOTATION_DURATION_FORMAT, busyDuration / (double)SECONDS_PER_MINUTE];
+	
+	leftCalloutAccessoryLabel.backgroundColor = [UIColor blueColor];
+	
+	return leftCalloutAccessoryLabel;
+}
 
 
 + (MKAnnotationView*)dequeueReusableAnnotationViewWithMapView:(MKMapView*)mapView andAnnotation:(id<MKAnnotation>)annotation andIdentifier:(NSString*)identifier {
@@ -582,11 +552,11 @@
 		
 		view = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
 		
-//	} else if ([identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ||
-//			   [identifier isEqualToString:TEAM_NORMAL_ANNOTATION_ID]) {
-//		
-//		view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
-//		view.image = [UIImage imageNamed:[identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ? @"ORN-Team-Mascot-Map-Annotation" : @"ORN-Team-Map-Annotation"];
+	} else if ([identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ||
+			   [identifier isEqualToString:TEAM_NORMAL_ANNOTATION_ID]) {
+		
+		view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+		view.image = [UIImage imageNamed:[identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ? @"ORN-Team-Mascot-Map-Annotation" : @"ORN-Team-Map-Annotation"];
 	}
 	
 	// Enable callout view for annotation
@@ -613,10 +583,10 @@
 }
 
 
-- (void)mapView:(MKMapView*)mapView didSelectRidePointAnnotationWithRide:(Ride*)ride {
-
-	// TODO: Not Implemented
-}
+//- (void)mapView:(MKMapView*)mapView didSelectRidePointAnnotationWithRide:(Ride*)ride {
+//
+//	// TODO: Not Implemented
+//}
 
 
 //- (void)mapView:(MKMapView*)mapView didSelectTeamPointAnnotationWithTeam:(Team*)team {
@@ -662,7 +632,7 @@
 - (IBAction)addressTextFieldReturnButtonPressed:(UITextField*)sender {
 	// NOTE: Cannot wire to keyboard button, so called directly via text-field delegate
 	
-	[self createRideWithAddressString:sender.text];
+	[Ride tryCreateRideWithAddressString:sender.text andGeocoder:self.geocoder andSender:self];
 }
 
 
@@ -676,19 +646,17 @@
 
 - (void)rideCreatedWithNotification:(NSNotification*)notification {
 
-	BOOL createFromMapView = (notification.object == self);
+	BOOL createdFromMapView = (notification.object == self);
 	
-	BOOL annotationShown = [self configureRideAnnotationsWithNotification:notification andNeedsCenter:createFromMapView andNeedsSelection:createFromMapView];
-
-	if (createFromMapView) {
+	BOOL annotationShown = [self configureRideAnnotationsWithNotification:notification andNeedsCenter:createdFromMapView andNeedsSelection:createdFromMapView];
+	
+	if (!createdFromMapView) return;
 		
-		self.addressTextField.text = @"";
+	self.addressTextField.text = @"";
+	
+	if (annotationShown) return;
 		
-		if (!annotationShown) {
-			
-			[Util presentOKAlertWithTitle:@"Alert" andMessage:@"Ride created but no start or end location annotations to show."];
-		}
-	}
+	[Util presentOKAlertWithTitle:@"Alert" andMessage:@"Ride created but no start or end location annotations to show."];
 }
 
 
@@ -708,13 +676,13 @@
 							   andNeedsSelection:(BOOL)needsSelection {
 	
 	Ride* ride = [Ride rideFromNotification:notification];
-	NSArray* annotations = [self annotationsForRide:ride];
+	NSArray* rideAnnotations = [self annotationsForRide:ride];
 	
 	// Configure start annotation
 	BOOL isLocationUpdated = [Ride isUpdatedLocationStartFromNotification:notification];
 	BOOL startAnnotationPresent = [self configureViewWithRide:ride
 										  andRideLocationType:RideLocationType_Start
-										 usingRideAnnotations:annotations
+										 usingRideAnnotations:rideAnnotations
 										 andIsLocationUpdated:isLocationUpdated
 											   andNeedsCenter:needsCenter
 											andNeedsSelection:needsSelection];
@@ -724,7 +692,7 @@
 	isLocationUpdated = [Ride isUpdatedLocationEndFromNotification:notification];
 	BOOL endAnnotationPresent = [self configureViewWithRide:ride
 										andRideLocationType:RideLocationType_End
-									   usingRideAnnotations:annotations
+									   usingRideAnnotations:rideAnnotations
 									   andIsLocationUpdated:isLocationUpdated
 											 andNeedsCenter:(needsCenter && !startAnnotationPresent)
 										  andNeedsSelection:(needsSelection && !startAnnotationPresent)];
@@ -830,21 +798,109 @@
 # pragma mark Team Notification Handlers
 
 
-//- (void)teamCreatedWithNotification:(NSNotification*)notification {
-//	
-//}
-//
-//
-//- (void)teamUpdatedWithNotification:(NSNotification*)notification {
-//	
-////	[self configureTeamAnnotationsWithNotification:notification];
-//}
-//
-//
-//- (void)configureTeamAnnotationsWithNotification:(NSNotification*)notification {
-//
-//	// TODO: Not Implemented
-//}
+- (void)teamCreatedWithNotification:(NSNotification*)notification {
+
+	[self configureTeamAnnotationsWithNotification:notification andNeedsCenter:NO andNeedsSelection:NO];
+}
+
+
+- (void)teamUpdatedWithNotification:(NSNotification*)notification {
+	
+	[self configureTeamAnnotationsWithNotification:notification andNeedsCenter:NO andNeedsSelection:NO];
+	//	[self configureTeamOverlaysWithNotification:notification];
+}
+
+
+/*
+ Configure team annotations and their views, consistent with given team notification
+ Returns whether at least one annotation is present
+ */
+- (BOOL)configureTeamAnnotationsWithNotification:(NSNotification*)notification
+								  andNeedsCenter:(BOOL)needsCenter
+							   andNeedsSelection:(BOOL)needsSelection {
+	
+	Team* team = [Team teamFromNotification:notification];
+	NSArray* teamAnnotations = [self annotationsForTeam:team];
+	
+	// Configure annotation
+	BOOL isLocationUpdated = [Team isUpdatedLocationFromNotification:notification];
+	BOOL annotationPresent = [self configureViewWithTeam:team
+									usingTeamAnnotations:teamAnnotations
+									andIsLocationUpdated:isLocationUpdated
+										  andNeedsCenter:needsCenter
+									   andNeedsSelection:needsSelection];
+	
+	return annotationPresent;
+}
+
+
+/*
+ Configure team annotation and its view, consistent with given team
+ Returns whether annotation is present
+ */
+- (BOOL)configureViewWithTeam:(Team*)team
+		 usingTeamAnnotations:(NSArray*)teamAnnotations
+		 andIsLocationUpdated:(BOOL)isLocationUpdated
+			   andNeedsCenter:(BOOL)needsCenter
+			andNeedsSelection:(BOOL)needsSelection {
+	
+	TeamPointAnnotation* teamPointAnnotation = [self getTeamPointAnnotationFromTeamPointAnnotations:teamAnnotations];
+	
+	NSNumber* locationLatitude = team.locationCurrentLatitude;
+	NSNumber* locationLongitude = team.locationCurrentLongitude;
+	
+	if (locationLatitude && locationLongitude) {
+		
+		// Updated existing annotation or create new one
+		if (teamPointAnnotation) {
+			
+			(void)[teamPointAnnotation initWithTeam:team andNeedsAnimatesDrop:isLocationUpdated];
+			
+		} else {
+			
+			teamPointAnnotation = [TeamPointAnnotation teamPointAnnotationWithTeam:team andNeedsAnimatesDrop:isLocationUpdated];
+			
+			[self.mainMapView addAnnotation:teamPointAnnotation];
+		}
+		
+		// Update existing annotation view or trigger new one
+		if (isLocationUpdated) {
+			
+			// Remove and re-add annotation to map view - automatically triggers new annotation view
+			[self.mainMapView removeAnnotation:teamPointAnnotation];
+			[self.mainMapView addAnnotation:teamPointAnnotation];
+			
+		} else {
+			
+			// If view exists for given annotation, update it
+			MKPinAnnotationView* teamAnnotationView = (MKPinAnnotationView*)[self.mainMapView viewForAnnotation:teamPointAnnotation];
+			if (teamAnnotationView) {
+				
+				[self configureTeamAnnotationView:teamAnnotationView withTeamPointAnnotation:teamPointAnnotation];
+			}
+		}
+		
+		if (needsCenter) {
+			
+			[self.mainMapView setCenterCoordinate:CLLocationCoordinate2DMake(locationLatitude.doubleValue, locationLongitude.doubleValue) animated:YES];
+		}
+		
+		if (needsSelection) {
+			
+			[self.mainMapView selectAnnotation:teamPointAnnotation animated:YES];
+		}
+		
+	} else {
+		
+		if (teamPointAnnotation) {
+			
+			[self.mainMapView removeAnnotation:teamPointAnnotation];
+			teamPointAnnotation = nil;
+		}
+	}
+	
+	return (teamPointAnnotation != nil);
+}
 
 
 #
@@ -964,8 +1020,8 @@
 	[Ride addCreatedObserver:self withSelector:@selector(rideCreatedWithNotification:)];
 	[Ride addUpdatedObserver:self withSelector:@selector(rideUpdatedWithNotification:)];
 
-//	[Team addCreatedObserver:self withSelector:@selector(teamCreatedWithNotification:)];
-//	[Team addUpdatedObserver:self withSelector:@selector(teamUpdatedWithNotification:)];
+	[Team addCreatedObserver:self withSelector:@selector(teamCreatedWithNotification:)];
+	[Team addUpdatedObserver:self withSelector:@selector(teamUpdatedWithNotification:)];
 }
 
 
@@ -981,72 +1037,25 @@
 - (void)loadDataModel {
 	
 	[self loadRidesDataModel];
-	
-//	[self configureTeamsViewWithNeedsAnimatesDrop:needsAnimatesDrop];
+	[self loadTeamsDataModel];
 }
 
 
 - (void)loadRidesDataModel {
 	
 	for (Ride* ride in self.rideFetchedResultsController.fetchedObjects) {
-
+		
 		[ride postNotificationUpdatedWithSender:self andUpdatedLocationStart:YES andUpdatedLocationEnd:YES];
 	}
 }
 
 
-//- (void)configureTeamsViewWithNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
-//	
-//	self.showTeams = self.teamFetchedResultsController.fetchedObjects;
-//	
-//	for (Team* team in self.showTeams) {
-//		
-//		// If no current-location coordinate, we are done with this team
-//		if (!team.locationCurrentLatitude || !team.locationCurrentLongitude) continue;
-//		
-//		// Add annotation for current location to map
-//		[self.mainMapView addAnnotation:[TeamPointAnnotation teamPointAnnotationWithTeam:team andNeedsAnimatesDrop:needsAnimatesDrop]];
-//	}
-//}
-
-
-- (void)createRideWithAddressString:(NSString*)addressString {
+- (void)loadTeamsDataModel {
 	
-	// Geocode given address string relative to jurisdiction
-	addressString = [addressString trimAll];
-	
-	CLCircularRegion* jurisdictionRegion = [[CLCircularRegion alloc] initWithCenter:JURISDICTION_COORDINATE radius:JURISDICTION_SEARCH_RADIUS identifier:@"ORN Jurisdication Region"];
-
-	[self.geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray* placemarks, NSError* error) {
+	for (Team* team in self.teamFetchedResultsController.fetchedObjects) {
 		
-		// NOTES: Completion block executes on main thread. Do not run more than one geocode simultaneously.
-		
-		// If there is a problem, log it; alert the user; and we are done.
-		if (error || placemarks.count < 1) {
-			
-			if (error) {
-				NSLog(@"Geocode Error: %@ %@", error.localizedDescription, error.userInfo);
-			} else if (placemarks.count < 1) {
-				NSLog(@"Geocode Error: No placemarks for address string: %@", addressString);
-			}
-			
-			[Util presentOKAlertWithTitle:@"Error" andMessage:[NSString stringWithFormat:@"Cannot geocode address: %@", addressString]];
-			
-			return;
-		}
-		
-		// Address resolved successfully to have at least one placemark
-		CLPlacemark* placemark = placemarks[0];
-		NSLog(@"Geocode location: %@", placemark.location);
-		NSLog(@"Geocode locality: %@", placemark.locality);
-		NSLog(@"Geocode address: %@", placemark.addressDictionary);
-		
-		// Use first placemark as start location for new ride
-		Ride* ride = [Ride rideWithManagedObjectContext:[Util managedObjectContext] andDateTime:[NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL] andPlacemark:placemark andRideLocationType:RideLocationType_Start];
-		[Util saveManagedObjectContext];
-		[ride postNotificationCreatedWithSender:self];
-		NSLog(@"Ride: %@", ride);
-	}];
+		[team postNotificationUpdatedWithSender:self andUpdatedLocation:YES];
+	}
 }
 
 
@@ -1061,7 +1070,7 @@
 
 - (RidePointAnnotation*)getRidePointAnnotationFromRidePointAnnotations:(NSArray*)annotations andRideLocationType:(RideLocationType)rideLocationType {
 
-	// Return first start annotation found
+	// Return first annotation found of given ride location type
 	// NOTE: Should be max 1
 	for (RidePointAnnotation* ridePointAnnotation in annotations) {
 		
@@ -1072,15 +1081,32 @@
 }
 
 
-- (BOOL)isSelectedAnnotationForRide:(Ride*)ride {
+- (NSArray*)annotationsForTeam:(Team*)team {
 	
-	if (!ride) return NO;
-	
-	// NOTE: In current MapKit, only one annotation can be selected at a time
-	MKPointAnnotation* selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
-	
-	return selectedAnnotation && [selectedAnnotation isKindOfClass:[RidePointAnnotation class]] && ((RidePointAnnotation*)selectedAnnotation).ride == ride;
+	return [self.mainMapView.annotations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
+		
+		return [evaluatedObject isKindOfClass:[TeamPointAnnotation class]] && ((TeamPointAnnotation*)evaluatedObject).team == team;
+	}]];
 }
+
+
+- (TeamPointAnnotation*)getTeamPointAnnotationFromTeamPointAnnotations:(NSArray*)annotations {
+	
+	// Return first annotation found
+	// NOTE: Should be max 1
+	return annotations.firstObject;
+}
+
+
+//- (BOOL)isSelectedAnnotationForRide:(Ride*)ride {
+//	
+//	if (!ride) return NO;
+//	
+//	// NOTE: In current MapKit, only one annotation can be selected at a time
+//	MKPointAnnotation* selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
+//	
+//	return selectedAnnotation && [selectedAnnotation isKindOfClass:[RidePointAnnotation class]] && ((RidePointAnnotation*)selectedAnnotation).ride == ride;
+//}
 
 
 //- (BOOL)isSelectedAnnotationForTeam:(Team*)team {

@@ -71,16 +71,17 @@
 + (BOOL)isValueFromNotification:(NSNotification*)notification withKey:(NSString*)key;
 
 #
+# pragma mark Views
+#
+
++ (void)animateDropView:(UIView*)view withDropHeight:(CGFloat)dropHeight withDuration:(NSTimeInterval)duration withDelay:(NSTimeInterval)delay;
++ (UIButton*)downArrowButton;
+
+#
 # pragma mark <ORNDataModelSource>
 #
 
 + (NSManagedObjectContext*)managedObjectContext;
 + (void)saveManagedObjectContext;
-
-#
-# pragma mark Controls
-#
-
-+ (UIButton*)downArrowButton;
 
 @end

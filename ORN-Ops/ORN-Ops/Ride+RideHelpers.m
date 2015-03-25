@@ -160,7 +160,7 @@
 
 
 #
-# pragma mark Helpers
+# pragma mark Instance Helpers
 #
 
 
@@ -225,7 +225,7 @@
 
 - (void)updateLocationWithPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType {
 	
-	[self updateLocationWithLatitude:placemark.location.coordinate.latitude andLogitude:placemark.location.coordinate.longitude andAddress:[Ride addressStringWithPlacemark:placemark] andCity:placemark.locality andRideLocationType:rideLocationType];
+	[self updateLocationWithLatitude:placemark.location.coordinate.latitude andLogitude:placemark.location.coordinate.longitude andAddress:[Ride getAddressStringWithPlacemark:placemark] andCity:placemark.locality andRideLocationType:rideLocationType];
 }
 
 
@@ -233,6 +233,8 @@
  Geocode given address string relative to jurisdiction, asynchronously
  */
 - (void)tryUpdateLocationWithAddressString:(NSString*)addressString andRideLocationType:(RideLocationType)rideLocationType andGeocoder:(CLGeocoder*)geocoder andSender:(id)sender {
+	
+	addressString = [addressString trimAll];
 	
 	CLCircularRegion* jurisdictionRegion = [[CLCircularRegion alloc] initWithCenter:JURISDICTION_COORDINATE radius:JURISDICTION_SEARCH_RADIUS identifier:@"ORN Jurisdication Region"];
 	
@@ -348,7 +350,92 @@
 }
 
 
-+ (NSString*)addressStringWithPlacemark:(CLPlacemark*)placemark {
+#
+# pragma mark Class Helpers
+#
+
+
++ (void)tryCreateRideWithAddressString:(NSString*)addressString andGeocoder:(CLGeocoder*)geocoder andSender:(id)sender {
+	
+	addressString = [addressString trimAll];
+	
+	CLCircularRegion* jurisdictionRegion = [[CLCircularRegion alloc] initWithCenter:JURISDICTION_COORDINATE radius:JURISDICTION_SEARCH_RADIUS identifier:@"ORN Jurisdication Region"];
+	
+	[geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray* placemarks, NSError* error) {
+		
+		// NOTES: Completion block executes on main thread. Do not run more than one geocode simultaneously.
+		
+		// If there is a problem, log it; alert the user; and we are done.
+		if (error || placemarks.count < 1) {
+			
+			if (error) {
+				NSLog(@"Geocode Error: %@ %@", error.localizedDescription, error.userInfo);
+			} else if (placemarks.count < 1) {
+				NSLog(@"Geocode Error: No placemarks for address string: %@", addressString);
+			}
+			
+			[Util presentOKAlertWithTitle:@"Error" andMessage:[NSString stringWithFormat:@"Cannot geocode address: %@", addressString]];
+			
+			return;
+		}
+		
+		// Address resolved successfully to have at least one placemark
+		CLPlacemark* placemark = placemarks[0];
+		NSLog(@"Geocode location: %@", placemark.location);
+		NSLog(@"Geocode locality: %@", placemark.locality);
+		NSLog(@"Geocode address: %@", placemark.addressDictionary);
+		
+		// Use first placemark as start location for new ride
+		Ride* ride = [Ride rideWithManagedObjectContext:[Util managedObjectContext] andDateTime:[NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL] andPlacemark:placemark andRideLocationType:RideLocationType_Start];
+		[Util saveManagedObjectContext];
+		[ride postNotificationCreatedWithSender:sender];
+		NSLog(@"Ride: %@", ride);
+	}];
+}
+
+
+//+ (NSString*)stringFromStatus:(RideStatus)status {
+//	
+//	switch (status) {
+//			
+//		case RideStatus_New:
+//			return RIDE_STATUS_STRING_NEW;
+//			
+//		case RideStatus_Confirmed:
+//			return RIDE_STATUS_STRING_CONFIRMED;
+//			
+//		case RideStatus_Progressing:
+//			return RIDE_STATUS_STRING_PROGRESSING;
+//			
+//		case RideStatus_Completed:
+//			return RIDE_STATUS_STRING_COMPLETED;
+//
+//		case RideStatus_Cancelled:
+//			return RIDE_STATUS_STRING_CANCELLED;
+//			
+//		default:
+//		case RideStatus_None:
+//			return RIDE_STATUS_STRING_NONE;
+//	}
+//}
+//
+//
+//+ (RideStatus)statusFromString:(NSString*)statusString {
+//	
+//	if (!statusString || statusString.length <= 0) return RideStatus_None;
+//	
+//	if ([statusString isEqualToString:RIDE_STATUS_STRING_NEW]) return RideStatus_New;
+//	if ([statusString isEqualToString:RIDE_STATUS_STRING_CONFIRMED]) return RideStatus_Confirmed;
+//	if ([statusString isEqualToString:RIDE_STATUS_STRING_PROGRESSING]) return RideStatus_Progressing;
+//	if ([statusString isEqualToString:RIDE_STATUS_STRING_COMPLETED]) return RideStatus_Completed;
+//	
+//	if ([statusString isEqualToString:RIDE_STATUS_STRING_CANCELLED]) return RideStatus_Cancelled;
+//	
+//	return RideStatus_None;
+//}
+
+
++ (NSString*)getAddressStringWithPlacemark:(CLPlacemark*)placemark {
 	
 	NSString* street = placemark.addressDictionary[@"Street"];
 	NSString* city = placemark.addressDictionary[@"City"];
@@ -358,47 +445,6 @@
 	return [NSString stringWithFormat:@"%@ (%.3f,%.3f)", placemark.name, placemark.location.coordinate.latitude, placemark.location.coordinate.longitude];
 	
 	//	return ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO);
-}
-
-
-+ (NSString*)stringFromStatus:(RideStatus)status {
-	
-	switch (status) {
-			
-		case RideStatus_New:
-			return RIDE_STATUS_STRING_NEW;
-			
-		case RideStatus_Confirmed:
-			return RIDE_STATUS_STRING_CONFIRMED;
-			
-		case RideStatus_Progressing:
-			return RIDE_STATUS_STRING_PROGRESSING;
-			
-		case RideStatus_Completed:
-			return RIDE_STATUS_STRING_COMPLETED;
-
-		case RideStatus_Cancelled:
-			return RIDE_STATUS_STRING_CANCELLED;
-			
-		default:
-		case RideStatus_None:
-			return RIDE_STATUS_STRING_NONE;
-	}
-}
-
-
-+ (RideStatus)statusFromString:(NSString*)statusString {
-	
-	if (!statusString || statusString.length <= 0) return RideStatus_None;
-	
-	if ([statusString isEqualToString:RIDE_STATUS_STRING_NEW]) return RideStatus_New;
-	if ([statusString isEqualToString:RIDE_STATUS_STRING_CONFIRMED]) return RideStatus_Confirmed;
-	if ([statusString isEqualToString:RIDE_STATUS_STRING_PROGRESSING]) return RideStatus_Progressing;
-	if ([statusString isEqualToString:RIDE_STATUS_STRING_COMPLETED]) return RideStatus_Completed;
-	
-	if ([statusString isEqualToString:RIDE_STATUS_STRING_CANCELLED]) return RideStatus_Cancelled;
-	
-	return RideStatus_None;
 }
 
 
