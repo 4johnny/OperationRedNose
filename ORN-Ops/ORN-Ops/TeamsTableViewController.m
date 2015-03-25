@@ -153,16 +153,16 @@
 }
 
 
-//- (void)rideCreatedWithNotification:(NSNotification*)notification {
-//
-//	[self.tableView reloadData];
-//}
-//
-//
-//- (void)rideUpdatedWithNotification:(NSNotification*)notification {
-//	
-//	[self.tableView reloadData];
-//}
+- (void)rideCreatedWithNotification:(NSNotification*)notification {
+
+	[self.tableView reloadData];
+}
+
+
+- (void)rideUpdatedWithNotification:(NSNotification*)notification {
+	
+	[self.tableView reloadData];
+}
 
 
 #
@@ -175,8 +175,8 @@
 	[Team addCreatedObserver:self withSelector:@selector(teamCreatedWithNotification:)];
 	[Team addUpdatedObserver:self withSelector:@selector(teamUpdatedWithNotification:)];
 	
-//	[Ride addCreatedObserver:self withSelector:@selector(rideCreatedWithNotification:)];
-//	[Ride addUpdatedObserver:self withSelector:@selector(rideUpdatedWithNotification:)];	
+	[Ride addCreatedObserver:self withSelector:@selector(rideCreatedWithNotification:)];
+	[Ride addUpdatedObserver:self withSelector:@selector(rideUpdatedWithNotification:)];	
 }
 
 
