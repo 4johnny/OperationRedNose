@@ -873,7 +873,7 @@
 		} else {
 			
 			// If view exists for given annotation, update it
-			MKPinAnnotationView* teamAnnotationView = (MKPinAnnotationView*)[self.mainMapView viewForAnnotation:teamPointAnnotation];
+			MKAnnotationView* teamAnnotationView = [self.mainMapView viewForAnnotation:teamPointAnnotation];
 			if (teamAnnotationView) {
 				
 				[self configureTeamAnnotationView:teamAnnotationView withTeamPointAnnotation:teamPointAnnotation];

@@ -296,9 +296,7 @@
 		NSLog(@"ETA: %.0f sec -> %.2f min", response.expectedTravelTime, response.expectedTravelTime / (double)SECONDS_PER_MINUTE);
 		[Util saveManagedObjectContext];
 		[self postNotificationUpdatedWithSender:sender];
-//		if (self.teamAssigned) {
-//			[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:sender userInfo:@{TEAM_ENTITY_NAME:self.teamAssigned}];
-//		}
+		[self.teamAssigned postNotificationUpdatedWithSender:sender];
 		NSLog(@"Ride: %@", self);
 	}];
 }
