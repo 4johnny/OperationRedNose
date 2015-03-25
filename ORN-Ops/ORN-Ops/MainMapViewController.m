@@ -287,7 +287,10 @@
 - (void)mapView:(MKMapView*)mapView didAddAnnotationViews:(NSArray*)views {
 	
 	// Animate dropping for team point annotations
-	for (MKAnnotationView* view in views) {
+	
+	for (int i = 0; i < views.count; i++) {
+		
+		MKAnnotationView* view = views[i];
 		
 		// If not team annotation, we are done with this view
 		if (![view.annotation isKindOfClass:[TeamPointAnnotation class]]) continue;
@@ -304,7 +307,7 @@
 		if (!MKMapRectContainsPoint(mapView.visibleMapRect, point)) continue;
 
 		// Animate dropping view
-		[Util animateDropView:view withDropHeight:self.view.frame.size.height withDuration:0.25 withDelay:(0.04 * [views indexOfObject:view])];
+		[Util animateDropView:view withDropHeight:self.view.frame.size.height withDuration:0.25 withDelay:(0.04 * i)];
 	}
 }
 
@@ -584,7 +587,6 @@
 
 //- (void)mapView:(MKMapView*)mapView didSelectRidePointAnnotationWithRide:(Ride*)ride {
 //
-//	// TODO: Not Implemented
 //}
 
 
@@ -784,13 +786,11 @@
 
 //- (void)configureRideStartEndOverlaysWithNotification:(NSNotification*)notification {
 //	
-//	// TODO: Not Implemented
 //}
 //
 //
 //- (void)configureRideTeamAssignedOverlaysWithNotification:(NSNotification*)notification {
 //	
-//	// TODO: Not Implemented
 //}
 
 
