@@ -8,7 +8,6 @@
 
 #import <CoreData/CoreData.h>
 #import <CoreLocation/CoreLocation.h>
-//#import <AddressBookUI/AddressBookUI.h>
 
 #import "MainMapViewController.h"
 #import "AppDelegate.h"
@@ -336,20 +335,20 @@
 	}
 	
 	// If team, navigate to team detail controller
-//	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
-//		
-//		// Create team detail controller
-//		TeamDetailTableViewController* teamDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:TEAM_DETAIL_TABLE_VIEW_CONTROLLER_ID];
-//		
-//		// Inject team data model
-//		TeamPointAnnotation* teamPointAnnotation = view.annotation;
-//		teamDetailTableViewController.team = teamPointAnnotation.team;
-//		
-//		// Push onto navigation stack
-//		[self.navigationController pushViewController:teamDetailTableViewController animated:YES];
-//		
-//		return;
-//	}
+	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
+		
+		// Create team detail controller
+		TeamDetailTableViewController* teamDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:TEAM_DETAIL_TABLE_VIEW_CONTROLLER_ID];
+		
+		// Inject team data model
+		TeamPointAnnotation* teamPointAnnotation = view.annotation;
+		teamDetailTableViewController.team = teamPointAnnotation.team;
+		
+		// Push onto navigation stack
+		[self.navigationController pushViewController:teamDetailTableViewController animated:YES];
+		
+		return;
+	}
 }
 
 
