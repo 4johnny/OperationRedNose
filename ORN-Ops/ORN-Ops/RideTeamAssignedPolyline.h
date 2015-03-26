@@ -14,7 +14,7 @@
 # pragma mark - Interface
 #
 
-@interface RideTeamAssignedPolyline : BasePolyline
+@interface RideTeamAssignedPolyline : BasePolyline <RideModelSource>
 
 #
 # pragma mark Properties

@@ -62,6 +62,22 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 };
 
 #
+# pragma mark - Protocol
+#
+
+@protocol RideModelSource <NSObject>
+
+#
+# pragma mark Properties
+#
+
+@required
+
+@property (nonatomic) Ride* ride;
+
+@end
+
+#
 # pragma mark - Interface
 #
 

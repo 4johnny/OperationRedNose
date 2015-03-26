@@ -13,7 +13,7 @@
 # pragma mark - Interface
 #
 
-@interface RidePointAnnotation : MKPointAnnotation
+@interface RidePointAnnotation : MKPointAnnotation <RideModelSource>
 
 #
 # pragma mark Properties

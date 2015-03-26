@@ -12,6 +12,7 @@
 #import "MainMapViewController.h"
 #import "AppDelegate.h"
 #import "Ride+RideHelpers.h"
+#import "Team+TeamHelpers.h"
 #import "RidePointAnnotation.h"
 #import "TeamPointAnnotation.h"
 #import "RideStartEndPolyline.h"
@@ -28,9 +29,12 @@
 # pragma mark Data Model Constants
 #
 
-#define RIDE_FETCH_SORT_KEY			@"dateTimeStart"
+#define RIDE_FETCH_SORT_KEY1		@"dateTimeStart"
+#define RIDE_FETCH_SORT_KEY2		@"locationStartLongitude"
 #define RIDE_FETCH_SORT_ASCENDING	YES
-#define TEAM_FETCH_SORT_KEY			@"name"
+
+#define TEAM_FETCH_SORT_KEY1		@"name"
+#define TEAM_FETCH_SORT_KEY2		@"members"
 #define TEAM_FETCH_SORT_ASCENDING	YES
 
 #
@@ -100,7 +104,11 @@
 	
 	// Create fetch request for rides
 	NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:RIDE_ENTITY_NAME];
-	fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY ascending:RIDE_FETCH_SORT_ASCENDING]];
+	fetchRequest.sortDescriptors =
+	@[
+	  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY1 ascending:RIDE_FETCH_SORT_ASCENDING],
+	  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY2 ascending:RIDE_FETCH_SORT_ASCENDING]
+	  ];
 	//fetchRequest.predicate = [NSPredicate predicateWithFormat:@"movie.id == %@", self.movie.id];
 	//fetchRequest.fetchBatchSize = PAGE_LIMIT;
 	//fetchRequest.fetchLimit = PAGE_LIMIT;
@@ -127,7 +135,11 @@
 	
 	// Create fetch request for teams
 	NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:TEAM_ENTITY_NAME];
-	fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY ascending:TEAM_FETCH_SORT_ASCENDING]];
+	fetchRequest.sortDescriptors =
+	@[
+	  [NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY1 ascending:TEAM_FETCH_SORT_ASCENDING],
+	  [NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY2 ascending:TEAM_FETCH_SORT_ASCENDING]
+	  ];
 	//fetchRequest.predicate = [NSPredicate predicateWithFormat:@"movie.id == %@", self.movie.id];
 	//fetchRequest.fetchBatchSize = PAGE_LIMIT;
 	//fetchRequest.fetchLimit = PAGE_LIMIT;
@@ -261,15 +273,19 @@
 #
 
 
-//- (void)mapView:(MKMapView*)mapView regionDidChangeAnimated:(BOOL)animated {
-//
-//	// NOTE: Called many times during scrolling, so keep code lightweight
-//}
+/*
+ - (void)mapView:(MKMapView*)mapView regionDidChangeAnimated:(BOOL)animated {
+ 
+	// NOTE: Called many times during scrolling, so keep code lightweight
+ }
+ */
 
 
-//- (void)mapView:(MKMapView*)mapView didUpdateUserLocation:(MKUserLocation*)userLocation {
-//
-//}
+/*
+ - (void)mapView:(MKMapView*)mapView didUpdateUserLocation:(MKUserLocation*)userLocation {
+ 
+ }
+ */
 
 
 - (MKAnnotationView*)mapView:(MKMapView*)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
@@ -296,7 +312,7 @@
 		if (![view.annotation isKindOfClass:[TeamPointAnnotation class]]) continue;
 		
 		// If team annotation does not need animating, we are done with this view
-		TeamPointAnnotation* teamPointAnnotation = view.annotation;
+		TeamPointAnnotation* teamPointAnnotation = (TeamPointAnnotation*)view.annotation;
 		if (!teamPointAnnotation.needsAnimatesDrop) continue;
 		
 		// Animation for team annotation has been triggered, so reset trigger
@@ -328,7 +344,7 @@
 		RideDetailTableViewController* rideDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:RIDE_DETAIL_TABLE_VIEW_CONTROLLER_ID];
 		
 		// Inject ride data model
-		RidePointAnnotation* ridePointAnnotation = pinAnnotationView.annotation;
+		RidePointAnnotation* ridePointAnnotation = (RidePointAnnotation*)pinAnnotationView.annotation;
 		rideDetailTableViewController.ride = ridePointAnnotation.ride;
 		
 		// Push onto navigation stack
@@ -344,7 +360,7 @@
 		TeamDetailTableViewController* teamDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:TEAM_DETAIL_TABLE_VIEW_CONTROLLER_ID];
 		
 		// Inject team data model
-		TeamPointAnnotation* teamPointAnnotation = view.annotation;
+		TeamPointAnnotation* teamPointAnnotation = (TeamPointAnnotation*)view.annotation;
 		teamDetailTableViewController.team = teamPointAnnotation.team;
 		
 		// Push onto navigation stack
@@ -355,49 +371,81 @@
 }
 
 
-//- (void)mapView:(MKMapView*)mapView didSelectAnnotationView:(MKAnnotationView*)view {
-//
-//	// If user location, we are done
-//	if ([view.annotation isKindOfClass:[MKUserLocation class]]) return;
-//	
-//	if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) {
-//		
-//		[self mapView:mapView didSelectRidePointAnnotationWithRide:((RidePointAnnotation*)view.annotation).ride];
-//		return;
-//	}
+- (void)mapView:(MKMapView*)mapView didSelectAnnotationView:(MKAnnotationView*)view {
+
+	if ([view.annotation isKindOfClass:[MKUserLocation class]]) return;
+
+	if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) {
+		
+		Ride* ride = ((RidePointAnnotation*)view.annotation).ride;
+		[ride postNotificationUpdatedWithSender:self];
+		NSLog(@"Rides[%d] selected: %@", (int)[self.rideFetchedResultsController.fetchedObjects indexOfObject:ride], ride);
+		return;
+	}
 	
-//	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
-//		
-//		[self mapView:mapView didSelectTeamPointAnnotationWithTeam:((TeamPointAnnotation*)view.annotation).team];
-//		return;
-//	}
-//}
+	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
+		
+		Team* team = ((TeamPointAnnotation*)view.annotation).team;
+		
+		for (Ride* ride in team.ridesAssigned) {
+		
+			[ride postNotificationUpdatedWithSender:self];
+		}
+		NSLog(@"Teams[%d] selected: %@", (int)[self.teamFetchedResultsController.fetchedObjects indexOfObject:team], team);
+		return;
+	}
+}
 
 
-//- (void)mapView:(MKMapView*)mapView didDeselectAnnotationView:(MKAnnotationView*)view {
-//	
-//	// Remove route overlays
-//	[self clearAllOverlays];
-//}
+- (void)mapView:(MKMapView*)mapView didDeselectAnnotationView:(MKAnnotationView*)view {
+	
+	if ([view.annotation isKindOfClass:[MKUserLocation class]]) return;
+	
+	if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) {
+		
+		Ride* ride = ((RidePointAnnotation*)view.annotation).ride;
+		[ride postNotificationUpdatedWithSender:self];
+		return;
+	}
+
+	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
+		
+		Team* team = ((TeamPointAnnotation*)view.annotation).team;
+		
+		for (Ride* ride in team.ridesAssigned) {
+			
+			[ride postNotificationUpdatedWithSender:self];
+		}
+		return;
+	}
+}
 
 
-//- (MKOverlayRenderer*)mapView:(MKMapView*)mapView rendererForOverlay:(id<MKOverlay>)overlay {
-//
-//	MKPolylineRenderer* renderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
-//	renderer.strokeColor = [UIColor blueColor];
-//	renderer.alpha = 0.5;
-//	renderer.lineWidth = 5.0;
-//
-//	// For overlay between team and ride use thinner, dotted line
-//	if ([overlay isKindOfClass:[RideTeamAssignedPolyline class]]) {
-//		
-//		renderer.lineWidth = 3.0;
-//		renderer.lineDashPattern = @[@5, @10];
-//		//	renderer.lineDashPhase = 6;
-//	}
-//	
-//	return renderer;
-//}
+- (MKOverlayRenderer*)mapView:(MKMapView*)mapView rendererForOverlay:(id<MKOverlay>)overlay {
+	
+	// For ride and team selection overlays, use blue lines
+	MKPolylineRenderer* renderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
+	renderer.strokeColor = [UIColor blueColor];
+	renderer.alpha = 0.5;
+	
+	// For overlay between ride start and end, use solid line
+	if ([overlay isKindOfClass:[RideStartEndPolyline class]]) {
+		
+		renderer.lineWidth = 5.0;
+		return renderer;
+	}
+
+	// For overlay between team and ride, use thinner, dotted line
+	if ([overlay isKindOfClass:[RideTeamAssignedPolyline class]]) {
+		
+		renderer.lineWidth = 3.0;
+		renderer.lineDashPattern = @[@3, @5];
+		//	renderer.lineDashPhase = 6;
+		return renderer;
+	}
+	
+	return nil;
+}
 
 
 #
@@ -585,26 +633,12 @@
 }
 
 
-//- (void)mapView:(MKMapView*)mapView didSelectRidePointAnnotationWithRide:(Ride*)ride {
-//
-//}
-
-
-//- (void)mapView:(MKMapView*)mapView didSelectTeamPointAnnotationWithTeam:(Team*)team {
-//	
-//	for (Ride* ride in team.ridesAssigned) {
-//		
-//		[self mapView:mapView didSelectRidePointAnnotationWithRide:ride];
-//	}
-//}
-
-
 #
 # pragma mark Action Handlers
 #
 
 
-- (IBAction)avatarBarButtonPressed:(UIBarButtonItem *)sender {
+- (IBAction)avatarBarButtonPressed:(UIBarButtonItem*)sender {
 	
 	[self configureJurisdictionRegionViewWithAnimated:YES];
 }
@@ -638,11 +672,8 @@
 
 
 #
-# pragma mark Notification Handlers
-#
-
-
 # pragma mark Ride Notification Handlers
+#
 
 
 - (void)rideCreatedWithNotification:(NSNotification*)notification {
@@ -664,8 +695,13 @@
 - (void)rideUpdatedWithNotification:(NSNotification*)notification {
 	
 	[self configureRideAnnotationsWithNotification:notification andNeedsCenter:NO andNeedsSelection:NO];
-//	[self configureRideOverlaysWithNotification:notification];
+	[self configureRideOverlaysWithNotification:notification];
 }
+
+
+#
+# pragma mark Ride Notification Handler Helpers
+#
 
 
 /*
@@ -713,7 +749,7 @@
 			   andNeedsCenter:(BOOL)needsCenter
 			andNeedsSelection:(BOOL)needsSelection {
 	
-	RidePointAnnotation* ridePointAnnotation = [self getRidePointAnnotationFromRidePointAnnotations:rideAnnotations andRideLocationType:rideLocationType];
+	RidePointAnnotation* ridePointAnnotation = [MainMapViewController getRidePointAnnotationFromRidePointAnnotations:rideAnnotations andRideLocationType:rideLocationType];
 	
 	NSNumber* locationLatitude = ride.locationStartLatitude;
 	NSNumber* locationLongitude = ride.locationStartLongitude;
@@ -766,6 +802,7 @@
 		
 	} else {
 		
+		// Remove existing annotation, if present
 		if (ridePointAnnotation) {
 			
 			[self.mainMapView removeAnnotation:ridePointAnnotation];
@@ -777,24 +814,134 @@
 }
 
 
-//- (void)configureRideOverlaysWithNotification:(NSNotification*)notification {
-//	
-//	[self configureRideStartEndOverlaysWithNotification:notification];
-//	[self configureRideTeamAssignedOverlaysWithNotification:notification];
-//}
+- (void)configureRideOverlaysWithNotification:(NSNotification*)notification {
+
+	[self configureRideStartEndOverlaysWithNotification:notification];
+	[self configureRideTeamAssignedOverlaysWithNotification:notification];
+}
 
 
-//- (void)configureRideStartEndOverlaysWithNotification:(NSNotification*)notification {
-//	
-//}
-//
-//
-//- (void)configureRideTeamAssignedOverlaysWithNotification:(NSNotification*)notification {
-//	
-//}
+- (void)configureRideStartEndOverlaysWithNotification:(NSNotification*)notification {
+
+//	Ride* ride = [Ride rideFromNotification:notification];
+
+}
 
 
+/*
+ Configure ride-team assigned overlay, consistent with given ride notification
+ Returns whether overlay is present
+ */
+- (BOOL)configureRideTeamAssignedOverlaysWithNotification:(NSNotification*)notification {
+
+	Ride* ride = [Ride rideFromNotification:notification];
+	NSArray* rideOverlays = [self overlaysForRide:ride];
+	
+	RideTeamAssignedPolyline* rideTeamAssignedPolyline = [MainMapViewController getRideTeamAssignedPolylineFromRideOverlays:rideOverlays];
+
+	if (([self isSelectedAnnotationForRide:ride] || [self isSelectedAnnotationForTeam:ride.teamAssigned]) &&
+		ride.locationStartLatitude && ride.locationStartLongitude &&
+		ride.teamAssigned.locationCurrentLatitude && ride.teamAssigned.locationCurrentLongitude) {
+		
+		CLLocationCoordinate2D startCoordinate = CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue);
+		
+		// Updated existing overlay or create new one
+		if (rideTeamAssignedPolyline) {
+			
+			(void)[rideTeamAssignedPolyline initWithRide:ride andStartCoordinate:&startCoordinate];
+			
+		} else {
+			
+			rideTeamAssignedPolyline = [RideTeamAssignedPolyline rideTeamAssignedPolylineWithRide:ride andStartCoordinate:&startCoordinate];
+			
+			[self.mainMapView addOverlay:rideTeamAssignedPolyline level:MKOverlayLevelAboveLabels];
+		}
+		
+	} else {
+		
+		// Remove existing overlay, if present
+		if (rideTeamAssignedPolyline) {
+		
+			[self.mainMapView removeOverlay:rideTeamAssignedPolyline];
+			rideTeamAssignedPolyline = nil;
+		}
+	}
+	
+	return (rideTeamAssignedPolyline != nil);
+}
+
+
+- (NSArray*)annotationsForRide:(Ride*)ride {
+	
+	return [self.mainMapView.annotations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
+		
+		return [evaluatedObject conformsToProtocol:@protocol(RideModelSource)] && ((id<RideModelSource>)evaluatedObject).ride == ride;
+	}]];
+}
+
+
++ (RidePointAnnotation*)getRidePointAnnotationFromRidePointAnnotations:(NSArray*)annotations andRideLocationType:(RideLocationType)rideLocationType {
+	
+	// Return first annotation found of given ride location type
+	// NOTE: Should be max 1
+	for (RidePointAnnotation* ridePointAnnotation in annotations) {
+		
+		if (ridePointAnnotation.rideLocationType == rideLocationType) return ridePointAnnotation;
+	}
+	
+	return nil;
+}
+
+
+- (BOOL)isSelectedAnnotationForRide:(Ride*)ride {
+	
+	if (!ride) return NO;
+	
+	// NOTE: In current MapKit, only one annotation can be selected at a time
+	MKPointAnnotation* selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
+	
+	return [selectedAnnotation conformsToProtocol:@protocol(RideModelSource)] && ((id<RideModelSource>)selectedAnnotation).ride == ride;
+}
+
+
+- (NSArray*)overlaysForRide:(Ride*)ride {
+	
+	return [self.mainMapView.overlays filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
+		
+		return [evaluatedObject conformsToProtocol:@protocol(RideModelSource)] && ((id<RideModelSource>)evaluatedObject).ride == ride;
+	}]];
+}
+
+
++ (RideStartEndPolyline*)getRideStartEndPolylineFromRideOverlays:(NSArray*)overlays {
+	
+	// Return first overlay found of ride start-end polyline class
+	// NOTE: Should be max 1
+	for (id<MKOverlay> overlay in overlays) {
+		
+		if ([overlay isKindOfClass:[RideStartEndPolyline class]]) return (RideStartEndPolyline*)overlay;
+	}
+	
+	return nil;
+}
+
+
++ (RideTeamAssignedPolyline*)getRideTeamAssignedPolylineFromRideOverlays:(NSArray*)overlays {
+	
+	// Return first overlay found of ride-team assigned polyline class
+	// NOTE: Should be max 1
+	for (id<MKOverlay> overlay in overlays) {
+		
+		if ([overlay isKindOfClass:[RideTeamAssignedPolyline class]]) return (RideTeamAssignedPolyline*)overlay;
+	}
+	
+	return nil;
+}
+
+
+#
 # pragma mark Team Notification Handlers
+#
 
 
 - (void)teamCreatedWithNotification:(NSNotification*)notification {
@@ -806,8 +953,13 @@
 - (void)teamUpdatedWithNotification:(NSNotification*)notification {
 	
 	[self configureTeamAnnotationsWithNotification:notification andNeedsCenter:NO andNeedsSelection:NO];
-	//	[self configureTeamOverlaysWithNotification:notification];
+	// NOTE: Overlays for teams are handled by assigned rides
 }
+
+
+#
+# pragma mark Team Notification Handler Helpers
+#
 
 
 /*
@@ -843,7 +995,7 @@
 			   andNeedsCenter:(BOOL)needsCenter
 			andNeedsSelection:(BOOL)needsSelection {
 	
-	TeamPointAnnotation* teamPointAnnotation = [self getTeamPointAnnotationFromTeamPointAnnotations:teamAnnotations];
+	TeamPointAnnotation* teamPointAnnotation = [MainMapViewController getTeamPointAnnotationFromTeamPointAnnotations:teamAnnotations];
 	
 	NSNumber* locationLatitude = team.locationCurrentLatitude;
 	NSNumber* locationLongitude = team.locationCurrentLongitude;
@@ -899,6 +1051,33 @@
 	}
 	
 	return (teamPointAnnotation != nil);
+}
+
+
+- (NSArray*)annotationsForTeam:(Team*)team {
+	
+	return [self.mainMapView.annotations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
+		
+		return [evaluatedObject conformsToProtocol:@protocol(TeamModelSource)] && ((id<TeamModelSource>)evaluatedObject).team == team;
+	}]];
+}
+
+
++ (TeamPointAnnotation*)getTeamPointAnnotationFromTeamPointAnnotations:(NSArray*)annotations {
+	
+	// Return first annotation found
+	// NOTE: Should be max 1
+	return annotations.firstObject;
+}
+
+
+- (BOOL)isSelectedAnnotationForTeam:(Team*)team {
+	
+	if (!team) return NO;
+	
+	MKPointAnnotation* selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
+	
+	return [selectedAnnotation conformsToProtocol:@protocol(TeamModelSource)] && ((id<TeamModelSource>)selectedAnnotation).team == team;
 }
 
 
@@ -1056,66 +1235,6 @@
 		[team postNotificationUpdatedWithSender:self andUpdatedLocation:YES];
 	}
 }
-
-
-- (NSArray*)annotationsForRide:(Ride*)ride {
-	
-	return [self.mainMapView.annotations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
-		
-		return [evaluatedObject isKindOfClass:[RidePointAnnotation class]] && ((RidePointAnnotation*)evaluatedObject).ride == ride;
-	}]];
-}
-
-
-- (RidePointAnnotation*)getRidePointAnnotationFromRidePointAnnotations:(NSArray*)annotations andRideLocationType:(RideLocationType)rideLocationType {
-
-	// Return first annotation found of given ride location type
-	// NOTE: Should be max 1
-	for (RidePointAnnotation* ridePointAnnotation in annotations) {
-		
-		if (ridePointAnnotation.rideLocationType == rideLocationType) return ridePointAnnotation;
-	}
-	
-	return nil;
-}
-
-
-- (NSArray*)annotationsForTeam:(Team*)team {
-	
-	return [self.mainMapView.annotations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
-		
-		return [evaluatedObject isKindOfClass:[TeamPointAnnotation class]] && ((TeamPointAnnotation*)evaluatedObject).team == team;
-	}]];
-}
-
-
-- (TeamPointAnnotation*)getTeamPointAnnotationFromTeamPointAnnotations:(NSArray*)annotations {
-	
-	// Return first annotation found
-	// NOTE: Should be max 1
-	return annotations.firstObject;
-}
-
-
-//- (BOOL)isSelectedAnnotationForRide:(Ride*)ride {
-//	
-//	if (!ride) return NO;
-//	
-//	// NOTE: In current MapKit, only one annotation can be selected at a time
-//	MKPointAnnotation* selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
-//	
-//	return selectedAnnotation && [selectedAnnotation isKindOfClass:[RidePointAnnotation class]] && ((RidePointAnnotation*)selectedAnnotation).ride == ride;
-//}
-
-
-//- (BOOL)isSelectedAnnotationForTeam:(Team*)team {
-//	
-//	if (!team) return NO;
-//	
-//	MKPointAnnotation* selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
-//	
-//	return selectedAnnotation && [selectedAnnotation isKindOfClass:[TeamPointAnnotation class]] && ((TeamPointAnnotation*)selectedAnnotation).team == team;
-//}
 
 
 - (void)configureJurisdictionRegionViewWithAnimated:(BOOL)animated {

@@ -17,6 +17,22 @@
 #define TEAM_TITLE_NONE		@"-None-"
 
 #
+# pragma mark - Protocol
+#
+
+@protocol TeamModelSource <NSObject>
+
+#
+# pragma mark Properties
+#
+
+@required
+
+@property (nonatomic) Team* team;
+
+@end
+
+#
 # pragma mark - Interface
 #
 

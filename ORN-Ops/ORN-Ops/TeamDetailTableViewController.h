@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Team.h"
+#import "Team+TeamHelpers.h"
 
 #
 # pragma mark - Constants
@@ -19,7 +19,7 @@
 # pragma mark - Interface
 #
 
-@interface TeamDetailTableViewController : UITableViewController
+@interface TeamDetailTableViewController : UITableViewController <TeamModelSource>
 
 #
 # pragma mark Properties

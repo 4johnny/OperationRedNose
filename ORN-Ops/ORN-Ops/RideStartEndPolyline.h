@@ -13,7 +13,7 @@
 # pragma mark - Interface
 #
 
-@interface RideStartEndPolyline : BasePolyline
+@interface RideStartEndPolyline : BasePolyline <RideModelSource>
 
 #
 # pragma mark Properties

@@ -13,7 +13,7 @@
 # pragma mark - Interface
 #
 
-@interface TeamPointAnnotation : MKPointAnnotation
+@interface TeamPointAnnotation : MKPointAnnotation <TeamModelSource>
 
 #
 # pragma mark Properties

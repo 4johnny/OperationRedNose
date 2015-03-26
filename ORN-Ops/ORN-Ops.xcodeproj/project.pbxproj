@@ -230,12 +230,12 @@
 				B2907B831A9F1903008A0301 /* RidePointAnnotation.m */,
 				B2E76A231AA6D0A3004B55BB /* TeamPointAnnotation.h */,
 				B2E76A241AA6D0A3004B55BB /* TeamPointAnnotation.m */,
+				B28312241AAF2A8100B7C1A9 /* BasePolyline.h */,
+				B28312251AAF2A8100B7C1A9 /* BasePolyline.m */,
 				B28312271AAF322C00B7C1A9 /* RideStartEndPolyline.h */,
 				B28312281AAF322C00B7C1A9 /* RideStartEndPolyline.m */,
 				B26C112E1AAEB4CD005FC313 /* RideTeamAssignedPolyline.h */,
 				B26C112F1AAEB4CD005FC313 /* RideTeamAssignedPolyline.m */,
-				B28312241AAF2A8100B7C1A9 /* BasePolyline.h */,
-				B28312251AAF2A8100B7C1A9 /* BasePolyline.m */,
 			);
 			name = "Map Helpers";
 			sourceTree = "<group>";

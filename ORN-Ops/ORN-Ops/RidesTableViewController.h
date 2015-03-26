@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 #import "ORNDataModelSource.h"
-#import "RideDetailTableViewController.h"
 
 #
 # pragma mark - Interface

@@ -122,9 +122,8 @@
 	if ([segue.identifier isEqualToString:SHOW_RIDE_DETAIL_SEQUE]) {
 		
 		// Inject ride model into ride view controller
-		NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-		RideDetailTableViewController* rideDetailTableViewController = segue.destinationViewController;
-		rideDetailTableViewController.ride = [self.fetchedResultsController objectAtIndexPath:indexPath];
+		id<RideModelSource> rideModelSource = segue.destinationViewController;
+		rideModelSource.ride = [self.fetchedResultsController objectAtIndexPath:[self.tableView indexPathForSelectedRow]];
 	}
 }
 

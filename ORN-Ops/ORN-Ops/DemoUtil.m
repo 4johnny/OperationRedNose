@@ -456,17 +456,17 @@
 
 	// Assign specific teams to specific rides
 	
-	[DemoUtil assignTeam:teams[0] toRide:rides[10]];
+	[DemoUtil assignTeam:teams[0] toRide:rides[8]];
 	[DemoUtil assignTeam:teams[2] toRide:rides[0]]; // Team with two rides
 	[DemoUtil assignTeam:teams[2] toRide:rides[1]]; // Team with two rides
 	[DemoUtil assignTeam:teams[3] toRide:rides[2]];
 	[DemoUtil assignTeam:teams[4] toRide:rides[3]];
 	[DemoUtil assignTeam:teams[5] toRide:rides[4]];
 	[DemoUtil assignTeam:teams[6] toRide:rides[5]]; // Team with two rides
-	[DemoUtil assignTeam:teams[6] toRide:rides[7]]; // Team with two rides
-	[DemoUtil assignTeam:teams[7] toRide:rides[6]];
-	[DemoUtil assignTeam:teams[8] toRide:rides[8]];
-	[DemoUtil assignTeam:teams[10] toRide:rides[9]];
+	[DemoUtil assignTeam:teams[6] toRide:rides[6]]; // Team with two rides
+	[DemoUtil assignTeam:teams[7] toRide:rides[7]];
+	[DemoUtil assignTeam:teams[8] toRide:rides[9]];
+	[DemoUtil assignTeam:teams[10] toRide:rides[10]];
 }
 
 
