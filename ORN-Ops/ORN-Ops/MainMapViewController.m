@@ -569,7 +569,6 @@
 	
 	if (!team.ridesAssigned || team.ridesAssigned.count == 0) return nil;
 	
-	// TODO: Use proper calculation for busy duration
 	double busyDuration = 0; // seconds
 	for (Ride* rideAssigned in team.ridesAssigned) {
 		
@@ -830,44 +829,40 @@
 
 /*
  Configure ride-team assigned overlay, consistent with given ride notification
- Returns whether overlay is present
  */
-- (BOOL)configureRideTeamAssignedOverlaysWithNotification:(NSNotification*)notification {
+- (void)configureRideTeamAssignedOverlaysWithNotification:(NSNotification*)notification {
 
+	// Remove ride-team assigned overlay, if present
 	Ride* ride = [Ride rideFromNotification:notification];
-	NSArray* rideOverlays = [self overlaysForRide:ride];
+	RideTeamAssignedPolyline* rideTeamAssignedPolyline = [MainMapViewController getRideTeamAssignedPolylineFromRideOverlays:[self overlaysForRide:ride]];
+	[self.mainMapView removeOverlay:rideTeamAssignedPolyline];
 	
-	RideTeamAssignedPolyline* rideTeamAssignedPolyline = [MainMapViewController getRideTeamAssignedPolylineFromRideOverlays:rideOverlays];
+	// If neither ride nor team assigned is selected, we are done
+	if (![self isSelectedAnnotationForRide:ride] && ![self isSelectedAnnotationForTeam:ride.teamAssigned]) return;
+	
+	// If no ride-team assigned or insufficient location data, we are done
+	if (!ride.teamAssigned ||
+		!ride.teamAssigned.locationCurrentLatitude ||
+		!ride.teamAssigned.locationCurrentLongitude ||
+		!ride.locationStartLatitude ||
+		!ride.locationStartLongitude
+		) return;
+	
+	// Get coordinate of ride start
+	CLLocationCoordinate2D startCoordinate = CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue);
 
-	if (([self isSelectedAnnotationForRide:ride] || [self isSelectedAnnotationForTeam:ride.teamAssigned]) &&
-		ride.locationStartLatitude && ride.locationStartLongitude &&
-		ride.teamAssigned.locationCurrentLatitude && ride.teamAssigned.locationCurrentLongitude) {
+	// Update existing overlay or create new one
+	if (rideTeamAssignedPolyline) {
 		
-		CLLocationCoordinate2D startCoordinate = CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue);
-		
-		// Updated existing overlay or create new one
-		if (rideTeamAssignedPolyline) {
-			
-			(void)[rideTeamAssignedPolyline initWithRide:ride andStartCoordinate:&startCoordinate];
-			
-		} else {
-			
-			rideTeamAssignedPolyline = [RideTeamAssignedPolyline rideTeamAssignedPolylineWithRide:ride andStartCoordinate:&startCoordinate];
-			
-			[self.mainMapView addOverlay:rideTeamAssignedPolyline level:MKOverlayLevelAboveLabels];
-		}
+		rideTeamAssignedPolyline = [rideTeamAssignedPolyline initWithRide:ride andStartCoordinate:&startCoordinate];
 		
 	} else {
 		
-		// Remove existing overlay, if present
-		if (rideTeamAssignedPolyline) {
-		
-			[self.mainMapView removeOverlay:rideTeamAssignedPolyline];
-			rideTeamAssignedPolyline = nil;
-		}
+		rideTeamAssignedPolyline = [RideTeamAssignedPolyline rideTeamAssignedPolylineWithRide:ride andStartCoordinate:&startCoordinate];
 	}
 	
-	return (rideTeamAssignedPolyline != nil);
+	// Add ride-team assigned overlay to map view
+	[self.mainMapView addOverlay:rideTeamAssignedPolyline level:MKOverlayLevelAboveLabels];
 }
 
 
