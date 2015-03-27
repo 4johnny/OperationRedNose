@@ -852,15 +852,10 @@
 	CLLocationCoordinate2D startCoordinate = CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue);
 
 	// Update existing overlay or create new one
-	if (rideTeamAssignedPolyline) {
-		
-		rideTeamAssignedPolyline = [rideTeamAssignedPolyline initWithRide:ride andStartCoordinate:&startCoordinate];
-		
-	} else {
-		
-		rideTeamAssignedPolyline = [RideTeamAssignedPolyline rideTeamAssignedPolylineWithRide:ride andStartCoordinate:&startCoordinate];
-	}
-	
+	rideTeamAssignedPolyline = rideTeamAssignedPolyline
+	? [rideTeamAssignedPolyline initWithRide:ride andStartCoordinate:&startCoordinate]
+	: [RideTeamAssignedPolyline rideTeamAssignedPolylineWithRide:ride andStartCoordinate:&startCoordinate];
+
 	// Add ride-team assigned overlay to map view
 	[self.mainMapView addOverlay:rideTeamAssignedPolyline level:MKOverlayLevelAboveLabels];
 }
