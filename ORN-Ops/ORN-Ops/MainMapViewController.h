@@ -26,6 +26,7 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem* avatarBarButtonItem;
 @property (weak, nonatomic) IBOutlet UITextField* addressTextField;
 @property (strong, nonatomic) IBOutlet MKMapView* mainMapView;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *lineTypeSegmentedControl;
 @property (weak, nonatomic) IBOutlet UISegmentedControl* mapTypeSegmentedControl;
 
 @end

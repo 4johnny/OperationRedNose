@@ -64,6 +64,20 @@
 
 
 #
+# pragma mark Enums
+#
+
+
+typedef NS_ENUM(NSInteger, PolyLineMode) {
+
+	PolyLineMode_None = 	0,
+	
+	PolyLineMode_Connect =	1,
+	PolyLineMode_Route =	2
+};
+
+
+#
 # pragma mark - Interface
 #
 
@@ -76,10 +90,10 @@
 @property (strong, nonatomic) NSFetchedResultsController* rideFetchedResultsController;
 @property (strong, nonatomic) NSFetchedResultsController* teamFetchedResultsController;
 
+@property (nonatomic) PolyLineMode polyLineMode;
+
 @property (nonatomic) CLGeocoder* geocoder;
-
 @property (nonatomic) NSDateFormatter* annotationDateFormatter;
-
 @property (nonatomic) UIColor* calloutAccessoryColorGreen;
 
 @end
@@ -205,6 +219,8 @@
 	self.avatarBarButtonItem.image = [[UIImage imageNamed:@"ORN-Bar-Button-Item"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 	
 	[Util preloadKeyboardViaTextField:self.addressTextField];
+	
+	self.polyLineMode = PolyLineMode_Connect;
 	
 	[self addNotificationObservers];
 	
@@ -432,21 +448,23 @@
 		renderer.strokeColor = [UIColor blueColor];
 		renderer.alpha = 0.5;
 		
-		// In connect mode, use thin dotted line
-		if (YES) {
-			
-			renderer.lineWidth = 3.0;
-			renderer.lineDashPattern = @[@3, @5];
-			//	renderer.lineDashPhase = 6;
-			return renderer;
+		switch (self.polyLineMode) {
+
+			default:
+			case PolyLineMode_None:
+			case PolyLineMode_Connect:
+				
+				// Use thin dotted line
+				renderer.lineWidth = 3.0;
+				renderer.lineDashPattern = @[@3, @5];
+				//	renderer.lineDashPhase = 6;
+				return renderer;
+				
+			case PolyLineMode_Route:
+				// Use thick solid line
+				renderer.lineWidth = 5.0;
+				return renderer;
 		}
-		
-		//	// In route mode, use thick solid line
-		//	if () {
-		//
-		//		renderer.lineWidth = 5.0;
-		//		return renderer;
-		//	}
 	}
 	
 	return nil;
@@ -645,6 +663,31 @@
 - (IBAction)avatarBarButtonPressed:(UIBarButtonItem*)sender {
 	
 	[self configureJurisdictionRegionViewWithAnimated:YES];
+}
+
+
+- (IBAction)lineTypeChanged:(UISegmentedControl*)sender {
+	
+	self.polyLineMode = self.lineTypeSegmentedControl.selectedSegmentIndex == 1 ? PolyLineMode_Route : PolyLineMode_Connect;
+	
+	// Notify selected ride or team, if any
+	id<MKAnnotation> selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
+	if (selectedAnnotation) {
+		
+		if ([selectedAnnotation conformsToProtocol:@protocol(RideModelSource)]) {
+			
+			Ride* ride = ((id<RideModelSource>)selectedAnnotation).ride;
+			[ride postNotificationUpdatedWithSender:self];
+			
+		} else if ([selectedAnnotation conformsToProtocol:@protocol(TeamModelSource)]) {
+			
+			Team* team = ((id<TeamModelSource>)selectedAnnotation).team;
+			for (Ride* ride in team.ridesAssigned) {
+				
+				[ride postNotificationUpdatedWithSender:self];
+			}
+		}
+	}
 }
 
 
