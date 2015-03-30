@@ -24,7 +24,24 @@
 
 - (instancetype)initWithRide:(Ride*)ride andPolyline:(MKPolyline*)polyline {
 	
+	if (!polyline &&
+		ride.locationStartLatitude &&
+		ride.locationStartLongitude &&
+		ride.locationEndLatitude &&
+		ride.locationEndLongitude
+		) {
+
+		CLLocationCoordinate2D locationCoordinates[2] =
+		{
+			CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue),
+			CLLocationCoordinate2DMake(ride.locationEndLatitude.doubleValue, ride.locationEndLongitude.doubleValue)
+		};
+		
+		polyline = [MKPolyline polylineWithCoordinates:locationCoordinates count:2];
+	}
+	
 	self = [super initWithPolyline:polyline];
+	
 	if (self) {
 		
 		_ride = ride;

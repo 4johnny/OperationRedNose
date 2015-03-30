@@ -25,21 +25,29 @@
 
 - (instancetype)initWithRide:(Ride*)ride andStartCoordinate:(CLLocationCoordinate2D*)startCoordinate {
 	
-	self = [super init];
+	if (ride.teamAssigned &&
+		ride.teamAssigned.locationCurrentLatitude &&
+		ride.teamAssigned.locationCurrentLongitude &&
+		startCoordinate) {
+		
+		CLLocationCoordinate2D locationCoordinates[2] =
+		{
+			CLLocationCoordinate2DMake(ride.teamAssigned.locationCurrentLatitude.doubleValue, ride.teamAssigned.locationCurrentLongitude.doubleValue),
+			*startCoordinate
+		};
+		
+		MKPolyline* polyline = [MKPolyline polylineWithCoordinates:locationCoordinates count:2];
+		
+		self = [super initWithPolyline:polyline];
+		
+	} else {
+		
+		self = [super init];
+	}
+
 	if (self) {
 		
 		_ride = ride;
-		
-		if (_ride.teamAssigned && _ride.teamAssigned.locationCurrentLatitude && _ride.teamAssigned.locationCurrentLongitude && startCoordinate) {
-			
-			CLLocationCoordinate2D locationCoordinates[2] = { CLLocationCoordinate2DMake(ride.teamAssigned.locationCurrentLatitude.doubleValue, ride.teamAssigned.locationCurrentLongitude.doubleValue), *startCoordinate };
-			
-			self = [super initWithPolyline:[MKPolyline polylineWithCoordinates:locationCoordinates count:2]];
-			
-		} else {
-			
-			self = [super initWithPolyline:[MKPolyline polylineWithCoordinates:NULL count:0]];
-		}
 	}
 	
 	return self;

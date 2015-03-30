@@ -391,6 +391,7 @@
 		
 			[ride postNotificationUpdatedWithSender:self];
 		}
+		
 		NSLog(@"Teams[%d] selected: %@", (int)[self.teamFetchedResultsController.fetchedObjects indexOfObject:team], team);
 		return;
 	}
@@ -423,25 +424,29 @@
 
 - (MKOverlayRenderer*)mapView:(MKMapView*)mapView rendererForOverlay:(id<MKOverlay>)overlay {
 	
-	// For ride and team selection overlays, use blue lines
-	MKPolylineRenderer* renderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
-	renderer.strokeColor = [UIColor blueColor];
-	renderer.alpha = 0.5;
-	
-	// For overlay between ride start and end, use solid line
-	if ([overlay isKindOfClass:[RideStartEndPolyline class]]) {
+	if ([overlay isKindOfClass:[RideStartEndPolyline class]] ||
+		[overlay isKindOfClass:[RideTeamAssignedPolyline class]]) {
 		
-		renderer.lineWidth = 5.0;
-		return renderer;
-	}
-
-	// For overlay between team and ride, use thinner, dotted line
-	if ([overlay isKindOfClass:[RideTeamAssignedPolyline class]]) {
+		// For ride and team selection overlays, use blue lines
+		MKPolylineRenderer* renderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
+		renderer.strokeColor = [UIColor blueColor];
+		renderer.alpha = 0.5;
 		
-		renderer.lineWidth = 3.0;
-		renderer.lineDashPattern = @[@3, @5];
-		//	renderer.lineDashPhase = 6;
-		return renderer;
+		// In connect mode, use thin dotted line
+		if (YES) {
+			
+			renderer.lineWidth = 3.0;
+			renderer.lineDashPattern = @[@3, @5];
+			//	renderer.lineDashPhase = 6;
+			return renderer;
+		}
+		
+		//	// In route mode, use thick solid line
+		//	if () {
+		//
+		//		renderer.lineWidth = 5.0;
+		//		return renderer;
+		//	}
 	}
 	
 	return nil;
@@ -837,22 +842,53 @@
 }
 
 
+/*
+ Configure ride start-end overlays, consistent with given ride notification
+ */
 - (void)configureRideStartEndOverlaysWithNotification:(NSNotification*)notification {
 
-//	Ride* ride = [Ride rideFromNotification:notification];
+	Ride* ride = [Ride rideFromNotification:notification];
 
+	// Remove ride start-end overlay, if present
+	RideStartEndPolyline* rideStartEndPolyline = [MainMapViewController getRideStartEndPolylineFromRideOverlays:[self overlaysForRide:ride]];
+	if (rideStartEndPolyline) {
+		
+		[self.mainMapView removeOverlay:rideStartEndPolyline];
+	}
+	
+	// If neither ride nor team assigned is selected, we are done
+	if (![self isSelectedAnnotationForRide:ride] && ![self isSelectedAnnotationForTeam:ride.teamAssigned]) return;
+	
+	// If insufficient location data, we are done
+	if (!ride.locationStartLatitude ||
+		!ride.locationStartLongitude ||
+		!ride.locationEndLatitude ||
+		!ride.locationEndLongitude
+		) return;
+	
+	// Update existing overlay or create new one
+	rideStartEndPolyline = rideStartEndPolyline
+	? [rideStartEndPolyline initWithRide:ride andPolyline:nil]
+	: [RideStartEndPolyline rideStartEndPolylineWithRide:ride andPolyline:nil];
+	
+	// Add ride start-end overlay to map view
+	[self.mainMapView addOverlay:rideStartEndPolyline level:MKOverlayLevelAboveLabels];
 }
 
 
 /*
- Configure ride-team assigned overlay, consistent with given ride notification
+ Configure ride-team assigned overlays, consistent with given ride notification
  */
 - (void)configureRideTeamAssignedOverlaysWithNotification:(NSNotification*)notification {
 
-	// Remove ride-team assigned overlay, if present
 	Ride* ride = [Ride rideFromNotification:notification];
+	
+	// Remove ride-team assigned overlay, if present
 	RideTeamAssignedPolyline* rideTeamAssignedPolyline = [MainMapViewController getRideTeamAssignedPolylineFromRideOverlays:[self overlaysForRide:ride]];
-	[self.mainMapView removeOverlay:rideTeamAssignedPolyline];
+	if (rideTeamAssignedPolyline) {
+		
+		[self.mainMapView removeOverlay:rideTeamAssignedPolyline];
+	}
 	
 	// If neither ride nor team assigned is selected, we are done
 	if (![self isSelectedAnnotationForRide:ride] && ![self isSelectedAnnotationForTeam:ride.teamAssigned]) return;
