@@ -160,14 +160,14 @@
 
 /*
 // Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+- (BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath {
     // Return NO if you do not want the specified item to be editable.
     return YES;
 }
 */
 /*
 // Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView*)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath {
  
     if (editingStyle == UITableViewCellEditingStyleDelete) {
  
@@ -182,12 +182,12 @@
 */
 /*
 // Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+- (void)tableView:(UITableView*)tableView moveRowAtIndexPath:(NSIndexPath*)fromIndexPath toIndexPath:(NSIndexPath*)toIndexPath {
 }
 */
 /*
 // Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+- (BOOL)tableView:(UITableView*)tableView canMoveRowAtIndexPath:(NSIndexPath*)indexPath {
     // Return NO if you do not want the item to be re-orderable.
     return YES;
 }
@@ -199,15 +199,15 @@
 #
 
 
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+- (void)controllerWillChangeContent:(NSFetchedResultsController*)controller {
 	
 	// NOTE: Do *not* call reloadData between begin and end, since it will cancel animations
 	[self.tableView beginUpdates];
 }
 
 
-- (void)controller:(NSFetchedResultsController *)controller
-  didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+- (void)controller:(NSFetchedResultsController*)controller
+  didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo
 		   atIndex:(NSUInteger)sectionIndex
 	 forChangeType:(NSFetchedResultsChangeType)type {
 	
@@ -227,11 +227,11 @@
 }
 
 
-- (void)controller:(NSFetchedResultsController *)controller
+- (void)controller:(NSFetchedResultsController*)controller
    didChangeObject:(id)anObject
-	   atIndexPath:(NSIndexPath *)indexPath
+	   atIndexPath:(NSIndexPath*)indexPath
 	 forChangeType:(NSFetchedResultsChangeType)type
-	  newIndexPath:(NSIndexPath *)newIndexPath {
+	  newIndexPath:(NSIndexPath*)newIndexPath {
 	
 	UITableView *tableView = self.tableView;
 	
@@ -257,7 +257,7 @@
 }
 
 
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+- (void)controllerDidChangeContent:(NSFetchedResultsController*)controller {
 	
 	[self.tableView endUpdates];
 }
@@ -266,7 +266,7 @@
 /*
  // Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
  
- - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+ - (void)controllerDidChangeContent:(NSFetchedResultsController*)controller
  {
  // In the simplest, most efficient, case, reload the table view.
  [self.tableView reloadData];
@@ -277,6 +277,14 @@
 #
 # pragma mark Notification Handlers
 #
+
+
+- (void)dataModelResetWithNotification:(NSNotification*)notification {
+
+	self.fetchedResultsController = nil;
+	
+	[self.tableView reloadData];
+}
 
 
 - (void)rideCreatedWithNotification:(NSNotification*)notification {
@@ -310,6 +318,8 @@
 
 - (void)addNotificationObservers {
 
+	[Util addDataModelResetObserver:self withSelector:@selector(dataModelResetWithNotification:)];
+	
 	[Ride addCreatedObserver:self withSelector:@selector(rideCreatedWithNotification:)];
 	[Ride addUpdatedObserver:self withSelector:@selector(rideUpdatedWithNotification:)];
 

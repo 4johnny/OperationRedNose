@@ -27,7 +27,7 @@
 # pragma mark Properties
 #
 
-@property (nonatomic) Ride* ride;
+@property (weak, nonatomic) Ride* ride;
 
 #
 # pragma mark Outlets

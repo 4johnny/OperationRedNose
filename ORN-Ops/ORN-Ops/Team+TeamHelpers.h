@@ -28,7 +28,7 @@
 
 @required
 
-@property (nonatomic) Team* team;
+@property (weak, nonatomic) Team* team;
 
 @end
 

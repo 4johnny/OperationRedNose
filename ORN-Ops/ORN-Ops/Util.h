@@ -13,6 +13,8 @@
 # pragma mark - Constants
 #
 
+#define ORN_ERROR_DOMAIN_ORNOPSAPP	@"OperationRedNose.OpsApp.ErrorDomain"
+
 #define SECONDS_PER_MINUTE	60
 
 #define ARROW_BUTTON_WIDTH	30
@@ -70,6 +72,9 @@
 
 + (BOOL)isValueFromNotification:(NSNotification*)notification withKey:(NSString*)key;
 
++ (void)addDataModelResetObserver:(id)observer withSelector:(SEL)selector;
++ (void)postNotificationDataModelResetWithSender:(id)sender;
+
 #
 # pragma mark Views
 #
@@ -83,5 +88,6 @@
 
 + (NSManagedObjectContext*)managedObjectContext;
 + (void)saveManagedObjectContext;
++ (void)removePersistentStore;
 
 @end

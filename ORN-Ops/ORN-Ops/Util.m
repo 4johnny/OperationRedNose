@@ -11,6 +11,13 @@
 
 
 #
+# pragma mark - Constants
+#
+
+#define DATA_MODEL_RESET_NOTIFICATION_NAME	@"dataModelReset"
+
+
+#
 # pragma mark - Implementation
 #
 
@@ -84,6 +91,18 @@
 }
 
 
++ (void)addDataModelResetObserver:(id)observer withSelector:(SEL)selector {
+	
+	[[NSNotificationCenter defaultCenter] addObserver:observer selector:selector name:DATA_MODEL_RESET_NOTIFICATION_NAME object:nil];
+}
+
+
++ (void)postNotificationDataModelResetWithSender:(id)sender  {
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:DATA_MODEL_RESET_NOTIFICATION_NAME object:sender userInfo:nil];
+}
+
+
 #
 # pragma mark Views
 #
@@ -149,6 +168,13 @@
 	
 	id<ORNDataModelSource> dataModelSource = (id<ORNDataModelSource>)[UIApplication sharedApplication].delegate;
 	[dataModelSource saveManagedObjectContext];
+}
+
+
++ (void)removePersistentStore {
+
+	id<ORNDataModelSource> dataModelSource = (id<ORNDataModelSource>)[UIApplication sharedApplication].delegate;
+	[dataModelSource removePersistentStore];
 }
 
 

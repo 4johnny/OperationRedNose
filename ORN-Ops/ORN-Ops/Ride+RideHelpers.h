@@ -73,7 +73,7 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 
 @required
 
-@property (nonatomic) Ride* ride;
+@property (weak, nonatomic) Ride* ride;
 
 @end
 

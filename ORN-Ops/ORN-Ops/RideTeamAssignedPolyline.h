@@ -20,8 +20,7 @@
 # pragma mark Properties
 #
 
-// TODO: Consider whether ride property should be weak
-@property (nonatomic) Ride* ride;
+@property (weak, nonatomic) Ride* ride;
 
 #
 # pragma mark Initializers

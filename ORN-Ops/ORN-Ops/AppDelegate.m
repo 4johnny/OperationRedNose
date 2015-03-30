@@ -30,9 +30,9 @@
 #
 
 // NOTE: Private accessors are read-write
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-@property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-@property (strong, nonatomic) NSManagedObjectModel *managedObjectModel;
+@property (strong, nonatomic) NSManagedObjectContext* managedObjectContext;
+@property (strong, nonatomic) NSPersistentStoreCoordinator* persistentStoreCoordinator;
+@property (strong, nonatomic) NSManagedObjectModel* managedObjectModel;
 
 @end
 
@@ -95,9 +95,9 @@
 #
 
 
-//
-// Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application).
-//
+/*
+ Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application).
+ */
 - (NSManagedObjectContext*)managedObjectContext {
 	
 	if (_managedObjectContext) return _managedObjectContext;
@@ -112,9 +112,9 @@
 }
 
 
-//
-// The persistent store coordinator for the application. This implementation creates and return a coordinator, having added the store for the application to it.
-//
+/*
+ The persistent store coordinator for the application. This implementation creates and return a coordinator, having added the store for the application to it.
+ */
 - (NSPersistentStoreCoordinator*)persistentStoreCoordinator {
 	
 	if (_persistentStoreCoordinator) return _persistentStoreCoordinator;
@@ -127,7 +127,7 @@
 	
 	// TODO: Replace this with code to handle the error appropriately.
 	// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-	error = [AppDelegate persistentStoreError:error];
+	error = [AppDelegate persistentStoreAddError:error];
 	NSLog(@"Unresolved error %@, %@", error, error.userInfo);
 	abort();
 	
@@ -135,9 +135,9 @@
 }
 
 
-//
-// The managed object model for the application. It is a fatal error for the application not to be able to find and load its model.
-//
+/*
+ The managed object model for the application. It is a fatal error for the application not to be able to find and load its model.
+ */
 - (NSManagedObjectModel*)managedObjectModel {
 	
 	if (_managedObjectModel) return _managedObjectModel;
@@ -156,10 +156,10 @@
 
 - (void)saveManagedObjectContext {
 	
-	NSManagedObjectContext *moc = self.managedObjectContext;
+	NSManagedObjectContext* moc = self.managedObjectContext;
 	if (!moc || !moc.hasChanges) return;
 	
-	NSError *error = nil;
+	NSError* error = nil;
 	if ([moc save:&error]) return;
 	
 	// TODO: Replace this with code to handle the error appropriately.
@@ -169,33 +169,62 @@
 }
 
 
-- (void)deleteAllObjectsWithEntityName:(NSString*)entityName {
-
-	NSManagedObjectContext *moc = self.managedObjectContext;
-
-	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:entityName];
-	[fetchRequest setIncludesPropertyValues:NO]; // Only fetch managedObjectID
+- (void)removePersistentStore {
 	
-	NSError *error;
-	NSArray *fetchedObjects = [moc executeFetchRequest:fetchRequest error:&error];
-	for (NSManagedObject *object in fetchedObjects) {
+	// Reset dependent Core Data stack, to avoid inconsistencies upon potential errors
+	[self.managedObjectContext reset];
+	[self saveManagedObjectContext];
+	self.managedObjectContext = nil;
+	NSPersistentStoreCoordinator* persistentStoreCoordinator = self.persistentStoreCoordinator;
+	self.persistentStoreCoordinator = nil;
+	
+	// Delete persistent store
+	// NOTE: Should be exactly 1
+	NSPersistentStore* persistentStore = persistentStoreCoordinator.persistentStores.firstObject;
+	NSError* error = nil;
+	if (![persistentStoreCoordinator removePersistentStore:persistentStore error:&error]) {
 		
-		[moc deleteObject:object];
+		// TODO: Replace this with code to handle the error appropriately.
+		// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+		error = [AppDelegate persistentStoreRemoveError:error];
+		NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+		abort();
 	}
 	
-	[self saveManagedObjectContext];
+	if (![[NSFileManager defaultManager] removeItemAtURL:persistentStore.URL error:&error]) {
+	
+		// TODO: Replace this with code to handle the error appropriately.
+		// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+		error = [AppDelegate persistentStoreRemoveError:error];
+		NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+		abort();
+	}
 }
 
 
-+ (NSError*)persistentStoreError:(NSError*)error {
++ (NSError*)persistentStoreAddError:(NSError*)error {
 	
-	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:3];
+	NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:3];
 	
 	dict[NSLocalizedDescriptionKey] = @"Failed to initialize the application's saved data";
 	dict[NSLocalizedFailureReasonErrorKey] = @"There was an error creating or loading the application's saved data.";
 	dict[NSUnderlyingErrorKey] = error;
 	
-	error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:9999 userInfo:dict];
+	error = [NSError errorWithDomain:ORN_ERROR_DOMAIN_ORNOPSAPP code:ORN_ERROR_CODE_DATA_MODEL_PERSISTENT_STORE_ADD userInfo:dict];
+	
+	return error;
+}
+
+
++ (NSError*)persistentStoreRemoveError:(NSError*)error {
+	
+	NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:3];
+	
+	dict[NSLocalizedDescriptionKey] = @"Failed to remove the application's saved data";
+	dict[NSLocalizedFailureReasonErrorKey] = @"There was an error removing or deleting the application's saved data.";
+	dict[NSUnderlyingErrorKey] = error;
+	
+	error = [NSError errorWithDomain:ORN_ERROR_DOMAIN_ORNOPSAPP code:ORN_ERROR_CODE_DATA_MODEL_PERSISTENT_STORE_REMOVE userInfo:dict];
 	
 	return error;
 }

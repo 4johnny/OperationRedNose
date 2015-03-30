@@ -19,8 +19,7 @@
 # pragma mark Properties
 #
 
-// TODO: Consider whether team property should be weak
-@property (nonatomic) Team* team;
+@property (weak, nonatomic) Team* team;
 @property (nonatomic) BOOL needsAnimatesDrop;
 
 #

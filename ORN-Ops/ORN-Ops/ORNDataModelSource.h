@@ -9,6 +9,12 @@
 #ifndef ORN_Ops_ORNDataModelSource_h
 #define ORN_Ops_ORNDataModelSource_h
 
+#
+# pragma mark - Constants
+#
+
+#define ORN_ERROR_CODE_DATA_MODEL_PERSISTENT_STORE_ADD		101 // NSInteger
+#define ORN_ERROR_CODE_DATA_MODEL_PERSISTENT_STORE_REMOVE	102 // NSInteger
 
 #
 # pragma mark - Protocol
@@ -31,6 +37,7 @@
 @required
 
 - (void)saveManagedObjectContext;
+- (void)removePersistentStore;
 
 @end
 

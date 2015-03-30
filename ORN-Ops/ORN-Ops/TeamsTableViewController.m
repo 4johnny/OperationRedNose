@@ -141,6 +141,15 @@
 #
 
 
+- (void)dataModelResetWithNotification:(NSNotification*)notification {
+	
+	// TODO: When impl fetchResultsController, uncomment following line
+//	self.fetchedResultsController = nil;
+	
+	[self.tableView reloadData];
+}
+
+
 - (void)teamCreatedWithNotification:(NSNotification*)notification {
 	
 	[self.tableView reloadData];
@@ -171,6 +180,8 @@
 
 
 - (void)addNotificationObservers {
+	
+	[Util addDataModelResetObserver:self withSelector:@selector(dataModelResetWithNotification:)];
 	
 	[Team addCreatedObserver:self withSelector:@selector(teamCreatedWithNotification:)];
 	[Team addUpdatedObserver:self withSelector:@selector(teamUpdatedWithNotification:)];

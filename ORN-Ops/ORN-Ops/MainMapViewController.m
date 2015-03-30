@@ -671,6 +671,23 @@
 
 
 #
+# pragma mark Notification Handlers
+#
+
+
+- (void)dataModelResetWithNotification:(NSNotification*)notification {
+	
+	self.rideFetchedResultsController = nil;
+	self.teamFetchedResultsController = nil;
+	
+	[self clearAllAnnotations];
+	[self clearAllOverlays];
+	
+	[self configureView];
+}
+
+
+#
 # pragma mark Ride Notification Handlers
 #
 
@@ -1108,18 +1125,14 @@
 		
 	} else if ([COMMAND_DELETE_ALL isEqualToString:commandString]) {
 		
-		UIAlertAction* deleteAllAlertAction = [UIAlertAction actionWithTitle:@"Delete All" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+		UIAlertAction* deleteAllAlertAction = [UIAlertAction actionWithTitle:@"Delete All" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
 			
-			// Delete all rides and teams
-			// TODO: Intead, just ask AppDelegate to delete and recreate the backing DB file
-			AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-			[appDelegate deleteAllObjectsWithEntityName:RIDE_ENTITY_NAME];
-			[appDelegate deleteAllObjectsWithEntityName:TEAM_ENTITY_NAME];
+			// WARNING: Cannot be undone!
+			[Util removePersistentStore];
 			
-			// Reset map
-			[self clearAllAnnotations];
-			[self configureJurisdictionRegionViewWithAnimated:NO];
+			[Util postNotificationDataModelResetWithSender:self];
 		}];
+		
 		UIAlertController* deleteAllAlertController = [UIAlertController alertControllerWithTitle:@"!!! Warning !!!" message:@"About to delete all data, which cannot be undone!  Are you absolutely sure?!" preferredStyle:UIAlertControllerStyleAlert];
 		UIAlertAction* cancelAlertAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil];
 		[deleteAllAlertController addAction:deleteAllAlertAction];
@@ -1184,6 +1197,8 @@
 
 
 - (void)addNotificationObservers {
+	
+	[Util addDataModelResetObserver:self withSelector:@selector(dataModelResetWithNotification:)];
 	
 	[Ride addCreatedObserver:self withSelector:@selector(rideCreatedWithNotification:)];
 	[Ride addUpdatedObserver:self withSelector:@selector(rideUpdatedWithNotification:)];

@@ -28,7 +28,6 @@
 #
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext* managedObjectContext;
-
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator* persistentStoreCoordinator;
 @property (readonly, strong, nonatomic) NSManagedObjectModel* managedObjectModel;
 
@@ -37,8 +36,7 @@
 #
 
 - (void)saveManagedObjectContext;
-
-- (void)deleteAllObjectsWithEntityName:(NSString*)entityName;
+- (void)removePersistentStore;
 
 #
 # pragma mark Helpers
