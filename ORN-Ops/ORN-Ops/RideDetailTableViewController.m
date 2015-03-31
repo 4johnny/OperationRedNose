@@ -21,15 +21,6 @@
 #define DATE_PICKER_LOCALE				@"en_CA"
 #define DATE_PICKER_DATETIME_FORMAT		@"EEE MMM dd HH:mm"
 
-
-#
-# pragma mark Data Model Constants
-#
-
-#define TEAM_FETCH_SORT_KEY			@"name"
-#define TEAM_FETCH_SORT_ASCENDING	YES
-
-
 #
 # pragma mark - Interface
 #
@@ -66,8 +57,12 @@
 	if (_teamFetchedResultsController) return _teamFetchedResultsController;
 	
 	// Create fetch request for teams
-	NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:TEAM_ENTITY_NAME];
-	fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY ascending:TEAM_FETCH_SORT_ASCENDING]];
+	NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:TEAM_ENTITY_NAME];
+	fetchRequest.sortDescriptors =
+	@[
+	  [NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY1 ascending:TEAM_FETCH_SORT_ASCENDING],
+	  [NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY2 ascending:TEAM_FETCH_SORT_ASCENDING]
+	  ];
 	//fetchRequest.predicate = [NSPredicate predicateWithFormat:@"movie.id == %@", self.movie.id];
 	//fetchRequest.fetchBatchSize = PAGE_LIMIT;
 	//fetchRequest.fetchLimit = PAGE_LIMIT;

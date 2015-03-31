@@ -26,18 +26,6 @@
 #
 
 #
-# pragma mark Data Model Constants
-#
-
-#define RIDE_FETCH_SORT_KEY1		@"dateTimeStart"
-#define RIDE_FETCH_SORT_KEY2		@"locationStartLongitude"
-#define RIDE_FETCH_SORT_ASCENDING	YES
-
-#define TEAM_FETCH_SORT_KEY1		@"name"
-#define TEAM_FETCH_SORT_KEY2		@"members"
-#define TEAM_FETCH_SORT_ASCENDING	YES
-
-#
 # pragma mark Map Constants
 #
 

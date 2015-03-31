@@ -16,6 +16,13 @@
 #define TEAM_TITLE_DEFAULT	@"(Team)"
 #define TEAM_TITLE_NONE		@"-None-"
 
+// NOTE: Sort keys indexed in data model
+#define TEAM_FETCH_SORT_KEY1		@"name"
+#define TEAM_FETCH_SORT_KEY2		@"members"
+#define TEAM_FETCH_SORT_ASCENDING	YES
+//#define TEAM_FETCH_BATCH_SIZE		20
+
+
 #
 # pragma mark - Protocol
 #

@@ -16,11 +16,6 @@
 # pragma mark - Constants
 #
 
-
-#define RIDE_FETCH_BATCH_SIZE	20
-#define RIDE_SORT_KEY			@"dateTimeStart"
-#define RIDE_SORT_ASCENDING		YES
-
 #define RIDES_CELL_REUSE_ID			@"ridesTableViewCell"
 #define RIDES_CELL_DATETIME_FORMAT	@"HH:mm"
 #define RIDES_CELL_FIELD_EMPTY		@"?"
@@ -59,9 +54,13 @@
 	if (_fetchedResultsController) return _fetchedResultsController;
 
 	// Build fetch request
-	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:RIDE_ENTITY_NAME];
+	NSFetchRequest* fetchRequest = [[NSFetchRequest alloc] initWithEntityName:RIDE_ENTITY_NAME];
 	fetchRequest.fetchBatchSize = RIDE_FETCH_BATCH_SIZE;
-	fetchRequest.sortDescriptors = @[[[NSSortDescriptor alloc] initWithKey:RIDE_SORT_KEY ascending:RIDE_SORT_ASCENDING]];
+	fetchRequest.sortDescriptors =
+	@[
+	  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY1 ascending:RIDE_FETCH_SORT_ASCENDING],
+	  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY2 ascending:RIDE_FETCH_SORT_ASCENDING]
+	  ];
 	// fetchRequest.predicate = [NSPredicate predicateWithFormat:@"<#format string#>", <#arguments#>];
 
 	// Perform fetch
