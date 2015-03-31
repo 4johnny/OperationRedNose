@@ -80,6 +80,8 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 
 @property (nonatomic) PolyLineMode polyLineMode;
 
+@property (weak, nonatomic) id<MKAnnotation> firstSelectedAnnotation;
+
 @property (nonatomic) CLGeocoder* geocoder;
 @property (nonatomic) NSDateFormatter* annotationDateFormatter;
 @property (nonatomic) UIColor* calloutAccessoryColorGreen;
@@ -190,6 +192,97 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 	_calloutAccessoryColorGreen = [UIColor colorWithHue:120.0/360.0 saturation:1.0 brightness:0.8 alpha:1];
 	
 	return _calloutAccessoryColorGreen;
+}
+
+
+#
+# pragma mark UIResponder
+#
+
+
+- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event {
+	
+	NSLog(@"touchesBegan");
+	
+	self.firstSelectedAnnotation = nil;
+	
+	[super touchesBegan:touches withEvent:event];
+}
+
+
+- (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event {
+	
+	NSLog(@"touchesMoved");
+	
+	if (!self.firstSelectedAnnotation) {
+		self.firstSelectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
+	}
+
+	[super touchesMoved:touches withEvent:event];
+}
+
+
+- (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event {
+	
+	NSLog(@"touchesEnded");
+	
+	[super touchesEnded:touches withEvent:event];
+	
+	// Dragging from ride to team or vice versa can be used to assign team to ride
+	
+	id<MKAnnotation> firstSelectedAnnotation = self.firstSelectedAnnotation;
+	if (!firstSelectedAnnotation) return;
+	self.firstSelectedAnnotation = nil;
+	
+	id<MKAnnotation> lastSelectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
+	if (!lastSelectedAnnotation) return;
+		
+	Ride* ride;
+	Team* team;
+	
+	// Check if we have team to assign to ride
+	if ([firstSelectedAnnotation conformsToProtocol:@protocol(RideModelSource)] &&
+		[lastSelectedAnnotation conformsToProtocol:@protocol(TeamModelSource)]) {
+		
+		ride = ((id<RideModelSource>)firstSelectedAnnotation).ride;
+		team = ((id<TeamModelSource>)lastSelectedAnnotation).team;
+		
+	} else if ([firstSelectedAnnotation conformsToProtocol:@protocol(TeamModelSource)] &&
+			   [lastSelectedAnnotation conformsToProtocol:@protocol(RideModelSource)]) {
+		
+		team = ((id<TeamModelSource>)firstSelectedAnnotation).team;
+		ride = ((id<RideModelSource>)lastSelectedAnnotation).ride;
+	}
+	if (!ride || !team || ride.teamAssigned == team) return;
+
+	// Ask if should assign team to ride
+	UIAlertAction* assignAlertAction = [UIAlertAction actionWithTitle:@"Assign" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+		
+		// Assign team to ride, and notify
+		ride.teamAssigned = team;
+		[Util saveManagedObjectContext];
+		[team postNotificationUpdatedWithSender:self andUpdatedRidesAssigned:YES];
+		[ride postNotificationUpdatedWithSender:self andUpdatedTeamAssigned:YES];
+	}];
+	
+	NSString* message = [NSString stringWithFormat:@"Team: %@ \nRide: %@", [team getTitle], [ride getTitle]];
+	
+	UIAlertController* deleteAllAlertController = [UIAlertController alertControllerWithTitle:@"Assign team to ride?" message:message preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* cancelAlertAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil];
+	[deleteAllAlertController addAction:assignAlertAction];
+	[deleteAllAlertController addAction:cancelAlertAction];
+	
+	[self presentViewController:deleteAllAlertController animated:YES completion:nil];
+}
+
+
+- (void)touchesCancelled:(NSSet*)touches withEvent:(UIEvent*)event {
+
+	NSLog(@"touchesCancelled");
+	
+	self.firstSelectedAnnotation = nil;
+	
+	[super touchesCancelled:touches withEvent:event];
 }
 
 
