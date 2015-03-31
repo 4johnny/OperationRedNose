@@ -75,8 +75,21 @@
 	// Present via known top-level controller to allow for async callback alerts
 	id<UIApplicationDelegate> appDelegate = [UIApplication sharedApplication].delegate;
 	UIViewController* appRootViewController = (UIViewController*)appDelegate.window.rootViewController;
-	
 	[appRootViewController presentViewController:okAlertController animated:YES completion:nil];
+}
+
+
++ (void)presentAlertWithTitle:(NSString*)title andMessage:(NSString*)message andAction:(UIAlertAction*)action {
+
+	UIAlertController* alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+	
+	[alertController addAction:action];
+	[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil]];
+	
+	// Present via known top-level controller to allow for async callback alerts
+	id<UIApplicationDelegate> appDelegate = [UIApplication sharedApplication].delegate;
+	UIViewController* appRootViewController = (UIViewController*)appDelegate.window.rootViewController;
+	[appRootViewController presentViewController:alertController animated:YES completion:nil];
 }
 
 

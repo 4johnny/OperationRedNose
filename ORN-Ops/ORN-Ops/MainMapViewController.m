@@ -264,15 +264,10 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 		[team postNotificationUpdatedWithSender:self andUpdatedRidesAssigned:YES];
 		[ride postNotificationUpdatedWithSender:self andUpdatedTeamAssigned:YES];
 	}];
-	
+
 	NSString* message = [NSString stringWithFormat:@"Team: %@ \nRide: %@", [team getTitle], [ride getTitle]];
 	
-	UIAlertController* deleteAllAlertController = [UIAlertController alertControllerWithTitle:@"Assign team to ride?" message:message preferredStyle:UIAlertControllerStyleAlert];
-	UIAlertAction* cancelAlertAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil];
-	[deleteAllAlertController addAction:assignAlertAction];
-	[deleteAllAlertController addAction:cancelAlertAction];
-	
-	[self presentViewController:deleteAllAlertController animated:YES completion:nil];
+	[Util presentAlertWithTitle:@"Assign team to ride?" andMessage:message andAction:assignAlertAction];
 }
 
 
@@ -1293,12 +1288,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 			[Util postNotificationDataModelResetWithSender:self];
 		}];
 		
-		UIAlertController* deleteAllAlertController = [UIAlertController alertControllerWithTitle:@"!!! Warning !!!" message:@"About to delete all data, which cannot be undone!  Are you absolutely sure?!" preferredStyle:UIAlertControllerStyleAlert];
-		UIAlertAction* cancelAlertAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil];
-		[deleteAllAlertController addAction:deleteAllAlertAction];
-		[deleteAllAlertController addAction:cancelAlertAction];
-		
-		[self presentViewController:deleteAllAlertController animated:YES completion:nil];
+		[Util presentAlertWithTitle:@"!!! Warning !!!" andMessage:@"About to delete all data, which cannot be undone! Are you absolutely sure?!" andAction:deleteAllAlertAction];
 		
 		isCommandHandled = YES;
 		

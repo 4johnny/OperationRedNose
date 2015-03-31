@@ -63,8 +63,8 @@
 # pragma mark Alert
 #
 
-+ (UIAlertController*)sharedOKAlertController;
 + (void)presentOKAlertWithTitle:(NSString*)title andMessage:(NSString*)message;
++ (void)presentAlertWithTitle:(NSString*)title andMessage:(NSString*)message andAction:(UIAlertAction*)action;
 
 #
 # pragma mark Notifications
