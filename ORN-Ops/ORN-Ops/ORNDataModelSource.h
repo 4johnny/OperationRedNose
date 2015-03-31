@@ -37,6 +37,7 @@
 @required
 
 - (void)saveManagedObjectContext;
+- (void)deleteAllObjectsWithEntityName:(NSString*)entityName;
 - (void)removePersistentStore;
 
 @end

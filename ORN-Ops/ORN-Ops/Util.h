@@ -88,6 +88,7 @@
 
 + (NSManagedObjectContext*)managedObjectContext;
 + (void)saveManagedObjectContext;
++ (void)deleteAllObjectsWithEntityName:(NSString*)entityName;
 + (void)removePersistentStore;
 
 @end

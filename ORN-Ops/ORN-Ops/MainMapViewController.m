@@ -202,29 +202,29 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event {
 	
-	NSLog(@"touchesBegan");
-	
-	self.firstSelectedAnnotation = nil;
+//	NSLog(@"touchesBegan");
 	
 	[super touchesBegan:touches withEvent:event];
+	
+	self.firstSelectedAnnotation = nil;
 }
 
 
 - (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event {
 	
-	NSLog(@"touchesMoved");
+//	NSLog(@"touchesMoved");
 	
-	if (!self.firstSelectedAnnotation) {
-		self.firstSelectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
-	}
-
 	[super touchesMoved:touches withEvent:event];
+	
+	if (self.firstSelectedAnnotation) return;
+	
+	self.firstSelectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
 }
 
 
 - (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event {
 	
-	NSLog(@"touchesEnded");
+//	NSLog(@"touchesEnded");
 	
 	[super touchesEnded:touches withEvent:event];
 	
@@ -273,11 +273,11 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 
 - (void)touchesCancelled:(NSSet*)touches withEvent:(UIEvent*)event {
 
-	NSLog(@"touchesCancelled");
-	
-	self.firstSelectedAnnotation = nil;
+//	NSLog(@"touchesCancelled");
 	
 	[super touchesCancelled:touches withEvent:event];
+	
+	self.firstSelectedAnnotation = nil;
 }
 
 

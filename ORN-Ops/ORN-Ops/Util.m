@@ -184,6 +184,13 @@
 }
 
 
++ (void)deleteAllObjectsWithEntityName:(NSString*)entityName {
+	
+	id<ORNDataModelSource> dataModelSource = (id<ORNDataModelSource>)[UIApplication sharedApplication].delegate;
+	[dataModelSource deleteAllObjectsWithEntityName:entityName];
+}
+
+
 + (void)removePersistentStore {
 
 	id<ORNDataModelSource> dataModelSource = (id<ORNDataModelSource>)[UIApplication sharedApplication].delegate;

@@ -169,6 +169,24 @@
 }
 
 
+- (void)deleteAllObjectsWithEntityName:(NSString*)entityName {
+	
+	NSManagedObjectContext *moc = self.managedObjectContext;
+	
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:entityName];
+	[fetchRequest setIncludesPropertyValues:NO]; // Only fetch managedObjectID
+	
+	NSError *error;
+	NSArray *fetchedObjects = [moc executeFetchRequest:fetchRequest error:&error];
+	for (NSManagedObject *object in fetchedObjects) {
+		
+		[moc deleteObject:object];
+	}
+	
+	[self saveManagedObjectContext];
+}
+
+
 - (void)removePersistentStore {
 	
 	// Reset dependent Core Data stack, to avoid inconsistencies upon potential errors
