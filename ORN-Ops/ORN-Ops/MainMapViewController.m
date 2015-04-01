@@ -259,8 +259,13 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 	UIAlertAction* assignAlertAction = [UIAlertAction actionWithTitle:@"Assign" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
 		
 		// Assign team to ride, and notify
+		Team* existingTeamAssigned = ride.teamAssigned; // Maybe nil
 		ride.teamAssigned = team;
 		[Util saveManagedObjectContext];
+		if (existingTeamAssigned) {
+			
+			[existingTeamAssigned postNotificationUpdatedWithSender:self andUpdatedRidesAssigned:YES];
+		}
 		[team postNotificationUpdatedWithSender:self andUpdatedRidesAssigned:YES];
 		[ride postNotificationUpdatedWithSender:self andUpdatedTeamAssigned:YES];
 	}];
