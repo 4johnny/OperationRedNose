@@ -165,6 +165,26 @@
 #
 
 
+- (void)assignTeam:(Team*)team withSender:(id)sender {
+	
+	Team* existingTeamAssigned = self.teamAssigned; // Maybe nil
+	
+	self.teamAssigned = team;
+	
+	if (existingTeamAssigned) {
+		
+		[existingTeamAssigned postNotificationUpdatedWithSender:sender andUpdatedRidesAssigned:YES];
+	}
+	
+	if (team) {
+		
+		[team postNotificationUpdatedWithSender:sender andUpdatedRidesAssigned:YES];
+	}
+	
+	[self postNotificationUpdatedWithSender:sender andUpdatedTeamAssigned:YES];
+}
+
+
 - (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType {
 	
 	switch (rideLocationType) {

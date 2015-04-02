@@ -126,6 +126,8 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 - (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType;
 - (void)clearRoute;
 
+- (void)assignTeam:(Team*)team withSender:(id)sender;
+
 - (void)updateLocationWithLatitude:(CLLocationDegrees)latitude andLogitude:(CLLocationDegrees)longitude andAddress:(NSString*)address andCity:(NSString*)city andRideLocationType:(RideLocationType)rideLocationType;
 - (void)updateLocationWithPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType;
 

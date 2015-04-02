@@ -332,20 +332,8 @@
 	BOOL updatedTeamAssigned = (existingTeamAssigned != newTeamAssigned);
 	if (updatedTeamAssigned) {
 		
-		// Assign team to ride
-		self.ride.teamAssigned = newTeamAssigned;
-		
-		// Notify existing team assigned, if present
-		if (existingTeamAssigned) {
-			
-			[existingTeamAssigned postNotificationUpdatedWithSender:self andUpdatedRidesAssigned:YES];
-		}
-		
-		// Notify new team assigned, if present
-		if (newTeamAssigned) {
-			
-			[newTeamAssigned postNotificationUpdatedWithSender:self andUpdatedRidesAssigned:YES];
-		}
+		// Assign team to ride, including notifications
+		[self.ride assignTeam:newTeamAssigned withSender:self];
 	}
 	
 	// Save other dispatch fields

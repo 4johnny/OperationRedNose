@@ -258,16 +258,9 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 	// Ask if should assign team to ride
 	UIAlertAction* assignAlertAction = [UIAlertAction actionWithTitle:@"Assign" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
 		
-		// Assign team to ride, and notify
-		Team* existingTeamAssigned = ride.teamAssigned; // Maybe nil
-		ride.teamAssigned = team;
+		// Assign team to ride, including notifications
+		[ride assignTeam:team withSender:self];
 		[Util saveManagedObjectContext];
-		if (existingTeamAssigned) {
-			
-			[existingTeamAssigned postNotificationUpdatedWithSender:self andUpdatedRidesAssigned:YES];
-		}
-		[team postNotificationUpdatedWithSender:self andUpdatedRidesAssigned:YES];
-		[ride postNotificationUpdatedWithSender:self andUpdatedTeamAssigned:YES];
 	}];
 
 	NSString* message = [NSString stringWithFormat:@"Team: %@ \nRide: %@", [team getTitle], [ride getTitle]];
