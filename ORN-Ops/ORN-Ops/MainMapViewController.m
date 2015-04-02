@@ -521,22 +521,20 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 		MKPolylineRenderer* renderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
 		renderer.strokeColor = [UIColor blueColor];
 		renderer.alpha = 0.5;
+		renderer.lineWidth = 5.0;
 		
 		switch (self.polyLineMode) {
+
+			case PolyLineMode_Route:
+				// Use solid line
+				return renderer;
 
 			default:
 			case PolyLineMode_None:
 			case PolyLineMode_Connect:
-				
-				// Use thin dotted line
-				renderer.lineWidth = 3.0;
-				renderer.lineDashPattern = @[@3, @5];
+				// Use dotted line
+				renderer.lineDashPattern = @[@3, @8];
 				//	renderer.lineDashPhase = 6;
-				return renderer;
-				
-			case PolyLineMode_Route:
-				// Use thick solid line
-				renderer.lineWidth = 5.0;
 				return renderer;
 		}
 	}
