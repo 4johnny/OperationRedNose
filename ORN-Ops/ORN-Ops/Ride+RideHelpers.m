@@ -215,6 +215,7 @@
 
 	self.routeDuration = nil;
 	self.routeDistance = nil;
+	self.routePolyline = nil;
 }
 
 
@@ -283,38 +284,54 @@
 		NSLog(@"Geocode locality: %@", placemark.locality);
 		NSLog(@"Geocode address: %@", placemark.addressDictionary);
 		
-		// Use first placemark as location - try async calculate route duration
+		// Use first placemark as location - try async calculate route
 		[self updateLocationWithPlacemark:placemark andRideLocationType:rideLocationType];
-		[self tryUpdateRouteDurationWithSender:sender]; // async
+		[self tryUpdateRouteWithSender:sender]; // async
+		
+		// Persist and notify
 		[Util saveManagedObjectContext];
 		[self postNotificationUpdatedWithSender:sender andUpdatedLocationStart:(rideLocationType == RideLocationType_Start) andUpdatedLocationEnd:(rideLocationType == RideLocationType_End)];
+		[self.teamAssigned postNotificationUpdatedWithSender:sender];
 		NSLog(@"Ride: %@", self);
 	}];
 }
 
 
 /*
- Calculate ride route duration, asynchronously
+ Calculate ride route, asynchronously
  */
-- (void)tryUpdateRouteDurationWithSender:(id)sender {
-	
-	// If cannot get directions request, we are done with this ride
+- (void)tryUpdateRouteWithSender:(id)sender {
+
+	// If cannot get directions request, we are done
 	MKDirectionsRequest* directionsRequest = self.getDirectionsRequest;
 	if (!directionsRequest) return;
 	
-	// Update ride duration with ETA calculation for route
+	// Update ride duration, distance, and polyline with directions for route
 	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
-	[directions calculateETAWithCompletionHandler:^(MKETAResponse* response, NSError* error) {
+	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
 		
-		// NOTES: Completion block executes on main thread. Do not run more than one ETA calculation simultaneously on this object.
+		// NOTE: Completion block executes on main thread. Avoid running more than one directions calculation simultaneously on this object.
 		if (error) {
-			NSLog(@"ETA Error: %@ %@", error.localizedDescription, error.userInfo);
+			NSLog(@"Directions Error: %@ %@", error.localizedDescription, error.userInfo);
 			return;
 		}
 		
-		// Expected travel time calculated successfully, so store it
-		self.routeDuration = [NSNumber numberWithDouble:response.expectedTravelTime]; // seconds
-		NSLog(@"ETA: %.0f sec -> %.2f min", response.expectedTravelTime, response.expectedTravelTime / (double)SECONDS_PER_MINUTE);
+		// Route directions calculated successfully, so grab first one
+		// NOTE: Should be exactly 1, since we did not request alternate routes
+		MKRoute* route = response.routes.firstObject;
+		
+		// Store ride duration
+		self.routeDuration = [NSNumber numberWithDouble:route.expectedTravelTime]; // seconds
+		NSLog(@"ETA: %.0f sec -> %.2f min", route.expectedTravelTime, route.expectedTravelTime / (double)SECONDS_PER_MINUTE);
+		
+		// Store ride distance
+		self.routeDistance = [NSNumber numberWithDouble:route.distance]; // meters
+		NSLog(@"Distance: %.0f m -> %.2f km", route.distance, route.distance / (double)METERS_PER_KILOMETER);
+		
+		// Store ride polyline
+		self.routePolyline = route.polyline;
+		
+		// Persist to store and notify
 		[Util saveManagedObjectContext];
 		[self postNotificationUpdatedWithSender:sender];
 		[self.teamAssigned postNotificationUpdatedWithSender:sender];
@@ -323,22 +340,37 @@
 }
 
 
-- (NSString*)getPassengerName {
+/*
+ Calculate ride route duration, asynchronously
+ 
+ NOTE: Just ETA part of directions
+ */
+- (void)tryUpdateRouteDurationWithSender:(id)sender {
 	
-	// If first or last name is empty return other one
-	if (!self.passengerNameLast || self.passengerNameLast.length <= 0) return self.passengerNameFirst;
-	if (!self.passengerNameFirst || self.passengerNameFirst.length <= 0) return self.passengerNameLast;
+	// If cannot get directions request, we are done
+	MKDirectionsRequest* directionsRequest = self.getDirectionsRequest;
+	if (!directionsRequest) return;
 	
-	// Combine first and last name
-	return [NSString stringWithFormat:@"%@ %@", self.passengerNameFirst, self.passengerNameLast];
-}
-
-
-- (NSString*)getTitle {
-	
-	NSString* passengerName = [self getPassengerName];
-	
-	return passengerName.length > 0 ? passengerName : RIDE_TITLE_DEFAULT;
+	// Update ride duration with ETA for route
+	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
+	[directions calculateETAWithCompletionHandler:^(MKETAResponse* response, NSError* error) {
+		
+		// NOTE: Completion block executes on main thread. Avoid running more than one ETA calculation simultaneously on this object.
+		if (error) {
+			NSLog(@"ETA Error: %@ %@", error.localizedDescription, error.userInfo);
+			return;
+		}
+		
+		// Expected travel time calculated successfully, so store it
+		self.routeDuration = [NSNumber numberWithDouble:response.expectedTravelTime]; // seconds
+		NSLog(@"ETA: %.0f sec -> %.2f min", response.expectedTravelTime, response.expectedTravelTime / (double)SECONDS_PER_MINUTE);
+		
+		// Persist to store and notify
+		[Util saveManagedObjectContext];
+		[self postNotificationUpdatedWithSender:sender];
+		[self.teamAssigned postNotificationUpdatedWithSender:sender];
+		NSLog(@"Ride: %@", self);
+	}];
 }
 
 
@@ -360,6 +392,25 @@
 	directionsRequest.requestsAlternateRoutes = NO;
 	
 	return directionsRequest;
+}
+
+
+- (NSString*)getPassengerName {
+	
+	// If first or last name is empty return other one
+	if (!self.passengerNameLast || self.passengerNameLast.length <= 0) return self.passengerNameFirst;
+	if (!self.passengerNameFirst || self.passengerNameFirst.length <= 0) return self.passengerNameLast;
+	
+	// Combine first and last name
+	return [NSString stringWithFormat:@"%@ %@", self.passengerNameFirst, self.passengerNameLast];
+}
+
+
+- (NSString*)getTitle {
+	
+	NSString* passengerName = [self getPassengerName];
+	
+	return passengerName.length > 0 ? passengerName : RIDE_TITLE_DEFAULT;
 }
 
 

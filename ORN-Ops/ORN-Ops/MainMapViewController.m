@@ -742,23 +742,26 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 	
 	self.polyLineMode = self.lineTypeSegmentedControl.selectedSegmentIndex == 1 ? PolyLineMode_Route : PolyLineMode_Connect;
 	
-	// Notify selected ride or team, if any
+	// If no selected ride or team, we are done
 	id<MKAnnotation> selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
-	if (selectedAnnotation) {
+	if (!selectedAnnotation) return;
+	
+	// Notify selected ride or team
+	if ([selectedAnnotation conformsToProtocol:@protocol(RideModelSource)]) {
 		
-		if ([selectedAnnotation conformsToProtocol:@protocol(RideModelSource)]) {
+		Ride* ride = ((id<RideModelSource>)selectedAnnotation).ride;
+		[ride postNotificationUpdatedWithSender:self];
+		return;
+	}
+	
+	if ([selectedAnnotation conformsToProtocol:@protocol(TeamModelSource)]) {
+		
+		Team* team = ((id<TeamModelSource>)selectedAnnotation).team;
+		for (Ride* ride in team.ridesAssigned) {
 			
-			Ride* ride = ((id<RideModelSource>)selectedAnnotation).ride;
 			[ride postNotificationUpdatedWithSender:self];
-			
-		} else if ([selectedAnnotation conformsToProtocol:@protocol(TeamModelSource)]) {
-			
-			Team* team = ((id<TeamModelSource>)selectedAnnotation).team;
-			for (Ride* ride in team.ridesAssigned) {
-				
-				[ride postNotificationUpdatedWithSender:self];
-			}
 		}
+		return;
 	}
 }
 
@@ -964,7 +967,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 
 	Ride* ride = [Ride rideFromNotification:notification];
 
-	// Remove ride start-end overlay, if present
+	// Remove ride start-end overlay from map view, if present
 	RideStartEndPolyline* rideStartEndPolyline = [MainMapViewController getRideStartEndPolylineFromRideOverlays:[self overlaysForRide:ride]];
 	if (rideStartEndPolyline) {
 		
@@ -981,11 +984,12 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 		!ride.locationEndLongitude
 		) return;
 	
-	// Update existing overlay or create new one
+	// Update existing overlay or create new one, based on polyline mode
+	MKPolyline* polyline = self.polyLineMode == PolyLineMode_Route ? ride.routePolyline : nil;
 	rideStartEndPolyline = rideStartEndPolyline
-	? [rideStartEndPolyline initWithRide:ride andPolyline:nil]
-	: [RideStartEndPolyline rideStartEndPolylineWithRide:ride andPolyline:nil];
-	
+	? [rideStartEndPolyline initWithRide:ride andPolyline:polyline]
+	: [RideStartEndPolyline rideStartEndPolylineWithRide:ride andPolyline:polyline];
+
 	// Add ride start-end overlay to map view
 	[self.mainMapView addOverlay:rideStartEndPolyline level:MKOverlayLevelAboveLabels];
 }
@@ -998,7 +1002,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 
 	Ride* ride = [Ride rideFromNotification:notification];
 	
-	// Remove ride-team assigned overlay, if present
+	// Remove ride-team assigned overlay from map view, if present
 	RideTeamAssignedPolyline* rideTeamAssignedPolyline = [MainMapViewController getRideTeamAssignedPolylineFromRideOverlays:[self overlaysForRide:ride]];
 	if (rideTeamAssignedPolyline) {
 		

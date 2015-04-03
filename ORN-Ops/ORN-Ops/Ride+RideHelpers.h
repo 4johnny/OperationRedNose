@@ -132,11 +132,12 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 - (void)updateLocationWithPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType;
 
 - (void)tryUpdateLocationWithAddressString:(NSString*)addressString andRideLocationType:(RideLocationType)rideLocationType andGeocoder:(CLGeocoder*)geocoder andSender:(id)sender;
+- (void)tryUpdateRouteWithSender:(id)sender;
 - (void)tryUpdateRouteDurationWithSender:(id)sender;
 
+- (MKDirectionsRequest*)getDirectionsRequest;
 - (NSString*)getPassengerName;
 - (NSString*)getTitle;
-- (MKDirectionsRequest*)getDirectionsRequest;
 - (NSDate*)getRouteDateTimeEnd;
 
 #

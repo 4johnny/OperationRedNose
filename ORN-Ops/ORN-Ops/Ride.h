@@ -2,7 +2,7 @@
 //  Ride.h
 //  ORN-Ops
 //
-//  Created by Johnny on 2015-03-16.
+//  Created by Johnny on 2015-04-02.
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
@@ -32,6 +32,7 @@
 @property (nonatomic, retain) NSString * passengerPhoneNumber;
 @property (nonatomic, retain) NSNumber * routeDistance;
 @property (nonatomic, retain) NSNumber * routeDuration;
+@property (nonatomic, retain) id routePolyline;
 @property (nonatomic, retain) NSString * sourceName;
 @property (nonatomic, retain) NSNumber * status;
 @property (nonatomic, retain) NSString * vehicleDescription;

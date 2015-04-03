@@ -63,7 +63,7 @@
 						  andAddress:@"1523 Prairie Ave, Port Coquitlam"
 							 andCity:@"Port Coquitlam"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteDurationWithSender:self]; // async
+	[ride tryUpdateRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 	
 	// Vancouver to Vancouver
@@ -81,7 +81,7 @@
 						  andAddress:@"1750 Clark Dr, Vancouver"
 							 andCity:@"Vancouver"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteDurationWithSender:self]; // async
+	[ride tryUpdateRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 }
 
@@ -106,7 +106,7 @@
 						  andAddress:@"5788 Kingsway, Burnaby"
 							 andCity:@"Burnaby"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteDurationWithSender:self]; // async
+	[ride tryUpdateRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 	
 	// Burnaby to Coquitlam
@@ -124,7 +124,7 @@
 						  andAddress:@"1431 Brunette Ave, Coquitlam"
 							 andCity:@"Coquitlam"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteDurationWithSender:self]; // async
+	[ride tryUpdateRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 }
 
@@ -149,7 +149,7 @@
 						  andAddress:@"615 8th St, New Westminster"
 							 andCity:@"New Westminster"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteDurationWithSender:self]; // async
+	[ride tryUpdateRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 	
 	// New Westminster to Burnaby
@@ -167,7 +167,7 @@
 						  andAddress:@"4004 Lozells Ave, Burnaby"
 							 andCity:@"Burnaby"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteDurationWithSender:self]; // async
+	[ride tryUpdateRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 	
 	// New Westminster to Port Moody
@@ -185,7 +185,7 @@
 						  andAddress:@"131 Forest Park Way, Port Moody"
 							 andCity:@"Port Moody"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteDurationWithSender:self]; // async
+	[ride tryUpdateRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 }
 
@@ -218,7 +218,7 @@
 						  andAddress:@"590 Dominion Ave, Port Coquitlam"
 							 andCity:@"Port Coquitlam"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteDurationWithSender:self]; // async
+	[ride tryUpdateRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 }
 
@@ -243,7 +243,7 @@
 						  andAddress:@"1330 Pinetree Way, Coquitlam"
 							 andCity:@"Coquitlam"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteDurationWithSender:self]; // async
+	[ride tryUpdateRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 }
 
@@ -268,7 +268,7 @@
 						  andAddress:@"1000 Clarke Rd, Port Moody"
 							 andCity:@"Port Moody"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteDurationWithSender:self]; // async
+	[ride tryUpdateRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 }
 

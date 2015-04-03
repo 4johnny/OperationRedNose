@@ -15,7 +15,8 @@
 
 #define ORN_ERROR_DOMAIN_ORNOPSAPP	@"OperationRedNose.OpsApp.ErrorDomain"
 
-#define SECONDS_PER_MINUTE	60
+#define SECONDS_PER_MINUTE		60
+#define METERS_PER_KILOMETER	1000
 
 #define ARROW_BUTTON_WIDTH	30
 #define DOWN_ARROW_STRING	@"▼"
@@ -45,7 +46,7 @@
 #define CHARITY_NAME				@"KidSport"
 #define JURISDICTION_NAME			@"Tri-Cities, Burnaby, New Westminster"
 #define JURISDICTION_COORDINATE		BURNABY_COORDINATE
-#define JURISDICTION_SEARCH_RADIUS	100000 // metres
+#define JURISDICTION_SEARCH_RADIUS	100000 // meters
 
 #
 # pragma mark - Interface

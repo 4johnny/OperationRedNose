@@ -24,6 +24,7 @@
 
 - (instancetype)initWithRide:(Ride*)ride andPolyline:(MKPolyline*)polyline {
 	
+	// If no polyline provided, construct basic one from ride itself
 	if (!polyline &&
 		ride.locationStartLatitude &&
 		ride.locationStartLongitude &&

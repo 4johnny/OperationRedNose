@@ -318,12 +318,12 @@
 // Save ride data model from view fields
 - (void)saveDataModelFromView {
 	
-	// Save dispatch field: start time - try async calculate route duration
+	// Save dispatch field: start time - try async calculate route
 	if (![NSDate compareDate:self.ride.dateTimeStart toDate:self.startTimeDatePickerTextField.date]) {
 		
 		self.ride.dateTimeStart = self.startTimeDatePickerTextField.date;
-		self.ride.routeDuration = nil;
-		[self.ride tryUpdateRouteDurationWithSender:self]; // async
+		[self.ride clearRoute];
+		[self.ride tryUpdateRouteWithSender:self]; // async
 	}
 	
 	// Save dispatch field: team assigned
