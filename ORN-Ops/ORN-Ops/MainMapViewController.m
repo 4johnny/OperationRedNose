@@ -36,6 +36,7 @@
 
 #define MAP_ANNOTATION_DATETIME_FORMAT	@"HH:mm"
 #define MAP_ANNOTATION_DURATION_FORMAT	@"%.0f min"
+#define MAP_ANNOTATION_DISTANCE_FORMAT	@"%.1f km"
 
 #
 # pragma mark Command Constants
@@ -574,7 +575,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 	// NOTE: Do not set for update, to avoid re-animation
 	if (!ridePinAnnotationView.leftCalloutAccessoryView) {
 		
-		ridePinAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabel];
+		ridePinAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabelWithWidth:55];
 	}
 	if (![self configureLeftCalloutAccessoryLabel:(UILabel*)ridePinAnnotationView.leftCalloutAccessoryView withRidePointAnnotation:ridePointAnnotation]) {
 		
@@ -645,7 +646,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 	// NOTE: Do not set for update, to avoid re-animation
 	if (!teamAnnotationView.leftCalloutAccessoryView) {
 		
-		teamAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabel];
+		teamAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabelWithWidth:70];
 	}
 	if (![self configureLeftCalloutAccessoryLabel:(UILabel*)teamAnnotationView.leftCalloutAccessoryView withTeamPointAnnotation:teamPointAnnotation]) {
 		
@@ -660,16 +661,21 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 	
 	Team* team = teamPointAnnotation.team;
 	
-	// If team assigned to rides, add total busy duration to label
+	// If team assigned to rides, add total route duration and distance to label
 	
 	if (!team.ridesAssigned || team.ridesAssigned.count == 0) return nil;
 	
-	double busyDuration = 0; // seconds
+	double duration = 0; // seconds
+	double distance = 0; // meters
 	for (Ride* rideAssigned in team.ridesAssigned) {
 		
-		busyDuration += rideAssigned.routeDuration.doubleValue;
+		duration += rideAssigned.routeDuration.doubleValue;
+		distance += rideAssigned.routeDistance.doubleValue;
 	}
-	leftCalloutAccessoryLabel.text = [NSString stringWithFormat:MAP_ANNOTATION_DURATION_FORMAT, busyDuration / (double)SECONDS_PER_MINUTE];
+	
+	NSString* leftCalloutAccessoryFormat = [NSString stringWithFormat:@"%@\n%@", MAP_ANNOTATION_DURATION_FORMAT, MAP_ANNOTATION_DISTANCE_FORMAT];
+	
+	leftCalloutAccessoryLabel.text = [NSString stringWithFormat:leftCalloutAccessoryFormat, duration / (double)SECONDS_PER_MINUTE, distance / (double)METERS_PER_KILOMETER];
 	
 	leftCalloutAccessoryLabel.backgroundColor = [UIColor blueColor];
 	
@@ -715,13 +721,15 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 }
 
 
-+ (UILabel*)leftCalloutAccessoryLabel {
++ (UILabel*)leftCalloutAccessoryLabelWithWidth:(CGFloat)width {
 	
-	UILabel* leftCalloutAccessoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 53)];
+	UILabel* leftCalloutAccessoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width, 53)];
 	leftCalloutAccessoryLabel.font = [UIFont boldSystemFontOfSize:16.0];
 	leftCalloutAccessoryLabel.textAlignment = NSTextAlignmentCenter;
 	leftCalloutAccessoryLabel.textColor = [UIColor whiteColor];
 	leftCalloutAccessoryLabel.alpha = 0.5;
+	leftCalloutAccessoryLabel.numberOfLines = 0;
+	leftCalloutAccessoryLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	
 	return leftCalloutAccessoryLabel;
 }
