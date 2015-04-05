@@ -63,7 +63,7 @@
 	if (self) {
 		
 		// Intercept delegate internally
-		// NOTE: Delegate messages are also passed on to external delegate
+		// NOTE: Delegate messages will manually be passed on to external delegate
 		super.delegate = self;
 		
 		// Arrow on right side of text field
