@@ -374,7 +374,7 @@
 	NSString* endDetail = [NSString stringWithFormat:@"End: %@ -> %@", endDateString, endAddress];
 	
 	NSString* durationString = ride.routeDuration ? [NSString stringWithFormat:@"%.0f", ride.routeDuration.doubleValue / (double)SECONDS_PER_MINUTE] : RIDES_CELL_FIELD_EMPTY;
-	NSString* distanceString = ride.routeDistance ? [NSString stringWithFormat:@"%.1f", ride.routeDistance.doubleValue] : RIDES_CELL_FIELD_EMPTY;
+	NSString* distanceString = ride.routeDistance ? [NSString stringWithFormat:@"%.1f", ride.routeDistance.doubleValue / (double)METERS_PER_KILOMETER] : RIDES_CELL_FIELD_EMPTY;
 	NSString* routeDetail = [NSString stringWithFormat:@"%@ min | %@ km", durationString, distanceString];
 	
 	cell.detailTextLabel.text = [NSString stringWithFormat:@"%@\n%@\n%@", startDetail, endDetail, routeDetail];
