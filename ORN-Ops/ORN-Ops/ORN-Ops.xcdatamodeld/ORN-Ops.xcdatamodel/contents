@@ -18,9 +18,12 @@
         <attribute name="passengerNameFirst" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="passengerNameLast" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="passengerPhoneNumber" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="routeDistance" optional="YES" attributeType="Double" minValueString="0" syncable="YES"/>
-        <attribute name="routeDuration" optional="YES" attributeType="Double" minValueString="0" syncable="YES"/>
-        <attribute name="routePolyline" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="routeMainDistance" optional="YES" attributeType="Double" minValueString="0" syncable="YES"/>
+        <attribute name="routeMainDuration" optional="YES" attributeType="Double" minValueString="0" syncable="YES"/>
+        <attribute name="routeMainPolyline" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="routePrepDistance" optional="YES" attributeType="Double" minValueString="0" syncable="YES"/>
+        <attribute name="routePrepDuration" optional="YES" attributeType="Double" minValueString="0" syncable="YES"/>
+        <attribute name="routePrepPolyline" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="sourceName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="status" optional="YES" attributeType="Integer 16" minValueString="0" syncable="YES"/>
         <attribute name="vehicleDescription" optional="YES" attributeType="String" syncable="YES"/>
@@ -42,7 +45,7 @@
         <relationship name="ridesAssigned" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Ride" inverseName="teamAssigned" inverseEntity="Ride" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Ride" positionX="-63" positionY="116" width="135" height="433"/>
-        <element name="Team" positionX="162" positionY="324" width="144" height="208"/>
+        <element name="Ride" positionX="-63" positionY="98" width="135" height="478"/>
+        <element name="Team" positionX="162" positionY="368" width="144" height="208"/>
     </elements>
 </model>

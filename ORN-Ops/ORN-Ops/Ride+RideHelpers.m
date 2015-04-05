@@ -213,9 +213,9 @@
 
 - (void)clearRoute {
 
-	self.routeDuration = nil;
-	self.routeDistance = nil;
-	self.routePolyline = nil;
+	self.routeMainDuration = nil;
+	self.routeMainDistance = nil;
+	self.routeMainPolyline = nil;
 }
 
 
@@ -321,15 +321,15 @@
 		MKRoute* route = response.routes.firstObject;
 		
 		// Store ride duration
-		self.routeDuration = [NSNumber numberWithDouble:route.expectedTravelTime]; // seconds
+		self.routeMainDuration = [NSNumber numberWithDouble:route.expectedTravelTime]; // seconds
 		NSLog(@"ETA: %.0f sec -> %.2f min", route.expectedTravelTime, route.expectedTravelTime / (double)SECONDS_PER_MINUTE);
 		
 		// Store ride distance
-		self.routeDistance = [NSNumber numberWithDouble:route.distance]; // meters
+		self.routeMainDistance = [NSNumber numberWithDouble:route.distance]; // meters
 		NSLog(@"Distance: %.0f m -> %.2f km", route.distance, route.distance / (double)METERS_PER_KILOMETER);
 		
 		// Store ride polyline
-		self.routePolyline = route.polyline;
+		self.routeMainPolyline = route.polyline;
 		
 		// Persist to store and notify
 		[Util saveManagedObjectContext];
@@ -362,7 +362,7 @@
 		}
 		
 		// Expected travel time calculated successfully, so store it
-		self.routeDuration = [NSNumber numberWithDouble:response.expectedTravelTime]; // seconds
+		self.routeMainDuration = [NSNumber numberWithDouble:response.expectedTravelTime]; // seconds
 		NSLog(@"ETA: %.0f sec -> %.2f min", response.expectedTravelTime, response.expectedTravelTime / (double)SECONDS_PER_MINUTE);
 		
 		// Persist to store and notify
@@ -416,7 +416,7 @@
 
 - (NSDate*)getRouteDateTimeEnd {
 
-	return self.dateTimeStart && self.routeDuration ? [NSDate dateWithTimeInterval:self.routeDuration.doubleValue sinceDate:self.dateTimeStart] : nil;
+	return self.dateTimeStart && self.routeMainDuration ? [NSDate dateWithTimeInterval:self.routeMainDuration.doubleValue sinceDate:self.dateTimeStart] : nil;
 }
 
 

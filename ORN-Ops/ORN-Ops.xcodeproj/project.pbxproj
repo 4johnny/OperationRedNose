@@ -10,6 +10,7 @@
 		B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2078B861A9DB406004AF662 /* MainMapViewController.m */; };
 		B209BFB01AB689090093E8E5 /* Team.m in Sources */ = {isa = PBXBuildFile; fileRef = B209BFAF1AB689090093E8E5 /* Team.m */; };
 		B228F3311AB04CB0001AF527 /* MainMapViewController-Snapshot.m in Sources */ = {isa = PBXBuildFile; fileRef = B228F3301AB04CB0001AF527 /* MainMapViewController-Snapshot.m */; };
+		B234EB931AD13EDD00E1287D /* Ride.m in Sources */ = {isa = PBXBuildFile; fileRef = B234EB921AD13EDD00E1287D /* Ride.m */; };
 		B241B1DE1ABD408D0075C99E /* DatePickerTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B241B1DD1ABD408D0075C99E /* DatePickerTextField.m */; };
 		B241B1E11ABD65330075C99E /* BasePickerTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B241B1E01ABD65330075C99E /* BasePickerTextField.m */; };
 		B24580B51AB5460B0090758E /* NSString+StringHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B24580B41AB5460B0090758E /* NSString+StringHelpers.m */; };
@@ -26,7 +27,6 @@
 		B27B4A861A9AB1FB009277E4 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B27B4A841A9AB1FB009277E4 /* LaunchScreen.xib */; };
 		B27B4A921A9AB1FB009277E4 /* ORN_OpsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A911A9AB1FB009277E4 /* ORN_OpsTests.m */; };
 		B27CEDD11ACE4D1F00512FA3 /* Ride+RideHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B27CEDD01ACE4D1F00512FA3 /* Ride+RideHelpers.m */; };
-		B27CEDD41ACE4E1800512FA3 /* Ride.m in Sources */ = {isa = PBXBuildFile; fileRef = B27CEDD31ACE4E1800512FA3 /* Ride.m */; };
 		B27CEDD71ACE852600512FA3 /* MKPolyline+PolylineHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B27CEDD61ACE852600512FA3 /* MKPolyline+PolylineHelpers.m */; };
 		B28312261AAF2A8100B7C1A9 /* BasePolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B28312251AAF2A8100B7C1A9 /* BasePolyline.m */; };
 		B28312291AAF322C00B7C1A9 /* RideStartEndPolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B28312281AAF322C00B7C1A9 /* RideStartEndPolyline.m */; };
@@ -62,6 +62,8 @@
 		B209BFAE1AB689090093E8E5 /* Team.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Team.h; sourceTree = "<group>"; };
 		B209BFAF1AB689090093E8E5 /* Team.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Team.m; sourceTree = "<group>"; };
 		B228F3301AB04CB0001AF527 /* MainMapViewController-Snapshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "MainMapViewController-Snapshot.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		B234EB911AD13EDD00E1287D /* Ride.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ride.h; sourceTree = "<group>"; };
+		B234EB921AD13EDD00E1287D /* Ride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ride.m; sourceTree = "<group>"; };
 		B241B1DC1ABD408D0075C99E /* DatePickerTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatePickerTextField.h; sourceTree = "<group>"; };
 		B241B1DD1ABD408D0075C99E /* DatePickerTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatePickerTextField.m; sourceTree = "<group>"; };
 		B241B1DF1ABD65330075C99E /* BasePickerTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BasePickerTextField.h; sourceTree = "<group>"; };
@@ -90,8 +92,6 @@
 		B27B4A911A9AB1FB009277E4 /* ORN_OpsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ORN_OpsTests.m; sourceTree = "<group>"; };
 		B27CEDCF1ACE4D1F00512FA3 /* Ride+RideHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = "Ride+RideHelpers.h"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		B27CEDD01ACE4D1F00512FA3 /* Ride+RideHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "Ride+RideHelpers.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		B27CEDD21ACE4E1800512FA3 /* Ride.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ride.h; sourceTree = "<group>"; };
-		B27CEDD31ACE4E1800512FA3 /* Ride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ride.m; sourceTree = "<group>"; };
 		B27CEDD51ACE852600512FA3 /* MKPolyline+PolylineHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKPolyline+PolylineHelpers.h"; sourceTree = "<group>"; };
 		B27CEDD61ACE852600512FA3 /* MKPolyline+PolylineHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKPolyline+PolylineHelpers.m"; sourceTree = "<group>"; };
 		B28312241AAF2A8100B7C1A9 /* BasePolyline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BasePolyline.h; sourceTree = "<group>"; };
@@ -105,7 +105,7 @@
 		B2B116BD1AB9191500F22B00 /* PickerTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PickerTextField.h; sourceTree = "<group>"; };
 		B2B116BE1AB9191500F22B00 /* PickerTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PickerTextField.m; sourceTree = "<group>"; };
 		B2C756131AA1905E00B148D3 /* RidesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RidesTableViewController.h; sourceTree = "<group>"; };
-		B2C756141AA1905E00B148D3 /* RidesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RidesTableViewController.m; sourceTree = "<group>"; };
+		B2C756141AA1905E00B148D3 /* RidesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = RidesTableViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		B2C756161AA1912B00B148D3 /* RideDetailTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RideDetailTableViewController.h; sourceTree = "<group>"; };
 		B2C756171AA1912B00B148D3 /* RideDetailTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = RideDetailTableViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		B2C756191AA1A64000B148D3 /* TeamsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeamsTableViewController.h; sourceTree = "<group>"; };
@@ -179,8 +179,8 @@
 		B24D4FD21A9D98E9008A0C7A /* Generated */ = {
 			isa = PBXGroup;
 			children = (
-				B27CEDD21ACE4E1800512FA3 /* Ride.h */,
-				B27CEDD31ACE4E1800512FA3 /* Ride.m */,
+				B234EB911AD13EDD00E1287D /* Ride.h */,
+				B234EB921AD13EDD00E1287D /* Ride.m */,
 				B209BFAE1AB689090093E8E5 /* Team.h */,
 				B209BFAF1AB689090093E8E5 /* Team.m */,
 			);
@@ -507,11 +507,11 @@
 				B241B1DE1ABD408D0075C99E /* DatePickerTextField.m in Sources */,
 				B2B116BF1AB9191500F22B00 /* PickerTextField.m in Sources */,
 				B27B4A781A9AB1FB009277E4 /* AppDelegate.m in Sources */,
+				B234EB931AD13EDD00E1287D /* Ride.m in Sources */,
 				B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */,
 				B2C756151AA1905E00B148D3 /* RidesTableViewController.m in Sources */,
 				B2E12A9C1ABEE74F00CB5202 /* UIView+ViewHelpers.m in Sources */,
 				B2E76A221AA64572004B55BB /* Team+TeamHelpers.m in Sources */,
-				B27CEDD41ACE4E1800512FA3 /* Ride.m in Sources */,
 				B27CEDD11ACE4D1F00512FA3 /* Ride+RideHelpers.m in Sources */,
 				B28312261AAF2A8100B7C1A9 /* BasePolyline.m in Sources */,
 				B2EB5B701ABEE9F800FB3B5D /* BaseTextView.m in Sources */,

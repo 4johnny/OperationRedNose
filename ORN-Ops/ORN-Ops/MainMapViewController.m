@@ -669,8 +669,8 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 	double distance = 0; // meters
 	for (Ride* rideAssigned in team.ridesAssigned) {
 		
-		duration += rideAssigned.routeDuration.doubleValue;
-		distance += rideAssigned.routeDistance.doubleValue;
+		duration += rideAssigned.routeMainDuration.doubleValue;
+		distance += rideAssigned.routeMainDistance.doubleValue;
 	}
 	
 	NSString* leftCalloutAccessoryFormat = [NSString stringWithFormat:@"%@\n%@", MAP_ANNOTATION_DURATION_FORMAT, MAP_ANNOTATION_DISTANCE_FORMAT];
@@ -993,7 +993,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 		) return;
 	
 	// Update existing overlay or create new one, based on polyline mode
-	MKPolyline* polyline = self.polyLineMode == PolyLineMode_Route ? ride.routePolyline : nil;
+	MKPolyline* polyline = self.polyLineMode == PolyLineMode_Route ? ride.routeMainPolyline : nil;
 	rideStartEndPolyline = rideStartEndPolyline
 	? [rideStartEndPolyline initWithRide:ride andPolyline:polyline]
 	: [RideStartEndPolyline rideStartEndPolylineWithRide:ride andPolyline:polyline];
