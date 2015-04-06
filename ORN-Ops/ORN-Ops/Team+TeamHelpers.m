@@ -7,6 +7,7 @@
 //
 
 #import "Team+TeamHelpers.h"
+#import "Ride+RideHelpers.h"
 
 #
 # pragma mark - Constants
@@ -114,6 +115,49 @@
 	   TEAM_UPDATED_LOCATION_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedLocation],
 	   TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedRidesAssigned]
 	   }];
+}
+
+
+#
+# pragma mark Instance Helpers
+#
+
+
+/*
+ Calculate route for team per assigned rides, asynchronously
+ */
+- (void)tryUpdateAssignedRidePrepRoutesWithSender:(id)sender {
+	
+	NSArray* sortedRidesAssigned =
+	[self.ridesAssigned sortedArrayUsingDescriptors:
+	 @[
+	   [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY1 ascending:RIDE_FETCH_SORT_ASCENDING],
+	   [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY2 ascending:RIDE_FETCH_SORT_ASCENDING]
+	   ]];
+	
+	NSNumber* sourceLatitude = self.locationCurrentLatitude; // Maybe nil
+	NSNumber* sourceLongitude = self.locationCurrentLongitude; // Maybe nil
+	
+	for (Ride* ride in sortedRidesAssigned) {
+		
+		[ride tryUpdatePrepRouteWithLatitude:sourceLatitude andLongitude:sourceLongitude andSender:sender];
+
+		// Best effort to determine source location for next prep route
+		
+		if (ride.locationEndLatitude && ride.locationEndLongitude) {
+			
+			sourceLatitude = ride.locationEndLatitude;
+			sourceLongitude = ride.locationEndLongitude;
+			continue;
+		}
+		
+		if (ride.locationStartLatitude && ride.locationStartLongitude) {
+			
+			sourceLatitude = ride.locationStartLatitude;
+			sourceLongitude = ride.locationStartLongitude;
+			continue;
+		}
+	}
 }
 
 

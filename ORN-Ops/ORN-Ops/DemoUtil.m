@@ -63,7 +63,7 @@
 						  andAddress:@"1523 Prairie Ave, Port Coquitlam"
 							 andCity:@"Port Coquitlam"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteWithSender:self]; // async
+	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 	
 	// Vancouver to Vancouver
@@ -81,7 +81,7 @@
 						  andAddress:@"1750 Clark Dr, Vancouver"
 							 andCity:@"Vancouver"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteWithSender:self]; // async
+	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 }
 
@@ -106,7 +106,7 @@
 						  andAddress:@"5788 Kingsway, Burnaby"
 							 andCity:@"Burnaby"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteWithSender:self]; // async
+	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 	
 	// Burnaby to Coquitlam
@@ -124,7 +124,7 @@
 						  andAddress:@"1431 Brunette Ave, Coquitlam"
 							 andCity:@"Coquitlam"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteWithSender:self]; // async
+	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 }
 
@@ -149,7 +149,7 @@
 						  andAddress:@"615 8th St, New Westminster"
 							 andCity:@"New Westminster"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteWithSender:self]; // async
+	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 	
 	// New Westminster to Burnaby
@@ -167,7 +167,7 @@
 						  andAddress:@"4004 Lozells Ave, Burnaby"
 							 andCity:@"Burnaby"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteWithSender:self]; // async
+	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 	
 	// New Westminster to Port Moody
@@ -185,7 +185,7 @@
 						  andAddress:@"131 Forest Park Way, Port Moody"
 							 andCity:@"Port Moody"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteWithSender:self]; // async
+	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 }
 
@@ -218,7 +218,7 @@
 						  andAddress:@"590 Dominion Ave, Port Coquitlam"
 							 andCity:@"Port Coquitlam"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteWithSender:self]; // async
+	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 }
 
@@ -243,7 +243,7 @@
 						  andAddress:@"1330 Pinetree Way, Coquitlam"
 							 andCity:@"Coquitlam"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteWithSender:self]; // async
+	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 }
 
@@ -268,7 +268,7 @@
 						  andAddress:@"1000 Clarke Rd, Port Moody"
 							 andCity:@"Port Moody"
 				 andRideLocationType:RideLocationType_End];
-	[ride tryUpdateRouteWithSender:self]; // async
+	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
 }
 
@@ -456,30 +456,17 @@
 
 	// Assign specific teams to specific rides
 	
-	[DemoUtil assignTeam:teams[0] toRide:rides[8]];
-	[DemoUtil assignTeam:teams[2] toRide:rides[0]]; // Team with two rides
-	[DemoUtil assignTeam:teams[2] toRide:rides[1]]; // Team with two rides
-	[DemoUtil assignTeam:teams[3] toRide:rides[2]];
-	[DemoUtil assignTeam:teams[4] toRide:rides[3]];
-	[DemoUtil assignTeam:teams[5] toRide:rides[4]];
-	[DemoUtil assignTeam:teams[6] toRide:rides[5]]; // Team with two rides
-	[DemoUtil assignTeam:teams[6] toRide:rides[6]]; // Team with two rides
-	[DemoUtil assignTeam:teams[7] toRide:rides[7]];
-	[DemoUtil assignTeam:teams[8] toRide:rides[9]];
-	[DemoUtil assignTeam:teams[10] toRide:rides[10]];
-}
-
-
-#
-# pragma mark Helpers
-#
-
-
-+ (void)assignTeam:(Team*)team toRide:(Ride*)ride {
-
-	ride.teamAssigned = team;
-	[team postNotificationUpdatedWithSender:self andUpdatedRidesAssigned:YES];
-	[ride postNotificationUpdatedWithSender:self andUpdatedTeamAssigned:YES];
+	[rides[0] assignTeam:teams[2] withSender:self]; // Team with two rides
+	[rides[1] assignTeam:teams[2] withSender:self]; // Team with two rides
+	[rides[2] assignTeam:teams[3] withSender:self];
+	[rides[3] assignTeam:teams[4] withSender:self];
+	[rides[4] assignTeam:teams[5] withSender:self];
+	[rides[5] assignTeam:teams[6] withSender:self]; // Team with two rides
+	[rides[6] assignTeam:teams[6] withSender:self]; // Team with two rides
+	[rides[7] assignTeam:teams[7] withSender:self];
+	[rides[8] assignTeam:teams[0] withSender:self];
+	[rides[9] assignTeam:teams[8] withSender:self];
+	[rides[10] assignTeam:teams[10] withSender:self];
 }
 
 

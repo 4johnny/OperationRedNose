@@ -259,7 +259,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 	// Ask if should assign team to ride
 	UIAlertAction* assignAlertAction = [UIAlertAction actionWithTitle:@"Assign" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
 		
-		// Assign team to ride, including notifications
+		// Assign team to ride, including route recalculations and notifications
 		[ride assignTeam:team withSender:self];
 		[Util saveManagedObjectContext];
 	}];
@@ -669,8 +669,8 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 	double distance = 0; // meters
 	for (Ride* rideAssigned in team.ridesAssigned) {
 		
-		duration += rideAssigned.routeMainDuration.doubleValue;
-		distance += rideAssigned.routeMainDistance.doubleValue;
+		duration += rideAssigned.routeMainDuration.doubleValue + rideAssigned.routePrepDuration.doubleValue;
+		distance += rideAssigned.routeMainDistance.doubleValue + rideAssigned.routePrepDistance.doubleValue;
 	}
 	
 	NSString* leftCalloutAccessoryFormat = [NSString stringWithFormat:@"%@\n%@", MAP_ANNOTATION_DURATION_FORMAT, MAP_ANNOTATION_DISTANCE_FORMAT];

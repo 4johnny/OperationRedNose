@@ -165,6 +165,9 @@
 #
 
 
+/*
+ Assign team to ride, including route recalculations and notifications
+ */
 - (void)assignTeam:(Team*)team withSender:(id)sender {
 	
 	Team* existingTeamAssigned = self.teamAssigned; // Maybe nil
@@ -173,11 +176,13 @@
 	
 	if (existingTeamAssigned) {
 		
+		[existingTeamAssigned tryUpdateAssignedRidePrepRoutesWithSender:sender];
 		[existingTeamAssigned postNotificationUpdatedWithSender:sender andUpdatedRidesAssigned:YES];
 	}
 	
 	if (team) {
 		
+		[team tryUpdateAssignedRidePrepRoutesWithSender:sender];
 		[team postNotificationUpdatedWithSender:sender andUpdatedRidesAssigned:YES];
 	}
 	
@@ -264,7 +269,7 @@
 		
 		// Use first placemark as location - try async calculate route
 		[self updateLocationWithPlacemark:placemark andRideLocationType:rideLocationType];
-		[self tryUpdateRouteWithSender:sender]; // async
+		[self tryUpdateMainRouteWithSender:sender]; // async
 		
 		// Persist and notify
 		[Util saveManagedObjectContext];
@@ -276,19 +281,20 @@
 
 
 /*
- Calculate ride route, asynchronously
+ Calculate ride main route, asynchronously
  */
-- (void)tryUpdateRouteWithSender:(id)sender {
+- (void)tryUpdateMainRouteWithSender:(id)sender {
 
 	// If cannot get directions request, we are done
-	MKDirectionsRequest* directionsRequest = self.getDirectionsRequest;
+	MKDirectionsRequest* directionsRequest = [self getMainDirectionsRequest];
 	if (!directionsRequest) return;
 	
-	// Update ride duration, distance, and polyline with directions for route
+	// Update main route duration, distance, and polyline with directions
 	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
 	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
 		
-		// NOTE: Completion block executes on main thread. Avoid running more than one directions calculation simultaneously on this object.
+		// NOTE: Completion block executes on main thread
+		// NOTE: Run only one directions calculation simultaneously on this object
 		if (error) {
 			NSLog(@"Directions Error: %@ %@", error.localizedDescription, error.userInfo);
 			return;
@@ -297,18 +303,59 @@
 		// Route directions calculated successfully, so grab first one
 		// NOTE: Should be exactly 1, since we did not request alternate routes
 		MKRoute* route = response.routes.firstObject;
-		
-		// Store ride duration
 		self.routeMainDuration = [NSNumber numberWithDouble:route.expectedTravelTime]; // seconds
-		NSLog(@"ETA: %.0f sec -> %.2f min", route.expectedTravelTime, route.expectedTravelTime / (double)SECONDS_PER_MINUTE);
-		
-		// Store ride distance
 		self.routeMainDistance = [NSNumber numberWithDouble:route.distance]; // meters
-		NSLog(@"Distance: %.0f m -> %.2f km", route.distance, route.distance / (double)METERS_PER_KILOMETER);
-		
-		// Store ride polyline
 		self.routeMainPolyline = route.polyline;
+		NSLog(@"Main Duration: %.0f sec -> %.2f min", route.expectedTravelTime, route.expectedTravelTime / (double)SECONDS_PER_MINUTE);
+		NSLog(@"Main Distance: %.0f m -> %.2f km", route.distance, route.distance / (double)METERS_PER_KILOMETER);
+		NSLog(@"Main Polyline: %@", route.polyline);
 		
+		// Persist to store and notify
+		[Util saveManagedObjectContext];
+		[self postNotificationUpdatedWithSender:sender];
+		[self.teamAssigned postNotificationUpdatedWithSender:sender];
+		NSLog(@"Ride: %@", self);
+	}];
+}
+
+
+- (MKDirectionsRequest*)getMainDirectionsRequest {
+	
+	return [Ride directionsRequestWithStartDate:self.dateTimeStart andStartLatitude:self.locationStartLatitude andStartLongitude:self.locationStartLongitude andEndLatitude:self.locationEndLatitude andEndLongitude:self.locationEndLongitude];
+}
+
+
+/*
+ Calculate ride prep route, asynchronously
+ */
+- (void)tryUpdatePrepRouteWithLatitude:(NSNumber*)latitude andLongitude:(NSNumber*)longitude andSender:(id)sender {
+	
+	// If cannot get directions request, we are done
+	// NOTE: Ride start time good enough here
+	MKDirectionsRequest* directionsRequest = [Ride directionsRequestWithStartDate:self.dateTimeStart andStartLatitude:latitude andStartLongitude:longitude andEndLatitude:self.locationStartLatitude andEndLongitude:self.locationStartLongitude];
+	if (!directionsRequest) return;
+	
+	// Update prep route duration, distance, and polyline with directions
+	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
+	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
+		
+		// NOTE: Completion block executes on main thread
+		// NOTE: Run only one directions calculation simultaneously on this object
+		if (error) {
+			NSLog(@"Directions Error: %@ %@", error.localizedDescription, error.userInfo);
+			return;
+		}
+		
+		// Route directions calculated successfully, so grab first one
+		// NOTE: Should be exactly 1, since we did not request alternate routes
+		MKRoute* route = response.routes.firstObject;
+		self.routePrepDuration = [NSNumber numberWithDouble:route.expectedTravelTime]; // seconds
+		self.routePrepDistance = [NSNumber numberWithDouble:route.distance]; // meters
+		self.routePrepPolyline = route.polyline;
+		NSLog(@"Prep Duration: %.0f sec -> %.2f min", route.expectedTravelTime, route.expectedTravelTime / (double)SECONDS_PER_MINUTE);
+		NSLog(@"Prep Distance: %.0f m -> %.2f km", route.distance, route.distance / (double)METERS_PER_KILOMETER);
+		NSLog(@"Prep Polyline: %@", route.polyline);
+
 		// Persist to store and notify
 		[Util saveManagedObjectContext];
 		[self postNotificationUpdatedWithSender:sender];
@@ -323,7 +370,8 @@
  
  NOTE: Just ETA part of directions
  */
-- (void)tryUpdateRouteDurationWithSender:(id)sender {
+/*
+- (void)tryUpdateMainRouteDurationWithSender:(id)sender {
 	
 	// If cannot get directions request, we are done
 	MKDirectionsRequest* directionsRequest = self.getDirectionsRequest;
@@ -333,7 +381,8 @@
 	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
 	[directions calculateETAWithCompletionHandler:^(MKETAResponse* response, NSError* error) {
 		
-		// NOTE: Completion block executes on main thread. Avoid running more than one ETA calculation simultaneously on this object.
+		// NOTE: Completion block executes on main thread
+		// NOTE: Run only one ETA calculation simultaneously on this object
 		if (error) {
 			NSLog(@"ETA Error: %@ %@", error.localizedDescription, error.userInfo);
 			return;
@@ -350,20 +399,7 @@
 		NSLog(@"Ride: %@", self);
 	}];
 }
-
-
-- (MKDirectionsRequest*)getDirectionsRequest {
-	
-	if (!self.locationStartLatitude || !self.locationStartLongitude ||
-		!self.locationEndLatitude || !self.locationEndLongitude) return nil;
-	
-	// Create placemarks for ride start and end locations
-	MKPlacemark* startPlacemark = [Util placemarkWithLatitude:self.locationStartLatitude.doubleValue andLongitude:self.locationStartLongitude.doubleValue];
-	MKPlacemark* endPlacemark = [Util placemarkWithLatitude:self.locationEndLatitude.doubleValue andLongitude:self.locationEndLongitude.doubleValue];
-	
-	// Create directions request for route by car for given start time
-	return [Util directionsRequestWithDepartureDate:self.dateTimeStart andSourcePlacemark:startPlacemark andDestinationPlacemark:endPlacemark];
-}
+*/
 
 
 - (void)clearRoute {
@@ -482,6 +518,19 @@
 //	
 //	return RideStatus_None;
 //}
+
+
++ (MKDirectionsRequest*)directionsRequestWithStartDate:(NSDate*)startDate andStartLatitude:(NSNumber*)startLatitude andStartLongitude:(NSNumber*)startLongitude andEndLatitude:(NSNumber*)endLatitude andEndLongitude:(NSNumber*)endLongitude {
+	
+	if (!startDate || !startLatitude || !startLongitude || !endLatitude || !endLongitude) return nil;
+	
+	// Create placemarks for ride start and end locations
+	MKPlacemark* startPlacemark = [Util placemarkWithLatitude:startLatitude.doubleValue andLongitude:startLongitude.doubleValue];
+	MKPlacemark* endPlacemark = [Util placemarkWithLatitude:endLatitude.doubleValue andLongitude:endLongitude.doubleValue];
+	
+	// Create directions request for route by car for ride start time
+	return [Util directionsRequestWithDepartureDate:startDate andSourcePlacemark:startPlacemark andDestinationPlacemark:endPlacemark];
+}
 
 
 + (NSString*)getAddressStringWithPlacemark:(CLPlacemark*)placemark {

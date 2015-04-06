@@ -323,7 +323,7 @@
 		
 		self.ride.dateTimeStart = self.startTimeDatePickerTextField.date;
 		[self.ride clearRoute];
-		[self.ride tryUpdateRouteWithSender:self]; // async
+		[self.ride tryUpdateMainRouteWithSender:self]; // async
 	}
 	
 	// Save dispatch field: team assigned
@@ -332,7 +332,7 @@
 	BOOL updatedTeamAssigned = (existingTeamAssigned != newTeamAssigned);
 	if (updatedTeamAssigned) {
 		
-		// Assign team to ride, including notifications
+		// Assign team to ride, including route recalculations and notifications
 		[self.ride assignTeam:newTeamAssigned withSender:self];
 	}
 	

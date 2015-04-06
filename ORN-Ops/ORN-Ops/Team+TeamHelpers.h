@@ -71,6 +71,13 @@
 - (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocation:(BOOL)updatedLocation andUpdatedRidesAssigned:(BOOL)updatedRidesAssigned;
 
 #
+# pragma mark Instance Helpers
+#
+
+- (void)tryUpdateAssignedRidePrepRoutesWithSender:(id)sender;
+
+
+#
 # pragma mark Helpers
 #
 
