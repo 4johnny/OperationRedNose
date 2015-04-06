@@ -299,6 +299,7 @@
 	team.locationCurrentLatitude = [NSNumber numberWithDouble:49.284440];
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-123.121104];
 	team.locationCurrentAddress = @"1001 W Georgia St, Vancouver";
+	team.locationCurrentCity = @"Vancouver";
 	team.isActive = [NSNumber numberWithBool:YES];
 	[team postNotificationCreatedWithSender:self];
 	
@@ -309,6 +310,7 @@
 	team.locationCurrentLatitude = [NSNumber numberWithDouble:49.265067];
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-123.069709];
 	team.locationCurrentAddress = @"2201 Commercial Dr, Vancouver";
+	team.locationCurrentCity = @"Vancouver";
 	team.isActive = [NSNumber numberWithBool:YES];
 	[team postNotificationCreatedWithSender:self];
 }
@@ -326,6 +328,7 @@
 	team.locationCurrentLatitude = [NSNumber numberWithDouble:49.236999];
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-123.022298];
 	team.locationCurrentAddress = @"3730 Burke St, Burnaby";
+	team.locationCurrentCity = @"Burnaby";
 	team.isActive = [NSNumber numberWithBool:YES];
 	[team postNotificationCreatedWithSender:self];
 	
@@ -336,6 +339,7 @@
 	team.locationCurrentLatitude = [NSNumber numberWithDouble:49.253935];
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-122.989567];
 	team.locationCurrentAddress = @"4688 Canada Way, Burnaby";
+	team.locationCurrentCity = @"Burnaby";
 	team.isActive = [NSNumber numberWithBool:YES];
 	[team postNotificationCreatedWithSender:self];
 }
@@ -353,6 +357,7 @@
 	team.locationCurrentLatitude = [NSNumber numberWithDouble:49.208673];
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-122.945530];
 	team.locationCurrentAddress = @"934 17th St, New Westminster";
+	team.locationCurrentCity = @"New Westminster";
 	team.isActive = [NSNumber numberWithBool:YES];
 	[team postNotificationCreatedWithSender:self];
 	
@@ -362,7 +367,8 @@
 	team.isMascot = [NSNumber numberWithBool:NO];
 	team.locationCurrentLatitude = [NSNumber numberWithDouble:49.222551];
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-122.892918];
-	team.locationCurrentAddress = @"209 Columbia St E";
+	team.locationCurrentAddress = @"209 Columbia St E, New Westminster";
+	team.locationCurrentCity = @"New Westminster";
 	team.isActive = [NSNumber numberWithBool:YES];
 	[team postNotificationCreatedWithSender:self];
 }
@@ -389,6 +395,7 @@
 	team.locationCurrentLatitude = [NSNumber numberWithDouble:49.249167];
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-122.892760];
 	team.locationCurrentAddress = @"501 N Rd, Coquitlam";
+	team.locationCurrentCity = @"Coquitlam";
 	team.isActive = [NSNumber numberWithBool:YES];
 	[team postNotificationCreatedWithSender:self];
 
@@ -399,6 +406,7 @@
 	team.locationCurrentLatitude = [NSNumber numberWithDouble:49.276118];
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-122.797337];
 	team.locationCurrentAddress = @"2991 Lougheed Hwy, Coquitlam";
+	team.locationCurrentCity = @"Coquitlam";
 	team.isActive = [NSNumber numberWithBool:YES];
 	[team postNotificationCreatedWithSender:self];
 }
@@ -416,6 +424,7 @@
 	team.locationCurrentLatitude = [NSNumber numberWithDouble:49.253409];
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-122.764039];
 	team.locationCurrentAddress = @"13 McLean Ave, Port Coquitlam";
+	team.locationCurrentCity = @"Port Coquitlam";
 	team.isActive = [NSNumber numberWithBool:YES];
 	[team postNotificationCreatedWithSender:self];
 
@@ -426,6 +435,7 @@
 	team.locationCurrentLatitude = [NSNumber numberWithDouble:49.284196];
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-122.734451];
 	team.locationCurrentAddress = @"4016 Joseph Pl, Port Coquitlam";
+	team.locationCurrentCity = @"Port Coquitlam";
 	team.isActive = [NSNumber numberWithBool:YES];
 	[team postNotificationCreatedWithSender:self];
 }
@@ -442,6 +452,7 @@
 	team.locationCurrentLatitude = [NSNumber numberWithDouble:49.298383];
 	team.locationCurrentLongitude = [NSNumber numberWithDouble:-122.843201];
 	team.locationCurrentAddress = @"1300 David Ave, Port Moody";
+	team.locationCurrentCity = @"Port Moody";
 	team.isActive = [NSNumber numberWithBool:YES];
 	[team postNotificationCreatedWithSender:self];
 }
