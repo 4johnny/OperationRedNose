@@ -261,14 +261,14 @@
 			return;
 		}
 		
-		// Address resolved successfully to have at least one placemark
+		// Use first placemark resolved from address as location
 		CLPlacemark* placemark = placemarks[0];
+		[self updateLocationWithPlacemark:placemark andRideLocationType:rideLocationType];
 		NSLog(@"Geocode location: %@", placemark.location);
 		NSLog(@"Geocode locality: %@", placemark.locality);
 		NSLog(@"Geocode address: %@", placemark.addressDictionary);
-		
-		// Use first placemark as location - try async calculate route
-		[self updateLocationWithPlacemark:placemark andRideLocationType:rideLocationType];
+
+		// Try to recalculate main route
 		[self tryUpdateMainRouteWithSender:sender]; // async
 		
 		// Persist and notify
@@ -291,7 +291,7 @@
 	
 	// Update main route duration, distance, and polyline with directions
 	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
-	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
+	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse* response, NSError* error) {
 		
 		// NOTE: Completion block executes on main thread
 		// NOTE: Run only one directions calculation simultaneously on this object
@@ -300,7 +300,7 @@
 			return;
 		}
 		
-		// Route directions calculated successfully, so grab first one
+		// Use first directions route as main
 		// NOTE: Should be exactly 1, since we did not request alternate routes
 		MKRoute* route = response.routes.firstObject;
 		self.routeMainDuration = [NSNumber numberWithDouble:route.expectedTravelTime]; // seconds
@@ -309,6 +309,9 @@
 		NSLog(@"Main Duration: %.0f sec -> %.2f min", route.expectedTravelTime, route.expectedTravelTime / (double)SECONDS_PER_MINUTE);
 		NSLog(@"Main Distance: %.0f m -> %.2f km", route.distance, route.distance / (double)METERS_PER_KILOMETER);
 		NSLog(@"Main Polyline: %@", route.polyline);
+	
+		// Try to recalculate prep routes for team assigned, if any
+		[self.teamAssigned tryUpdateAssignedRidePrepRoutesWithSender:sender]; // async
 		
 		// Persist to store and notify
 		[Util saveManagedObjectContext];
@@ -337,7 +340,7 @@
 	
 	// Update prep route duration, distance, and polyline with directions
 	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
-	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
+	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse* response, NSError* error) {
 		
 		// NOTE: Completion block executes on main thread
 		// NOTE: Run only one directions calculation simultaneously on this object
@@ -346,7 +349,7 @@
 			return;
 		}
 		
-		// Route directions calculated successfully, so grab first one
+		// User first directions route as prep
 		// NOTE: Should be exactly 1, since we did not request alternate routes
 		MKRoute* route = response.routes.firstObject;
 		self.routePrepDuration = [NSNumber numberWithDouble:route.expectedTravelTime]; // seconds
@@ -388,7 +391,7 @@
 			return;
 		}
 		
-		// Expected travel time calculated successfully, so store it
+		// Grab expected travel time
 		self.routeMainDuration = [NSNumber numberWithDouble:response.expectedTravelTime]; // seconds
 		NSLog(@"ETA: %.0f sec -> %.2f min", response.expectedTravelTime, response.expectedTravelTime / (double)SECONDS_PER_MINUTE);
 		
@@ -448,7 +451,8 @@
 	
 	[geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray* placemarks, NSError* error) {
 		
-		// NOTES: Completion block executes on main thread. Do not run more than one geocode simultaneously.
+		// NOTE: Completion block executes on main thread
+		// NOTE: Run only one geocode simultaneously on this object
 		
 		// If there is a problem, log it; alert the user; and we are done.
 		if (error || placemarks.count < 1) {
@@ -464,14 +468,14 @@
 			return;
 		}
 		
-		// Address resolved successfully to have at least one placemark
+		// Use first placemark as start location for new ride
 		CLPlacemark* placemark = placemarks[0];
+		Ride* ride = [Ride rideWithManagedObjectContext:[Util managedObjectContext] andDateTime:[NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL] andPlacemark:placemark andRideLocationType:RideLocationType_Start];
 		NSLog(@"Geocode location: %@", placemark.location);
 		NSLog(@"Geocode locality: %@", placemark.locality);
 		NSLog(@"Geocode address: %@", placemark.addressDictionary);
 		
-		// Use first placemark as start location for new ride
-		Ride* ride = [Ride rideWithManagedObjectContext:[Util managedObjectContext] andDateTime:[NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL] andPlacemark:placemark andRideLocationType:RideLocationType_Start];
+		// Persist to store and notify
 		[Util saveManagedObjectContext];
 		[ride postNotificationCreatedWithSender:sender];
 		NSLog(@"Ride: %@", ride);
