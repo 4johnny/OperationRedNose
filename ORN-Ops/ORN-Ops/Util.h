@@ -84,6 +84,13 @@
 + (UIButton*)downArrowButton;
 
 #
+# pragma mark Maps
+#
+
++ (MKPlacemark*)placemarkWithLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude;
++ (MKDirectionsRequest*)directionsRequestWithDepartureDate:(NSDate*)departureDate andSourcePlacemark:(MKPlacemark*)sourcePlaceMark andDestinationPlacemark:(MKPlacemark*)destinationPlacemark;
+
+#
 # pragma mark <ORNDataModelSource>
 #
 

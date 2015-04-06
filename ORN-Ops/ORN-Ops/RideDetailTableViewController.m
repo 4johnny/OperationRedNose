@@ -390,7 +390,7 @@
 	// Save notes fields
 	self.ride.notes = [self.notesTextView.text trimAll];
 	
-	// Persist data model to disk and notify observers
+	// Persist data model to store and notify observers
 	[Util saveManagedObjectContext];
 	[self.ride postNotificationUpdatedWithSender:self andUpdatedLocationStart:updatedLocationStart andUpdatedLocationEnd:updatedLocationEnd andUpdatedTeamAssigned:updatedTeamAssigned];
 }

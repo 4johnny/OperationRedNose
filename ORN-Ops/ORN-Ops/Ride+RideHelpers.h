@@ -123,17 +123,17 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 # pragma mark Instance Helpers
 #
 
-- (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType;
-- (void)clearRoute;
-
 - (void)assignTeam:(Team*)team withSender:(id)sender;
 
 - (void)updateLocationWithLatitude:(CLLocationDegrees)latitude andLogitude:(CLLocationDegrees)longitude andAddress:(NSString*)address andCity:(NSString*)city andRideLocationType:(RideLocationType)rideLocationType;
 - (void)updateLocationWithPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType;
+- (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType;
 
 - (void)tryUpdateLocationWithAddressString:(NSString*)addressString andRideLocationType:(RideLocationType)rideLocationType andGeocoder:(CLGeocoder*)geocoder andSender:(id)sender;
 - (void)tryUpdateRouteWithSender:(id)sender;
 - (void)tryUpdateRouteDurationWithSender:(id)sender;
+
+- (void)clearRoute;
 
 - (MKDirectionsRequest*)getDirectionsRequest;
 - (NSString*)getPassengerName;

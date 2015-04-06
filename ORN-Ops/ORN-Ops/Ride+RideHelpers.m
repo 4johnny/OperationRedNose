@@ -185,49 +185,15 @@
 }
 
 
-- (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType {
+- (void)updateLocationWithLatitudeNumber:(NSNumber*)latitude andLogitudeNumber:(NSNumber*)longitude andAddress:(NSString*)address andCity:(NSString*)city andRideLocationType:(RideLocationType)rideLocationType {
 	
 	switch (rideLocationType) {
 			
 		default:
 		case RideLocationType_Start:
 			
-			self.locationStartLatitude = nil;
-			self.locationStartLongitude = nil;
-			self.locationStartAddress = nil;
-			self.locationStartCity = nil;
-			
-			break;
-			
-		case RideLocationType_End:
-			
-			self.locationEndLatitude = nil;
-			self.locationEndLongitude = nil;
-			self.locationEndAddress = nil;
-			self.locationEndCity = nil;
-			
-			break;
-	}
-}
-
-
-- (void)clearRoute {
-
-	self.routeMainDuration = nil;
-	self.routeMainDistance = nil;
-	self.routeMainPolyline = nil;
-}
-
-
-- (void)updateLocationWithLatitude:(CLLocationDegrees)latitude andLogitude:(CLLocationDegrees)longitude andAddress:(NSString*)address andCity:(NSString*)city andRideLocationType:(RideLocationType)rideLocationType {
-
-	switch (rideLocationType) {
-			
-		default:
-		case RideLocationType_Start:
-			
-			self.locationStartLatitude = [NSNumber numberWithDouble:latitude];
-			self.locationStartLongitude = [NSNumber numberWithDouble:longitude];
+			self.locationStartLatitude = latitude;
+			self.locationStartLongitude = longitude;
 			self.locationStartAddress = address;
 			self.locationStartCity = city;
 			
@@ -235,8 +201,8 @@
 			
 		case RideLocationType_End:
 			
-			self.locationEndLatitude = [NSNumber numberWithDouble:latitude];
-			self.locationEndLongitude = [NSNumber numberWithDouble:longitude];
+			self.locationEndLatitude = latitude;
+			self.locationEndLongitude = longitude;
 			self.locationEndAddress = address;
 			self.locationEndCity = city;
 			
@@ -245,9 +211,21 @@
 }
 
 
+- (void)updateLocationWithLatitude:(CLLocationDegrees)latitude andLogitude:(CLLocationDegrees)longitude andAddress:(NSString*)address andCity:(NSString*)city andRideLocationType:(RideLocationType)rideLocationType {
+	
+	[self updateLocationWithLatitudeNumber:[NSNumber numberWithDouble:latitude] andLogitudeNumber:[NSNumber numberWithDouble:longitude] andAddress:address andCity:city andRideLocationType:rideLocationType];
+}
+
+
 - (void)updateLocationWithPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType {
 	
 	[self updateLocationWithLatitude:placemark.location.coordinate.latitude andLogitude:placemark.location.coordinate.longitude andAddress:[Ride getAddressStringWithPlacemark:placemark] andCity:placemark.locality andRideLocationType:rideLocationType];
+}
+
+
+- (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType {
+	
+	[self updateLocationWithLatitudeNumber:nil andLogitudeNumber:nil andAddress:nil andCity:nil andRideLocationType:rideLocationType];
 }
 
 
@@ -380,18 +358,19 @@
 		!self.locationEndLatitude || !self.locationEndLongitude) return nil;
 	
 	// Create placemarks for ride start and end locations
-	MKPlacemark* startPlacemark = [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(self.locationStartLatitude.doubleValue, self.locationStartLongitude.doubleValue) addressDictionary:nil];
-	MKPlacemark* endPlacemark = [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(self.locationEndLatitude.doubleValue, self.locationEndLongitude.doubleValue) addressDictionary:nil];
+	MKPlacemark* startPlacemark = [Util placemarkWithLatitude:self.locationStartLatitude.doubleValue andLongitude:self.locationStartLongitude.doubleValue];
+	MKPlacemark* endPlacemark = [Util placemarkWithLatitude:self.locationEndLatitude.doubleValue andLongitude:self.locationEndLongitude.doubleValue];
 	
 	// Create directions request for route by car for given start time
-	MKDirectionsRequest* directionsRequest = [[MKDirectionsRequest alloc] init];
-	directionsRequest.source = [[MKMapItem alloc] initWithPlacemark:startPlacemark];
-	directionsRequest.destination = [[MKMapItem alloc] initWithPlacemark:endPlacemark];
-	directionsRequest.transportType = MKDirectionsTransportTypeAutomobile;
-	directionsRequest.departureDate = self.dateTimeStart;
-	directionsRequest.requestsAlternateRoutes = NO;
+	return [Util directionsRequestWithDepartureDate:self.dateTimeStart andSourcePlacemark:startPlacemark andDestinationPlacemark:endPlacemark];
+}
+
+
+- (void)clearRoute {
 	
-	return directionsRequest;
+	self.routeMainDuration = nil;
+	self.routeMainDistance = nil;
+	self.routeMainPolyline = nil;
 }
 
 
