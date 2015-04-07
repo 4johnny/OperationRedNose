@@ -29,8 +29,12 @@
 # pragma mark Map Constants
 #
 
-#define RIDE_START_ANNOTATION_ID	@"rideStartAnnotation"
-#define RIDE_END_ANNOTATION_ID		@"rideEndAnnotation"
+#define RIDE_START_ANNOTATION_ID				@"rideStartAnnotation"
+#define RIDE_END_ANNOTATION_ID					@"rideEndAnnotation"
+
+#define RIDE_START_END_POLYLINE_ANNOTATION_ID		@"rideStartEndPolylineAnnotation"
+#define RIDE_TEAM_ASSIGNED_POLYLINE_ANNOTATION_ID	@"rideTeamAssignePolylineAnnotation"
+
 #define TEAM_NORMAL_ANNOTATION_ID	@"teamNormalAnnotation"
 #define TEAM_MASCOT_ANNOTATION_ID	@"teamMascotAnnotation"
 
@@ -333,8 +337,10 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 #
 
 
-// User tapped keyboard return button
-// NOTE: Text field is *not* empty due to "auto-enable" of return key
+/*
+ User tapped keyboard return button
+ NOTE: Text field is *not* empty due to "auto-enable" of return key
+ */
 - (BOOL)textFieldShouldReturn:(UITextField*)textField {
 	
 	// Remove focus and keyboard
@@ -386,6 +392,10 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 	if ([annotation isKindOfClass:[RidePointAnnotation class]]) return [self mapView:mapView viewForRidePointAnnotation:(RidePointAnnotation*)annotation];
 	
 	if ([annotation isKindOfClass:[TeamPointAnnotation class]]) return [self mapView:mapView viewForTeamPointAnnotation:(TeamPointAnnotation*)annotation];
+	
+	if ([annotation isKindOfClass:[RideStartEndPolyline class]]) return [self mapView:mapView viewForRideStartEndPolylineAnnotation:(RideStartEndPolyline*)annotation];
+	
+	if ([annotation isKindOfClass:[RideTeamAssignedPolyline class]]) return [self mapView:mapView viewForRideTeamAssignedPolylineAnnotation:(RideTeamAssignedPolyline*)annotation];
 	
 	return nil;
 }
@@ -491,6 +501,14 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 
 - (void)mapView:(MKMapView*)mapView didDeselectAnnotationView:(MKAnnotationView*)view {
 	
+	// Delay deselection handler until _after_ new selection, if any
+	// NOTE: Push to next iteration of run loop
+	[self performSelector:@selector(deselectedAnnotationView:) withObject:view afterDelay:0.0];
+}
+
+
+- (void)deselectedAnnotationView:(MKAnnotationView*)view {
+	
 	if ([view.annotation isKindOfClass:[MKUserLocation class]]) return;
 	
 	if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) {
@@ -499,7 +517,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 		[ride postNotificationUpdatedWithSender:self];
 		return;
 	}
-
+	
 	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
 		
 		Team* team = ((TeamPointAnnotation*)view.annotation).team;
@@ -528,7 +546,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 
 			case PolyLineMode_Route:
 				// Use solid line
-				return renderer;
+				break;
 
 			default:
 			case PolyLineMode_None:
@@ -536,8 +554,10 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 				// Use dotted line
 				renderer.lineDashPattern = @[@3, @8];
 				//	renderer.lineDashPhase = 6;
-				return renderer;
+				break;
 		}
+		
+		return renderer;
 	}
 	
 	return nil;
@@ -683,9 +703,61 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 }
 
 
+- (MKAnnotationView*)mapView:(MKMapView*)mapView viewForRideStartEndPolylineAnnotation:(RideStartEndPolyline*)rideStartEndPolylineAnnotation {
+	
+	MKAnnotationView* rideStartEndPolylineAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:rideStartEndPolylineAnnotation andIdentifier:RIDE_START_END_POLYLINE_ANNOTATION_ID];
+
+	[self configureRideStartEndPolylineAnnotationView:rideStartEndPolylineAnnotationView withRideStartEndPolylineAnnotation:rideStartEndPolylineAnnotation];
+	
+	return rideStartEndPolylineAnnotationView;
+}
+
+
+- (MKAnnotationView*)configureRideStartEndPolylineAnnotationView:(MKAnnotationView*)rideStartEndPolylineAnnotationView withRideStartEndPolylineAnnotation:(RideStartEndPolyline*)rideStartEndPolylineAnnotation {
+	
+	Ride* ride = rideStartEndPolylineAnnotation.ride;
+	
+	// Add/update polyline annotation label with main route duration and distance
+	
+	UILabel* polylineAnnotationLabel = rideStartEndPolylineAnnotationView.subviews.firstObject;
+
+	NSString* polylineAnnotationFormat = [NSString stringWithFormat:@"%@\n%@", MAP_ANNOTATION_DURATION_FORMAT, MAP_ANNOTATION_DISTANCE_FORMAT];
+	
+	polylineAnnotationLabel.text = [NSString stringWithFormat:polylineAnnotationFormat, ride.routeMainDuration.doubleValue / (double)SECONDS_PER_MINUTE, ride.routeMainDistance.doubleValue / (double)METERS_PER_KILOMETER];
+
+	return rideStartEndPolylineAnnotationView;
+}
+
+
+- (MKAnnotationView*)mapView:(MKMapView*)mapView viewForRideTeamAssignedPolylineAnnotation:(RideTeamAssignedPolyline*)rideTeamAssignedPolylineAnnotation {
+	
+	MKAnnotationView* rideTeamAssignedPolylineAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:rideTeamAssignedPolylineAnnotation andIdentifier:RIDE_TEAM_ASSIGNED_POLYLINE_ANNOTATION_ID];
+	
+	[self configureRideTeamAssignedPolylineAnnotationView:rideTeamAssignedPolylineAnnotationView withRideTeamAssignedPolylineAnnotation:rideTeamAssignedPolylineAnnotation];
+	
+	return rideTeamAssignedPolylineAnnotationView;
+}
+
+
+- (MKAnnotationView*)configureRideTeamAssignedPolylineAnnotationView:(MKAnnotationView*)rideTeamAssignedPolylineAnnotationView withRideTeamAssignedPolylineAnnotation:(RideTeamAssignedPolyline*)rideTeamAssignedPolylineAnnotation {
+	
+	Ride* ride = rideTeamAssignedPolylineAnnotation.ride;
+	
+	// Add/update polyline annotation label with prep route duration and distance
+	
+	UILabel* polylineAnnotationLabel = rideTeamAssignedPolylineAnnotationView.subviews.firstObject;
+	
+	NSString* polylineAnnotationFormat = [NSString stringWithFormat:@"%@\n%@", MAP_ANNOTATION_DURATION_FORMAT, MAP_ANNOTATION_DISTANCE_FORMAT];
+	
+	polylineAnnotationLabel.text = [NSString stringWithFormat:polylineAnnotationFormat, ride.routePrepDuration.doubleValue / (double)SECONDS_PER_MINUTE, ride.routePrepDistance.doubleValue / (double)METERS_PER_KILOMETER];
+	
+	return rideTeamAssignedPolylineAnnotationView;
+}
+
+
 + (MKAnnotationView*)dequeueReusableAnnotationViewWithMapView:(MKMapView*)mapView andAnnotation:(id<MKAnnotation>)annotation andIdentifier:(NSString*)identifier {
 	
-	// Reuse pooled annotation if possible
+	// Reuse pooled annotation view if possible
 	MKAnnotationView* annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
 	if (annotationView) {
 		
@@ -694,30 +766,33 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 		return annotationView;
 	}
 	
-	// Create new annotation
-	MKAnnotationView* view = nil;
+	// Create new annotation view
 	
 	if ([identifier isEqualToString:RIDE_START_ANNOTATION_ID] ||
 		[identifier isEqualToString:RIDE_END_ANNOTATION_ID]) {
 		
-		view = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+		annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+		annotationView.canShowCallout = YES;
+		annotationView.rightCalloutAccessoryView = [MainMapViewController rightCalloutAccessoryButton];
 		
 	} else if ([identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ||
 			   [identifier isEqualToString:TEAM_NORMAL_ANNOTATION_ID]) {
 		
-		view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
-		view.image = [UIImage imageNamed:[identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ? @"ORN-Team-Mascot-Map-Annotation" : @"ORN-Team-Map-Annotation"];
+		annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+		annotationView.image = [UIImage imageNamed:[identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ? @"ORN-Team-Mascot-Map-Annotation" : @"ORN-Team-Map-Annotation"];
+		annotationView.canShowCallout = YES;
+		annotationView.rightCalloutAccessoryView = [MainMapViewController rightCalloutAccessoryButton];
+
+	} else if ([identifier isEqualToString:RIDE_START_END_POLYLINE_ANNOTATION_ID] ||
+			   [identifier isEqualToString:RIDE_TEAM_ASSIGNED_POLYLINE_ANNOTATION_ID]) {
+		
+		annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+		UILabel* polylineAnnotationLabel = [MainMapViewController polylineAnnotationLabel];
+		[annotationView addSubview:polylineAnnotationLabel];
+		annotationView.centerOffset = CGPointMake(-polylineAnnotationLabel.bounds.size.width / 2.0, -polylineAnnotationLabel.bounds.size.height);
 	}
-	
-	// Enable callout view for annotation
-	view.canShowCallout = YES;
-	
-	// Add disclosure button to right side of callout
-	UIButton* rightDisclosureButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-	[rightDisclosureButton addTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
-	view.rightCalloutAccessoryView = rightDisclosureButton;
-	
-	return view;
+
+	return annotationView;
 }
 
 
@@ -732,6 +807,32 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 	leftCalloutAccessoryLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	
 	return leftCalloutAccessoryLabel;
+}
+
+
++ (UIButton*)rightCalloutAccessoryButton {
+
+	UIButton* rightDisclosureButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+	[rightDisclosureButton addTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
+	
+	return rightDisclosureButton;
+}
+
+
++ (UILabel*)polylineAnnotationLabel {
+	
+	UILabel* polylineAnnotationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 45, 30)];
+	polylineAnnotationLabel.font = [UIFont boldSystemFontOfSize:10.0];
+	polylineAnnotationLabel.textAlignment = NSTextAlignmentCenter;
+	polylineAnnotationLabel.textColor = [UIColor whiteColor];
+	polylineAnnotationLabel.backgroundColor = [UIColor blueColor];
+	polylineAnnotationLabel.alpha = 1.0;
+	polylineAnnotationLabel.numberOfLines = 0;
+	polylineAnnotationLabel.lineBreakMode = NSLineBreakByWordWrapping;
+	polylineAnnotationLabel.clipsToBounds = YES;
+	polylineAnnotationLabel.layer.cornerRadius = 5.0;
+	
+	return polylineAnnotationLabel;
 }
 
 
@@ -896,7 +997,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 			   andNeedsCenter:(BOOL)needsCenter
 			andNeedsSelection:(BOOL)needsSelection {
 	
-	RidePointAnnotation* ridePointAnnotation = [MainMapViewController getRidePointAnnotationFromRidePointAnnotations:rideAnnotations andRideLocationType:rideLocationType];
+	RidePointAnnotation* ridePointAnnotation = [MainMapViewController getRidePointAnnotationFromRideAnnotations:rideAnnotations andRideLocationType:rideLocationType];
 	
 	NSNumber* locationLatitude = ride.locationStartLatitude;
 	NSNumber* locationLongitude = ride.locationStartLongitude;
@@ -911,7 +1012,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 		// Updated existing annotation or create new one
 		if (ridePointAnnotation) {
 			
-			(void)[ridePointAnnotation initWithRide:ride andRideLocationType:rideLocationType andNeedsAnimatesDrop:isLocationUpdated];
+			ridePointAnnotation = [ridePointAnnotation initWithRide:ride andRideLocationType:rideLocationType andNeedsAnimatesDrop:isLocationUpdated];
 			
 		} else {
 			
@@ -975,11 +1076,12 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 
 	Ride* ride = [Ride rideFromNotification:notification];
 
-	// Remove ride start-end overlay from map view, if present
+	// Remove ride start-end overlay with annotation from map view, if present
 	RideStartEndPolyline* rideStartEndPolyline = [MainMapViewController getRideStartEndPolylineFromRideOverlays:[self overlaysForRide:ride]];
 	if (rideStartEndPolyline) {
 		
 		[self.mainMapView removeOverlay:rideStartEndPolyline];
+		[self.mainMapView removeAnnotation:rideStartEndPolyline];
 	}
 	
 	// If neither ride nor team assigned is selected, we are done
@@ -998,8 +1100,9 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 	? [rideStartEndPolyline initWithRide:ride andPolyline:polyline]
 	: [RideStartEndPolyline rideStartEndPolylineWithRide:ride andPolyline:polyline];
 
-	// Add ride start-end overlay to map view
+	// Add ride start-end overlay with annotation to map view
 	[self.mainMapView addOverlay:rideStartEndPolyline level:MKOverlayLevelAboveLabels];
+	[self.mainMapView addAnnotation:rideStartEndPolyline];
 }
 
 
@@ -1010,11 +1113,12 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 
 	Ride* ride = [Ride rideFromNotification:notification];
 	
-	// Remove ride-team assigned overlay from map view, if present
+	// Remove ride-team assigned overlay with annotation from map view, if present
 	RideTeamAssignedPolyline* rideTeamAssignedPolyline = [MainMapViewController getRideTeamAssignedPolylineFromRideOverlays:[self overlaysForRide:ride]];
 	if (rideTeamAssignedPolyline) {
 		
 		[self.mainMapView removeOverlay:rideTeamAssignedPolyline];
+		[self.mainMapView removeAnnotation:rideTeamAssignedPolyline];
 	}
 	
 	// If neither ride nor team assigned is selected, we are done
@@ -1036,8 +1140,9 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 	? [rideTeamAssignedPolyline initWithRide:ride andStartCoordinate:&startCoordinate]
 	: [RideTeamAssignedPolyline rideTeamAssignedPolylineWithRide:ride andStartCoordinate:&startCoordinate];
 
-	// Add ride-team assigned overlay to map view
+	// Add ride-team assigned overlay with annotation to map view
 	[self.mainMapView addOverlay:rideTeamAssignedPolyline level:MKOverlayLevelAboveLabels];
+	[self.mainMapView addAnnotation:rideTeamAssignedPolyline];
 }
 
 
@@ -1050,13 +1155,18 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 }
 
 
-+ (RidePointAnnotation*)getRidePointAnnotationFromRidePointAnnotations:(NSArray*)annotations andRideLocationType:(RideLocationType)rideLocationType {
++ (RidePointAnnotation*)getRidePointAnnotationFromRideAnnotations:(NSArray*)rideAnnotations andRideLocationType:(RideLocationType)rideLocationType {
 	
-	// Return first annotation found of given ride location type
+	// Return first ride point annotation found of given ride location type
 	// NOTE: Should be max 1
-	for (RidePointAnnotation* ridePointAnnotation in annotations) {
+	for (id<MKAnnotation> rideAnnotation in rideAnnotations) {
 		
-		if (ridePointAnnotation.rideLocationType == rideLocationType) return ridePointAnnotation;
+		if ([rideAnnotation isKindOfClass:[RidePointAnnotation class]]) {
+			
+			RidePointAnnotation* ridePointAnnotation = (RidePointAnnotation*)rideAnnotation;
+			
+			if (ridePointAnnotation.rideLocationType == rideLocationType) return ridePointAnnotation;
+		}
 	}
 	
 	return nil;
@@ -1175,7 +1285,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 		// Updated existing annotation or create new one
 		if (teamPointAnnotation) {
 			
-			(void)[teamPointAnnotation initWithTeam:team andNeedsAnimatesDrop:isLocationUpdated];
+			teamPointAnnotation = [teamPointAnnotation initWithTeam:team andNeedsAnimatesDrop:isLocationUpdated];
 			
 		} else {
 			

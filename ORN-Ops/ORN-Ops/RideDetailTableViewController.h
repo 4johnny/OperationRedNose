@@ -34,29 +34,29 @@
 #
 
 // Dispatch
-@property (weak, nonatomic) IBOutlet DatePickerTextField *startTimeDatePickerTextField;
-@property (weak, nonatomic) IBOutlet PickerTextField *teamAssignedPickerTextField;
-@property (weak, nonatomic) IBOutlet UITextField *sourceTextField;
-@property (weak, nonatomic) IBOutlet UITextField *donationTextField;
+@property (weak, nonatomic) IBOutlet DatePickerTextField* startTimeDatePickerTextField;
+@property (weak, nonatomic) IBOutlet PickerTextField* teamAssignedPickerTextField;
+@property (weak, nonatomic) IBOutlet UITextField* sourceTextField;
+@property (weak, nonatomic) IBOutlet UITextField* donationTextField;
 
 // Passenger
-@property (weak, nonatomic) IBOutlet UITextField *firstNameTextField;
-@property (weak, nonatomic) IBOutlet UITextField *lastNameTextField;
-@property (weak, nonatomic) IBOutlet UITextField *phoneNumberTextField;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *passengerCountSegmentedControl;
+@property (weak, nonatomic) IBOutlet UITextField* firstNameTextField;
+@property (weak, nonatomic) IBOutlet UITextField* lastNameTextField;
+@property (weak, nonatomic) IBOutlet UITextField* phoneNumberTextField;
+@property (weak, nonatomic) IBOutlet UISegmentedControl* passengerCountSegmentedControl;
 
 // Location
-@property (weak, nonatomic) IBOutlet UITextField *startAddressTextField;
-@property (weak, nonatomic) IBOutlet UITextField *endAddressTextField;
-@property (weak, nonatomic) IBOutlet UITextField *transferFromTextField;
-@property (weak, nonatomic) IBOutlet UITextField *transferToTextField;
+@property (weak, nonatomic) IBOutlet UITextField* startAddressTextField;
+@property (weak, nonatomic) IBOutlet UITextField* endAddressTextField;
+@property (weak, nonatomic) IBOutlet UITextField* transferFromTextField;
+@property (weak, nonatomic) IBOutlet UITextField* transferToTextField;
 
 // Vehicle
-@property (weak, nonatomic) IBOutlet UITextField *vehicleDescriptionTextField;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *vehicleTransmissionSegmentedControl;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *seatBeltCountSegmentedControl;
+@property (weak, nonatomic) IBOutlet UITextField* vehicleDescriptionTextField;
+@property (weak, nonatomic) IBOutlet UISegmentedControl* vehicleTransmissionSegmentedControl;
+@property (weak, nonatomic) IBOutlet UISegmentedControl* seatBeltCountSegmentedControl;
 
 // Notes
-@property (weak, nonatomic) IBOutlet UITextView *notesTextView;
+@property (weak, nonatomic) IBOutlet UITextView* notesTextView;
 
 @end

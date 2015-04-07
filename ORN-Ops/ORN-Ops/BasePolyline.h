@@ -15,8 +15,6 @@
 @interface BasePolyline : NSObject <MKOverlay>
 
 // NOTE: Decorator for MKPolyline, which cannot be subclassed effectively (due to missing designated initializers)
-// TODO: Refactor class into MKPolyline category
-//	Initializers return self, so initial allocated memory will be thrown away.  But that is an acceptable price to pay for cleaner code.  But this class currently pays a price by decorating MKPolyline.
 
 #
 # pragma mark <MKOverlay> Properties
