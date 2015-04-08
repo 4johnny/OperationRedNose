@@ -85,7 +85,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 
 @property (nonatomic) PolyLineMode polyLineMode;
 
-@property (weak, nonatomic) id<MKAnnotation> firstSelectedAnnotation;
+@property (weak, nonatomic) id<MKAnnotation> rideTeamPanAssignmentAnchorAnnotation;
 
 @property (nonatomic) CLGeocoder* geocoder;
 @property (nonatomic) NSDateFormatter* annotationDateFormatter;
@@ -207,45 +207,68 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event {
 	
-//	NSLog(@"touchesBegan");
-	
 	[super touchesBegan:touches withEvent:event];
 	
-	self.firstSelectedAnnotation = nil;
+	[self setupRideTeamPanAssignment];
 }
 
 
 - (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event {
 	
-//	NSLog(@"touchesMoved");
-	
 	[super touchesMoved:touches withEvent:event];
 	
-	if (self.firstSelectedAnnotation) return;
-	
-	self.firstSelectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
+	[self anchorForRideTeamPanAssignment];
 }
 
 
 - (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event {
 	
-//	NSLog(@"touchesEnded");
-	
 	[super touchesEnded:touches withEvent:event];
 	
-	// Dragging from ride to team or vice versa can be used to assign team to ride
+	[self panAssignRideTeam];
+}
+
+
+- (void)touchesCancelled:(NSSet*)touches withEvent:(UIEvent*)event {
+
+	[super touchesCancelled:touches withEvent:event];
+
+	[self cancelAnchorForRideTeamPanAssignment];
+}
+
+
+#
+# pragma mark UIResponder Helpers
+#
+
+
+- (void)setupRideTeamPanAssignment {
+	// NOTE: Even if touching an annotation, it is not "selected" until first move
+
+	self.rideTeamPanAssignmentAnchorAnnotation = nil;
+}
+
+
+- (void)anchorForRideTeamPanAssignment {
+	// NOTE: We rely on move events being imperceptibly close together to give effect of selecting annotation where user touched down
 	
-	id<MKAnnotation> firstSelectedAnnotation = self.firstSelectedAnnotation;
+	if (self.rideTeamPanAssignmentAnchorAnnotation) return;
+	self.rideTeamPanAssignmentAnchorAnnotation = self.mainMapView.selectedAnnotations.firstObject;
+}
+
+
+- (void)panAssignRideTeam {
+
+	// If we do not have two selected annotations, we are done
+	id<MKAnnotation> firstSelectedAnnotation = self.rideTeamPanAssignmentAnchorAnnotation;
 	if (!firstSelectedAnnotation) return;
-	self.firstSelectedAnnotation = nil;
-	
+	self.rideTeamPanAssignmentAnchorAnnotation = nil;
 	id<MKAnnotation> lastSelectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
 	if (!lastSelectedAnnotation) return;
-		
+	
+	// If annotations do not have one ride and one team, or they are already assigned to each other, we are done
 	Ride* ride;
 	Team* team;
-	
-	// Check if we have team to assign to ride
 	if ([firstSelectedAnnotation conformsToProtocol:@protocol(RideModelSource)] &&
 		[lastSelectedAnnotation conformsToProtocol:@protocol(TeamModelSource)]) {
 		
@@ -259,28 +282,25 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 		ride = ((id<RideModelSource>)lastSelectedAnnotation).ride;
 	}
 	if (!ride || !team || ride.teamAssigned == team) return;
-
-	// Ask if should assign team to ride
+	
+	// Ask user if should assign ride and team
 	UIAlertAction* assignAlertAction = [UIAlertAction actionWithTitle:@"Assign" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
 		
 		// Assign team to ride, including route recalculations and notifications
 		[ride assignTeam:team withSender:self];
+		
+		// Persist in store
 		[Util saveManagedObjectContext];
 	}];
-
-	NSString* message = [NSString stringWithFormat:@"Team: %@ \nRide: %@", [team getTitle], [ride getTitle]];
 	
+	NSString* message = [NSString stringWithFormat:@"Team: %@\nRide: %@", [team getTitle], [ride getTitle]];
 	[Util presentAlertWithTitle:@"Assign team to ride?" andMessage:message andAction:assignAlertAction];
 }
 
 
-- (void)touchesCancelled:(NSSet*)touches withEvent:(UIEvent*)event {
-
-//	NSLog(@"touchesCancelled");
+- (void)cancelAnchorForRideTeamPanAssignment {
 	
-	[super touchesCancelled:touches withEvent:event];
-	
-	self.firstSelectedAnnotation = nil;
+	self.rideTeamPanAssignmentAnchorAnnotation = nil;
 }
 
 
