@@ -209,7 +209,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 	
 	[super touchesBegan:touches withEvent:event];
 	
-	[self setupRideTeamPanAssignment];
+	[self prepRideTeamPanAssignment];
 }
 
 
@@ -217,7 +217,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 	
 	[super touchesMoved:touches withEvent:event];
 	
-	[self anchorForRideTeamPanAssignment];
+	[self anchorRideTeamPanAssignment];
 }
 
 
@@ -233,7 +233,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 
 	[super touchesCancelled:touches withEvent:event];
 
-	[self cancelAnchorForRideTeamPanAssignment];
+	[self cancelAnchorRideTeamPanAssignment];
 }
 
 
@@ -242,14 +242,14 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 #
 
 
-- (void)setupRideTeamPanAssignment {
+- (void)prepRideTeamPanAssignment {
 	// NOTE: Even if touching an annotation, it is not "selected" until first move
 
 	self.rideTeamPanAssignmentAnchorAnnotation = nil;
 }
 
 
-- (void)anchorForRideTeamPanAssignment {
+- (void)anchorRideTeamPanAssignment {
 	// NOTE: We rely on move events being imperceptibly close together to give effect of selecting annotation where user touched down
 	
 	if (self.rideTeamPanAssignmentAnchorAnnotation) return;
@@ -298,7 +298,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 }
 
 
-- (void)cancelAnchorForRideTeamPanAssignment {
+- (void)cancelAnchorRideTeamPanAssignment {
 	
 	self.rideTeamPanAssignmentAnchorAnnotation = nil;
 }
