@@ -2,7 +2,7 @@
 //  Ride.m
 //  ORN-Ops
 //
-//  Created by Johnny on 2015-04-05.
+//  Created by Johnny on 2015-04-08.
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
@@ -18,6 +18,8 @@
 @dynamic locationEndCity;
 @dynamic locationEndLatitude;
 @dynamic locationEndLongitude;
+@dynamic locationPrepLatitude;
+@dynamic locationPrepLongitude;
 @dynamic locationStartAddress;
 @dynamic locationStartCity;
 @dynamic locationStartLatitude;

@@ -322,7 +322,7 @@
 	if (![NSDate compareDate:self.ride.dateTimeStart toDate:self.startTimeDatePickerTextField.date]) {
 		
 		self.ride.dateTimeStart = self.startTimeDatePickerTextField.date;
-		[self.ride clearRoute];
+		[self.ride clearMainRoute];
 		[self.ride tryUpdateMainRouteWithSender:self]; // async
 	}
 	
@@ -351,7 +351,8 @@
 	NSString* viewAddressString = [self.startAddressTextField.text trimAll];
 	if (![NSString compareString:self.ride.locationStartAddress toString:viewAddressString]) {
 		
-		[self.ride clearRoute];
+		[self.ride clearMainRoute];
+		[self.ride clearPrepRoute];
 		
 		if (viewAddressString.length > 0) {
 			
@@ -367,7 +368,7 @@
 	viewAddressString = [self.endAddressTextField.text trimAll];
 	if (![NSString compareString:self.ride.locationEndAddress toString:viewAddressString]) {
 		
-		[self.ride clearRoute];
+		[self.ride clearMainRoute];
 		
 		if (viewAddressString.length > 0) {
 			

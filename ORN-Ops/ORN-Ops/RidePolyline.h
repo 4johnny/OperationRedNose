@@ -13,21 +13,22 @@
 # pragma mark - Interface
 #
 
-@interface RideStartEndPolyline : BasePolyline <RideModelSource>
+@interface RidePolyline : BasePolyline <RideModelSource>
 
 #
 # pragma mark Properties
 #
 
 @property (weak, nonatomic) Ride* ride;
+@property (nonatomic) RideRouteType rideRouteType;
 
 #
 # pragma mark Initializers
 #
 
-- (instancetype)initWithRide:(Ride*)ride andPolyline:(MKPolyline*)polyline;
+- (instancetype)initWithPolyline:(MKPolyline*)polyline andRide:(Ride*)ride andRideRouteType:(RideRouteType)rideRouteType;
 - (instancetype)init;
 
-+ (instancetype)rideStartEndPolylineWithRide:(Ride*)ride andPolyline:(MKPolyline*)polyline;
++ (instancetype)ridePolylineWithPolyline:(MKPolyline*)polyline andRide:(Ride*)ride andRideRouteType:(RideRouteType)rideRouteType;
 
 @end

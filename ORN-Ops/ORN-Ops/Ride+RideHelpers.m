@@ -170,6 +170,8 @@
  */
 - (void)assignTeam:(Team*)team withSender:(id)sender {
 	
+	[self clearPrepRoute];
+	
 	Team* existingTeamAssigned = self.teamAssigned; // Maybe nil
 	
 	self.teamAssigned = team;
@@ -285,7 +287,7 @@
  */
 - (void)tryUpdateMainRouteWithSender:(id)sender {
 
-	// If cannot get directions request, we are done
+	// If cannot get main directions request, we are done
 	MKDirectionsRequest* directionsRequest = [self getMainDirectionsRequest];
 	if (!directionsRequest) return;
 	
@@ -322,20 +324,17 @@
 }
 
 
-- (MKDirectionsRequest*)getMainDirectionsRequest {
-	
-	return [Ride directionsRequestWithStartDate:self.dateTimeStart andStartLatitude:self.locationStartLatitude andStartLongitude:self.locationStartLongitude andEndLatitude:self.locationEndLatitude andEndLongitude:self.locationEndLongitude];
-}
-
-
 /*
  Calculate ride prep route, asynchronously
  */
 - (void)tryUpdatePrepRouteWithLatitude:(NSNumber*)latitude andLongitude:(NSNumber*)longitude andSender:(id)sender {
 	
-	// If cannot get directions request, we are done
-	// NOTE: Ride start time good enough here
-	MKDirectionsRequest* directionsRequest = [Ride directionsRequestWithStartDate:self.dateTimeStart andStartLatitude:latitude andStartLongitude:longitude andEndLatitude:self.locationStartLatitude andEndLongitude:self.locationStartLongitude];
+	// Capture prep location
+	self.locationPrepLatitude = latitude;
+	self.locationPrepLongitude = longitude;
+	
+	// If cannot get prep directions request, we are done
+	MKDirectionsRequest* directionsRequest = [self getPrepDirectionsRequest];
 	if (!directionsRequest) return;
 	
 	// Update prep route duration, distance, and polyline with directions
@@ -377,7 +376,7 @@
 - (void)tryUpdateMainRouteDurationWithSender:(id)sender {
 	
 	// If cannot get directions request, we are done
-	MKDirectionsRequest* directionsRequest = self.getDirectionsRequest;
+	MKDirectionsRequest* directionsRequest = [self getMainDirectionsRequest];
 	if (!directionsRequest) return;
 	
 	// Update ride duration with ETA for route
@@ -405,11 +404,40 @@
 */
 
 
-- (void)clearRoute {
+- (MKDirectionsRequest*)getMainDirectionsRequest {
+	
+	return [Ride directionsRequestWithStartDate:self.dateTimeStart
+							   andStartLatitude:self.locationStartLatitude
+							  andStartLongitude:self.locationStartLongitude
+								 andEndLatitude:self.locationEndLatitude
+								andEndLongitude:self.locationEndLongitude];
+}
+
+
+- (MKDirectionsRequest*)getPrepDirectionsRequest {
+	
+	// NOTE: Ride start time good enough here
+	return [Ride directionsRequestWithStartDate:self.dateTimeStart
+							   andStartLatitude:self.locationPrepLatitude
+							  andStartLongitude:self.locationPrepLongitude
+								 andEndLatitude:self.locationStartLatitude
+								andEndLongitude:self.locationStartLongitude];
+}
+
+
+- (void)clearMainRoute {
 	
 	self.routeMainDuration = nil;
 	self.routeMainDistance = nil;
 	self.routeMainPolyline = nil;
+}
+
+
+- (void)clearPrepRoute {
+	
+	self.routePrepDuration = nil;
+	self.routePrepDistance = nil;
+	self.routePrepPolyline = nil;
 }
 
 
@@ -524,7 +552,11 @@
 //}
 
 
-+ (MKDirectionsRequest*)directionsRequestWithStartDate:(NSDate*)startDate andStartLatitude:(NSNumber*)startLatitude andStartLongitude:(NSNumber*)startLongitude andEndLatitude:(NSNumber*)endLatitude andEndLongitude:(NSNumber*)endLongitude {
++ (MKDirectionsRequest*)directionsRequestWithStartDate:(NSDate*)startDate
+									  andStartLatitude:(NSNumber*)startLatitude
+									 andStartLongitude:(NSNumber*)startLongitude
+										andEndLatitude:(NSNumber*)endLatitude
+									   andEndLongitude:(NSNumber*)endLongitude {
 	
 	if (!startDate || !startLatitude || !startLongitude || !endLatitude || !endLongitude) return nil;
 	

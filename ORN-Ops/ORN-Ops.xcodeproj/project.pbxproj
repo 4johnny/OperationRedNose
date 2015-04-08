@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2078B861A9DB406004AF662 /* MainMapViewController.m */; };
 		B209BFB01AB689090093E8E5 /* Team.m in Sources */ = {isa = PBXBuildFile; fileRef = B209BFAF1AB689090093E8E5 /* Team.m */; };
-		B228F3311AB04CB0001AF527 /* MainMapViewController-Snapshot.m in Sources */ = {isa = PBXBuildFile; fileRef = B228F3301AB04CB0001AF527 /* MainMapViewController-Snapshot.m */; };
-		B234EB931AD13EDD00E1287D /* Ride.m in Sources */ = {isa = PBXBuildFile; fileRef = B234EB921AD13EDD00E1287D /* Ride.m */; };
 		B241B1DE1ABD408D0075C99E /* DatePickerTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B241B1DD1ABD408D0075C99E /* DatePickerTextField.m */; };
 		B241B1E11ABD65330075C99E /* BasePickerTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B241B1E01ABD65330075C99E /* BasePickerTextField.m */; };
 		B24580B51AB5460B0090758E /* NSString+StringHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B24580B41AB5460B0090758E /* NSString+StringHelpers.m */; };
@@ -18,7 +16,6 @@
 		B24C18711A9EF3D6008505BB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2078B821A9DAF2A004AF662 /* MapKit.framework */; };
 		B24D4FD11A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B24D4FCF1A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld */; };
 		B25220331AA0412C00C3CE00 /* DemoUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = B25220321AA0412C00C3CE00 /* DemoUtil.m */; };
-		B26C11301AAEB4CD005FC313 /* RideTeamAssignedPolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B26C112F1AAEB4CD005FC313 /* RideTeamAssignedPolyline.m */; };
 		B27533451A9DA91700B3110C /* MainTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = B27533441A9DA91700B3110C /* MainTabBarController.m */; };
 		B27B4A751A9AB1FB009277E4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A741A9AB1FB009277E4 /* main.m */; };
 		B27B4A781A9AB1FB009277E4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A771A9AB1FB009277E4 /* AppDelegate.m */; };
@@ -29,7 +26,7 @@
 		B27CEDD11ACE4D1F00512FA3 /* Ride+RideHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B27CEDD01ACE4D1F00512FA3 /* Ride+RideHelpers.m */; };
 		B27CEDD71ACE852600512FA3 /* MKPolyline+PolylineHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B27CEDD61ACE852600512FA3 /* MKPolyline+PolylineHelpers.m */; };
 		B28312261AAF2A8100B7C1A9 /* BasePolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B28312251AAF2A8100B7C1A9 /* BasePolyline.m */; };
-		B28312291AAF322C00B7C1A9 /* RideStartEndPolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B28312281AAF322C00B7C1A9 /* RideStartEndPolyline.m */; };
+		B28312291AAF322C00B7C1A9 /* RidePolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B28312281AAF322C00B7C1A9 /* RidePolyline.m */; };
 		B2907B841A9F1903008A0301 /* RidePointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B2907B831A9F1903008A0301 /* RidePointAnnotation.m */; };
 		B29CD76B1ABE9D3200B21579 /* NSDate+DateHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B29CD76A1ABE9D3200B21579 /* NSDate+DateHelpers.m */; };
 		B2B116BF1AB9191500F22B00 /* PickerTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B2B116BE1AB9191500F22B00 /* PickerTextField.m */; };
@@ -38,6 +35,7 @@
 		B2C7561B1AA1A83100B148D3 /* TeamsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C7561A1AA1A83100B148D3 /* TeamsTableViewController.m */; };
 		B2C7561E1AA1A97900B148D3 /* TeamDetailTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C7561D1AA1A97900B148D3 /* TeamDetailTableViewController.m */; };
 		B2C756251AA1BA8B00B148D3 /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756241AA1BA8B00B148D3 /* Util.m */; };
+		B2D3C7A01AD545E500A9E652 /* Ride.m in Sources */ = {isa = PBXBuildFile; fileRef = B2D3C79F1AD545E500A9E652 /* Ride.m */; };
 		B2E12A9C1ABEE74F00CB5202 /* UIView+ViewHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E12A9B1ABEE74F00CB5202 /* UIView+ViewHelpers.m */; };
 		B2E76A221AA64572004B55BB /* Team+TeamHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E76A211AA64572004B55BB /* Team+TeamHelpers.m */; };
 		B2E76A251AA6D0A3004B55BB /* TeamPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E76A241AA6D0A3004B55BB /* TeamPointAnnotation.m */; };
@@ -61,9 +59,6 @@
 		B2078B8E1A9DC043004AF662 /* ORNDataModelSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ORNDataModelSource.h; sourceTree = "<group>"; };
 		B209BFAE1AB689090093E8E5 /* Team.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Team.h; sourceTree = "<group>"; };
 		B209BFAF1AB689090093E8E5 /* Team.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Team.m; sourceTree = "<group>"; };
-		B228F3301AB04CB0001AF527 /* MainMapViewController-Snapshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "MainMapViewController-Snapshot.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		B234EB911AD13EDD00E1287D /* Ride.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ride.h; sourceTree = "<group>"; };
-		B234EB921AD13EDD00E1287D /* Ride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ride.m; sourceTree = "<group>"; };
 		B241B1DC1ABD408D0075C99E /* DatePickerTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatePickerTextField.h; sourceTree = "<group>"; };
 		B241B1DD1ABD408D0075C99E /* DatePickerTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatePickerTextField.m; sourceTree = "<group>"; };
 		B241B1DF1ABD65330075C99E /* BasePickerTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BasePickerTextField.h; sourceTree = "<group>"; };
@@ -75,8 +70,6 @@
 		B24D4FD01A9D98E0008A0C7A /* ORN-Ops.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ORN-Ops.xcdatamodel"; sourceTree = "<group>"; };
 		B25220311AA0412C00C3CE00 /* DemoUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoUtil.h; sourceTree = "<group>"; };
 		B25220321AA0412C00C3CE00 /* DemoUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = DemoUtil.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		B26C112E1AAEB4CD005FC313 /* RideTeamAssignedPolyline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RideTeamAssignedPolyline.h; sourceTree = "<group>"; };
-		B26C112F1AAEB4CD005FC313 /* RideTeamAssignedPolyline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RideTeamAssignedPolyline.m; sourceTree = "<group>"; };
 		B27533431A9DA91700B3110C /* MainTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainTabBarController.h; sourceTree = "<group>"; };
 		B27533441A9DA91700B3110C /* MainTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainTabBarController.m; sourceTree = "<group>"; };
 		B27B4A6F1A9AB1FB009277E4 /* ORN-Ops.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ORN-Ops.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,8 +89,8 @@
 		B27CEDD61ACE852600512FA3 /* MKPolyline+PolylineHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKPolyline+PolylineHelpers.m"; sourceTree = "<group>"; };
 		B28312241AAF2A8100B7C1A9 /* BasePolyline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BasePolyline.h; sourceTree = "<group>"; };
 		B28312251AAF2A8100B7C1A9 /* BasePolyline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BasePolyline.m; sourceTree = "<group>"; };
-		B28312271AAF322C00B7C1A9 /* RideStartEndPolyline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RideStartEndPolyline.h; sourceTree = "<group>"; };
-		B28312281AAF322C00B7C1A9 /* RideStartEndPolyline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RideStartEndPolyline.m; sourceTree = "<group>"; };
+		B28312271AAF322C00B7C1A9 /* RidePolyline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RidePolyline.h; sourceTree = "<group>"; };
+		B28312281AAF322C00B7C1A9 /* RidePolyline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RidePolyline.m; sourceTree = "<group>"; };
 		B2907B821A9F1903008A0301 /* RidePointAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RidePointAnnotation.h; sourceTree = "<group>"; };
 		B2907B831A9F1903008A0301 /* RidePointAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RidePointAnnotation.m; sourceTree = "<group>"; };
 		B29CD7691ABE9D3200B21579 /* NSDate+DateHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+DateHelpers.h"; sourceTree = "<group>"; };
@@ -115,6 +108,8 @@
 		B2C756231AA1BA8B00B148D3 /* Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Util.h; sourceTree = "<group>"; };
 		B2C756241AA1BA8B00B148D3 /* Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Util.m; sourceTree = "<group>"; };
 		B2C756261AA1BBD000B148D3 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		B2D3C79E1AD545E500A9E652 /* Ride.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ride.h; sourceTree = "<group>"; };
+		B2D3C79F1AD545E500A9E652 /* Ride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ride.m; sourceTree = "<group>"; };
 		B2E12A9A1ABEE74F00CB5202 /* UIView+ViewHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+ViewHelpers.h"; sourceTree = "<group>"; };
 		B2E12A9B1ABEE74F00CB5202 /* UIView+ViewHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ViewHelpers.m"; sourceTree = "<group>"; };
 		B2E76A201AA64572004B55BB /* Team+TeamHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Team+TeamHelpers.h"; sourceTree = "<group>"; };
@@ -179,8 +174,8 @@
 		B24D4FD21A9D98E9008A0C7A /* Generated */ = {
 			isa = PBXGroup;
 			children = (
-				B234EB911AD13EDD00E1287D /* Ride.h */,
-				B234EB921AD13EDD00E1287D /* Ride.m */,
+				B2D3C79E1AD545E500A9E652 /* Ride.h */,
+				B2D3C79F1AD545E500A9E652 /* Ride.m */,
 				B209BFAE1AB689090093E8E5 /* Team.h */,
 				B209BFAF1AB689090093E8E5 /* Team.m */,
 			);
@@ -235,10 +230,8 @@
 				B2E76A241AA6D0A3004B55BB /* TeamPointAnnotation.m */,
 				B28312241AAF2A8100B7C1A9 /* BasePolyline.h */,
 				B28312251AAF2A8100B7C1A9 /* BasePolyline.m */,
-				B28312271AAF322C00B7C1A9 /* RideStartEndPolyline.h */,
-				B28312281AAF322C00B7C1A9 /* RideStartEndPolyline.m */,
-				B26C112E1AAEB4CD005FC313 /* RideTeamAssignedPolyline.h */,
-				B26C112F1AAEB4CD005FC313 /* RideTeamAssignedPolyline.m */,
+				B28312271AAF322C00B7C1A9 /* RidePolyline.h */,
+				B28312281AAF322C00B7C1A9 /* RidePolyline.m */,
 			);
 			name = "Map Helpers";
 			sourceTree = "<group>";
@@ -372,7 +365,6 @@
 			children = (
 				B2078B851A9DB406004AF662 /* MainMapViewController.h */,
 				B2078B861A9DB406004AF662 /* MainMapViewController.m */,
-				B228F3301AB04CB0001AF527 /* MainMapViewController-Snapshot.m */,
 			);
 			name = "Main Map";
 			sourceTree = "<group>";
@@ -494,7 +486,6 @@
 			files = (
 				B209BFB01AB689090093E8E5 /* Team.m in Sources */,
 				B24580B81AB584C00090758E /* BaseNavigationController.m in Sources */,
-				B228F3311AB04CB0001AF527 /* MainMapViewController-Snapshot.m in Sources */,
 				B2907B841A9F1903008A0301 /* RidePointAnnotation.m in Sources */,
 				B241B1E11ABD65330075C99E /* BasePickerTextField.m in Sources */,
 				B2C7561E1AA1A97900B148D3 /* TeamDetailTableViewController.m in Sources */,
@@ -507,20 +498,19 @@
 				B241B1DE1ABD408D0075C99E /* DatePickerTextField.m in Sources */,
 				B2B116BF1AB9191500F22B00 /* PickerTextField.m in Sources */,
 				B27B4A781A9AB1FB009277E4 /* AppDelegate.m in Sources */,
-				B234EB931AD13EDD00E1287D /* Ride.m in Sources */,
 				B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */,
 				B2C756151AA1905E00B148D3 /* RidesTableViewController.m in Sources */,
 				B2E12A9C1ABEE74F00CB5202 /* UIView+ViewHelpers.m in Sources */,
 				B2E76A221AA64572004B55BB /* Team+TeamHelpers.m in Sources */,
+				B2D3C7A01AD545E500A9E652 /* Ride.m in Sources */,
 				B27CEDD11ACE4D1F00512FA3 /* Ride+RideHelpers.m in Sources */,
 				B28312261AAF2A8100B7C1A9 /* BasePolyline.m in Sources */,
 				B2EB5B701ABEE9F800FB3B5D /* BaseTextView.m in Sources */,
-				B28312291AAF322C00B7C1A9 /* RideStartEndPolyline.m in Sources */,
+				B28312291AAF322C00B7C1A9 /* RidePolyline.m in Sources */,
 				B2C756181AA1912B00B148D3 /* RideDetailTableViewController.m in Sources */,
 				B27CEDD71ACE852600512FA3 /* MKPolyline+PolylineHelpers.m in Sources */,
 				B24D4FD11A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld in Sources */,
 				B2C7561B1AA1A83100B148D3 /* TeamsTableViewController.m in Sources */,
-				B26C11301AAEB4CD005FC313 /* RideTeamAssignedPolyline.m in Sources */,
 				B27B4A751A9AB1FB009277E4 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

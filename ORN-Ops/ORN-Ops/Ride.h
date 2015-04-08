@@ -2,7 +2,7 @@
 //  Ride.h
 //  ORN-Ops
 //
-//  Created by Johnny on 2015-04-05.
+//  Created by Johnny on 2015-04-08.
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
@@ -19,6 +19,8 @@
 @property (nonatomic, retain) NSString * locationEndCity;
 @property (nonatomic, retain) NSNumber * locationEndLatitude;
 @property (nonatomic, retain) NSNumber * locationEndLongitude;
+@property (nonatomic, retain) NSNumber * locationPrepLatitude;
+@property (nonatomic, retain) NSNumber * locationPrepLongitude;
 @property (nonatomic, retain) NSString * locationStartAddress;
 @property (nonatomic, retain) NSString * locationStartCity;
 @property (nonatomic, retain) NSNumber * locationStartLatitude;

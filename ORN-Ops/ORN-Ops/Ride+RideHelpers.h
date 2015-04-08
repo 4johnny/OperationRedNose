@@ -57,6 +57,14 @@ typedef NS_ENUM(NSInteger, RideLocationType) {
 	RideLocationType_End
 };
 
+typedef NS_ENUM(NSInteger, RideRouteType) {
+	
+	RideRouteType_None = 0,
+	
+	RideRouteType_Main = 1,
+	RideRouteType_Prep = 2
+};
+
 typedef NS_ENUM(NSInteger, VehicleTransmission) {
 	
 	VehicleTransmission_None =			0,
@@ -134,7 +142,8 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 - (void)tryUpdatePrepRouteWithLatitude:(NSNumber*)latitude andLongitude:(NSNumber*)longitude andSender:(id)sender;
 //- (void)tryUpdateMainRouteDurationWithSender:(id)sender;
 
-- (void)clearRoute;
+- (void)clearMainRoute;
+- (void)clearPrepRoute;
 
 - (NSString*)getPassengerName;
 - (NSString*)getTitle;

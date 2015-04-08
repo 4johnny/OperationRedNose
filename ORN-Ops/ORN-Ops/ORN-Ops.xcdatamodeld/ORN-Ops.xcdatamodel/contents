@@ -7,6 +7,8 @@
         <attribute name="locationEndCity" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationEndLatitude" optional="YES" attributeType="Double" syncable="YES"/>
         <attribute name="locationEndLongitude" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="locationPrepLatitude" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="locationPrepLongitude" optional="YES" attributeType="Double" syncable="YES"/>
         <attribute name="locationStartAddress" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationStartCity" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationStartLatitude" optional="YES" attributeType="Double" syncable="YES"/>
@@ -45,7 +47,7 @@
         <relationship name="ridesAssigned" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Ride" inverseName="teamAssigned" inverseEntity="Ride" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Ride" positionX="-63" positionY="98" width="135" height="478"/>
+        <element name="Ride" positionX="-63" positionY="98" width="135" height="508"/>
         <element name="Team" positionX="162" positionY="368" width="144" height="208"/>
     </elements>
 </model>

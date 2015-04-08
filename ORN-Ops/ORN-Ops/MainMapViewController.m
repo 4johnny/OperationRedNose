@@ -15,8 +15,7 @@
 #import "Team+TeamHelpers.h"
 #import "RidePointAnnotation.h"
 #import "TeamPointAnnotation.h"
-#import "RideStartEndPolyline.h"
-#import "RideTeamAssignedPolyline.h"
+#import "RidePolyline.h"
 
 #import "DemoUtil.h"
 
@@ -29,11 +28,9 @@
 # pragma mark Map Constants
 #
 
-#define RIDE_START_ANNOTATION_ID				@"rideStartAnnotation"
-#define RIDE_END_ANNOTATION_ID					@"rideEndAnnotation"
-
-#define RIDE_START_END_POLYLINE_ANNOTATION_ID		@"rideStartEndPolylineAnnotation"
-#define RIDE_TEAM_ASSIGNED_POLYLINE_ANNOTATION_ID	@"rideTeamAssignePolylineAnnotation"
+#define RIDE_START_ANNOTATION_ID	@"rideStartAnnotation"
+#define RIDE_END_ANNOTATION_ID		@"rideEndAnnotation"
+#define RIDE_POLYLINE_ANNOTATION_ID	@"ridePolylineAnnotation"
 
 #define TEAM_NORMAL_ANNOTATION_ID	@"teamNormalAnnotation"
 #define TEAM_MASCOT_ANNOTATION_ID	@"teamMascotAnnotation"
@@ -61,12 +58,12 @@
 #
 
 
-typedef NS_ENUM(NSInteger, PolyLineMode) {
+typedef NS_ENUM(NSInteger, PolylineMode) {
 
-	PolyLineMode_None = 	0,
+	PolylineMode_None = 	0,
 	
-	PolyLineMode_Connect =	1,
-	PolyLineMode_Route =	2
+	PolylineMode_Connect =	1,
+	PolylineMode_Route =	2
 };
 
 
@@ -83,7 +80,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 @property (strong, nonatomic) NSFetchedResultsController* rideFetchedResultsController;
 @property (strong, nonatomic) NSFetchedResultsController* teamFetchedResultsController;
 
-@property (nonatomic) PolyLineMode polyLineMode;
+@property (nonatomic) PolylineMode polylineMode;
 
 @property (weak, nonatomic) id<MKAnnotation> rideTeamPanAssignmentAnchorAnnotation;
 
@@ -319,7 +316,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 	
 	[Util preloadKeyboardViaTextField:self.addressTextField];
 	
-	self.polyLineMode = PolyLineMode_Connect;
+	self.polylineMode = PolylineMode_Connect;
 	
 	[self addNotificationObservers];
 	
@@ -413,10 +410,8 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 	
 	if ([annotation isKindOfClass:[TeamPointAnnotation class]]) return [self mapView:mapView viewForTeamPointAnnotation:(TeamPointAnnotation*)annotation];
 	
-	if ([annotation isKindOfClass:[RideStartEndPolyline class]]) return [self mapView:mapView viewForRideStartEndPolylineAnnotation:(RideStartEndPolyline*)annotation];
-	
-	if ([annotation isKindOfClass:[RideTeamAssignedPolyline class]]) return [self mapView:mapView viewForRideTeamAssignedPolylineAnnotation:(RideTeamAssignedPolyline*)annotation];
-	
+	if ([annotation isKindOfClass:[RidePolyline class]]) return [self mapView:mapView viewForRidePolylineAnnotation:(RidePolyline*)annotation];
+
 	return nil;
 }
 
@@ -553,27 +548,28 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 
 - (MKOverlayRenderer*)mapView:(MKMapView*)mapView rendererForOverlay:(id<MKOverlay>)overlay {
 	
-	if ([overlay isKindOfClass:[RideStartEndPolyline class]] ||
-		[overlay isKindOfClass:[RideTeamAssignedPolyline class]]) {
+	if ([overlay isKindOfClass:[RidePolyline class]]) {
 		
-		// For ride and team selection overlays, use blue lines
-		MKPolylineRenderer* renderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
+		RidePolyline* ridePolyline = (RidePolyline*)overlay;
+		
+		// For ride route overlays, use blue lines
+		MKPolylineRenderer* renderer = [[MKPolylineRenderer alloc] initWithOverlay:ridePolyline];
 		renderer.strokeColor = [UIColor blueColor];
 		renderer.alpha = 0.5;
 		renderer.lineWidth = 5.0;
 		
-		switch (self.polyLineMode) {
+		switch (ridePolyline.rideRouteType) {
 
-			case PolyLineMode_Route:
-				// Use solid line
-				break;
-
-			default:
-			case PolyLineMode_None:
-			case PolyLineMode_Connect:
+			case RideRouteType_Prep:
 				// Use dotted line
 				renderer.lineDashPattern = @[@3, @8];
 				//	renderer.lineDashPhase = 6;
+				break;
+
+			default:
+			case RideRouteType_None:
+			case RideRouteType_Main:
+				// Use solid line
 				break;
 		}
 		
@@ -723,55 +719,37 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 }
 
 
-- (MKAnnotationView*)mapView:(MKMapView*)mapView viewForRideStartEndPolylineAnnotation:(RideStartEndPolyline*)rideStartEndPolylineAnnotation {
+- (MKAnnotationView*)mapView:(MKMapView*)mapView viewForRidePolylineAnnotation:(RidePolyline*)ridePolylineAnnotation {
 	
-	MKAnnotationView* rideStartEndPolylineAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:rideStartEndPolylineAnnotation andIdentifier:RIDE_START_END_POLYLINE_ANNOTATION_ID];
+	MKAnnotationView* ridePolylineAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:ridePolylineAnnotation andIdentifier:RIDE_POLYLINE_ANNOTATION_ID];
 
-	[self configureRideStartEndPolylineAnnotationView:rideStartEndPolylineAnnotationView withRideStartEndPolylineAnnotation:rideStartEndPolylineAnnotation];
+	[self configureRidePolylineAnnotationView:ridePolylineAnnotationView withRidePolylineAnnotation:ridePolylineAnnotation];
 	
-	return rideStartEndPolylineAnnotationView;
+	return ridePolylineAnnotationView;
 }
 
 
-- (MKAnnotationView*)configureRideStartEndPolylineAnnotationView:(MKAnnotationView*)rideStartEndPolylineAnnotationView withRideStartEndPolylineAnnotation:(RideStartEndPolyline*)rideStartEndPolylineAnnotation {
+- (MKAnnotationView*)configureRidePolylineAnnotationView:(MKAnnotationView*)ridePolylineAnnotationView withRidePolylineAnnotation:(RidePolyline*)ridePolylineAnnotation {
 	
-	Ride* ride = rideStartEndPolylineAnnotation.ride;
+	Ride* ride = ridePolylineAnnotation.ride;
 	
 	// Add/update polyline annotation label with main route duration and distance
 	
-	UILabel* polylineAnnotationLabel = rideStartEndPolylineAnnotationView.subviews.firstObject;
+	UILabel* polylineAnnotationLabel = ridePolylineAnnotationView.subviews.firstObject;
+	
+	NSNumber* duration = ride.routeMainDuration; // seconds
+	NSNumber* distance = ride.routeMainDistance; // meters
+	if (ridePolylineAnnotation.rideRouteType == RideRouteType_Prep) {
+		
+		duration = ride.routePrepDuration; // seconds
+		distance = ride.routePrepDistance; // meters
+	}
 
 	NSString* polylineAnnotationFormat = [NSString stringWithFormat:@"%@\n%@", MAP_ANNOTATION_DURATION_FORMAT, MAP_ANNOTATION_DISTANCE_FORMAT];
 	
-	polylineAnnotationLabel.text = [NSString stringWithFormat:polylineAnnotationFormat, ride.routeMainDuration.doubleValue / (double)SECONDS_PER_MINUTE, ride.routeMainDistance.doubleValue / (double)METERS_PER_KILOMETER];
+	polylineAnnotationLabel.text = [NSString stringWithFormat:polylineAnnotationFormat, duration.doubleValue / (double)SECONDS_PER_MINUTE, distance.doubleValue / (double)METERS_PER_KILOMETER];
 
-	return rideStartEndPolylineAnnotationView;
-}
-
-
-- (MKAnnotationView*)mapView:(MKMapView*)mapView viewForRideTeamAssignedPolylineAnnotation:(RideTeamAssignedPolyline*)rideTeamAssignedPolylineAnnotation {
-	
-	MKAnnotationView* rideTeamAssignedPolylineAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:rideTeamAssignedPolylineAnnotation andIdentifier:RIDE_TEAM_ASSIGNED_POLYLINE_ANNOTATION_ID];
-	
-	[self configureRideTeamAssignedPolylineAnnotationView:rideTeamAssignedPolylineAnnotationView withRideTeamAssignedPolylineAnnotation:rideTeamAssignedPolylineAnnotation];
-	
-	return rideTeamAssignedPolylineAnnotationView;
-}
-
-
-- (MKAnnotationView*)configureRideTeamAssignedPolylineAnnotationView:(MKAnnotationView*)rideTeamAssignedPolylineAnnotationView withRideTeamAssignedPolylineAnnotation:(RideTeamAssignedPolyline*)rideTeamAssignedPolylineAnnotation {
-	
-	Ride* ride = rideTeamAssignedPolylineAnnotation.ride;
-	
-	// Add/update polyline annotation label with prep route duration and distance
-	
-	UILabel* polylineAnnotationLabel = rideTeamAssignedPolylineAnnotationView.subviews.firstObject;
-	
-	NSString* polylineAnnotationFormat = [NSString stringWithFormat:@"%@\n%@", MAP_ANNOTATION_DURATION_FORMAT, MAP_ANNOTATION_DISTANCE_FORMAT];
-	
-	polylineAnnotationLabel.text = [NSString stringWithFormat:polylineAnnotationFormat, ride.routePrepDuration.doubleValue / (double)SECONDS_PER_MINUTE, ride.routePrepDistance.doubleValue / (double)METERS_PER_KILOMETER];
-	
-	return rideTeamAssignedPolylineAnnotationView;
+	return ridePolylineAnnotationView;
 }
 
 
@@ -803,8 +781,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 		annotationView.canShowCallout = YES;
 		annotationView.rightCalloutAccessoryView = [MainMapViewController rightCalloutAccessoryButton];
 
-	} else if ([identifier isEqualToString:RIDE_START_END_POLYLINE_ANNOTATION_ID] ||
-			   [identifier isEqualToString:RIDE_TEAM_ASSIGNED_POLYLINE_ANNOTATION_ID]) {
+	} else if ([identifier isEqualToString:RIDE_POLYLINE_ANNOTATION_ID]) {
 		
 		annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
 		UILabel* polylineAnnotationLabel = [MainMapViewController polylineAnnotationLabel];
@@ -869,7 +846,7 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 
 - (IBAction)lineTypeChanged:(UISegmentedControl*)sender {
 	
-	self.polyLineMode = self.lineTypeSegmentedControl.selectedSegmentIndex == 1 ? PolyLineMode_Route : PolyLineMode_Connect;
+	self.polylineMode = self.lineTypeSegmentedControl.selectedSegmentIndex == 1 ? PolylineMode_Route : PolylineMode_Connect;
 	
 	// If no selected ride or team, we are done
 	id<MKAnnotation> selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
@@ -1082,87 +1059,78 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 }
 
 
-- (void)configureRideOverlaysWithNotification:(NSNotification*)notification {
+/*
+ Configure ride overlays, consistent with given ride notification
+ Returns whether at least one overlay is present
+ */
+- (BOOL)configureRideOverlaysWithNotification:(NSNotification*)notification {
 
-	[self configureRideStartEndOverlaysWithNotification:notification];
-	[self configureRideTeamAssignedOverlaysWithNotification:notification];
+	Ride* ride = [Ride rideFromNotification:notification];
+	NSArray* rideOverlays = [self overlaysForRide:ride];
+	
+	BOOL mainOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Main usingRideOverlays:rideOverlays];
+	
+	BOOL prepOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Prep usingRideOverlays:rideOverlays];
+	
+	return mainOverlayPresent || prepOverlayPresent;
 }
 
 
 /*
- Configure ride start-end overlays, consistent with given ride notification
+ Configure ride polyline overlay and its annotation, consistent with given ride
+ Returns whether overlay and annotation are present
  */
-- (void)configureRideStartEndOverlaysWithNotification:(NSNotification*)notification {
-
-	Ride* ride = [Ride rideFromNotification:notification];
-
-	// Remove ride start-end overlay with annotation from map view, if present
-	RideStartEndPolyline* rideStartEndPolyline = [MainMapViewController getRideStartEndPolylineFromRideOverlays:[self overlaysForRide:ride]];
-	if (rideStartEndPolyline) {
+- (BOOL)configureViewWithRide:(Ride*)ride
+			 andRideRouteType:(RideRouteType)rideRouteType
+			usingRideOverlays:(NSArray*)rideOverlays {
+	
+	// Remove ride polyline overlay with annotation from map view, if present
+	RidePolyline* ridePolyline = [MainMapViewController getRidePolylineFromRideOverlays:rideOverlays andRideRouteType:rideRouteType];
+	if (ridePolyline) {
 		
-		[self.mainMapView removeOverlay:rideStartEndPolyline];
-		[self.mainMapView removeAnnotation:rideStartEndPolyline];
+		[self.mainMapView removeOverlay:ridePolyline];
+		[self.mainMapView removeAnnotation:ridePolyline];
 	}
 	
 	// If neither ride nor team assigned is selected, we are done
-	if (![self isSelectedAnnotationForRide:ride] && ![self isSelectedAnnotationForTeam:ride.teamAssigned]) return;
+	if (![self isSelectedAnnotationForRide:ride] && ![self isSelectedAnnotationForTeam:ride.teamAssigned]) return NO;
 	
 	// If insufficient location data, we are done
-	if (!ride.locationStartLatitude ||
-		!ride.locationStartLongitude ||
-		!ride.locationEndLatitude ||
-		!ride.locationEndLongitude
-		) return;
-	
-	// Update existing overlay or create new one, based on polyline mode
-	MKPolyline* polyline = self.polyLineMode == PolyLineMode_Route ? ride.routeMainPolyline : nil;
-	rideStartEndPolyline = rideStartEndPolyline
-	? [rideStartEndPolyline initWithRide:ride andPolyline:polyline]
-	: [RideStartEndPolyline rideStartEndPolylineWithRide:ride andPolyline:polyline];
+	switch (rideRouteType) {
 
-	// Add ride start-end overlay with annotation to map view
-	[self.mainMapView addOverlay:rideStartEndPolyline level:MKOverlayLevelAboveLabels];
-	[self.mainMapView addAnnotation:rideStartEndPolyline];
-}
-
-
-/*
- Configure ride-team assigned overlays, consistent with given ride notification
- */
-- (void)configureRideTeamAssignedOverlaysWithNotification:(NSNotification*)notification {
-
-	Ride* ride = [Ride rideFromNotification:notification];
-	
-	// Remove ride-team assigned overlay with annotation from map view, if present
-	RideTeamAssignedPolyline* rideTeamAssignedPolyline = [MainMapViewController getRideTeamAssignedPolylineFromRideOverlays:[self overlaysForRide:ride]];
-	if (rideTeamAssignedPolyline) {
+		case RideRouteType_Main:
+			
+			if (!ride.locationStartLatitude ||
+				!ride.locationStartLongitude ||
+				!ride.locationEndLatitude ||
+				!ride.locationEndLongitude) return NO;
+			break;
 		
-		[self.mainMapView removeOverlay:rideTeamAssignedPolyline];
-		[self.mainMapView removeAnnotation:rideTeamAssignedPolyline];
+		case RideRouteType_Prep:
+			
+			if (!ride.locationPrepLatitude ||
+				!ride.locationPrepLongitude ||
+				!ride.locationStartLatitude ||
+				!ride.locationStartLongitude) return NO;
+			break;
+			
+		default:
+		case RideRouteType_None:
+			return NO;
 	}
 	
-	// If neither ride nor team assigned is selected, we are done
-	if (![self isSelectedAnnotationForRide:ride] && ![self isSelectedAnnotationForTeam:ride.teamAssigned]) return;
-	
-	// If no ride-team assigned or insufficient location data, we are done
-	if (!ride.teamAssigned ||
-		!ride.teamAssigned.locationCurrentLatitude ||
-		!ride.teamAssigned.locationCurrentLongitude ||
-		!ride.locationStartLatitude ||
-		!ride.locationStartLongitude
-		) return;
-	
-	// Get coordinate of ride start
-	CLLocationCoordinate2D startCoordinate = CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue);
-
 	// Update existing overlay or create new one
-	rideTeamAssignedPolyline = rideTeamAssignedPolyline
-	? [rideTeamAssignedPolyline initWithRide:ride andStartCoordinate:&startCoordinate]
-	: [RideTeamAssignedPolyline rideTeamAssignedPolylineWithRide:ride andStartCoordinate:&startCoordinate];
-
-	// Add ride-team assigned overlay with annotation to map view
-	[self.mainMapView addOverlay:rideTeamAssignedPolyline level:MKOverlayLevelAboveLabels];
-	[self.mainMapView addAnnotation:rideTeamAssignedPolyline];
+	MKPolyline* polyline = rideRouteType == RideRouteType_Prep ? ride.routePrepPolyline : ride.routeMainPolyline;
+	polyline = self.polylineMode == PolylineMode_Route ? polyline : nil;
+	ridePolyline = ridePolyline
+	? [ridePolyline initWithPolyline:polyline andRide:ride andRideRouteType:rideRouteType]
+	: [RidePolyline ridePolylineWithPolyline:polyline andRide:ride andRideRouteType:rideRouteType];
+	
+	// Add ride start-end overlay with annotation to map view
+	[self.mainMapView addOverlay:ridePolyline level:MKOverlayLevelAboveLabels];
+	[self.mainMapView addAnnotation:ridePolyline];
+	
+	return YES;
 }
 
 
@@ -1213,26 +1181,18 @@ typedef NS_ENUM(NSInteger, PolyLineMode) {
 }
 
 
-+ (RideStartEndPolyline*)getRideStartEndPolylineFromRideOverlays:(NSArray*)overlays {
++ (RidePolyline*)getRidePolylineFromRideOverlays:(NSArray*)rideOverlays andRideRouteType:(RideRouteType)rideRouteType {
 	
-	// Return first overlay found of ride start-end polyline class
+	// Return first ride polyline overlay found of given ride route type
 	// NOTE: Should be max 1
-	for (id<MKOverlay> overlay in overlays) {
+	for (id<MKOverlay> rideOverlay in rideOverlays) {
 		
-		if ([overlay isKindOfClass:[RideStartEndPolyline class]]) return (RideStartEndPolyline*)overlay;
-	}
-	
-	return nil;
-}
-
-
-+ (RideTeamAssignedPolyline*)getRideTeamAssignedPolylineFromRideOverlays:(NSArray*)overlays {
-	
-	// Return first overlay found of ride-team assigned polyline class
-	// NOTE: Should be max 1
-	for (id<MKOverlay> overlay in overlays) {
-		
-		if ([overlay isKindOfClass:[RideTeamAssignedPolyline class]]) return (RideTeamAssignedPolyline*)overlay;
+		if ([rideOverlay isKindOfClass:[RidePolyline class]]) {
+			
+			RidePolyline* ridePolylineOverlay = (RidePolyline*)rideOverlay;
+			
+			if (ridePolylineOverlay.rideRouteType == rideRouteType) return ridePolylineOverlay;
+		}
 	}
 	
 	return nil;
