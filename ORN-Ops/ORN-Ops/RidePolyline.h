@@ -30,5 +30,6 @@
 - (instancetype)init;
 
 + (instancetype)ridePolylineWithPolyline:(MKPolyline*)polyline andRide:(Ride*)ride andRideRouteType:(RideRouteType)rideRouteType;
++ (instancetype)ridePolyline:(RidePolyline*)ridePolyline withPolyline:(MKPolyline*)polyline andRide:(Ride*)ride andRideRouteType:(RideRouteType)rideRouteType;
 
 @end

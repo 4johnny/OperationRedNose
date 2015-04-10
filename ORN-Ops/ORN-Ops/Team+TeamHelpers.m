@@ -126,35 +126,28 @@
 /*
  Calculate route for team per assigned rides, asynchronously
  */
-- (void)tryUpdateAssignedRidePrepRoutesWithSender:(id)sender {
-	
-	NSArray* sortedRidesAssigned =
-	[self.ridesAssigned sortedArrayUsingDescriptors:
-	 @[
-	   [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY1 ascending:RIDE_FETCH_SORT_ASCENDING],
-	   [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY2 ascending:RIDE_FETCH_SORT_ASCENDING]
-	   ]];
+- (void)tryUpdateAssignedRideRoutesWithSender:(id)sender {
 	
 	NSNumber* sourceLatitude = self.locationCurrentLatitude; // Maybe nil
 	NSNumber* sourceLongitude = self.locationCurrentLongitude; // Maybe nil
 	
-	for (Ride* ride in sortedRidesAssigned) {
-		
-		[ride tryUpdatePrepRouteWithLatitude:sourceLatitude andLongitude:sourceLongitude andSender:sender];
+	for (Ride* rideAssigned in [self getSortedRidesAssigned]) {
+
+		[rideAssigned tryUpdatePrepRouteWithLatitude:sourceLatitude andLongitude:sourceLongitude andSender:sender]; // async
 
 		// Best effort to determine source location for next prep route
 		
-		if (ride.locationEndLatitude && ride.locationEndLongitude) {
+		if (rideAssigned.locationEndLatitude && rideAssigned.locationEndLongitude) {
 			
-			sourceLatitude = ride.locationEndLatitude;
-			sourceLongitude = ride.locationEndLongitude;
+			sourceLatitude = rideAssigned.locationEndLatitude;
+			sourceLongitude = rideAssigned.locationEndLongitude;
 			continue;
 		}
 		
-		if (ride.locationStartLatitude && ride.locationStartLongitude) {
+		if (rideAssigned.locationStartLatitude && rideAssigned.locationStartLongitude) {
 			
-			sourceLatitude = ride.locationStartLatitude;
-			sourceLongitude = ride.locationStartLongitude;
+			sourceLatitude = rideAssigned.locationStartLatitude;
+			sourceLongitude = rideAssigned.locationStartLongitude;
 			continue;
 		}
 	}
@@ -173,6 +166,16 @@
 	if (self.name.length > 0 && self.members.length > 0) return [NSString stringWithFormat:@"%@: %@", self.name, self.members];
 
 	return TEAM_TITLE_DEFAULT;
+}
+
+
+- (NSArray*)getSortedRidesAssigned {
+
+	return [self.ridesAssigned sortedArrayUsingDescriptors:
+			@[
+			  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY1 ascending:RIDE_FETCH_SORT_ASCENDING],
+			  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY2 ascending:RIDE_FETCH_SORT_ASCENDING]
+			  ]];
 }
 
 

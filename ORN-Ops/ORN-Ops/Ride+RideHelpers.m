@@ -178,13 +178,13 @@
 	
 	if (existingTeamAssigned) {
 		
-		[existingTeamAssigned tryUpdateAssignedRidePrepRoutesWithSender:sender];
+		[existingTeamAssigned tryUpdateAssignedRideRoutesWithSender:sender];
 		[existingTeamAssigned postNotificationUpdatedWithSender:sender andUpdatedRidesAssigned:YES];
 	}
 	
 	if (team) {
 		
-		[team tryUpdateAssignedRidePrepRoutesWithSender:sender];
+		[team tryUpdateAssignedRideRoutesWithSender:sender];
 		[team postNotificationUpdatedWithSender:sender andUpdatedRidesAssigned:YES];
 	}
 	
@@ -313,7 +313,7 @@
 		NSLog(@"Main Polyline: %@", route.polyline);
 	
 		// Try to recalculate prep routes for team assigned, if any
-		[self.teamAssigned tryUpdateAssignedRidePrepRoutesWithSender:sender]; // async
+		[self.teamAssigned tryUpdateAssignedRideRoutesWithSender:sender]; // async
 		
 		// Persist to store and notify
 		[Util saveManagedObjectContext];
@@ -463,6 +463,60 @@
 - (NSDate*)getRouteDateTimeEnd {
 
 	return self.dateTimeStart && self.routeMainDuration ? [NSDate dateWithTimeInterval:self.routeMainDuration.doubleValue sinceDate:self.dateTimeStart] : nil;
+}
+
+
+- (MKPolyline*)polylineWithRideRouteType:(RideRouteType)rideRouteType {
+	
+	switch (rideRouteType) {
+			
+		case RideRouteType_Main:
+			return self.routeMainPolyline;
+			
+		case RideRouteType_Prep:
+			return self.routePrepPolyline;
+			
+		default:
+		case RideRouteType_None:
+		case RideRouteType_Wait:
+			return nil;
+	}
+}
+
+
+- (NSNumber*)durationWithRideRouteType:(RideRouteType)rideRouteType {
+	
+	switch (rideRouteType) {
+			
+		case RideRouteType_Main:
+			return self.routeMainDuration;
+			
+		case RideRouteType_Prep:
+		case RideRouteType_Wait:
+			return self.routePrepDuration;
+			
+		default:
+		case RideRouteType_None:
+			return nil;
+	}
+}
+
+
+- (NSNumber*)distanceWithRideRouteType:(RideRouteType)rideRouteType {
+
+	switch (rideRouteType) {
+			
+		case RideRouteType_Main:
+			return self.routeMainDistance;
+			
+		case RideRouteType_Prep:
+		case RideRouteType_Wait:
+			return self.routePrepDistance;
+			
+		default:
+		case RideRouteType_None:
+			return nil;
+	}
 }
 
 

@@ -74,7 +74,7 @@
 # pragma mark Instance Helpers
 #
 
-- (void)tryUpdateAssignedRidePrepRoutesWithSender:(id)sender;
+- (void)tryUpdateAssignedRideRoutesWithSender:(id)sender;
 
 
 #
@@ -82,5 +82,6 @@
 #
 
 - (NSString*)getTitle;
+- (NSArray*)getSortedRidesAssigned;
 
 @end

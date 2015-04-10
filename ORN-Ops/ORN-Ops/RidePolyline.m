@@ -7,6 +7,7 @@
 //
 
 #import "RidePolyline.h"
+#import "Team+TeamHelpers.h"
 
 
 #
@@ -64,11 +65,30 @@
 				}
 				break;
 				
+			case RideRouteType_Wait:
+				
+				if (ride.teamAssigned.locationCurrentLatitude &&
+					ride.teamAssigned.locationCurrentLongitude &&
+					ride.locationStartLatitude &&
+					ride.locationStartLongitude) {
+					
+					CLLocationCoordinate2D locationCoordinates[2] =
+					{
+						CLLocationCoordinate2DMake(ride.teamAssigned.locationCurrentLatitude.doubleValue, ride.teamAssigned.locationCurrentLongitude.doubleValue),
+						CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue)
+					};
+					
+					polyline = [MKPolyline polylineWithCoordinates:locationCoordinates count:2];
+				}
+				break;
+				
 			default:
 			case RideRouteType_None:
 				break;
 		}
 	}
+	
+	if (!polyline) return nil;
 	
 	self = [super initWithPolyline:polyline];
 	
@@ -89,9 +109,19 @@
 
 
 + (instancetype)ridePolylineWithPolyline:(MKPolyline*)polyline andRide:(Ride*)ride andRideRouteType:(RideRouteType)rideRouteType {
-
+	
 	return [[RidePolyline alloc] initWithPolyline:polyline andRide:ride andRideRouteType:rideRouteType];
 }
+
+	
++ (instancetype)ridePolyline:(RidePolyline*)ridePolyline withPolyline:(MKPolyline*)polyline andRide:(Ride*)ride andRideRouteType:(RideRouteType)rideRouteType {
+	
+	return ridePolyline
+	? [ridePolyline initWithPolyline:polyline andRide:ride andRideRouteType:rideRouteType]
+	: [RidePolyline ridePolylineWithPolyline:polyline andRide:ride andRideRouteType:rideRouteType];
+}
+
+
 
 
 @end

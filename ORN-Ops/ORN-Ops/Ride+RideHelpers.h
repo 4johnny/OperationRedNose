@@ -51,18 +51,19 @@ typedef NS_ENUM(NSInteger, RideStatus) {
 
 typedef NS_ENUM(NSInteger, RideLocationType) {
 	
-	RideLocationType_None = 0,
+	RideLocationType_None =		0,
 	
-	RideLocationType_Start,
-	RideLocationType_End
+	RideLocationType_Start =	1,
+	RideLocationType_End = 		2
 };
 
 typedef NS_ENUM(NSInteger, RideRouteType) {
 	
-	RideRouteType_None = 0,
+	RideRouteType_None =	0,
 	
-	RideRouteType_Main = 1,
-	RideRouteType_Prep = 2
+	RideRouteType_Main =	1,
+	RideRouteType_Prep =	2,
+	RideRouteType_Wait =	3
 };
 
 typedef NS_ENUM(NSInteger, VehicleTransmission) {
@@ -148,6 +149,10 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 - (NSString*)getPassengerName;
 - (NSString*)getTitle;
 - (NSDate*)getRouteDateTimeEnd;
+
+- (MKPolyline*)polylineWithRideRouteType:(RideRouteType)rideRouteType;
+- (NSNumber*)durationWithRideRouteType:(RideRouteType)rideRouteType;
+- (NSNumber*)distanceWithRideRouteType:(RideRouteType)rideRouteType;
 
 #
 # pragma mark Class Helpers
