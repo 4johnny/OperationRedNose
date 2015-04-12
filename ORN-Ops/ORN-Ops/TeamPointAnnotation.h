@@ -30,5 +30,6 @@
 - (instancetype)init;
 
 + (instancetype)teamPointAnnotationWithTeam:(Team*)team andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
++ (instancetype)teamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation withTeam:(Team*)team andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
 
 @end

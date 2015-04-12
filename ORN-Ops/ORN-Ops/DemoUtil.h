@@ -20,8 +20,11 @@
 # pragma mark Class Methods
 #
 
+// NOTE: Caller is responsible for saving to persistent store
+
 + (void)loadDemoRides;
 + (void)loadDemoTeams;
 + (void)loadDemoAssignTeams:(NSArray*)teams toRides:(NSArray*)rides;
++ (void)loadDemoAssignTeamsSelector:(NSDictionary*)args;
 
 @end

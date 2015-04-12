@@ -466,6 +466,18 @@
 }
 
 
+- (NSNumber*)latitudeWithRideLocationType:(RideLocationType)rideLocationType {
+
+	return rideLocationType == RideLocationType_End ? self.locationEndLatitude : self.locationStartLatitude;
+}
+
+
+- (NSNumber*)longitudeWithRideLocationType:(RideLocationType)rideLocationType {
+	
+	return rideLocationType == RideLocationType_End ? self.locationEndLongitude : self.locationStartLongitude;
+}
+
+
 - (MKPolyline*)polylineWithRideRouteType:(RideRouteType)rideRouteType {
 	
 	switch (rideRouteType) {

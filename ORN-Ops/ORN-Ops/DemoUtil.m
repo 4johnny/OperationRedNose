@@ -11,6 +11,9 @@
 #import "Team+TeamHelpers.h"
 
 
+// NOTE: Caller is responsible for saving to persistent store
+
+
 #
 # pragma mark - Implementation
 #
@@ -478,6 +481,15 @@
 	[rides[8] assignTeam:teams[0] withSender:self];
 	[rides[9] assignTeam:teams[8] withSender:self];
 	[rides[10] assignTeam:teams[10] withSender:self];
+}
+
+
++ (void)loadDemoAssignTeamsSelector:(NSDictionary*)args {
+	
+	NSArray* teams = args[@"teams"];
+	NSArray* rides = args[@"rides"];
+	
+	[DemoUtil loadDemoAssignTeams:teams toRides:rides];
 }
 
 

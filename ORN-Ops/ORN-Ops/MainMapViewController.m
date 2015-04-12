@@ -1008,67 +1008,51 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 			andNeedsSelection:(BOOL)needsSelection {
 	
 	RidePointAnnotation* ridePointAnnotation = [MainMapViewController getRidePointAnnotationFromRideAnnotations:rideAnnotations andRideLocationType:rideLocationType];
+	BOOL isRidePointAnnotationInMapView = (ridePointAnnotation != nil);
 	
-	NSNumber* locationLatitude = ride.locationStartLatitude;
-	NSNumber* locationLongitude = ride.locationStartLongitude;
-	if (rideLocationType == RideLocationType_End) {
+	// Remove existing annotation if location updated
+	if (isLocationUpdated && isRidePointAnnotationInMapView) {
 		
-		locationLatitude = ride.locationEndLatitude;
-		locationLongitude = ride.locationEndLongitude;
+		[self.mainMapView removeAnnotation:ridePointAnnotation];
+	}
+
+	// If no location, we are done
+	NSNumber* locationLatitude = [ride latitudeWithRideLocationType:rideLocationType];
+	NSNumber* locationLongitude = [ride longitudeWithRideLocationType:rideLocationType];
+	if (!locationLatitude || !locationLongitude) return NO;
+	
+	// Updated existing annotation or create new one
+	// NOTE: Automatically triggers new annotation view
+	ridePointAnnotation = [RidePointAnnotation ridePointAnnotation:ridePointAnnotation withRide:ride andRideLocationType:rideLocationType andNeedsAnimatesDrop:isLocationUpdated];
+	
+	// Update existing annotation view or trigger new one
+	if (!isRidePointAnnotationInMapView || isLocationUpdated) {
+		
+		[self.mainMapView addAnnotation:ridePointAnnotation];
+		isRidePointAnnotationInMapView = YES;
 	}
 	
-	if (locationLatitude && locationLongitude) {
+	// Update existing annotation view, if not triggered
+	if (!isLocationUpdated) {
 		
-		// Updated existing annotation or create new one
-		if (ridePointAnnotation) {
+		MKPinAnnotationView* ridePinAnnotationView = (MKPinAnnotationView*)[self.mainMapView viewForAnnotation:ridePointAnnotation];
+		if (ridePinAnnotationView) {
 			
-			ridePointAnnotation = [ridePointAnnotation initWithRide:ride andRideLocationType:rideLocationType andNeedsAnimatesDrop:isLocationUpdated];
-			
-		} else {
-			
-			ridePointAnnotation = [RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:rideLocationType andNeedsAnimatesDrop:isLocationUpdated];
-			
-			[self.mainMapView addAnnotation:ridePointAnnotation];
-		}
-		
-		// Update existing annotation view or trigger new one
-		if (isLocationUpdated) {
-			
-			// Remove and re-add annotation to map view - automatically triggers new annotation view
-			[self.mainMapView removeAnnotation:ridePointAnnotation];
-			[self.mainMapView addAnnotation:ridePointAnnotation];
-			
-		} else {
-			
-			// If view exists for given annotation, update it
-			MKPinAnnotationView* ridePinAnnotationView = (MKPinAnnotationView*)[self.mainMapView viewForAnnotation:ridePointAnnotation];
-			if (ridePinAnnotationView) {
-				
-				[self configureRidePinAnnotationView:ridePinAnnotationView withRidePointAnnotation:ridePointAnnotation];
-			}
-		}
-		
-		if (needsCenter) {
-			
-			[self.mainMapView setCenterCoordinate:CLLocationCoordinate2DMake(locationLatitude.doubleValue, locationLongitude.doubleValue) animated:YES];
-		}
-		
-		if (needsSelection) {
-			
-			[self.mainMapView selectAnnotation:ridePointAnnotation animated:YES];
-		}
-		
-	} else {
-		
-		// Remove existing annotation, if present
-		if (ridePointAnnotation) {
-			
-			[self.mainMapView removeAnnotation:ridePointAnnotation];
-			ridePointAnnotation = nil;
+			[self configureRidePinAnnotationView:ridePinAnnotationView withRidePointAnnotation:ridePointAnnotation];
 		}
 	}
 	
-	return (ridePointAnnotation != nil);
+	if (needsCenter) {
+		
+		[self.mainMapView setCenterCoordinate:CLLocationCoordinate2DMake(locationLatitude.doubleValue, locationLongitude.doubleValue) animated:YES];
+	}
+	
+	if (needsSelection) {
+		
+		[self.mainMapView selectAnnotation:ridePointAnnotation animated:YES];
+	}
+	
+	return YES;
 }
 
 
@@ -1243,61 +1227,49 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 			andNeedsSelection:(BOOL)needsSelection {
 	
 	TeamPointAnnotation* teamPointAnnotation = [MainMapViewController getTeamPointAnnotationFromTeamPointAnnotations:teamAnnotations];
+	BOOL isTeamPointAnnotationInMapView = (teamPointAnnotation != nil);
 	
+	// Remove existing annotation if location updated
+	if (isLocationUpdated && isTeamPointAnnotationInMapView) {
+			
+		[self.mainMapView removeAnnotation:teamPointAnnotation];
+	}
+
+	// If no location, we are done
 	NSNumber* locationLatitude = team.locationCurrentLatitude;
 	NSNumber* locationLongitude = team.locationCurrentLongitude;
+	if (!locationLatitude || !locationLongitude) return NO;
 	
-	if (locationLatitude && locationLongitude) {
+	// Update existing annotation or create new one
+	// NOTE: Automatically triggers new annotation view
+	teamPointAnnotation = [TeamPointAnnotation teamPointAnnotation:teamPointAnnotation withTeam:team andNeedsAnimatesDrop:isLocationUpdated];
+	if (!isTeamPointAnnotationInMapView || isLocationUpdated) {
 		
-		// Updated existing annotation or create new one
-		if (teamPointAnnotation) {
-			
-			teamPointAnnotation = [teamPointAnnotation initWithTeam:team andNeedsAnimatesDrop:isLocationUpdated];
-			
-		} else {
-			
-			teamPointAnnotation = [TeamPointAnnotation teamPointAnnotationWithTeam:team andNeedsAnimatesDrop:isLocationUpdated];
-			
-			[self.mainMapView addAnnotation:teamPointAnnotation];
-		}
+		[self.mainMapView addAnnotation:teamPointAnnotation];
+		isTeamPointAnnotationInMapView = YES;
+	}
+	
+	// Update existing annotation view, if not triggered
+	if (!isLocationUpdated) {
 		
-		// Update existing annotation view or trigger new one
-		if (isLocationUpdated) {
+		MKAnnotationView* teamAnnotationView = [self.mainMapView viewForAnnotation:teamPointAnnotation];
+		if (teamAnnotationView) {
 			
-			// Remove and re-add annotation to map view - automatically triggers new annotation view
-			[self.mainMapView removeAnnotation:teamPointAnnotation];
-			[self.mainMapView addAnnotation:teamPointAnnotation];
-			
-		} else {
-			
-			// If view exists for given annotation, update it
-			MKAnnotationView* teamAnnotationView = [self.mainMapView viewForAnnotation:teamPointAnnotation];
-			if (teamAnnotationView) {
-				
-				[self configureTeamAnnotationView:teamAnnotationView withTeamPointAnnotation:teamPointAnnotation];
-			}
-		}
-		
-		if (needsCenter) {
-			
-			[self.mainMapView setCenterCoordinate:CLLocationCoordinate2DMake(locationLatitude.doubleValue, locationLongitude.doubleValue) animated:YES];
-		}
-		
-		if (needsSelection) {
-			
-			[self.mainMapView selectAnnotation:teamPointAnnotation animated:YES];
-		}
-		
-	} else {
-		
-		if (teamPointAnnotation) {
-			
-			[self.mainMapView removeAnnotation:teamPointAnnotation];
-			teamPointAnnotation = nil;
+			[self configureTeamAnnotationView:teamAnnotationView withTeamPointAnnotation:teamPointAnnotation];
 		}
 	}
 	
-	return (teamPointAnnotation != nil);
+	if (needsCenter) {
+		
+		[self.mainMapView setCenterCoordinate:CLLocationCoordinate2DMake(locationLatitude.doubleValue, locationLongitude.doubleValue) animated:YES];
+	}
+	
+	if (needsSelection) {
+		
+		[self.mainMapView selectAnnotation:teamPointAnnotation animated:YES];
+	}
+	
+	return YES;
 }
 
 
@@ -1340,7 +1312,6 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	commandString = [commandString lowercaseString];
 	
 	BOOL isCommandHandled = NO;
-	BOOL needsDataModelSave = NO;
 	
 	if ([COMMAND_HELP isEqualToString:commandString]) {
 		
@@ -1369,7 +1340,6 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 			
 			// WARNING: Cannot be undone!
 			[Util removePersistentStore];
-			
 			[Util postNotificationDataModelResetWithSender:self];
 		}];
 		
@@ -1379,10 +1349,24 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 		
 	} else if ([COMMAND_DEMO isEqualToString:commandString]) {
 		
-		// Run all demo commands
-		[self handleCommandString:COMMAND_DEMO_RIDES];
-		[self handleCommandString:COMMAND_DEMO_TEAMS];
-		[self handleCommandString:COMMAND_DEMO_ASSIGN];
+		// Load all demo content
+		
+		[self configureJurisdictionRegionView];
+		
+		[DemoUtil loadDemoRides];
+		[Util saveManagedObjectContext];
+		
+		[DemoUtil loadDemoTeams];
+		[Util saveManagedObjectContext];
+
+		// Delay assignment so that drop animations are not cancelled
+		NSDictionary* args =
+		@{
+		  @"teams" : self.teamFetchedResultsController.fetchedObjects,
+		  @"rides" : self.rideFetchedResultsController.fetchedObjects
+		  };
+		[[DemoUtil class] performSelector:@selector(loadDemoAssignTeamsSelector:) withObject:args afterDelay:2.0];
+		[Util saveManagedObjectContext];
 		
 		isCommandHandled = YES;
 		
@@ -1391,8 +1375,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 		// Load all demo rides
 		[self configureJurisdictionRegionView];
 		[DemoUtil loadDemoRides];
+		[Util saveManagedObjectContext];
 		
-		needsDataModelSave = YES;
 		isCommandHandled = YES;
 		
 	} else if ([COMMAND_DEMO_TEAMS isEqualToString:commandString]) {
@@ -1400,26 +1384,22 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 		// Load all demo teams
 		[self configureJurisdictionRegionView];
 		[DemoUtil loadDemoTeams];
-
-		needsDataModelSave = YES;
+		[Util saveManagedObjectContext];
+		
 		isCommandHandled = YES;
 		
 	} else if ([COMMAND_DEMO_ASSIGN isEqualToString:commandString]) {
 		
 		// Assign teams to rides
+		[self configureJurisdictionRegionView];
 		[DemoUtil loadDemoAssignTeams:self.teamFetchedResultsController.fetchedObjects toRides:self.rideFetchedResultsController.fetchedObjects];
+		[Util saveManagedObjectContext];
 		
-		needsDataModelSave = YES;
 		isCommandHandled = YES;
 	}
 	
 	if (isCommandHandled) {
 		NSLog(@"Handled Command: %@", commandString);
-		
-		if (needsDataModelSave) {
-			
-			[Util saveManagedObjectContext];
-		}
 	}
 	
 	return isCommandHandled;

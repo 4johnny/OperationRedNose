@@ -150,6 +150,9 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 - (NSString*)getTitle;
 - (NSDate*)getRouteDateTimeEnd;
 
+- (NSNumber*)latitudeWithRideLocationType:(RideLocationType)rideLocationType;
+- (NSNumber*)longitudeWithRideLocationType:(RideLocationType)rideLocationType;
+
 - (MKPolyline*)polylineWithRideRouteType:(RideRouteType)rideRouteType;
 - (NSNumber*)durationWithRideRouteType:(RideRouteType)rideRouteType;
 - (NSNumber*)distanceWithRideRouteType:(RideRouteType)rideRouteType;

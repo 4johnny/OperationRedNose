@@ -31,5 +31,6 @@
 - (instancetype)init;
 
 + (instancetype)ridePointAnnotationWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
++ (instancetype)ridePointAnnotation:(RidePointAnnotation*)ridePointAnnotation withRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
 
 @end

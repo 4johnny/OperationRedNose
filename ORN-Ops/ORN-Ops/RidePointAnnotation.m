@@ -71,4 +71,12 @@
 }
 
 
++ (instancetype)ridePointAnnotation:(RidePointAnnotation*)ridePointAnnotation withRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
+
+	return ridePointAnnotation
+	? [ridePointAnnotation initWithRide:ride andRideLocationType:rideLocationType andNeedsAnimatesDrop:needsAnimatesDrop]
+	: [RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:rideLocationType andNeedsAnimatesDrop:needsAnimatesDrop];
+}
+
+
 @end

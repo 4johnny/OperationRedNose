@@ -52,4 +52,12 @@
 }
 
 
++ (instancetype)teamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation withTeam:(Team*)team andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
+
+	return teamPointAnnotation
+	? [teamPointAnnotation initWithTeam:team andNeedsAnimatesDrop:needsAnimatesDrop]
+	: [TeamPointAnnotation teamPointAnnotationWithTeam:team andNeedsAnimatesDrop:needsAnimatesDrop];
+}
+
+
 @end
