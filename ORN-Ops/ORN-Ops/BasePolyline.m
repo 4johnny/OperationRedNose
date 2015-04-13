@@ -16,6 +16,7 @@
 @interface BasePolyline ()
 
 @property (nonatomic) MKPolyline* polyline;
+@property (nonatomic) CLLocationCoordinate2D locationCoordinate;
 
 @end
 
@@ -39,6 +40,24 @@
 	if (self) {
 
 		_polyline = polyline;
+		
+		// Pre-calculate coordinate for midpoint of points, for efficiency
+		if (_polyline.pointCount > 0) {
+			
+			NSUInteger midpointIndex = _polyline.pointCount / 2;
+			
+			if (_polyline.pointCount % 2 == 1) {
+				
+				_locationCoordinate =  MKCoordinateForMapPoint(_polyline.points[midpointIndex]);
+				
+			} else {
+				
+				MKMapPoint mapPoint1 = _polyline.points[midpointIndex - 1];
+				MKMapPoint mapPoint2 = _polyline.points[midpointIndex];
+				
+				_locationCoordinate = MKCoordinateForMapPoint(MKMapPointMake((mapPoint1.x + mapPoint2.x) / 2.0, (mapPoint1.y + mapPoint2.y) / 2.0));
+			}
+		}
 	}
 	
 	return self;
@@ -63,20 +82,20 @@
 
 
 - (CLLocationCoordinate2D)coordinate {
-	
-	return _polyline.coordinate;
+
+	return self.locationCoordinate;
 }
 
 
 - (MKMapRect)boundingMapRect {
 	
-	return _polyline.boundingMapRect;
+	return self.polyline.boundingMapRect;
 }
 
 
 - (BOOL)intersectsMapRect:(MKMapRect)mapRect {
 	
-	return [_polyline intersectsMapRect:mapRect];
+	return [self.polyline intersectsMapRect:mapRect];
 }
 
 
@@ -88,19 +107,19 @@
 
 - (MKMapPoint*)points {
 	
-	return [_polyline points];
+	return [self.polyline points];
 }
 
 
 - (NSUInteger)pointCount {
 	
-	return [_polyline pointCount];
+	return [self.polyline pointCount];
 }
 
 
 - (void)getCoordinates:(CLLocationCoordinate2D*)coords range:(NSRange)range {
 	
-	return [_polyline getCoordinates:coords range:range];
+	return [self.polyline getCoordinates:coords range:range];
 }
 
 
