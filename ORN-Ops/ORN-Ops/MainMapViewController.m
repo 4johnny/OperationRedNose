@@ -83,6 +83,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 @property (nonatomic) PolylineMode polylineMode;
 
 @property (weak, nonatomic) id<MKAnnotation> rideTeamPanAssignmentAnchorAnnotation;
+@property (weak, nonatomic) id<MKAnnotation> previousSelectedAnnotation;
 
 @property (nonatomic) CLGeocoder* geocoder;
 @property (nonatomic) NSDateFormatter* annotationDateFormatter;
@@ -489,17 +490,25 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 
 - (void)mapView:(MKMapView*)mapView didSelectAnnotationView:(MKAnnotationView*)view {
 
-	if ([view.annotation isKindOfClass:[MKUserLocation class]]) return;
-
-	if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) {
+	if ([view.annotation isKindOfClass:[MKUserLocation class]]) {
+		
+		// Do nothing (for now)
+		
+	} else if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) {
 		
 		Ride* ride = ((RidePointAnnotation*)view.annotation).ride;
-		[ride postNotificationUpdatedWithSender:self];
+		
+		// Notify selection changed, if not on same ride as previous selected annotation
+		if (!self.previousSelectedAnnotation ||
+			![self.previousSelectedAnnotation isKindOfClass:[RidePointAnnotation class]] ||
+			ride != ((RidePointAnnotation*)self.previousSelectedAnnotation).ride) {
+		
+			[ride postNotificationUpdatedWithSender:self];
+		}
+		
 		NSLog(@"Rides[%d] selected: %@", (int)[self.rideFetchedResultsController.fetchedObjects indexOfObject:ride], ride);
-		return;
-	}
-	
-	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
+		
+	} else if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
 		
 		Team* team = ((TeamPointAnnotation*)view.annotation).team;
 		
@@ -509,8 +518,10 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 		}
 		
 		NSLog(@"Teams[%d] selected: %@", (int)[self.teamFetchedResultsController.fetchedObjects indexOfObject:team], team);
-		return;
 	}
+
+	// Remember selected annotation for next selection
+	self.previousSelectedAnnotation = view.annotation;
 }
 
 
@@ -524,16 +535,16 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 
 - (void)deselectedAnnotationView:(MKAnnotationView*)view {
 	
-	if ([view.annotation isKindOfClass:[MKUserLocation class]]) return;
-	
-	if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) {
+	if ([view.annotation isKindOfClass:[MKUserLocation class]]) {
+		
+		// Do nothing (for now)
+		
+	} else if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) {
 		
 		Ride* ride = ((RidePointAnnotation*)view.annotation).ride;
 		[ride postNotificationUpdatedWithSender:self];
-		return;
-	}
-	
-	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
+		
+	} else if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
 		
 		Team* team = ((TeamPointAnnotation*)view.annotation).team;
 		
@@ -541,7 +552,12 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 			
 			[ride postNotificationUpdatedWithSender:self];
 		}
-		return;
+	}
+
+	// Clear remembered selected annotation if no annotation selected anymore
+	if (self.mainMapView.selectedAnnotations.count == 0) {
+		
+		self.previousSelectedAnnotation = nil;
 	}
 }
 
@@ -1065,23 +1081,18 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 - (BOOL)configureRideOverlaysWithNotification:(NSNotification*)notification {
 
 	Ride* ride = [Ride rideFromNotification:notification];
-	
 	NSArray* rideOverlays = [self overlaysForRide:ride];
-	if (rideOverlays) {
-		
-		[self.mainMapView removeOverlays:rideOverlays];
-		[self.mainMapView removeAnnotations:rideOverlays];
-	}
 	
 	BOOL isRideSelected = [self isSelectedAnnotationForRide:ride];
 	BOOL isTeamAssignedSelected = [self isSelectedAnnotationForTeam:ride.teamAssigned];
-	if (!isRideSelected && !isTeamAssignedSelected) return NO;
 	
-	BOOL mainOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Main usingRideOverlays:rideOverlays];
+	BOOL mainOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Main usingRideOverlays:rideOverlays andIsRideSelected:isRideSelected andIsTeamAssignedSelected:isTeamAssignedSelected];
 	
-	BOOL secondaryOverlayPresent = [self configureViewWithRide:ride andRideRouteType:(isTeamAssignedSelected ? RideRouteType_Prep : RideRouteType_Wait) usingRideOverlays:rideOverlays];
+	BOOL prepOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Prep usingRideOverlays:rideOverlays andIsRideSelected:isRideSelected andIsTeamAssignedSelected:isTeamAssignedSelected];
 	
-	return mainOverlayPresent || secondaryOverlayPresent;
+	BOOL waitOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Wait usingRideOverlays:rideOverlays andIsRideSelected:isRideSelected andIsTeamAssignedSelected:isTeamAssignedSelected];
+
+	return mainOverlayPresent || prepOverlayPresent || waitOverlayPresent;
 }
 
 
@@ -1091,17 +1102,64 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
  */
 - (BOOL)configureViewWithRide:(Ride*)ride
 			 andRideRouteType:(RideRouteType)rideRouteType
-			usingRideOverlays:(NSArray*)rideOverlays {
+			usingRideOverlays:(NSArray*)rideOverlays
+			andIsRideSelected:(BOOL)isRideSelected
+	andIsTeamAssignedSelected:(BOOL)isTeamAssignedSelected {
 
-	// Update existing overlay or create new one, if possible
-	MKPolyline* polyline = self.polylineMode == PolylineMode_Route ? [ride polylineWithRideRouteType:rideRouteType] : nil;
 	RidePolyline* ridePolyline = [MainMapViewController getRidePolylineFromRideOverlays:rideOverlays andRideRouteType:rideRouteType];
+	BOOL wasRidePolylineInMapView = (ridePolyline != nil);
+	
+	// Remove existing overlay with annotation, if necessary
+	BOOL didRemoveRidePolylineAnnotationFromMapView = NO;
+	if (wasRidePolylineInMapView) {
+		
+		[self.mainMapView removeOverlay:ridePolyline];
+		[self.mainMapView removeAnnotation:ridePolyline];
+		
+		didRemoveRidePolylineAnnotationFromMapView = YES;
+	}
+	
+	switch (rideRouteType) {
+		
+		case RideRouteType_Main:
+			
+			if (!isRideSelected && !isTeamAssignedSelected) return NO;
+			break;
+			
+		case RideRouteType_Prep:
+			
+			if (!isTeamAssignedSelected) return NO;
+			break;
+			
+		case RideRouteType_Wait:
+
+			if (!isRideSelected) return NO;
+			break;
+		
+		default:
+		case RideRouteType_None:
+			return NO;
+	}
+
+	// Update existing overlay with annotation or create new ones, if possible
+	// NOTE: Overlays must always be re-added in order to trigger its view update properly
+	MKPolyline* polyline = self.polylineMode == PolylineMode_Route ? [ride polylineWithRideRouteType:rideRouteType] : nil;
 	ridePolyline = [RidePolyline ridePolyline:ridePolyline withPolyline:polyline andRide:ride andRideRouteType:rideRouteType];
 	if (!ridePolyline) return NO;
-	
-	// Add ride start-end overlay with annotation to map view
-		[self.mainMapView addOverlay:ridePolyline level:MKOverlayLevelAboveLabels];
+	[self.mainMapView addOverlay:ridePolyline level:MKOverlayLevelAboveLabels];
+	if (wasRidePolylineInMapView && !didRemoveRidePolylineAnnotationFromMapView) {
+		
+		MKAnnotationView* ridePolylineAnnotationView = (MKAnnotationView*)[self.mainMapView viewForAnnotation:ridePolyline];
+		if (ridePolylineAnnotationView) {
+			
+			[self configureRidePolylineAnnotationView:ridePolylineAnnotationView withRidePolylineAnnotation:ridePolyline];
+		}
+		
+	} else {
+		
+		// NOTE: Automatically triggers new annotation view
 		[self.mainMapView addAnnotation:ridePolyline];
+	}
 	
 	return YES;
 }
