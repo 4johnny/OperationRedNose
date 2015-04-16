@@ -154,8 +154,9 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 - (NSNumber*)longitudeWithRideLocationType:(RideLocationType)rideLocationType;
 
 - (MKPolyline*)polylineWithRideRouteType:(RideRouteType)rideRouteType;
-- (NSNumber*)durationWithRideRouteType:(RideRouteType)rideRouteType;
-- (NSNumber*)distanceWithRideRouteType:(RideRouteType)rideRouteType;
+
+- (NSTimeInterval)durationWithRideRouteType:(RideRouteType)rideRouteType;
+- (CLLocationDistance)distanceWithRideRouteType:(RideRouteType)rideRouteType;
 
 #
 # pragma mark Class Helpers

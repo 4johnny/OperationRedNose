@@ -308,8 +308,8 @@
 		self.routeMainDuration = [NSNumber numberWithDouble:route.expectedTravelTime]; // seconds
 		self.routeMainDistance = [NSNumber numberWithDouble:route.distance]; // meters
 		self.routeMainPolyline = route.polyline;
-		NSLog(@"Main Duration: %.0f sec -> %.2f min", route.expectedTravelTime, route.expectedTravelTime / (double)SECONDS_PER_MINUTE);
-		NSLog(@"Main Distance: %.0f m -> %.2f km", route.distance, route.distance / (double)METERS_PER_KILOMETER);
+		NSLog(@"Main Duration: %.0f sec -> %.2f min", route.expectedTravelTime, route.expectedTravelTime / (NSTimeInterval)SECONDS_PER_MINUTE);
+		NSLog(@"Main Distance: %.0f m -> %.2f km", route.distance, route.distance / (CLLocationDistance)METERS_PER_KILOMETER);
 		NSLog(@"Main Polyline: %@", route.polyline);
 	
 		// Try to recalculate prep routes for team assigned, if any
@@ -354,8 +354,8 @@
 		self.routePrepDuration = [NSNumber numberWithDouble:route.expectedTravelTime]; // seconds
 		self.routePrepDistance = [NSNumber numberWithDouble:route.distance]; // meters
 		self.routePrepPolyline = route.polyline;
-		NSLog(@"Prep Duration: %.0f sec -> %.2f min", route.expectedTravelTime, route.expectedTravelTime / (double)SECONDS_PER_MINUTE);
-		NSLog(@"Prep Distance: %.0f m -> %.2f km", route.distance, route.distance / (double)METERS_PER_KILOMETER);
+		NSLog(@"Prep Duration: %.0f sec -> %.2f min", route.expectedTravelTime, route.expectedTravelTime / (NSTimeInterval)SECONDS_PER_MINUTE);
+		NSLog(@"Prep Distance: %.0f m -> %.2f km", route.distance, route.distance / (CLLocationDistance)METERS_PER_KILOMETER);
 		NSLog(@"Prep Polyline: %@", route.polyline);
 
 		// Persist to store and notify
@@ -392,7 +392,7 @@
 		
 		// Grab expected travel time
 		self.routeMainDuration = [NSNumber numberWithDouble:response.expectedTravelTime]; // seconds
-		NSLog(@"ETA: %.0f sec -> %.2f min", response.expectedTravelTime, response.expectedTravelTime / (double)SECONDS_PER_MINUTE);
+		NSLog(@"ETA: %.0f sec -> %.2f min", response.expectedTravelTime, response.expectedTravelTime / (NSTimeInterval)SECONDS_PER_MINUTE);
 		
 		// Persist to store and notify
 		[Util saveManagedObjectContext];
@@ -496,38 +496,64 @@
 }
 
 
-- (NSNumber*)durationWithRideRouteType:(RideRouteType)rideRouteType {
+- (NSTimeInterval)durationWithRideRouteType:(RideRouteType)rideRouteType {
 	
 	switch (rideRouteType) {
 			
 		case RideRouteType_Main:
-			return self.routeMainDuration;
+			return self.routeMainDuration.doubleValue;
 			
 		case RideRouteType_Prep:
-		case RideRouteType_Wait:
-			return self.routePrepDuration;
+			return self.routePrepDuration.doubleValue;
+			
+		case RideRouteType_Wait: {
+			
+			// Accumulate wait duration up to current ride, inclusive
+			NSTimeInterval duration = self.routePrepDuration.doubleValue; // seconds
+			for (Ride* rideAssigned in [self.teamAssigned getSortedRidesAssigned]) {
+				
+				if (rideAssigned == self) break;
+				
+				duration += rideAssigned.routePrepDuration.doubleValue + rideAssigned.routeMainDuration.doubleValue;
+			}
+			
+			return duration;
+		}
 			
 		default:
 		case RideRouteType_None:
-			return nil;
+			return -1;
 	}
 }
 
 
-- (NSNumber*)distanceWithRideRouteType:(RideRouteType)rideRouteType {
+- (CLLocationDistance)distanceWithRideRouteType:(RideRouteType)rideRouteType {
 
 	switch (rideRouteType) {
 			
 		case RideRouteType_Main:
-			return self.routeMainDistance;
+			return self.routeMainDistance.doubleValue;
 			
 		case RideRouteType_Prep:
-		case RideRouteType_Wait:
-			return self.routePrepDistance;
+			return self.routePrepDistance.doubleValue;
+			
+		case RideRouteType_Wait: {
+			
+			// Accumulate wait distance up to current ride, inclusive
+			CLLocationDistance distance = self.routePrepDistance.doubleValue; // meters
+			for (Ride* rideAssigned in [self.teamAssigned getSortedRidesAssigned]) {
+				
+				if (rideAssigned == self) break;
+				
+				distance += rideAssigned.routePrepDistance.doubleValue + rideAssigned.routeMainDistance.doubleValue;
+			}
+			
+			return distance;
+		}
 			
 		default:
 		case RideRouteType_None:
-			return nil;
+			return -1;
 	}
 }
 

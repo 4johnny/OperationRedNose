@@ -373,8 +373,8 @@
 	NSString* endAddress = ride.locationEndAddress.length > 0 ? ride.locationEndAddress : RIDES_CELL_FIELD_EMPTY;
 	NSString* endDetail = [NSString stringWithFormat:@"End: %@ -> %@", endDateString, endAddress];
 	
-	NSString* durationString = ride.routeMainDuration ? [NSString stringWithFormat:@"%.0f", ride.routeMainDuration.doubleValue / (double)SECONDS_PER_MINUTE] : RIDES_CELL_FIELD_EMPTY;
-	NSString* distanceString = ride.routeMainDistance ? [NSString stringWithFormat:@"%.1f", ride.routeMainDistance.doubleValue / (double)METERS_PER_KILOMETER] : RIDES_CELL_FIELD_EMPTY;
+	NSString* durationString = ride.routeMainDuration ? [NSString stringWithFormat:@"%.0f", ride.routeMainDuration.doubleValue / (NSTimeInterval)SECONDS_PER_MINUTE] : RIDES_CELL_FIELD_EMPTY;
+	NSString* distanceString = ride.routeMainDistance ? [NSString stringWithFormat:@"%.1f", ride.routeMainDistance.doubleValue / (CLLocationDistance)METERS_PER_KILOMETER] : RIDES_CELL_FIELD_EMPTY;
 	NSString* routeDetail = [NSString stringWithFormat:@"%@ min | %@ km", durationString, distanceString];
 	
 	cell.detailTextLabel.text = [NSString stringWithFormat:@"%@\n%@\n%@", startDetail, endDetail, routeDetail];

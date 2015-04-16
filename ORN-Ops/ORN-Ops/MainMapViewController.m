@@ -38,6 +38,8 @@
 #define MAP_ANNOTATION_DATETIME_FORMAT	@"HH:mm"
 #define MAP_ANNOTATION_DURATION_FORMAT	@"%.0f min"
 #define MAP_ANNOTATION_DISTANCE_FORMAT	@"%.1f km"
+#define MAP_ANNOTATION_FIELD_EMPTY		@"?"
+
 
 #
 # pragma mark Command Constants
@@ -630,7 +632,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	// NOTE: Do not set for update, to avoid re-animation
 	if (!ridePinAnnotationView.leftCalloutAccessoryView) {
 		
-		ridePinAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabelWithWidth:55];
+		ridePinAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabelWithWidth:60];
 	}
 	if (![self configureLeftCalloutAccessoryLabel:(UILabel*)ridePinAnnotationView.leftCalloutAccessoryView withRidePointAnnotation:ridePointAnnotation]) {
 		
@@ -651,9 +653,15 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 			
 		case RideLocationType_Start: {
 			
-			if (!ride.dateTimeStart) return nil;
+			NSTimeInterval waitDuration = [ride durationWithRideRouteType:RideRouteType_Wait];
+			NSDate* dateTimeStart = ride.dateTimeStart;
+			if (waitDuration < 0 && !dateTimeStart) return nil;
 			
-			leftCalloutAccessoryLabel.text = [self.annotationDateFormatter stringFromDate:ride.dateTimeStart];
+			NSString* assignedDateTimeStartString = waitDuration >= 0 ? [self.annotationDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:waitDuration]] : MAP_ANNOTATION_FIELD_EMPTY;
+			
+			NSString* dateTimeStartString = dateTimeStart ? [self.annotationDateFormatter stringFromDate:dateTimeStart] : MAP_ANNOTATION_FIELD_EMPTY;
+
+			leftCalloutAccessoryLabel.text = [NSString stringWithFormat:@"%@\n(%@)", assignedDateTimeStartString, dateTimeStartString];
 			
 			leftCalloutAccessoryLabel.backgroundColor = ride.teamAssigned ? self.calloutAccessoryColorGreen : [UIColor purpleColor];
 			
@@ -662,10 +670,17 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 			
 		case RideLocationType_End: {
 			
+			NSTimeInterval waitDuration = [ride durationWithRideRouteType:RideRouteType_Wait];
+			NSNumber* routeMainDuration = ride.routeMainDuration;
 			NSDate* routeDateTimeEnd = ride.getRouteDateTimeEnd;
-			if (!routeDateTimeEnd) return nil;
+			if ((waitDuration < 0 || !routeMainDuration) &&
+				!routeDateTimeEnd) return nil;
 			
-			leftCalloutAccessoryLabel.text = [self.annotationDateFormatter stringFromDate:routeDateTimeEnd];
+			NSString* assignedRouteDateTimeEndString = waitDuration >= 0 && routeMainDuration ? [self.annotationDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:(waitDuration + routeMainDuration.doubleValue)]] : MAP_ANNOTATION_FIELD_EMPTY;
+			
+			NSString* routeDateTimeEndString = routeDateTimeEnd ? [self.annotationDateFormatter stringFromDate:routeDateTimeEnd] : MAP_ANNOTATION_FIELD_EMPTY;
+			
+			leftCalloutAccessoryLabel.text = [NSString stringWithFormat:@"%@\n(%@)", assignedRouteDateTimeEndString, routeDateTimeEndString];
 			
 			leftCalloutAccessoryLabel.backgroundColor = [UIColor redColor];
 			
@@ -721,8 +736,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	if (!team.ridesAssigned || team.ridesAssigned.count == 0) return nil;
 	
 	// Accumulate duration and distance for all assigned rides
-	double duration = 0; // seconds
-	double distance = 0; // meters
+	NSTimeInterval duration = 0; // seconds
+	CLLocationDistance distance = 0; // meters
 	for (Ride* rideAssigned in team.ridesAssigned) {
 		
 		duration += rideAssigned.routePrepDuration.doubleValue + rideAssigned.routeMainDuration.doubleValue;
@@ -731,7 +746,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	
 	NSString* leftCalloutAccessoryFormat = [NSString stringWithFormat:@"%@\n%@", MAP_ANNOTATION_DURATION_FORMAT, MAP_ANNOTATION_DISTANCE_FORMAT];
 	
-	leftCalloutAccessoryLabel.text = [NSString stringWithFormat:leftCalloutAccessoryFormat, duration / (double)SECONDS_PER_MINUTE, distance / (double)METERS_PER_KILOMETER];
+	leftCalloutAccessoryLabel.text = [NSString stringWithFormat:leftCalloutAccessoryFormat, duration / (NSTimeInterval)SECONDS_PER_MINUTE, distance / (CLLocationDistance)METERS_PER_KILOMETER];
 	
 	leftCalloutAccessoryLabel.backgroundColor = [UIColor blueColor];
 	
@@ -757,26 +772,12 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	
 	UILabel* polylineAnnotationLabel = ridePolylineAnnotationView.subviews.firstObject;
 	
-	NSNumber* durationNumber = [ride durationWithRideRouteType:ridePolylineAnnotation.rideRouteType]; // seconds
-	NSNumber* distanceNumber = [ride distanceWithRideRouteType:ridePolylineAnnotation.rideRouteType]; // meters
+	NSTimeInterval duration = [ride durationWithRideRouteType:ridePolylineAnnotation.rideRouteType]; // seconds
+	CLLocationDistance distance = [ride distanceWithRideRouteType:ridePolylineAnnotation.rideRouteType]; // meters
 	
-	// Accumulate wait duration and distance up to current ride
-	double duration = durationNumber.doubleValue; // seconds
-	double distance = distanceNumber.doubleValue; // meters
-	if (ridePolylineAnnotation.rideRouteType == RideRouteType_Wait) {
-
-		for (Ride* rideAssigned in [ride.teamAssigned getSortedRidesAssigned]) {
-			
-			if (rideAssigned == ride) break;
-			
-			duration += rideAssigned.routePrepDuration.doubleValue + rideAssigned.routeMainDuration.doubleValue;
-			distance += rideAssigned.routePrepDistance.doubleValue + rideAssigned.routeMainDistance.doubleValue;
-		}
-	}
-
 	NSString* polylineAnnotationFormat = [NSString stringWithFormat:@"%@\n%@", MAP_ANNOTATION_DURATION_FORMAT, MAP_ANNOTATION_DISTANCE_FORMAT];
 	
-	polylineAnnotationLabel.text = [NSString stringWithFormat:polylineAnnotationFormat, duration / (double)SECONDS_PER_MINUTE, distance / (double)METERS_PER_KILOMETER];
+	polylineAnnotationLabel.text = [NSString stringWithFormat:polylineAnnotationFormat, duration / (NSTimeInterval)SECONDS_PER_MINUTE, distance / (CLLocationDistance)METERS_PER_KILOMETER];
 
 	return ridePolylineAnnotationView;
 }
@@ -825,7 +826,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 + (UILabel*)leftCalloutAccessoryLabelWithWidth:(CGFloat)width {
 	
 	UILabel* leftCalloutAccessoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width, 53)];
-	leftCalloutAccessoryLabel.font = [UIFont boldSystemFontOfSize:16.0];
+	leftCalloutAccessoryLabel.font = [UIFont boldSystemFontOfSize:15.0];
 	leftCalloutAccessoryLabel.textAlignment = NSTextAlignmentCenter;
 	leftCalloutAccessoryLabel.textColor = [UIColor whiteColor];
 	leftCalloutAccessoryLabel.alpha = 0.5;
