@@ -735,18 +735,9 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	
 	if (!team.ridesAssigned || team.ridesAssigned.count == 0) return nil;
 	
-	// Accumulate duration and distance for all assigned rides
-	NSTimeInterval duration = 0; // seconds
-	CLLocationDistance distance = 0; // meters
-	for (Ride* rideAssigned in team.ridesAssigned) {
-		
-		duration += rideAssigned.routePrepDuration.doubleValue + rideAssigned.routeMainDuration.doubleValue;
-		distance += rideAssigned.routePrepDistance.doubleValue + rideAssigned.routeMainDistance.doubleValue;
-	}
-	
 	NSString* leftCalloutAccessoryFormat = [NSString stringWithFormat:@"%@\n%@", MAP_ANNOTATION_DURATION_FORMAT, MAP_ANNOTATION_DISTANCE_FORMAT];
 	
-	leftCalloutAccessoryLabel.text = [NSString stringWithFormat:leftCalloutAccessoryFormat, duration / (NSTimeInterval)SECONDS_PER_MINUTE, distance / (CLLocationDistance)METERS_PER_KILOMETER];
+	leftCalloutAccessoryLabel.text = [NSString stringWithFormat:leftCalloutAccessoryFormat, [team assignedDuration] / (NSTimeInterval)SECONDS_PER_MINUTE, [team assignedDistance] / (CLLocationDistance)METERS_PER_KILOMETER];
 	
 	leftCalloutAccessoryLabel.backgroundColor = [UIColor blueColor];
 	

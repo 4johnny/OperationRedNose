@@ -76,12 +76,10 @@
 
 - (void)tryUpdateAssignedRideRoutesWithSender:(id)sender;
 
-
-#
-# pragma mark Helpers
-#
-
 - (NSString*)getTitle;
 - (NSArray*)getSortedRidesAssigned;
+
+- (NSTimeInterval)assignedDuration;
+- (CLLocationDistance)assignedDistance;
 
 @end

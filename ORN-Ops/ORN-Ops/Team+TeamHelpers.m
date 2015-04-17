@@ -154,11 +154,6 @@
 }
 
 
-#
-# pragma mark Helpers
-#
-
-
 - (NSString*)getTitle {
 
 	if (self.name.length > 0 && self.members.length == 0) return self.name;
@@ -176,6 +171,32 @@
 			  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY1 ascending:RIDE_FETCH_SORT_ASCENDING],
 			  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY2 ascending:RIDE_FETCH_SORT_ASCENDING]
 			  ]];
+}
+
+
+- (NSTimeInterval)assignedDuration {
+	
+	// Accumulate duration for all assigned rides
+	NSTimeInterval duration = 0; // seconds
+	for (Ride* rideAssigned in self.ridesAssigned) {
+
+		duration += rideAssigned.routePrepDuration.doubleValue + rideAssigned.routeMainDuration.doubleValue;
+	}
+
+	return duration;
+}
+
+
+- (CLLocationDistance)assignedDistance {
+
+	// Accumulate distance for all assigned rides
+	CLLocationDistance distance = 0; // meters
+	for (Ride* rideAssigned in self.ridesAssigned) {
+		
+		distance += rideAssigned.routePrepDistance.doubleValue + rideAssigned.routeMainDistance.doubleValue;
+	}
+	
+	return distance;
 }
 
 
