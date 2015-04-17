@@ -570,27 +570,32 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 		
 		RidePolyline* ridePolyline = (RidePolyline*)overlay;
 		
-		// For ride route overlays, use blue lines
 		MKPolylineRenderer* renderer = [[MKPolylineRenderer alloc] initWithOverlay:ridePolyline];
-		renderer.strokeColor = [UIColor blueColor];
 		renderer.alpha = 0.5;
 		renderer.lineWidth = 5.0;
 		
 		switch (ridePolyline.rideRouteType) {
 
 			case RideRouteType_Prep:
+				
+				// Dotted line
+				renderer.lineDashPattern = @[@3, @8]; // renderer.lineDashPhase = 6;
+				renderer.strokeColor = [UIColor blueColor];
+				break;
+				
 			case RideRouteType_Wait:
 				
-				// Use dotted line
-				renderer.lineDashPattern = @[@3, @8];
-				//	renderer.lineDashPhase = 6;
+				// Dotted line
+				renderer.lineDashPattern = @[@3, @8]; // renderer.lineDashPhase = 6;
+				renderer.strokeColor = [UIColor orangeColor];
 				break;
 
 			default:
 			case RideRouteType_None:
 			case RideRouteType_Main:
 				
-				// Use solid line
+				// Solid line
+				renderer.strokeColor = [UIColor blueColor];
 				break;
 		}
 		
@@ -766,6 +771,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	NSTimeInterval duration = [ride durationWithRideRouteType:ridePolylineAnnotation.rideRouteType]; // seconds
 	CLLocationDistance distance = [ride distanceWithRideRouteType:ridePolylineAnnotation.rideRouteType]; // meters
 	
+	polylineAnnotationLabel.backgroundColor = ridePolylineAnnotation.rideRouteType == RideRouteType_Wait ? [UIColor orangeColor] : [UIColor blueColor];
+
 	NSString* polylineAnnotationFormat = [NSString stringWithFormat:@"%@\n%@", MAP_ANNOTATION_DURATION_FORMAT, MAP_ANNOTATION_DISTANCE_FORMAT];
 	
 	polylineAnnotationLabel.text = [NSString stringWithFormat:polylineAnnotationFormat, duration / (NSTimeInterval)SECONDS_PER_MINUTE, distance / (CLLocationDistance)METERS_PER_KILOMETER];
@@ -843,8 +850,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	polylineAnnotationLabel.font = [UIFont boldSystemFontOfSize:10.0];
 	polylineAnnotationLabel.textAlignment = NSTextAlignmentCenter;
 	polylineAnnotationLabel.textColor = [UIColor whiteColor];
-	polylineAnnotationLabel.backgroundColor = [UIColor blueColor];
-	polylineAnnotationLabel.alpha = 1.0;
+	polylineAnnotationLabel.alpha = 0.9;
 	polylineAnnotationLabel.numberOfLines = 0;
 	polylineAnnotationLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	polylineAnnotationLabel.clipsToBounds = YES;
