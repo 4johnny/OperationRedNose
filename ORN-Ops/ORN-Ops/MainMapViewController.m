@@ -742,7 +742,10 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	
 	NSString* leftCalloutAccessoryFormat = [NSString stringWithFormat:@"%@\n%@", MAP_ANNOTATION_DURATION_FORMAT, MAP_ANNOTATION_DISTANCE_FORMAT];
 	
-	leftCalloutAccessoryLabel.text = [NSString stringWithFormat:leftCalloutAccessoryFormat, [team assignedDuration] / (NSTimeInterval)SECONDS_PER_MINUTE, [team assignedDistance] / (CLLocationDistance)METERS_PER_KILOMETER];
+	leftCalloutAccessoryLabel.text =
+	[NSString stringWithFormat:leftCalloutAccessoryFormat,
+	 [team assignedDuration] / (NSTimeInterval)SECONDS_PER_MINUTE,
+	 [team assignedDistance] / (CLLocationDistance)METERS_PER_KILOMETER];
 	
 	leftCalloutAccessoryLabel.backgroundColor = [UIColor blueColor];
 	
@@ -763,19 +766,20 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 - (MKAnnotationView*)configureRidePolylineAnnotationView:(MKAnnotationView*)ridePolylineAnnotationView withRidePolylineAnnotation:(RidePolyline*)ridePolylineAnnotation {
 	
 	Ride* ride = ridePolylineAnnotation.ride;
+	RideRouteType rideRouteType = ridePolylineAnnotation.rideRouteType;
 	
 	// Add/update polyline annotation label with route duration and distance
 	
 	UILabel* polylineAnnotationLabel = ridePolylineAnnotationView.subviews.firstObject;
 	
-	NSTimeInterval duration = [ride durationWithRideRouteType:ridePolylineAnnotation.rideRouteType]; // seconds
-	CLLocationDistance distance = [ride distanceWithRideRouteType:ridePolylineAnnotation.rideRouteType]; // meters
-	
-	polylineAnnotationLabel.backgroundColor = ridePolylineAnnotation.rideRouteType == RideRouteType_Wait ? [UIColor orangeColor] : [UIColor blueColor];
+	polylineAnnotationLabel.backgroundColor = rideRouteType == RideRouteType_Wait ? [UIColor orangeColor] : [UIColor blueColor];
 
 	NSString* polylineAnnotationFormat = [NSString stringWithFormat:@"%@\n%@", MAP_ANNOTATION_DURATION_FORMAT, MAP_ANNOTATION_DISTANCE_FORMAT];
 	
-	polylineAnnotationLabel.text = [NSString stringWithFormat:polylineAnnotationFormat, duration / (NSTimeInterval)SECONDS_PER_MINUTE, distance / (CLLocationDistance)METERS_PER_KILOMETER];
+	polylineAnnotationLabel.text =
+	[NSString stringWithFormat:polylineAnnotationFormat,
+	 [ride durationWithRideRouteType:rideRouteType] / (NSTimeInterval)SECONDS_PER_MINUTE,
+	 [ride distanceWithRideRouteType:rideRouteType] / (CLLocationDistance)METERS_PER_KILOMETER];
 
 	return ridePolylineAnnotationView;
 }

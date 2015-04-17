@@ -79,7 +79,7 @@
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_CREATED_NOTIFICATION_NAME object:sender userInfo:
 	 @{TEAM_ENTITY_NAME : self,
-	   TEAM_UPDATED_LOCATION_NOTIFICATION_KEY : [NSNumber numberWithBool:YES]
+	   TEAM_UPDATED_LOCATION_NOTIFICATION_KEY : @YES
 	   }];
 }
 
