@@ -451,42 +451,78 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	
 	[self.addressTextField resignFirstResponder];
 	
+	UIButtonType buttonType = ((UIButton*)control).buttonType;
+	
 	// If user location, we are done
 	if ([view.annotation isKindOfClass:[MKUserLocation class]]) return;
 	
 	// If ride, navigate to ride detail controller
 	if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) {
 		
-		MKPinAnnotationView* pinAnnotationView = (MKPinAnnotationView*)view;
+		switch (buttonType) {
+				
+			case UIButtonTypeDetailDisclosure: {
+				
+				MKPinAnnotationView* pinAnnotationView = (MKPinAnnotationView*)view;
+				
+				// Create ride detail controller
+				RideDetailTableViewController* rideDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:RIDE_DETAIL_TABLE_VIEW_CONTROLLER_ID];
+				
+				// Inject ride data model
+				RidePointAnnotation* ridePointAnnotation = (RidePointAnnotation*)pinAnnotationView.annotation;
+				rideDetailTableViewController.ride = ridePointAnnotation.ride;
+				
+				// Push onto navigation stack
+				[self.navigationController pushViewController:rideDetailTableViewController animated:YES];
+				
+				return;
+			}
+			
+			case UIButtonTypeCustom: {
+				
+				NSLog(@"Ride annotation left callout accessory tapped");
+				return;
+			}
+				
+			default:
+				return;
+				
+		} // switch
 		
-		// Create ride detail controller
-		RideDetailTableViewController* rideDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:RIDE_DETAIL_TABLE_VIEW_CONTROLLER_ID];
-		
-		// Inject ride data model
-		RidePointAnnotation* ridePointAnnotation = (RidePointAnnotation*)pinAnnotationView.annotation;
-		rideDetailTableViewController.ride = ridePointAnnotation.ride;
-		
-		// Push onto navigation stack
-		[self.navigationController pushViewController:rideDetailTableViewController animated:YES];
-		
-		return;
-	}
+	} // if
 	
 	// If team, navigate to team detail controller
 	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
 		
-		// Create team detail controller
-		TeamDetailTableViewController* teamDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:TEAM_DETAIL_TABLE_VIEW_CONTROLLER_ID];
+		switch (buttonType) {
+				
+			case UIButtonTypeDetailDisclosure: {
+				
+				// Create team detail controller
+				TeamDetailTableViewController* teamDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:TEAM_DETAIL_TABLE_VIEW_CONTROLLER_ID];
+				
+				// Inject team data model
+				TeamPointAnnotation* teamPointAnnotation = (TeamPointAnnotation*)view.annotation;
+				teamDetailTableViewController.team = teamPointAnnotation.team;
+				
+				// Push onto navigation stack
+				[self.navigationController pushViewController:teamDetailTableViewController animated:YES];
+				
+				return;
+			}
+			
+			case UIButtonTypeCustom: {
+
+				NSLog(@"Team annotation left callout accessory tapped");
+				return;
+			}
+				
+			default:
+				return;
+				
+		} // switch
 		
-		// Inject team data model
-		TeamPointAnnotation* teamPointAnnotation = (TeamPointAnnotation*)view.annotation;
-		teamDetailTableViewController.team = teamPointAnnotation.team;
-		
-		// Push onto navigation stack
-		[self.navigationController pushViewController:teamDetailTableViewController animated:YES];
-		
-		return;
-	}
+	} // if
 }
 
 
@@ -637,9 +673,9 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	// NOTE: Do not set for update, to avoid re-animation
 	if (!ridePinAnnotationView.leftCalloutAccessoryView) {
 		
-		ridePinAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabelWithWidth:60];
+		ridePinAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryButtonWithWidth:60];
 	}
-	if (![self configureLeftCalloutAccessoryLabel:(UILabel*)ridePinAnnotationView.leftCalloutAccessoryView withRidePointAnnotation:ridePointAnnotation]) {
+	if (![self configureLeftCalloutAccessoryButton:(UIButton*)ridePinAnnotationView.leftCalloutAccessoryView withRidePointAnnotation:ridePointAnnotation]) {
 		
 		ridePinAnnotationView.leftCalloutAccessoryView = nil;
 	}
@@ -648,7 +684,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 }
 
 
-- (UILabel*)configureLeftCalloutAccessoryLabel:(UILabel*)leftCalloutAccessoryLabel withRidePointAnnotation:(RidePointAnnotation*)ridePointAnnotation {
+- (UIButton*)configureLeftCalloutAccessoryButton:(UIButton*)leftCalloutAccessoryButton withRidePointAnnotation:(RidePointAnnotation*)ridePointAnnotation {
 	
 	Ride* ride = ridePointAnnotation.ride;
 	
@@ -665,10 +701,10 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 			NSString* assignedDateTimeStartString = waitDuration >= 0 ? [self.annotationDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:waitDuration]] : MAP_ANNOTATION_FIELD_EMPTY;
 			
 			NSString* dateTimeStartString = dateTimeStart ? [self.annotationDateFormatter stringFromDate:dateTimeStart] : MAP_ANNOTATION_FIELD_EMPTY;
-
-			leftCalloutAccessoryLabel.text = [NSString stringWithFormat:@"%@\n(%@)", assignedDateTimeStartString, dateTimeStartString];
 			
-			leftCalloutAccessoryLabel.backgroundColor = ride.teamAssigned ? self.calloutAccessoryColorGreen : [UIColor purpleColor];
+			[leftCalloutAccessoryButton setTitle:[NSString stringWithFormat:@"%@\n(%@)", assignedDateTimeStartString, dateTimeStartString] forState:UIControlStateNormal];
+			
+			leftCalloutAccessoryButton.backgroundColor = ride.teamAssigned ? self.calloutAccessoryColorGreen : [UIColor purpleColor];
 			
 			break;
 		}
@@ -685,9 +721,9 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 			
 			NSString* routeDateTimeEndString = routeDateTimeEnd ? [self.annotationDateFormatter stringFromDate:routeDateTimeEnd] : MAP_ANNOTATION_FIELD_EMPTY;
 			
-			leftCalloutAccessoryLabel.text = [NSString stringWithFormat:@"%@\n(%@)", assignedRouteDateTimeEndString, routeDateTimeEndString];
+			[leftCalloutAccessoryButton setTitle:[NSString stringWithFormat:@"%@\n(%@)", assignedRouteDateTimeEndString, routeDateTimeEndString] forState:UIControlStateNormal];
 			
-			leftCalloutAccessoryLabel.backgroundColor = [UIColor redColor];
+			leftCalloutAccessoryButton.backgroundColor = [UIColor redColor];
 			
 			break;
 		}
@@ -696,8 +732,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 		case RideLocationType_None:
 			break;
 	}
-	
-	return leftCalloutAccessoryLabel;
+
+	return leftCalloutAccessoryButton;
 }
 
 
@@ -721,9 +757,9 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	// NOTE: Do not set for update, to avoid re-animation
 	if (!teamAnnotationView.leftCalloutAccessoryView) {
 		
-		teamAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryLabelWithWidth:70];
+		teamAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryButtonWithWidth:70];
 	}
-	if (![self configureLeftCalloutAccessoryLabel:(UILabel*)teamAnnotationView.leftCalloutAccessoryView withTeamPointAnnotation:teamPointAnnotation]) {
+	if (![self configureLeftCalloutAccessoryButton:(UIButton*)teamAnnotationView.leftCalloutAccessoryView withTeamPointAnnotation:teamPointAnnotation]) {
 		
 		teamAnnotationView.leftCalloutAccessoryView = nil;
 	}
@@ -732,7 +768,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 }
 
 
-- (UILabel*)configureLeftCalloutAccessoryLabel:(UILabel*)leftCalloutAccessoryLabel withTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
+- (UIButton*)configureLeftCalloutAccessoryButton:(UIButton*)leftCalloutAccessoryButton withTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
 	
 	Team* team = teamPointAnnotation.team;
 	
@@ -742,14 +778,15 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	
 	NSString* leftCalloutAccessoryFormat = [NSString stringWithFormat:@"%@\n%@", MAP_ANNOTATION_DURATION_FORMAT, MAP_ANNOTATION_DISTANCE_FORMAT];
 	
-	leftCalloutAccessoryLabel.text =
-	[NSString stringWithFormat:leftCalloutAccessoryFormat,
-	 [team assignedDuration] / (NSTimeInterval)SECONDS_PER_MINUTE,
-	 [team assignedDistance] / (CLLocationDistance)METERS_PER_KILOMETER];
+	[leftCalloutAccessoryButton setTitle:
+	 [NSString stringWithFormat:leftCalloutAccessoryFormat,
+	  [team assignedDuration] / (NSTimeInterval)SECONDS_PER_MINUTE,
+	  [team assignedDistance] / (CLLocationDistance)METERS_PER_KILOMETER]
+								forState:UIControlStateNormal];
 	
-	leftCalloutAccessoryLabel.backgroundColor = [UIColor blueColor];
+	leftCalloutAccessoryButton.backgroundColor = [UIColor blueColor];
 	
-	return leftCalloutAccessoryLabel;
+	return leftCalloutAccessoryButton;
 }
 
 
@@ -825,42 +862,50 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 }
 
 
-+ (UILabel*)leftCalloutAccessoryLabelWithWidth:(CGFloat)width {
++ (UIButton*)leftCalloutAccessoryButtonWithWidth:(CGFloat)width {
+
+	UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
+	button.frame = CGRectMake(0, 0, width, 53);
 	
-	UILabel* leftCalloutAccessoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width, 53)];
-	leftCalloutAccessoryLabel.font = [UIFont boldSystemFontOfSize:15.0];
-	leftCalloutAccessoryLabel.textAlignment = NSTextAlignmentCenter;
-	leftCalloutAccessoryLabel.textColor = [UIColor whiteColor];
-	leftCalloutAccessoryLabel.alpha = 0.5;
-	leftCalloutAccessoryLabel.numberOfLines = 0;
-	leftCalloutAccessoryLabel.lineBreakMode = NSLineBreakByWordWrapping;
+	[button addTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
 	
-	return leftCalloutAccessoryLabel;
+	button.alpha = 0.5;
+	[button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+	
+	button.titleLabel.textAlignment = NSTextAlignmentCenter;
+	button.titleLabel.font = [UIFont boldSystemFontOfSize:15.0];
+	button.titleLabel.numberOfLines = 0;
+	button.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+
+	return button;
 }
 
 
 + (UIButton*)rightCalloutAccessoryButton {
 
-	UIButton* rightDisclosureButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-	[rightDisclosureButton addTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
+	UIButton* button = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+	[button addTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
 	
-	return rightDisclosureButton;
+	return button;
 }
 
 
 + (UILabel*)polylineAnnotationLabel {
 	
-	UILabel* polylineAnnotationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 45, 30)];
-	polylineAnnotationLabel.font = [UIFont boldSystemFontOfSize:10.0];
-	polylineAnnotationLabel.textAlignment = NSTextAlignmentCenter;
-	polylineAnnotationLabel.textColor = [UIColor whiteColor];
-	polylineAnnotationLabel.alpha = 0.9;
-	polylineAnnotationLabel.numberOfLines = 0;
-	polylineAnnotationLabel.lineBreakMode = NSLineBreakByWordWrapping;
-	polylineAnnotationLabel.clipsToBounds = YES;
-	polylineAnnotationLabel.layer.cornerRadius = 5.0;
+	UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 45, 30)];
+
+	label.alpha = 0.9;
+	label.textColor = [UIColor whiteColor];
 	
-	return polylineAnnotationLabel;
+	label.textAlignment = NSTextAlignmentCenter;
+	label.font = [UIFont boldSystemFontOfSize:10.0];
+	label.numberOfLines = 0;
+	label.lineBreakMode = NSLineBreakByWordWrapping;
+	
+	label.clipsToBounds = YES;
+	label.layer.cornerRadius = 5.0;
+	
+	return label;
 }
 
 
