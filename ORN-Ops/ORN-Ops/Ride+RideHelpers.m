@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
-//#import <AddressBookUI/AddressBookUI.h>
 #import "Ride+RideHelpers.h"
 #import "Team+TeamHelpers.h"
+#import "CLPlacemark+PlacemarkHelpers.h"
 
 
 #
@@ -192,7 +192,12 @@
 }
 
 
-- (void)updateLocationWithLatitudeNumber:(NSNumber*)latitude andLogitudeNumber:(NSNumber*)longitude andAddress:(NSString*)address andCity:(NSString*)city andRideLocationType:(RideLocationType)rideLocationType {
+- (void)updateLocationWithLatitudeNumber:(NSNumber*)latitude andLongitudeNumber:(NSNumber*)longitude andStreet:(NSString*)street andCity:(NSString*)city andState:(NSString*)state andAddress:(NSString*)address andRideLocationType:(RideLocationType)rideLocationType {
+	
+	if (!address && street && city) {
+		
+		address = [NSString stringWithFormat:@"%@, %@", street, city];
+	}
 	
 	switch (rideLocationType) {
 			
@@ -201,8 +206,11 @@
 			
 			self.locationStartLatitude = latitude;
 			self.locationStartLongitude = longitude;
-			self.locationStartAddress = address;
+			self.locationStartStreet = street;
 			self.locationStartCity = city;
+			self.locationStartState = state;
+			
+			self.locationStartAddress = address;
 			
 			break;
 			
@@ -210,29 +218,32 @@
 			
 			self.locationEndLatitude = latitude;
 			self.locationEndLongitude = longitude;
-			self.locationEndAddress = address;
+			self.locationEndStreet = street;
 			self.locationEndCity = city;
+			self.locationEndState = state;
+			
+			self.locationEndAddress = address;
 			
 			break;
 	}
 }
 
 
-- (void)updateLocationWithLatitude:(CLLocationDegrees)latitude andLogitude:(CLLocationDegrees)longitude andAddress:(NSString*)address andCity:(NSString*)city andRideLocationType:(RideLocationType)rideLocationType {
+- (void)updateLocationWithLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude andStreet:(NSString*)street andCity:(NSString*)city andState:(NSString*)state andAddress:(NSString*)address andRideLocationType:(RideLocationType)rideLocationType {
 	
-	[self updateLocationWithLatitudeNumber:[NSNumber numberWithDouble:latitude] andLogitudeNumber:[NSNumber numberWithDouble:longitude] andAddress:address andCity:city andRideLocationType:rideLocationType];
+	[self updateLocationWithLatitudeNumber:[NSNumber numberWithDouble:latitude] andLongitudeNumber:[NSNumber numberWithDouble:longitude] andStreet:street andCity:city andState:state andAddress:address andRideLocationType:rideLocationType];
 }
 
 
 - (void)updateLocationWithPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType {
 	
-	[self updateLocationWithLatitude:placemark.location.coordinate.latitude andLogitude:placemark.location.coordinate.longitude andAddress:[Ride getAddressStringWithPlacemark:placemark] andCity:placemark.locality andRideLocationType:rideLocationType];
+	[self updateLocationWithLatitude:placemark.location.coordinate.latitude andLongitude:placemark.location.coordinate.longitude andStreet:[placemark getAddressStreet] andCity:placemark.locality andState:[placemark getAddressState] andAddress:[placemark getAddressString] andRideLocationType:rideLocationType];
 }
 
 
 - (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType {
 	
-	[self updateLocationWithLatitudeNumber:nil andLogitudeNumber:nil andAddress:nil andCity:nil andRideLocationType:rideLocationType];
+	[self updateLocationWithLatitudeNumber:nil andLongitudeNumber:nil andStreet:nil andCity:nil andState:nil andAddress:nil andRideLocationType:rideLocationType];
 }
 
 
@@ -478,6 +489,55 @@
 }
 
 
+- (MKMapItem*)mapItemWithRideLocationType:(RideLocationType)rideLocationType {
+
+	switch (rideLocationType) {
+			
+		case RideLocationType_Start: {
+			
+			if (!self.locationStartLatitude || !self.locationStartLongitude) return nil;
+			
+			NSDictionary* addressDictionary =
+			[CLPlacemark addressDictionary:nil
+								withStreet:self.locationStartStreet
+								   andCity:self.locationStartCity
+								  andState:self.locationStartState
+									andZIP:nil
+								andCountry:CANADA_COUNTRY_NAME
+							andCountryCode:CANADA_COUNTRY_CODE];
+			
+			MKPlacemark* placemark = [Util placemarkWithLatitude:self.locationStartLatitude.doubleValue andLongitude:self.locationStartLongitude.doubleValue andAddressDictionary:addressDictionary];
+
+			return [[MKMapItem alloc] initWithPlacemark:placemark];
+		}
+			
+		case RideLocationType_End: {
+
+			if (!self.locationEndLatitude || !self.locationEndLongitude) return nil;
+			
+			NSDictionary* addressDictionary =
+			[CLPlacemark addressDictionary:nil
+								withStreet:self.locationEndStreet
+								   andCity:self.locationEndCity
+								  andState:self.locationEndState
+									andZIP:nil
+								andCountry:CANADA_COUNTRY_NAME
+							andCountryCode:CANADA_COUNTRY_CODE];
+			
+			MKPlacemark* placemark = [Util placemarkWithLatitude:self.locationEndLatitude.doubleValue andLongitude:self.locationEndLongitude.doubleValue andAddressDictionary:addressDictionary];
+			
+			return [[MKMapItem alloc] initWithPlacemark:placemark];
+		}
+
+		default:
+		case RideLocationType_None:
+			break;
+	}
+	
+	return nil;
+}
+
+
 - (MKPolyline*)polylineWithRideRouteType:(RideRouteType)rideRouteType {
 	
 	switch (rideRouteType) {
@@ -653,24 +713,11 @@
 	if (!startDate || !startLatitude || !startLongitude || !endLatitude || !endLongitude) return nil;
 	
 	// Create placemarks for ride start and end locations
-	MKPlacemark* startPlacemark = [Util placemarkWithLatitude:startLatitude.doubleValue andLongitude:startLongitude.doubleValue];
-	MKPlacemark* endPlacemark = [Util placemarkWithLatitude:endLatitude.doubleValue andLongitude:endLongitude.doubleValue];
+	MKPlacemark* startPlacemark = [Util placemarkWithLatitude:startLatitude.doubleValue andLongitude:startLongitude.doubleValue andAddressDictionary:nil];
+	MKPlacemark* endPlacemark = [Util placemarkWithLatitude:endLatitude.doubleValue andLongitude:endLongitude.doubleValue andAddressDictionary:nil];
 	
 	// Create directions request for route by car for ride start time
 	return [Util directionsRequestWithDepartureDate:startDate andSourcePlacemark:startPlacemark andDestinationPlacemark:endPlacemark];
-}
-
-
-+ (NSString*)getAddressStringWithPlacemark:(CLPlacemark*)placemark {
-	
-	NSString* street = placemark.addressDictionary[@"Street"];
-	NSString* city = placemark.addressDictionary[@"City"];
-	
-	if (street && city) return [NSString stringWithFormat:@"%@, %@", street, city];
-	
-	return [NSString stringWithFormat:@"%@ (%.3f,%.3f)", placemark.name, placemark.location.coordinate.latitude, placemark.location.coordinate.longitude];
-	
-	//	return ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO);
 }
 
 

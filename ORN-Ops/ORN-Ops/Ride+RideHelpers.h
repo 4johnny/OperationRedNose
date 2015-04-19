@@ -134,7 +134,7 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 
 - (void)assignTeam:(Team*)team withSender:(id)sender;
 
-- (void)updateLocationWithLatitude:(CLLocationDegrees)latitude andLogitude:(CLLocationDegrees)longitude andAddress:(NSString*)address andCity:(NSString*)city andRideLocationType:(RideLocationType)rideLocationType;
+- (void)updateLocationWithLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude andStreet:(NSString*)street andCity:(NSString*)city andState:(NSString*)state andAddress:(NSString*)address andRideLocationType:(RideLocationType)rideLocationType;
 - (void)updateLocationWithPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType;
 - (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType;
 
@@ -152,9 +152,9 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 
 - (NSNumber*)latitudeWithRideLocationType:(RideLocationType)rideLocationType;
 - (NSNumber*)longitudeWithRideLocationType:(RideLocationType)rideLocationType;
+- (MKMapItem*)mapItemWithRideLocationType:(RideLocationType)rideLocationType;
 
 - (MKPolyline*)polylineWithRideRouteType:(RideRouteType)rideRouteType;
-
 - (NSTimeInterval)durationWithRideRouteType:(RideRouteType)rideRouteType;
 - (CLLocationDistance)distanceWithRideRouteType:(RideRouteType)rideRouteType;
 

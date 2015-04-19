@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6751" systemVersion="14C1514" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7549" systemVersion="14D131" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Ride" representedClassName="Ride" syncable="YES">
         <attribute name="dateTimeStart" optional="YES" attributeType="Date" indexed="YES" syncable="YES"/>
         <attribute name="donationAmount" optional="YES" attributeType="Decimal" minValueString="0" syncable="YES"/>
@@ -7,12 +7,16 @@
         <attribute name="locationEndCity" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationEndLatitude" optional="YES" attributeType="Double" syncable="YES"/>
         <attribute name="locationEndLongitude" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="locationEndState" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="locationEndStreet" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationPrepLatitude" optional="YES" attributeType="Double" syncable="YES"/>
         <attribute name="locationPrepLongitude" optional="YES" attributeType="Double" syncable="YES"/>
         <attribute name="locationStartAddress" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationStartCity" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationStartLatitude" optional="YES" attributeType="Double" syncable="YES"/>
         <attribute name="locationStartLongitude" optional="YES" attributeType="Double" indexed="YES" syncable="YES"/>
+        <attribute name="locationStartState" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="locationStartStreet" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationTransferFrom" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationTransferTo" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
@@ -47,7 +51,7 @@
         <relationship name="ridesAssigned" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Ride" inverseName="teamAssigned" inverseEntity="Ride" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Ride" positionX="-63" positionY="98" width="135" height="508"/>
+        <element name="Ride" positionX="-63" positionY="98" width="135" height="570"/>
         <element name="Team" positionX="162" positionY="368" width="144" height="208"/>
     </elements>
 </model>

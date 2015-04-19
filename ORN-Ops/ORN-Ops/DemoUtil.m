@@ -37,34 +37,40 @@
 
 
 + (void)loadVancouverDemoRides {
-
+	
 	NSManagedObjectContext* moc = [Util managedObjectContext];
 	Ride* ride;
-
+	
 	// Vancouver to nowhere - also missing passenger info
 	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.287826
-						 andLogitude:-123.123834
-						  andAddress:@"580 Bute St, Vancouver"
+						andLongitude:-123.123834
+						   andStreet:@"580 Bute St"
 							 andCity:@"Vancouver"
+							 andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_Start];
 	[ride postNotificationCreatedWithSender:self];
-
+	
 	// Vancouver to Port Coquitlam
 	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Rob";
 	ride.passengerNameLast = @"Jankovic";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.2818704
-						 andLogitude:-123.1081611
-						  andAddress:@"128 W Hastings St, Vancouver"
+						andLongitude:-123.1081611
+						   andStreet:@"128 W Hastings St"
 							 andCity:@"Vancouver"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_Start];
 	[ride updateLocationWithLatitude:49.271438
-						 andLogitude:-122.756615
-						  andAddress:@"1523 Prairie Ave, Port Coquitlam"
+						andLongitude:-122.756615
+						   andStreet:@"1523 Prairie Ave"
 							 andCity:@"Port Coquitlam"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_End];
 	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
@@ -75,14 +81,18 @@
 	ride.passengerNameLast = @"Roberts";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.27665770574511
-						 andLogitude:-123.0847680657702
-						  andAddress:@"1 Venables St, Vancouver"
+						andLongitude:-123.0847680657702
+						   andStreet:@"1 Venables St"
 							 andCity:@"Vancouver"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_Start];
 	[ride updateLocationWithLatitude:49.2688777
-						 andLogitude:-123.0769722
-						  andAddress:@"1750 Clark Dr, Vancouver"
+						andLongitude:-123.0769722
+						   andStreet:@"1750 Clark Dr"
 							 andCity:@"Vancouver"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_End];
 	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
@@ -100,14 +110,18 @@
 	ride.passengerNameLast = @"Peterson";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.24274
-						 andLogitude:-123.014073
-						  andAddress:@"4078 Moscrop St, Burnaby"
+						andLongitude:-123.014073
+						   andStreet:@"4078 Moscrop St"
 							 andCity:@"Burnaby"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_Start];
 	[ride updateLocationWithLatitude:49.22162
-						 andLogitude:-122.979254
-						  andAddress:@"5788 Kingsway, Burnaby"
+						andLongitude:-122.979254
+						   andStreet:@"5788 Kingsway"
 							 andCity:@"Burnaby"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_End];
 	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
@@ -118,14 +132,18 @@
 	ride.passengerNameLast = @"Sander";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.2660725
-						 andLogitude:-123.0024237
-						  andAddress:@"4512 Lougheed Hwy, Burnaby"
+						andLongitude:-123.0024237
+						   andStreet:@"4512 Lougheed Hwy"
 							 andCity:@"Burnaby"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_Start];
 	[ride updateLocationWithLatitude:49.2407423
-						 andLogitude:-122.8527494
-						  andAddress:@"1431 Brunette Ave, Coquitlam"
+						andLongitude:-122.8527494
+						   andStreet:@"1431 Brunette Ave"
 							 andCity:@"Coquitlam"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_End];
 	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
@@ -143,14 +161,18 @@
 	ride.passengerNameLast = @"Kansas";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.18302
-						 andLogitude:-122.953496
-						  andAddress:@"1242 Ewen Ave, New Westminster"
+						andLongitude:-122.953496
+						   andStreet:@"1242 Ewen Ave"
 							 andCity:@"New Westminster"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_Start];
 	[ride updateLocationWithLatitude:49.211765
-						 andLogitude:-122.924143
-						  andAddress:@"615 8th St, New Westminster"
+						andLongitude:-122.924143
+						   andStreet:@"615 8th St"
 							 andCity:@"New Westminster"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_End];
 	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
@@ -161,14 +183,18 @@
 	ride.passengerNameLast = @"Donofrio";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.231407
-						 andLogitude:-122.893559
-						  andAddress:@"308 Braid St, New Westminster"
+						andLongitude:-122.893559
+						   andStreet:@"308 Braid St"
 							 andCity:@"New Westminster"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_Start];
 	[ride updateLocationWithLatitude:49.247717
-						 andLogitude:-122.941872
-						  andAddress:@"4004 Lozells Ave, Burnaby"
+						andLongitude:-122.941872
+						   andStreet:@"4004 Lozells Ave"
 							 andCity:@"Burnaby"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_End];
 	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
@@ -179,14 +205,18 @@
 	ride.passengerNameLast = @"Butler";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.202296
-						 andLogitude:-122.9382
-						  andAddress:@"1700 Stewardson Way, New Westminster"
+						andLongitude:-122.9382
+						  andStreet:@"1700 Stewardson Way"
 							 andCity:@"New Westminster"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_Start];
 	[ride updateLocationWithLatitude:49.304498
-						 andLogitude:-122.830639
-						  andAddress:@"131 Forest Park Way, Port Moody"
+						andLongitude:-122.830639
+						   andStreet:@"131 Forest Park Way"
 							 andCity:@"Port Moody"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_End];
 	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
@@ -212,14 +242,18 @@
 	ride.passengerNameLast = @"Tao";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.26374147501311
-						 andLogitude:-122.8691647300472
-						  andAddress:@"949 Como Lake Ave, Coquitlam"
+						andLongitude:-122.8691647300472
+						   andStreet:@"949 Como Lake Ave"
 							 andCity:@"Coquitlam"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_Start];
 	[ride updateLocationWithLatitude:49.257502
-						 andLogitude:-122.733142
-						  andAddress:@"590 Dominion Ave, Port Coquitlam"
+						andLongitude:-122.733142
+						   andStreet:@"590 Dominion Ave"
 							 andCity:@"Port Coquitlam"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_End];
 	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
@@ -237,14 +271,18 @@
 	ride.passengerNameLast = @"Hughes";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.25625588056973
-						 andLogitude:-122.7782533932433
-						  andAddress:@"2211 Central Ave, Port Coquitlam"
+						andLongitude:-122.7782533932433
+						   andStreet:@"2211 Central Ave"
 							 andCity:@"Port Coquitlam"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_Start];
 	[ride updateLocationWithLatitude:49.2931232
-						 andLogitude:-122.7907818
-						  andAddress:@"1330 Pinetree Way, Coquitlam"
+						andLongitude:-122.7907818
+						   andStreet:@"1330 Pinetree Way"
 							 andCity:@"Coquitlam"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_End];
 	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
@@ -255,21 +293,25 @@
 	
 	NSManagedObjectContext* moc = [Util managedObjectContext];
 	Ride* ride;
-
+	
 	// Port Moody to Port Moody
 	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.passengerNameFirst = @"Farai";
 	ride.passengerNameLast = @"Cole";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
 	[ride updateLocationWithLatitude:49.30258801423837
-						 andLogitude:-122.8759178752116
-						  andAddress:@"1970 Ioco Rd, Port Moody"
+						andLongitude:-122.8759178752116
+						   andStreet:@"1970 Ioco Rd"
 							 andCity:@"Port Moody"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_Start];
 	[ride updateLocationWithLatitude:49.27457909172165
-						 andLogitude:-122.8739446137635
-						  andAddress:@"1000 Clarke Rd, Port Moody"
+						andLongitude:-122.8739446137635
+						   andStreet:@"1000 Clarke Rd"
 							 andCity:@"Port Moody"
+							andState:BRITISH_COLUMBIA_STATE_CODE
+						  andAddress:nil
 				 andRideLocationType:RideLocationType_End];
 	[ride tryUpdateMainRouteWithSender:self]; // async
 	[ride postNotificationCreatedWithSender:self];
@@ -291,10 +333,10 @@
 
 
 + (void)loadVancouverDemoTeams {
-
+	
 	NSManagedObjectContext* moc = [Util managedObjectContext];
 	Team* team;
-
+	
 	team = [Team teamWithManagedObjectContext:moc];
 	team.name = @"1";
 	team.members = @"Selma, Akbar, George";
@@ -386,7 +428,7 @@
 
 
 + (void)loadCoquitlamDemoTeams {
-
+	
 	NSManagedObjectContext* moc = [Util managedObjectContext];
 	Team* team;
  
@@ -401,7 +443,7 @@
 	team.locationCurrentCity = @"Coquitlam";
 	team.isActive = @YES;
 	[team postNotificationCreatedWithSender:self];
-
+	
 	team = [Team teamWithManagedObjectContext:moc];
 	team.name = @"8";
 	team.members = @"Vera, Leonard, Ashley";
@@ -430,7 +472,7 @@
 	team.locationCurrentCity = @"Port Coquitlam";
 	team.isActive = @YES;
 	[team postNotificationCreatedWithSender:self];
-
+	
 	// NOTE: Team missing name
 	team = [Team teamWithManagedObjectContext:moc];
 	team.members = @"Martin, Jolene, Anatoly";
@@ -467,7 +509,7 @@
 
 
 + (void)loadDemoAssignTeams:(NSArray*)teams toRides:(NSArray*)rides {
-
+	
 	// Assign specific teams to specific rides
 	
 	[rides[0] assignTeam:teams[2] withSender:self]; // Team with two rides

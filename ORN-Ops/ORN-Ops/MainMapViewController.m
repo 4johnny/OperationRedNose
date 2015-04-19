@@ -459,20 +459,15 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	// If ride, navigate to ride detail controller
 	if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) {
 		
+		Ride* ride = ((RidePointAnnotation*)view.annotation).ride;
+		
 		switch (buttonType) {
 				
 			case UIButtonTypeDetailDisclosure: {
 				
-				MKPinAnnotationView* pinAnnotationView = (MKPinAnnotationView*)view;
-				
-				// Create ride detail controller
+				// Create ride detail controller; inject data model; and push onto navigation stack
 				RideDetailTableViewController* rideDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:RIDE_DETAIL_TABLE_VIEW_CONTROLLER_ID];
-				
-				// Inject ride data model
-				RidePointAnnotation* ridePointAnnotation = (RidePointAnnotation*)pinAnnotationView.annotation;
-				rideDetailTableViewController.ride = ridePointAnnotation.ride;
-				
-				// Push onto navigation stack
+				rideDetailTableViewController.ride = ride;
 				[self.navigationController pushViewController:rideDetailTableViewController animated:YES];
 				
 				return;
@@ -480,7 +475,27 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 			
 			case UIButtonTypeCustom: {
 				
-				NSLog(@"Ride annotation left callout accessory tapped");
+				NSMutableArray* mapItems = [NSMutableArray arrayWithCapacity:2];
+				
+				MKMapItem* mapItem = [ride mapItemWithRideLocationType:RideLocationType_Start];
+				if (mapItem) {
+					
+					[mapItems addObject:mapItem];
+				}
+
+				mapItem = [ride mapItemWithRideLocationType:RideLocationType_End];
+				if (mapItem) {
+					
+					[mapItems addObject:mapItem];
+				}
+				
+				NSDictionary* launchOptions = mapItems.count == 2 ? @{MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving} : nil;
+				
+				if (![MKMapItem openMapsWithItems:mapItems launchOptions:launchOptions]) {
+					
+					NSLog(@"Failed to open ride route in Maps app");
+				}
+				
 				return;
 			}
 				
@@ -673,7 +688,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	// NOTE: Do not set for update, to avoid re-animation
 	if (!ridePinAnnotationView.leftCalloutAccessoryView) {
 		
-		ridePinAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryButtonWithWidth:60];
+		ridePinAnnotationView.leftCalloutAccessoryView = [self leftCalloutAccessoryButtonWithWidth:60];
 	}
 	if (![self configureLeftCalloutAccessoryButton:(UIButton*)ridePinAnnotationView.leftCalloutAccessoryView withRidePointAnnotation:ridePointAnnotation]) {
 		
@@ -757,7 +772,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	// NOTE: Do not set for update, to avoid re-animation
 	if (!teamAnnotationView.leftCalloutAccessoryView) {
 		
-		teamAnnotationView.leftCalloutAccessoryView = [MainMapViewController leftCalloutAccessoryButtonWithWidth:70];
+		teamAnnotationView.leftCalloutAccessoryView = [self leftCalloutAccessoryButtonWithWidth:70];
 	}
 	if (![self configureLeftCalloutAccessoryButton:(UIButton*)teamAnnotationView.leftCalloutAccessoryView withTeamPointAnnotation:teamPointAnnotation]) {
 		
@@ -862,11 +877,13 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 }
 
 
-+ (UIButton*)leftCalloutAccessoryButtonWithWidth:(CGFloat)width {
+- (UIButton*)leftCalloutAccessoryButtonWithWidth:(CGFloat)width {
 
 	UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
 	button.frame = CGRectMake(0, 0, width, 53);
 	
+	[button addTarget:self action:@selector(leftCalloutAccessoryButtonTouchDown:) forControlEvents:UIControlEventTouchDown];
+	[button addTarget:self action:@selector(leftCalloutAccessoryButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
 	[button addTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
 	
 	button.alpha = 0.5;
@@ -972,6 +989,20 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	// NOTE: Cannot wire to keyboard button, so called directly via text-field delegate
 	
 	[Ride tryCreateRideWithAddressString:sender.text andGeocoder:self.geocoder andSender:self];
+}
+
+
+- (IBAction)leftCalloutAccessoryButtonTouchDown:(UIButton*)sender {
+	// NOTE: Wired programmatically
+	
+	sender.tintAdjustmentMode = UIViewTintAdjustmentModeDimmed;
+}
+
+
+- (IBAction)leftCalloutAccessoryButtonTouchUpInside:(UIButton*)sender {
+	// NOTE: Wired programmatically
+	
+	sender.tintAdjustmentMode = UIViewTintAdjustmentModeAutomatic;
 }
 
 

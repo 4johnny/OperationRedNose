@@ -35,18 +35,24 @@
 # pragma mark Jurisdication Constants
 #
 
-#define VANCOUVER_LATITUDE			49.25
-#define VANCOUVER_LONGITUDE			-123.1
-#define VANCOUVER_COORDINATE		CLLocationCoordinate2DMake(VANCOUVER_LATITUDE, VANCOUVER_LONGITUDE)
+#define CANADA_COUNTRY_NAME				@"Canada"
+#define CANADA_COUNTRY_CODE				@"CA"
 
-#define BURNABY_LATITUDE			49.266667
-#define BURNABY_LONGITUDE			-122.966667
-#define BURNABY_COORDINATE			CLLocationCoordinate2DMake(BURNABY_LATITUDE, BURNABY_LONGITUDE)
+#define BRITISH_COLUMBIA_PROVINCE_CODE	@"BC"
+#define BRITISH_COLUMBIA_STATE_CODE		BRITISH_COLUMBIA_PROVINCE_CODE
 
-#define CHARITY_NAME				@"KidSport"
-#define JURISDICTION_NAME			@"Tri-Cities, Burnaby, New Westminster"
-#define JURISDICTION_COORDINATE		BURNABY_COORDINATE
-#define JURISDICTION_SEARCH_RADIUS	100000 // meters
+#define VANCOUVER_LATITUDE				49.25
+#define VANCOUVER_LONGITUDE				-123.1
+#define VANCOUVER_COORDINATE			CLLocationCoordinate2DMake(VANCOUVER_LATITUDE, VANCOUVER_LONGITUDE)
+
+#define BURNABY_LATITUDE				49.266667
+#define BURNABY_LONGITUDE				-122.966667
+#define BURNABY_COORDINATE				CLLocationCoordinate2DMake(BURNABY_LATITUDE, BURNABY_LONGITUDE)
+
+#define CHARITY_NAME					@"KidSport"
+#define JURISDICTION_NAME				@"Tri-Cities, Burnaby, New Westminster"
+#define JURISDICTION_COORDINATE			BURNABY_COORDINATE
+#define JURISDICTION_SEARCH_RADIUS		100000 // meters
 
 #
 # pragma mark - Interface
@@ -87,7 +93,7 @@
 # pragma mark Maps
 #
 
-+ (MKPlacemark*)placemarkWithLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude;
++ (MKPlacemark*)placemarkWithLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude andAddressDictionary:(NSDictionary*)addressDictionary;
 + (MKDirectionsRequest*)directionsRequestWithDepartureDate:(NSDate*)departureDate andSourcePlacemark:(MKPlacemark*)sourcePlaceMark andDestinationPlacemark:(MKPlacemark*)destinationPlacemark;
 
 #

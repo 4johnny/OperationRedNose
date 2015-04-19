@@ -170,9 +170,9 @@
 #
 
 
-+ (MKPlacemark*)placemarkWithLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude {
++ (MKPlacemark*)placemarkWithLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude andAddressDictionary:(NSDictionary*)addressDictionary {
 
-	return [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(latitude, longitude) addressDictionary:nil];
+	return [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(latitude, longitude) addressDictionary:addressDictionary];
 }
 
 
