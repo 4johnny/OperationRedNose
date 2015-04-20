@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2078B861A9DB406004AF662 /* MainMapViewController.m */; };
-		B209BFB01AB689090093E8E5 /* Team.m in Sources */ = {isa = PBXBuildFile; fileRef = B209BFAF1AB689090093E8E5 /* Team.m */; };
 		B241B1DE1ABD408D0075C99E /* DatePickerTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B241B1DD1ABD408D0075C99E /* DatePickerTextField.m */; };
 		B241B1E11ABD65330075C99E /* BasePickerTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B241B1E01ABD65330075C99E /* BasePickerTextField.m */; };
 		B24580B51AB5460B0090758E /* NSString+StringHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B24580B41AB5460B0090758E /* NSString+StringHelpers.m */; };
@@ -29,6 +28,7 @@
 		B28312261AAF2A8100B7C1A9 /* BasePolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B28312251AAF2A8100B7C1A9 /* BasePolyline.m */; };
 		B28312291AAF322C00B7C1A9 /* RidePolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B28312281AAF322C00B7C1A9 /* RidePolyline.m */; };
 		B2907B841A9F1903008A0301 /* RidePointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B2907B831A9F1903008A0301 /* RidePointAnnotation.m */; };
+		B2921E601AE4B20F007C2535 /* Team.m in Sources */ = {isa = PBXBuildFile; fileRef = B2921E5F1AE4B20F007C2535 /* Team.m */; };
 		B29CD76B1ABE9D3200B21579 /* NSDate+DateHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B29CD76A1ABE9D3200B21579 /* NSDate+DateHelpers.m */; };
 		B2B116BF1AB9191500F22B00 /* PickerTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B2B116BE1AB9191500F22B00 /* PickerTextField.m */; };
 		B2C756151AA1905E00B148D3 /* RidesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756141AA1905E00B148D3 /* RidesTableViewController.m */; };
@@ -58,8 +58,6 @@
 		B2078B851A9DB406004AF662 /* MainMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMapViewController.h; sourceTree = "<group>"; };
 		B2078B861A9DB406004AF662 /* MainMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MainMapViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		B2078B8E1A9DC043004AF662 /* ORNDataModelSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ORNDataModelSource.h; sourceTree = "<group>"; };
-		B209BFAE1AB689090093E8E5 /* Team.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Team.h; sourceTree = "<group>"; };
-		B209BFAF1AB689090093E8E5 /* Team.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Team.m; sourceTree = "<group>"; };
 		B241B1DC1ABD408D0075C99E /* DatePickerTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatePickerTextField.h; sourceTree = "<group>"; };
 		B241B1DD1ABD408D0075C99E /* DatePickerTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatePickerTextField.m; sourceTree = "<group>"; };
 		B241B1DF1ABD65330075C99E /* BasePickerTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BasePickerTextField.h; sourceTree = "<group>"; };
@@ -96,6 +94,8 @@
 		B28312281AAF322C00B7C1A9 /* RidePolyline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RidePolyline.m; sourceTree = "<group>"; };
 		B2907B821A9F1903008A0301 /* RidePointAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RidePointAnnotation.h; sourceTree = "<group>"; };
 		B2907B831A9F1903008A0301 /* RidePointAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RidePointAnnotation.m; sourceTree = "<group>"; };
+		B2921E5E1AE4B20F007C2535 /* Team.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Team.h; sourceTree = "<group>"; };
+		B2921E5F1AE4B20F007C2535 /* Team.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Team.m; sourceTree = "<group>"; };
 		B29CD7691ABE9D3200B21579 /* NSDate+DateHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+DateHelpers.h"; sourceTree = "<group>"; };
 		B29CD76A1ABE9D3200B21579 /* NSDate+DateHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+DateHelpers.m"; sourceTree = "<group>"; };
 		B2B116BD1AB9191500F22B00 /* PickerTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PickerTextField.h; sourceTree = "<group>"; };
@@ -179,8 +179,8 @@
 			children = (
 				B25A6F7D1AE3AD650074D04F /* Ride.h */,
 				B25A6F7E1AE3AD650074D04F /* Ride.m */,
-				B209BFAE1AB689090093E8E5 /* Team.h */,
-				B209BFAF1AB689090093E8E5 /* Team.m */,
+				B2921E5E1AE4B20F007C2535 /* Team.h */,
+				B2921E5F1AE4B20F007C2535 /* Team.m */,
 			);
 			name = Generated;
 			sourceTree = "<group>";
@@ -489,7 +489,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B209BFB01AB689090093E8E5 /* Team.m in Sources */,
 				B24580B81AB584C00090758E /* BaseNavigationController.m in Sources */,
 				B2907B841A9F1903008A0301 /* RidePointAnnotation.m in Sources */,
 				B241B1E11ABD65330075C99E /* BasePickerTextField.m in Sources */,
@@ -501,6 +500,7 @@
 				B2C756251AA1BA8B00B148D3 /* Util.m in Sources */,
 				B29CD76B1ABE9D3200B21579 /* NSDate+DateHelpers.m in Sources */,
 				B241B1DE1ABD408D0075C99E /* DatePickerTextField.m in Sources */,
+				B2921E601AE4B20F007C2535 /* Team.m in Sources */,
 				B2B116BF1AB9191500F22B00 /* PickerTextField.m in Sources */,
 				B27B4A781A9AB1FB009277E4 /* AppDelegate.m in Sources */,
 				B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */,

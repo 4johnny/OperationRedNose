@@ -453,10 +453,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	
 	UIButtonType buttonType = ((UIButton*)control).buttonType;
 	
-	// If user location, we are done
 	if ([view.annotation isKindOfClass:[MKUserLocation class]]) return;
 	
-	// If ride, navigate to ride detail controller
 	if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) {
 		
 		Ride* ride = ((RidePointAnnotation*)view.annotation).ride;
@@ -471,7 +469,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 				[self.navigationController pushViewController:rideDetailTableViewController animated:YES];
 				
 				return;
-			}
+				
+			} // case
 			
 			case UIButtonTypeCustom: {
 				
@@ -482,8 +481,70 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 					
 					[mapItems addObject:mapItem];
 				}
-
+				
 				mapItem = [ride mapItemWithRideLocationType:RideLocationType_End];
+				if (mapItem) {
+					
+					[mapItems addObject:mapItem];
+				}
+
+				if (mapItems.count < 2) {
+					
+					mapItem = [ride.teamAssigned mapItemForCurrentLocation];
+					
+					if (mapItem) {
+						
+						[mapItems insertObject:mapItem atIndex:0];
+					}
+				}
+
+				NSDictionary* launchOptions = mapItems.count == 2 ? @{MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving} : nil;
+				
+				if (![MKMapItem openMapsWithItems:mapItems launchOptions:launchOptions]) {
+					
+					NSLog(@"Failed to open ride route in Maps app");
+				}
+				
+				return;
+				
+			} // case
+				
+			default:
+				return;
+				
+		} // switch
+		
+	} // if
+	
+	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
+		
+		Team* team = ((TeamPointAnnotation*)view.annotation).team;
+		
+		switch (buttonType) {
+				
+			case UIButtonTypeDetailDisclosure: {
+				
+				// Create ride detail controller; inject data model; and push onto navigation stack
+				TeamDetailTableViewController* teamDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:TEAM_DETAIL_TABLE_VIEW_CONTROLLER_ID];
+				teamDetailTableViewController.team = team;
+				[self.navigationController pushViewController:teamDetailTableViewController animated:YES];
+				
+				return;
+				
+			} // case
+			
+			case UIButtonTypeCustom: {
+				
+				NSMutableArray* mapItems = [NSMutableArray arrayWithCapacity:2];
+				
+				MKMapItem* mapItem = [team mapItemForCurrentLocation];
+				if (mapItem) {
+					
+					[mapItems addObject:mapItem];
+				}
+				
+				Ride* rideAssigned = [team getSortedRidesAssigned].firstObject;
+				mapItem = [rideAssigned mapItemWithRideLocationType:RideLocationType_Start];
 				if (mapItem) {
 					
 					[mapItems addObject:mapItem];
@@ -493,44 +554,12 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 				
 				if (![MKMapItem openMapsWithItems:mapItems launchOptions:launchOptions]) {
 					
-					NSLog(@"Failed to open ride route in Maps app");
+					NSLog(@"Failed to open team route in Maps app");
 				}
 				
 				return;
-			}
 				
-			default:
-				return;
-				
-		} // switch
-		
-	} // if
-	
-	// If team, navigate to team detail controller
-	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
-		
-		switch (buttonType) {
-				
-			case UIButtonTypeDetailDisclosure: {
-				
-				// Create team detail controller
-				TeamDetailTableViewController* teamDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:TEAM_DETAIL_TABLE_VIEW_CONTROLLER_ID];
-				
-				// Inject team data model
-				TeamPointAnnotation* teamPointAnnotation = (TeamPointAnnotation*)view.annotation;
-				teamDetailTableViewController.team = teamPointAnnotation.team;
-				
-				// Push onto navigation stack
-				[self.navigationController pushViewController:teamDetailTableViewController animated:YES];
-				
-				return;
-			}
-			
-			case UIButtonTypeCustom: {
-
-				NSLog(@"Team annotation left callout accessory tapped");
-				return;
-			}
+			} // case
 				
 			default:
 				return;

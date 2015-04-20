@@ -37,7 +37,7 @@
 
 - (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext andDateTime:(NSDate*)dateTime andPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType {
 
-	self = [super initWithEntity:[NSEntityDescription entityForName:RIDE_ENTITY_NAME	 inManagedObjectContext:managedObjectContext] insertIntoManagedObjectContext:managedObjectContext];
+	self = [super initWithEntity:[NSEntityDescription entityForName:RIDE_ENTITY_NAME inManagedObjectContext:managedObjectContext] insertIntoManagedObjectContext:managedObjectContext];
 	
 	if (self) {
 
@@ -47,7 +47,7 @@
 		
 		if (placemark && rideLocationType != RideLocationType_None) {
 			
-			[self updateLocationWithPlacemark:placemark andRideLocationType:rideLocationType];
+			[self updateLocationWithRideLocationType:rideLocationType andPlacemark:placemark];
 		}
 	}
 	
@@ -192,7 +192,7 @@
 }
 
 
-- (void)updateLocationWithLatitudeNumber:(NSNumber*)latitude andLongitudeNumber:(NSNumber*)longitude andStreet:(NSString*)street andCity:(NSString*)city andState:(NSString*)state andAddress:(NSString*)address andRideLocationType:(RideLocationType)rideLocationType {
+- (void)updateLocationWithRideLocationType:(RideLocationType)rideLocationType andLatitudeNumber:(NSNumber*)latitude andLongitudeNumber:(NSNumber*)longitude andStreet:(NSString*)street andCity:(NSString*)city andState:(NSString*)state andAddress:(NSString*)address {
 	
 	if (!address && street && city) {
 		
@@ -229,21 +229,21 @@
 }
 
 
-- (void)updateLocationWithLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude andStreet:(NSString*)street andCity:(NSString*)city andState:(NSString*)state andAddress:(NSString*)address andRideLocationType:(RideLocationType)rideLocationType {
+- (void)updateLocationWithRideLocationType:(RideLocationType)rideLocationType andLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude andStreet:(NSString*)street andCity:(NSString*)city andState:(NSString*)state andAddress:(NSString*)address {
 	
-	[self updateLocationWithLatitudeNumber:[NSNumber numberWithDouble:latitude] andLongitudeNumber:[NSNumber numberWithDouble:longitude] andStreet:street andCity:city andState:state andAddress:address andRideLocationType:rideLocationType];
+	[self updateLocationWithRideLocationType:rideLocationType andLatitudeNumber:[NSNumber numberWithDouble:latitude] andLongitudeNumber:[NSNumber numberWithDouble:longitude] andStreet:street andCity:city andState:state andAddress:address];
 }
 
 
-- (void)updateLocationWithPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType {
+- (void)updateLocationWithRideLocationType:(RideLocationType)rideLocationType andPlacemark:(CLPlacemark*)placemark {
 	
-	[self updateLocationWithLatitude:placemark.location.coordinate.latitude andLongitude:placemark.location.coordinate.longitude andStreet:[placemark getAddressStreet] andCity:placemark.locality andState:[placemark getAddressState] andAddress:[placemark getAddressString] andRideLocationType:rideLocationType];
+	[self updateLocationWithRideLocationType:rideLocationType andLatitude:placemark.location.coordinate.latitude andLongitude:placemark.location.coordinate.longitude andStreet:[placemark getAddressStreet] andCity:placemark.locality andState:[placemark getAddressState] andAddress:[placemark getAddressString]];
 }
 
 
 - (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType {
 	
-	[self updateLocationWithLatitudeNumber:nil andLongitudeNumber:nil andStreet:nil andCity:nil andState:nil andAddress:nil andRideLocationType:rideLocationType];
+	[self updateLocationWithRideLocationType:rideLocationType andLatitudeNumber:nil andLongitudeNumber:nil andStreet:nil andCity:nil andState:nil andAddress:nil];
 }
 
 
@@ -276,7 +276,7 @@
 		
 		// Use first placemark resolved from address as location
 		CLPlacemark* placemark = placemarks[0];
-		[self updateLocationWithPlacemark:placemark andRideLocationType:rideLocationType];
+		[self updateLocationWithRideLocationType:rideLocationType andPlacemark:placemark];
 		NSLog(@"Geocode location: %@", placemark.location);
 		NSLog(@"Geocode locality: %@", placemark.locality);
 		NSLog(@"Geocode address: %@", placemark.addressDictionary);

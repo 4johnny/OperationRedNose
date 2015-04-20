@@ -2,7 +2,7 @@
 //  Team.m
 //  ORN-Ops
 //
-//  Created by Johnny on 2015-03-15.
+//  Created by Johnny on 2015-04-19.
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
@@ -18,6 +18,8 @@
 @dynamic locationCurrentCity;
 @dynamic locationCurrentLatitude;
 @dynamic locationCurrentLongitude;
+@dynamic locationCurrentState;
+@dynamic locationCurrentStreet;
 @dynamic members;
 @dynamic name;
 @dynamic notes;

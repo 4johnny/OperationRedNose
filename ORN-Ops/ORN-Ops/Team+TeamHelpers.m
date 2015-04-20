@@ -8,6 +8,8 @@
 
 #import "Team+TeamHelpers.h"
 #import "Ride+RideHelpers.h"
+#import "CLPlacemark+PlacemarkHelpers.h"
+
 
 #
 # pragma mark - Constants
@@ -123,6 +125,41 @@
 #
 
 
+- (void)updateCurrentLocationWithLatitudeNumber:(NSNumber*)latitude andLongitudeNumber:(NSNumber*)longitude andStreet:(NSString*)street andCity:(NSString*)city andState:(NSString*)state andAddress:(NSString*)address {
+
+	if (!address && street && city) {
+		
+		address = [NSString stringWithFormat:@"%@, %@", street, city];
+	}
+	
+	self.locationCurrentLatitude = latitude;
+	self.locationCurrentLongitude = longitude;
+	self.locationCurrentStreet = street;
+	self.locationCurrentCity = city;
+	self.locationCurrentState = state;
+	
+	self.locationCurrentAddress = address;
+}
+
+
+- (void)updateCurrentLocationWithLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude andStreet:(NSString*)street andCity:(NSString*)city andState:(NSString*)state andAddress:(NSString*)address {
+	
+	[self updateCurrentLocationWithLatitudeNumber:[NSNumber numberWithDouble:latitude] andLongitudeNumber:[NSNumber numberWithDouble:longitude] andStreet:street andCity:city andState:state andAddress:address];
+}
+
+
+- (void)updateCurrentLocationWithPlacemark:(CLPlacemark*)placemark {
+	
+	[self updateCurrentLocationWithLatitude:placemark.location.coordinate.latitude andLongitude:placemark.location.coordinate.longitude andStreet:[placemark getAddressStreet] andCity:placemark.locality andState:[placemark getAddressState] andAddress:[placemark getAddressString]];
+}
+
+
+- (void)clearCurrentLocation {
+	
+	[self updateCurrentLocationWithLatitudeNumber:nil andLongitudeNumber:nil andStreet:nil andCity:nil andState:nil andAddress:nil];
+}
+
+
 /*
  Calculate route for team per assigned rides, asynchronously
  */
@@ -171,6 +208,25 @@
 			  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY1 ascending:RIDE_FETCH_SORT_ASCENDING],
 			  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY2 ascending:RIDE_FETCH_SORT_ASCENDING]
 			  ]];
+}
+
+
+- (MKMapItem*)mapItemForCurrentLocation {
+
+	if (!self.locationCurrentLatitude || !self.locationCurrentLongitude) return nil;
+	
+	NSDictionary* addressDictionary =
+	[CLPlacemark addressDictionary:nil
+						withStreet:self.locationCurrentStreet
+						   andCity:self.locationCurrentCity
+						  andState:self.locationCurrentState
+							andZIP:nil
+						andCountry:CANADA_COUNTRY_NAME
+					andCountryCode:CANADA_COUNTRY_CODE];
+	
+	MKPlacemark* placemark = [Util placemarkWithLatitude:self.locationCurrentLatitude.doubleValue andLongitude:self.locationCurrentLongitude.doubleValue andAddressDictionary:addressDictionary];
+	
+	return [[MKMapItem alloc] initWithPlacemark:placemark];
 }
 
 

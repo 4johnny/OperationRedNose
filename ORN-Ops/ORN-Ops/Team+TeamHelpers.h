@@ -74,12 +74,18 @@
 # pragma mark Instance Helpers
 #
 
+- (void)updateCurrentLocationWithLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude andStreet:(NSString*)street andCity:(NSString*)city andState:(NSString*)state andAddress:(NSString*)address;
+- (void)updateCurrentLocationWithPlacemark:(CLPlacemark*)placemark;
+- (void)clearCurrentLocation;
+
 - (void)tryUpdateAssignedRideRoutesWithSender:(id)sender;
 
 - (NSString*)getTitle;
 - (NSArray*)getSortedRidesAssigned;
 
-- (NSTimeInterval)assignedDuration;
+- (MKMapItem*)mapItemForCurrentLocation;
+
+	- (NSTimeInterval)assignedDuration;
 - (CLLocationDistance)assignedDistance;
 
 @end
