@@ -28,7 +28,7 @@
 #
 
 #define MAP_SPAN_LOCATION_DELTA_NEIGHBOURHOOD	0.02 // degrees
-#define MAP_SPAN_LOCATION_DELTA_CITY			0.2 // degrees
+#define MAP_SPAN_LOCATION_DELTA_CITY			0.25 // degrees
 #define MAP_SPAN_LOCATION_DELTA_LOCALE			2.0 // degrees
 
 #

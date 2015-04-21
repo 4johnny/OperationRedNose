@@ -646,6 +646,15 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 
 - (MKOverlayRenderer*)mapView:(MKMapView*)mapView rendererForOverlay:(id<MKOverlay>)overlay {
 	
+	if ([overlay isKindOfClass:[MKPolygon class]]) // Jurisdication inverse overlay
+	{
+		MKPolygonRenderer* renderer = [[MKPolygonRenderer alloc] initWithOverlay:overlay];
+		renderer.alpha = 0.2;
+		renderer.fillColor = [UIColor grayColor];
+									   
+		return renderer;
+	}
+	
 	if ([overlay isKindOfClass:[RidePolyline class]]) {
 		
 		RidePolyline* ridePolyline = (RidePolyline*)overlay;
@@ -1592,6 +1601,9 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 
 - (void)configureView {
 	
+	// Add jurisdiction inverse overlay to map view
+	[self configureJurisdictionBoundaryOverlay];
+	
 	// Zoom map to jurisdiction region and load persisted data model
 	// NOTE: Delay to wait for orientation to be established
 	[self performSelector:@selector(configureJurisdictionRegionView) withObject:nil afterDelay:1.0];
@@ -1626,7 +1638,11 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 
 - (void)configureJurisdictionRegionViewWithAnimated:(BOOL)animated {
 	
-	MKCoordinateRegion centerRegion = MKCoordinateRegionMake(JURISDICTION_COORDINATE, MKCoordinateSpanMake(MAP_SPAN_LOCATION_DELTA_CITY, MAP_SPAN_LOCATION_DELTA_CITY));
+	// Center map view on jurisdiction region
+	
+	CLLocationCoordinate2D centerCoordinate = [MainMapViewController getJurisdictionPolygon].coordinate;
+	
+	MKCoordinateRegion centerRegion = MKCoordinateRegionMake(centerCoordinate, MKCoordinateSpanMake(MAP_SPAN_LOCATION_DELTA_CITY, MAP_SPAN_LOCATION_DELTA_CITY));
 	
 	[self.mainMapView setRegion:centerRegion animated:animated];
 }
@@ -1635,6 +1651,40 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 - (void)configureJurisdictionRegionView {
 	
 	[self configureJurisdictionRegionViewWithAnimated:YES];
+}
+
+
+- (void)configureJurisdictionBoundaryOverlay {
+
+	// Add juridisdiction inverse overlay to map view
+	
+	CLLocationCoordinate2D worldCoords[6] =
+	{ {90, 0}, {90, 180}, {-90, 180}, {-90, 0}, {-90, -180}, {90, -180} };
+	
+	MKPolygon* worldOverlay = [MKPolygon polygonWithCoordinates:worldCoords count:6 interiorPolygons:@[[MainMapViewController getJurisdictionPolygon]]];
+	
+	[self.mainMapView addOverlay:worldOverlay];
+}
+
+
++ (MKPolygon*)getJurisdictionPolygon {
+	
+	// Create jurisdiction polygon
+	CLLocationCoordinate2D jurisdictionCoords[10] =
+	{
+		{49.296597, -123.068810}, // Burrard Inlet, N end Commercial St
+		{49.204041, -123.065377}, // River, S end Victoria St, E of Mitchell Island
+		{49.196602, -123.012611}, // River, S end Boundary
+		{49.173741, -122.959224}, // Annacis Channel,
+		{49.220405, -122.871162}, // Fraser River, E of New West
+		{49.221022, -122.770749}, // Douglas Island, Fraser River, S end of PoCo
+		{49.292304, -122.660694}, // Pitt River, E of Coquitlam
+		{49.352612, -122.624344}, // Siwash Island, Fraser River, E of Coquitlam
+		{49.332423, -122.924207}, // Indian Arm, W of Porty Moody
+		{49.296053, -122.950128}  // Burrard Inlet, N of Barnet Hwy, Burnaby
+	};
+	
+	return [MKPolygon polygonWithCoordinates:jurisdictionCoords count:10];
 }
 
 

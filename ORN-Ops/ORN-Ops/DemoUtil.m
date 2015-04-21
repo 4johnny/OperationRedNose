@@ -54,18 +54,18 @@
 	[ride postNotificationCreatedWithSender:self];
 	
 	// Nowhere to Vancouver
-	ride = [Ride rideWithManagedObjectContext:moc];
-	ride.passengerNameFirst = @"Dina";
-	ride.passengerNameLast = @"Sable";
-	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
-	[ride updateLocationWithRideLocationType:RideLocationType_End
-								 andLatitude:49.2490447
-								andLongitude:-123.1001789
-								   andStreet:@"213 E King Edward Ave"
-									 andCity:@"Vancouver"
-									andState:BRITISH_COLUMBIA_STATE_CODE
-								  andAddress:nil];
-	[ride postNotificationCreatedWithSender:self];
+//	ride = [Ride rideWithManagedObjectContext:moc];
+//	ride.passengerNameFirst = @"Dina";
+//	ride.passengerNameLast = @"Sable";
+//	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
+//	[ride updateLocationWithRideLocationType:RideLocationType_End
+//								 andLatitude:49.2490447
+//								andLongitude:-123.1001789
+//								   andStreet:@"213 E King Edward Ave"
+//									 andCity:@"Vancouver"
+//									andState:BRITISH_COLUMBIA_STATE_CODE
+//								  andAddress:nil];
+//	[ride postNotificationCreatedWithSender:self];
 	
 	// Vancouver to Port Coquitlam
 	ride = [Ride rideWithManagedObjectContext:moc];
