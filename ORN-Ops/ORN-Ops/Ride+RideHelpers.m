@@ -134,8 +134,8 @@
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:sender userInfo:
 	 @{RIDE_ENTITY_NAME : self,
-	   RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedLocationStart],
-	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedLocationEnd]
+	   RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : @(updatedLocationStart),
+	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : @(updatedLocationEnd)
 	   }];
 }
 
@@ -144,7 +144,7 @@
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:sender userInfo:
 	 @{RIDE_ENTITY_NAME : self,
-	   RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedTeamAssigned]
+	   RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY : @(updatedTeamAssigned)
 	   }];
 }
 
@@ -153,9 +153,9 @@
 
 	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:sender userInfo:
 	 @{RIDE_ENTITY_NAME : self,
-	   RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedLocationStart],
-	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedLocationEnd],
-	   RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedTeamAssigned]
+	   RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : @(updatedLocationStart),
+	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : @(updatedLocationEnd),
+	   RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY : @(updatedTeamAssigned)
 	   }];
 }
 
@@ -231,7 +231,7 @@
 
 - (void)updateLocationWithRideLocationType:(RideLocationType)rideLocationType andLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude andStreet:(NSString*)street andCity:(NSString*)city andState:(NSString*)state andAddress:(NSString*)address {
 	
-	[self updateLocationWithRideLocationType:rideLocationType andLatitudeNumber:[NSNumber numberWithDouble:latitude] andLongitudeNumber:[NSNumber numberWithDouble:longitude] andStreet:street andCity:city andState:state andAddress:address];
+	[self updateLocationWithRideLocationType:rideLocationType andLatitudeNumber:@(latitude) andLongitudeNumber:@(longitude) andStreet:street andCity:city andState:state andAddress:address];
 }
 
 
@@ -316,8 +316,8 @@
 		// Use first directions route as main
 		// NOTE: Should be exactly 1, since we did not request alternate routes
 		MKRoute* route = response.routes.firstObject;
-		self.routeMainDuration = [NSNumber numberWithDouble:route.expectedTravelTime]; // seconds
-		self.routeMainDistance = [NSNumber numberWithDouble:route.distance]; // meters
+		self.routeMainDuration = @(route.expectedTravelTime); // seconds
+		self.routeMainDistance = @(route.distance); // meters
 		self.routeMainPolyline = route.polyline;
 		NSLog(@"Main Duration: %.0f sec -> %.2f min", route.expectedTravelTime, route.expectedTravelTime / (NSTimeInterval)SECONDS_PER_MINUTE);
 		NSLog(@"Main Distance: %.0f m -> %.2f km", route.distance, route.distance / (CLLocationDistance)METERS_PER_KILOMETER);
@@ -362,8 +362,8 @@
 		// User first directions route as prep
 		// NOTE: Should be exactly 1, since we did not request alternate routes
 		MKRoute* route = response.routes.firstObject;
-		self.routePrepDuration = [NSNumber numberWithDouble:route.expectedTravelTime]; // seconds
-		self.routePrepDistance = [NSNumber numberWithDouble:route.distance]; // meters
+		self.routePrepDuration = @(route.expectedTravelTime); // seconds
+		self.routePrepDistance = @(route.distance); // meters
 		self.routePrepPolyline = route.polyline;
 		NSLog(@"Prep Duration: %.0f sec -> %.2f min", route.expectedTravelTime, route.expectedTravelTime / (NSTimeInterval)SECONDS_PER_MINUTE);
 		NSLog(@"Prep Distance: %.0f m -> %.2f km", route.distance, route.distance / (CLLocationDistance)METERS_PER_KILOMETER);
@@ -402,7 +402,7 @@
 		}
 		
 		// Grab expected travel time
-		self.routeMainDuration = [NSNumber numberWithDouble:response.expectedTravelTime]; // seconds
+		self.routeMainDuration = @(response.expectedTravelTime); // seconds
 		NSLog(@"ETA: %.0f sec -> %.2f min", response.expectedTravelTime, response.expectedTravelTime / (NSTimeInterval)SECONDS_PER_MINUTE);
 		
 		// Persist to store and notify

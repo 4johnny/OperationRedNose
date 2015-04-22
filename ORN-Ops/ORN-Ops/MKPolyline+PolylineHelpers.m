@@ -64,8 +64,8 @@
 	NSMutableArray* longitudes = [NSMutableArray arrayWithCapacity:pointCount];
 	for (int i = 0; i < pointCount; i++) {
 		
-		latitudes[i] = [NSNumber numberWithDouble:coordinates[i].latitude];
-		longitudes[i] = [NSNumber numberWithDouble:coordinates[i].longitude];
+		latitudes[i] = @(coordinates[i].latitude);
+		longitudes[i] = @(coordinates[i].longitude);
 	}
 	
 	// Encode coordinate arrays

@@ -344,7 +344,7 @@
 	self.ride.passengerNameFirst = [self.firstNameTextField.text trimAll];
 	self.ride.passengerNameLast = [self.lastNameTextField.text trimAll];
 	self.ride.passengerPhoneNumber = [self.phoneNumberTextField.text trimAll];
-	self.ride.passengerCount = [NSNumber numberWithLong:self.passengerCountSegmentedControl.selectedSegmentIndex + 1];
+	self.ride.passengerCount = @(self.passengerCountSegmentedControl.selectedSegmentIndex + 1);
 	
 	// Save location fields - try async geocode
 	BOOL updatedLocationStart = NO;
@@ -385,8 +385,8 @@
 	
 	// Save vehicle fields
 	self.ride.vehicleDescription = [self.vehicleDescriptionTextField.text trimAll];
-	self.ride.vehicleTransmission = [NSNumber numberWithInteger:self.vehicleTransmissionSegmentedControl.selectedSegmentIndex + 1]; // enum VehicleTransmission
-	self.ride.vehicleSeatBeltCount = [NSNumber numberWithInteger:self.seatBeltCountSegmentedControl.selectedSegmentIndex];
+	self.ride.vehicleTransmission = @(self.vehicleTransmissionSegmentedControl.selectedSegmentIndex + 1); // enum VehicleTransmission
+	self.ride.vehicleSeatBeltCount = @(self.seatBeltCountSegmentedControl.selectedSegmentIndex);
 	
 	// Save notes fields
 	self.ride.notes = [self.notesTextView.text trimAll];

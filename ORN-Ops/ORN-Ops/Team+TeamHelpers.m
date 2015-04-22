@@ -96,7 +96,7 @@
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:sender userInfo:
 	 @{TEAM_ENTITY_NAME : self,
-	   TEAM_UPDATED_LOCATION_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedLocation]
+	   TEAM_UPDATED_LOCATION_NOTIFICATION_KEY : @(updatedLocation)
 	   }];
 }
 
@@ -105,7 +105,7 @@
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:sender userInfo:
 	 @{TEAM_ENTITY_NAME : self,
-	   TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedRidesAssigned]
+	   TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY : @(updatedRidesAssigned)
 	   }];
 }
 
@@ -114,8 +114,8 @@
 
 	[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:sender userInfo:
 	 @{TEAM_ENTITY_NAME : self,
-	   TEAM_UPDATED_LOCATION_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedLocation],
-	   TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY : [NSNumber numberWithBool:updatedRidesAssigned]
+	   TEAM_UPDATED_LOCATION_NOTIFICATION_KEY : @(updatedLocation),
+	   TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY : @(updatedRidesAssigned)
 	   }];
 }
 
@@ -144,7 +144,7 @@
 
 - (void)updateCurrentLocationWithLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude andStreet:(NSString*)street andCity:(NSString*)city andState:(NSString*)state andAddress:(NSString*)address {
 	
-	[self updateCurrentLocationWithLatitudeNumber:[NSNumber numberWithDouble:latitude] andLongitudeNumber:[NSNumber numberWithDouble:longitude] andStreet:street andCity:city andState:state andAddress:address];
+	[self updateCurrentLocationWithLatitudeNumber:@(latitude) andLongitudeNumber:@(longitude) andStreet:street andCity:city andState:state andAddress:address];
 }
 
 
