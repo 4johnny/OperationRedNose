@@ -315,8 +315,9 @@
 		
 		// Use first directions route as main
 		// NOTE: Should be exactly 1, since we did not request alternate routes
+		// NOTE: Round up to nearest minute
 		MKRoute* route = response.routes.firstObject;
-		self.routeMainDuration = @(route.expectedTravelTime); // seconds
+		self.routeMainDuration = @(ceil(route.expectedTravelTime / (NSTimeInterval)SECONDS_PER_MINUTE) * SECONDS_PER_MINUTE); // seconds
 		self.routeMainDistance = @(route.distance); // meters
 		self.routeMainPolyline = route.polyline;
 		NSLog(@"Main Duration: %.0f sec -> %.2f min", route.expectedTravelTime, route.expectedTravelTime / (NSTimeInterval)SECONDS_PER_MINUTE);
@@ -359,10 +360,11 @@
 			return;
 		}
 		
-		// User first directions route as prep
+		// Use first directions route as prep
 		// NOTE: Should be exactly 1, since we did not request alternate routes
+		// NOTE: Round up to nearest minute
 		MKRoute* route = response.routes.firstObject;
-		self.routePrepDuration = @(route.expectedTravelTime); // seconds
+		self.routePrepDuration = @(ceil(route.expectedTravelTime / (NSTimeInterval)SECONDS_PER_MINUTE) * SECONDS_PER_MINUTE); // seconds
 		self.routePrepDistance = @(route.distance); // meters
 		self.routePrepPolyline = route.polyline;
 		NSLog(@"Prep Duration: %.0f sec -> %.2f min", route.expectedTravelTime, route.expectedTravelTime / (NSTimeInterval)SECONDS_PER_MINUTE);
@@ -376,43 +378,6 @@
 		NSLog(@"Ride: %@", self);
 	}];
 }
-
-
-/*
- Calculate ride route duration, asynchronously
- 
- NOTE: Just ETA part of directions
- */
-/*
-- (void)tryUpdateMainRouteDurationWithSender:(id)sender {
-	
-	// If cannot get directions request, we are done
-	MKDirectionsRequest* directionsRequest = [self getMainDirectionsRequest];
-	if (!directionsRequest) return;
-	
-	// Update ride duration with ETA for route
-	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
-	[directions calculateETAWithCompletionHandler:^(MKETAResponse* response, NSError* error) {
-		
-		// NOTE: Completion block executes on main thread
-		// NOTE: Run only one ETA calculation simultaneously on this object
-		if (error) {
-			NSLog(@"ETA Error: %@ %@", error.localizedDescription, error.userInfo);
-			return;
-		}
-		
-		// Grab expected travel time
-		self.routeMainDuration = @(response.expectedTravelTime); // seconds
-		NSLog(@"ETA: %.0f sec -> %.2f min", response.expectedTravelTime, response.expectedTravelTime / (NSTimeInterval)SECONDS_PER_MINUTE);
-		
-		// Persist to store and notify
-		[Util saveManagedObjectContext];
-		[self postNotificationUpdatedWithSender:sender];
-		[self.teamAssigned postNotificationUpdatedWithSender:sender];
-		NSLog(@"Ride: %@", self);
-	}];
-}
-*/
 
 
 - (MKDirectionsRequest*)getMainDirectionsRequest {
