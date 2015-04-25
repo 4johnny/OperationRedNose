@@ -182,7 +182,7 @@
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" title="Rides" id="GgT-Jp-8lm">
-                        <barButtonItem key="rightBarButtonItem" style="plain" systemItem="add" id="FEm-Y4-KAZ">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="FEm-Y4-KAZ">
                             <connections>
                                 <segue destination="ton-Jb-tNu" kind="presentation" identifier="showRideAddSegue" modalPresentationStyle="currentContext" modalTransitionStyle="coverVertical" id="qzc-9o-wjq"/>
                             </connections>
@@ -233,7 +233,7 @@
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" title="Teams" id="lRU-wE-c3o">
-                        <barButtonItem key="rightBarButtonItem" style="plain" systemItem="add" id="Gd6-34-HHs"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="Gd6-34-HHs"/>
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VJQ-IQ-9V8" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1077,7 +1077,7 @@
                         <barButtonItem title="Delete" style="plain" id="GiP-jb-09a"/>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="Ride" id="pwX-eP-kT9">
-                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="cancel" id="C4i-lz-FL3">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="C4i-lz-FL3">
                             <connections>
                                 <action selector="cancelPressed:" destination="EOY-Bm-UjH" id="XtO-hM-Pb6"/>
                             </connections>
