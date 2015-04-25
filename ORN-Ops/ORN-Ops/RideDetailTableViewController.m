@@ -31,10 +31,11 @@
 # pragma mark Properties
 #
 
+@property (nonatomic, getter=isAddMode) BOOL addMode;
+
 @property (strong, nonatomic) NSFetchedResultsController* teamFetchedResultsController;
 
 @property (nonatomic) CLGeocoder* geocoder;
-@property (nonatomic) UIAlertController* okAlertController;
 
 @end
 
@@ -68,7 +69,7 @@
 	//fetchRequest.fetchLimit = PAGE_LIMIT;
 	
 	// NOTE: nil for section name key path means "no sections"
-	_teamFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.ride.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+	_teamFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[Util managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
 	_teamFetchedResultsController.delegate = self;
 	
 	NSError *error = nil;
@@ -106,11 +107,22 @@
 	
 	// Uncomment the following line to display an Edit button in the navigation bar for this view controller.
 	// self.navigationItem.rightBarButtonItem = self.editButtonItem;
-
-	// Extend edge "under bottom bars" to improve aesthetics when popping view controller
-	// NOTE: Done manually so that storyboard easier to design with
-	self.edgesForExtendedLayout = UIRectEdgeBottom;
 	
+	self.addMode = (self.ride == nil);
+	
+	if (self.isAddMode) {
+		
+		// Replace "save" button with "add"
+		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStyleDone target:self action:@selector(savePressed:)];
+		
+	} else {
+
+		// Extend edge "under bottom bars" to improve aesthetics when popping view controller
+		// NOTE: Done manually so that storyboard easier to design with
+
+		self.edgesForExtendedLayout = UIRectEdgeBottom;
+	}
+
 	[self configureView];
 }
 
@@ -118,14 +130,14 @@
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	
-	[self.navigationController setToolbarHidden:NO];
+	self.navigationController.toolbarHidden = self.isAddMode;
 }
 
 
 - (void)viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
 	
-	[self.navigationController setToolbarHidden:YES];
+	self.navigationController.toolbarHidden = YES;
 }
 
 
@@ -226,7 +238,22 @@
 	
 	[self saveDataModelFromView];
 	
-	[self.navigationController popViewControllerAnimated:YES];
+	if (self.isAddMode) {
+		
+		[self dismissViewControllerAnimated:YES completion:nil];
+		
+	} else {
+		
+		[self.navigationController popViewControllerAnimated:YES];
+	}
+}
+
+
+- (IBAction)cancelPressed:(UIBarButtonItem*)sender {
+	
+	[self.view endEditing:YES];
+	
+	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -237,25 +264,13 @@
 
 - (void)configureView {
 	
-	[self configureTeamAssignedPickerTextField];
 	[self configureStartTimeDatePickerTextField];
+	[self configureTeamAssignedPickerTextField];
 	
-	[self loadDataModelIntoView];
-}
-
-
-- (void)configureTeamAssignedPickerTextField {
-
-	NSMutableArray* teamTitles = [NSMutableArray arrayWithCapacity:self.teamFetchedResultsController.fetchedObjects.count + 1];
-	
-	[teamTitles addObject:TEAM_TITLE_NONE];
-	
-	for (Team* team in self.teamFetchedResultsController.fetchedObjects) {
+	if (!self.isAddMode) {
 		
-		[teamTitles addObject:[team getTitle]];
+		[self loadDataModelIntoView];
 	}
-	
-	self.teamAssignedPickerTextField.titles = teamTitles;
 }
 
 
@@ -271,6 +286,7 @@
 	
 	// Get date-time for now
 	NSDate* now = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
+	self.startTimeDatePickerTextField.date = now;
 	
 	// Minimum date-time is one day before now
 	NSCalendar* currentCalendar = [NSCalendar currentCalendar];
@@ -281,6 +297,22 @@
 	// Maximum date-time is one day from now
 	offsetComponents.day = 1;
 	self.startTimeDatePickerTextField.maximumDate = [currentCalendar dateByAddingComponents:offsetComponents toDate:now options:0];
+}
+
+
+- (void)configureTeamAssignedPickerTextField {
+	
+	NSMutableArray* teamTitles = [NSMutableArray arrayWithCapacity:self.teamFetchedResultsController.fetchedObjects.count + 1];
+	
+	[teamTitles addObject:TEAM_TITLE_NONE];
+	
+	for (Team* team in self.teamFetchedResultsController.fetchedObjects) {
+		
+		[teamTitles addObject:[team getTitle]];
+	}
+	
+	self.teamAssignedPickerTextField.titles = teamTitles;
+	self.teamAssignedPickerTextField.selectedRow = 0; // "None"
 }
 
 
@@ -317,6 +349,11 @@
 
 // Save ride data model from view fields
 - (void)saveDataModelFromView {
+	
+	if (self.isAddMode) {
+		
+		self.ride = [Ride rideWithManagedObjectContext:[Util managedObjectContext]];
+	}
 	
 	// Save dispatch field: start time - try async calculate route
 	if (![NSDate compareDate:self.ride.dateTimeStart toDate:self.startTimeDatePickerTextField.date]) {
@@ -393,7 +430,14 @@
 	
 	// Persist data model to store and notify observers
 	[Util saveManagedObjectContext];
-	[self.ride postNotificationUpdatedWithSender:self andUpdatedLocationStart:updatedLocationStart andUpdatedLocationEnd:updatedLocationEnd andUpdatedTeamAssigned:updatedTeamAssigned];
+	if (self.isAddMode) {
+		
+		[self.ride postNotificationCreatedWithSender:self];
+		
+	} else {
+		
+		[self.ride postNotificationUpdatedWithSender:self andUpdatedLocationStart:updatedLocationStart andUpdatedLocationEnd:updatedLocationEnd andUpdatedTeamAssigned:updatedTeamAssigned];
+	}
 }
 
 

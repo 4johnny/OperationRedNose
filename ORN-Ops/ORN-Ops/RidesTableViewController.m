@@ -7,7 +7,7 @@
 //
 
 #import "RidesTableViewController.h"
-#import "AppDelegate.h"
+#import "RideDetailTableViewController.h"
 #import "Ride+RideHelpers.h"
 #import "Team+TeamHelpers.h"
 
@@ -20,7 +20,8 @@
 #define RIDES_CELL_DATETIME_FORMAT	@"HH:mm"
 #define RIDES_CELL_FIELD_EMPTY		@"?"
 
-#define SHOW_RIDE_DETAIL_SEQUE	@"showRideDetailSeque"
+#define SHOW_RIDE_DETAIL_SEQUE	@"showRideDetailSegue"
+#define SHOW_RIDE_ADD_SEQUE		@"showRideAddSegue"
 
 
 #
@@ -115,15 +116,22 @@
 
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
 	
 	if ([segue.identifier isEqualToString:SHOW_RIDE_DETAIL_SEQUE]) {
 		
 		// Inject ride model into ride view controller
-		id<RideModelSource> rideModelSource = segue.destinationViewController;
-		rideModelSource.ride = [self.fetchedResultsController objectAtIndexPath:[self.tableView indexPathForSelectedRow]];
+		RideDetailTableViewController* rideDetailTableViewController = (RideDetailTableViewController*)segue.destinationViewController;
+		rideDetailTableViewController.ride = [self.fetchedResultsController objectAtIndexPath:[self.tableView indexPathForSelectedRow]];
+		
+		// Remove "cancel" button
+		rideDetailTableViewController.navigationItem.leftBarButtonItem = nil;
 	}
+	
+	//	if ([segue.identifier isEqualToString:SHOW_RIDE_ADD_SEQUE]) {
+	//		// NOTE: Empty "ride" field means "Add Mode"
+	//
+	//		// Do nothing
+	//	}
 }
 
 
