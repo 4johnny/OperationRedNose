@@ -7,7 +7,6 @@
 //
 
 #import "TeamDetailTableViewController.h"
-#import "AppDelegate.h"
 
 
 #

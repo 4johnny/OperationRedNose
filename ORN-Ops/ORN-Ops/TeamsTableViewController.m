@@ -7,7 +7,6 @@
 //
 
 #import "TeamsTableViewController.h"
-#import "AppDelegate.h"
 #import "Team+TeamHelpers.h"
 #import "Ride+RideHelpers.h"
 

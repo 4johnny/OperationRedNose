@@ -10,7 +10,6 @@
 #import <CoreLocation/CoreLocation.h>
 
 #import "MainMapViewController.h"
-#import "AppDelegate.h"
 #import "Ride+RideHelpers.h"
 #import "Team+TeamHelpers.h"
 #import "RidePointAnnotation.h"

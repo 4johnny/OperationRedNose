@@ -7,7 +7,6 @@
 //
 
 #import "MainTabBarController.h"
-#import "AppDelegate.h"
 
 
 #
