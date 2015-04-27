@@ -67,4 +67,22 @@
 */
 
 
+#
+# pragma mark <UITabBarControllerDelegate>
+#
+
+/*
+- (BOOL)tabBarController:(UITabBarController*)tabBarController shouldSelectViewController:(UIViewController*)viewController {
+	
+	return YES;
+}
+
+
+- (void)tabBarController:(UITabBarController*)tabBarController didSelectViewController:(UIViewController*)viewController {
+
+	// Do nothing
+}
+*/
+
+
 @end

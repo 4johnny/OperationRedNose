@@ -145,7 +145,7 @@
         <!--Rides Table View Controller-->
         <scene sceneID="qs7-WP-gn0">
             <objects>
-                <tableViewController storyboardIdentifier="ridesTableViewController" title="Rides Table View Controller" id="ePf-i9-3Hp" customClass="RidesTableViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="ridesTableViewController" title="Rides Table View Controller" definesPresentationContext="YES" id="ePf-i9-3Hp" customClass="RidesTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="140" sectionHeaderHeight="22" sectionFooterHeight="22" id="gT6-2y-JAf">
                         <rect key="frame" x="0.0" y="64" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -184,7 +184,7 @@
                     <navigationItem key="navigationItem" title="Rides" id="GgT-Jp-8lm">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="FEm-Y4-KAZ">
                             <connections>
-                                <segue destination="ton-Jb-tNu" kind="presentation" identifier="showRideAddSegue" modalPresentationStyle="currentContext" modalTransitionStyle="coverVertical" id="qzc-9o-wjq"/>
+                                <segue destination="ton-Jb-tNu" kind="presentation" identifier="showRideAddSegue" modalPresentationStyle="overFullScreen" modalTransitionStyle="coverVertical" id="qzc-9o-wjq"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

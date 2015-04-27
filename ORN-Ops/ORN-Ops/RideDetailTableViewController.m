@@ -239,7 +239,7 @@
 	
 	if (self.isAddMode) {
 		
-		[self dismissViewControllerAnimated:YES completion:nil];
+		[self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 		
 	} else {
 		
@@ -252,7 +252,7 @@
 	
 	[self.view endEditing:YES];
 	
-	[self dismissViewControllerAnimated:YES completion:nil];
+	[self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
