@@ -462,9 +462,16 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 				
 			case UIButtonTypeDetailDisclosure: {
 				
-				// Create ride detail controller; inject data model; and push onto navigation stack
+				// Create ride detail controller
 				RideDetailTableViewController* rideDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:RIDE_DETAIL_TABLE_VIEW_CONTROLLER_ID];
+				
+				// Remove "cancel" button
+				rideDetailTableViewController.navigationItem.leftBarButtonItem = nil;
+
+				// Inject data model
 				rideDetailTableViewController.ride = ride;
+				
+				// Push onto navigation stack
 				[self.navigationController pushViewController:rideDetailTableViewController animated:YES];
 				
 				return;
