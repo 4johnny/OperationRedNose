@@ -35,7 +35,10 @@
 # pragma mark Initializers
 #
 
-- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext andDateTime:(NSDate*)dateTime andPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType {
+- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
+								 andDateTime:(NSDate*)dateTime
+								andPlacemark:(CLPlacemark*)placemark
+						 andRideLocationType:(RideLocationType)rideLocationType {
 
 	self = [super initWithEntity:[NSEntityDescription entityForName:RIDE_ENTITY_NAME inManagedObjectContext:managedObjectContext] insertIntoManagedObjectContext:managedObjectContext];
 	
@@ -61,9 +64,15 @@
 }
 
 
-+ (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext andDateTime:(NSDate*)dateTime andPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType {
++ (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
+								 andDateTime:(NSDate*)dateTime
+								andPlacemark:(CLPlacemark*)placemark
+						 andRideLocationType:(RideLocationType)rideLocationType {
 	
-	return [[Ride alloc] initWithManagedObjectContext:managedObjectContext andDateTime:dateTime andPlacemark:placemark andRideLocationType:rideLocationType];
+	return [[Ride alloc] initWithManagedObjectContext:managedObjectContext
+										  andDateTime:dateTime
+										 andPlacemark:placemark
+								  andRideLocationType:rideLocationType];
 }
 
 
@@ -117,25 +126,32 @@
 - (void)postNotificationCreatedWithSender:(id)sender  {
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_CREATED_NOTIFICATION_NAME object:sender userInfo:
-	 @{RIDE_ENTITY_NAME : self,
+	 @{
+	   RIDE_ENTITY_NAME : self,
 	   RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : @YES,
-	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : @YES
+	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : @YES,
 	   }];
 }
 
 
 - (void)postNotificationUpdatedWithSender:(id)sender {
 
-	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:sender userInfo:@{RIDE_ENTITY_NAME : self}];
+	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:sender userInfo:
+	 @{
+	   RIDE_ENTITY_NAME : self,
+	   }];
 }
 
 
-- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocationStart:(BOOL)updatedLocationStart andUpdatedLocationEnd:(BOOL)updatedLocationEnd {
+- (void)postNotificationUpdatedWithSender:(id)sender
+				  andUpdatedLocationStart:(BOOL)updatedLocationStart
+					andUpdatedLocationEnd:(BOOL)updatedLocationEnd {
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:sender userInfo:
-	 @{RIDE_ENTITY_NAME : self,
+	 @{
+	   RIDE_ENTITY_NAME : self,
 	   RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : @(updatedLocationStart),
-	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : @(updatedLocationEnd)
+	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : @(updatedLocationEnd),
 	   }];
 }
 
@@ -143,19 +159,24 @@
 - (void)postNotificationUpdatedWithSender:(id)sender andUpdatedTeamAssigned:(BOOL)updatedTeamAssigned {
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:sender userInfo:
-	 @{RIDE_ENTITY_NAME : self,
-	   RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY : @(updatedTeamAssigned)
+	 @{
+	   RIDE_ENTITY_NAME : self,
+	   RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY : @(updatedTeamAssigned),
 	   }];
 }
 
 
-- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocationStart:(BOOL)updatedLocationStart andUpdatedLocationEnd:(BOOL)updatedLocationEnd andUpdatedTeamAssigned:(BOOL)updatedTeamAssigned {
+- (void)postNotificationUpdatedWithSender:(id)sender
+				  andUpdatedLocationStart:(BOOL)updatedLocationStart
+					andUpdatedLocationEnd:(BOOL)updatedLocationEnd
+				   andUpdatedTeamAssigned:(BOOL)updatedTeamAssigned {
 
 	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:sender userInfo:
-	 @{RIDE_ENTITY_NAME : self,
+	 @{
+	   RIDE_ENTITY_NAME : self,
 	   RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : @(updatedLocationStart),
 	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : @(updatedLocationEnd),
-	   RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY : @(updatedTeamAssigned)
+	   RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY : @(updatedTeamAssigned),
 	   }];
 }
 
@@ -192,7 +213,13 @@
 }
 
 
-- (void)updateLocationWithRideLocationType:(RideLocationType)rideLocationType andLatitudeNumber:(NSNumber*)latitude andLongitudeNumber:(NSNumber*)longitude andStreet:(NSString*)street andCity:(NSString*)city andState:(NSString*)state andAddress:(NSString*)address {
+- (void)updateLocationWithRideLocationType:(RideLocationType)rideLocationType
+						 andLatitudeNumber:(NSNumber*)latitude
+						andLongitudeNumber:(NSNumber*)longitude
+								 andStreet:(NSString*)street
+								   andCity:(NSString*)city
+								  andState:(NSString*)state
+								andAddress:(NSString*)address {
 	
 	if (!address && street && city) {
 		
@@ -229,15 +256,34 @@
 }
 
 
-- (void)updateLocationWithRideLocationType:(RideLocationType)rideLocationType andLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude andStreet:(NSString*)street andCity:(NSString*)city andState:(NSString*)state andAddress:(NSString*)address {
+- (void)updateLocationWithRideLocationType:(RideLocationType)rideLocationType
+							   andLatitude:(CLLocationDegrees)latitude
+							  andLongitude:(CLLocationDegrees)longitude
+								 andStreet:(NSString*)street
+								   andCity:(NSString*)city
+								  andState:(NSString*)state
+								andAddress:(NSString*)address {
 	
-	[self updateLocationWithRideLocationType:rideLocationType andLatitudeNumber:@(latitude) andLongitudeNumber:@(longitude) andStreet:street andCity:city andState:state andAddress:address];
+	[self updateLocationWithRideLocationType:rideLocationType
+						   andLatitudeNumber:@(latitude)
+						  andLongitudeNumber:@(longitude)
+								   andStreet:street
+									 andCity:city
+									andState:state
+								  andAddress:address];
 }
 
 
-- (void)updateLocationWithRideLocationType:(RideLocationType)rideLocationType andPlacemark:(CLPlacemark*)placemark {
+- (void)updateLocationWithRideLocationType:(RideLocationType)rideLocationType
+							  andPlacemark:(CLPlacemark*)placemark {
 	
-	[self updateLocationWithRideLocationType:rideLocationType andLatitude:placemark.location.coordinate.latitude andLongitude:placemark.location.coordinate.longitude andStreet:[placemark getAddressStreet] andCity:placemark.locality andState:[placemark getAddressState] andAddress:[placemark getAddressString]];
+	[self updateLocationWithRideLocationType:rideLocationType
+								 andLatitude:placemark.location.coordinate.latitude
+								andLongitude:placemark.location.coordinate.longitude
+								   andStreet:[placemark getAddressStreet]
+									 andCity:placemark.locality
+									andState:[placemark getAddressState]
+								  andAddress:[placemark getAddressString]];
 }
 
 
@@ -250,7 +296,10 @@
 /*
  Geocode given address string relative to jurisdiction, asynchronously
  */
-- (void)tryUpdateLocationWithAddressString:(NSString*)addressString andRideLocationType:(RideLocationType)rideLocationType andGeocoder:(CLGeocoder*)geocoder andSender:(id)sender {
+- (void)tryUpdateLocationWithAddressString:(NSString*)addressString
+					   andRideLocationType:(RideLocationType)rideLocationType
+							   andGeocoder:(CLGeocoder*)geocoder
+								 andSender:(id)sender {
 	
 	addressString = [addressString trimAll];
 	
@@ -268,8 +317,8 @@
 			} else if (placemarks.count < 1) {
 				NSLog(@"Geocode Error: No placemarks for address string: %@", addressString);
 			}
-			
-			[Util presentOKAlertWithTitle:@"Error" andMessage:[NSString stringWithFormat:@"Cannot geocode address: %@", addressString]];
+
+			//	[Util presentOKAlertWithTitle:@"Error" andMessage:[NSString stringWithFormat:@"Cannot geocode address: %@", addressString]];
 			
 			return;
 		}
@@ -281,14 +330,16 @@
 		NSLog(@"Geocode locality: %@", placemark.locality);
 		NSLog(@"Geocode address: %@", placemark.addressDictionary);
 
-		// Try to recalculate main route
-		[self tryUpdateMainRouteWithSender:sender]; // async
-		
 		// Persist and notify
 		[Util saveManagedObjectContext];
-		[self postNotificationUpdatedWithSender:sender andUpdatedLocationStart:(rideLocationType == RideLocationType_Start) andUpdatedLocationEnd:(rideLocationType == RideLocationType_End)];
+		[self postNotificationUpdatedWithSender:sender
+						andUpdatedLocationStart:(rideLocationType == RideLocationType_Start)
+						  andUpdatedLocationEnd:(rideLocationType == RideLocationType_End)];
 		[self.teamAssigned postNotificationUpdatedWithSender:sender];
 		NSLog(@"Ride: %@", self);
+		
+		// Try to recalculate main route
+		[self tryUpdateMainRouteWithSender:sender]; // async
 	}];
 }
 
@@ -306,8 +357,8 @@
 	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
 	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse* response, NSError* error) {
 		
-		// NOTE: Completion block executes on main thread
-		// NOTE: Run only one directions calculation simultaneously on this object
+		// NOTE: Completion block runs on Main thread
+		
 		if (error) {
 			NSLog(@"Directions Error: %@ %@", error.localizedDescription, error.userInfo);
 			return;
@@ -324,14 +375,14 @@
 		NSLog(@"Main Distance: %.0f m -> %.2f km", route.distance, route.distance / (CLLocationDistance)METERS_PER_KILOMETER);
 		NSLog(@"Main Polyline: %@", route.polyline);
 	
-		// Try to recalculate prep routes for team assigned, if any
-		[self.teamAssigned tryUpdateAssignedRideRoutesWithSender:sender]; // async
-		
 		// Persist to store and notify
 		[Util saveManagedObjectContext];
 		[self postNotificationUpdatedWithSender:sender];
 		[self.teamAssigned postNotificationUpdatedWithSender:sender];
 		NSLog(@"Ride: %@", self);
+		
+		// Try to recalculate prep routes for team assigned, if any
+		[self.teamAssigned tryUpdateAssignedRideRoutesWithSender:sender]; // async
 	}];
 }
 
@@ -339,7 +390,9 @@
 /*
  Calculate ride prep route, asynchronously
  */
-- (void)tryUpdatePrepRouteWithLatitude:(NSNumber*)latitude andLongitude:(NSNumber*)longitude andSender:(id)sender {
+- (void)tryUpdatePrepRouteWithLatitude:(NSNumber*)latitude
+						  andLongitude:(NSNumber*)longitude
+							 andSender:(id)sender {
 	
 	// Capture prep location
 	self.locationPrepLatitude = latitude;
@@ -353,8 +406,8 @@
 	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
 	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse* response, NSError* error) {
 		
-		// NOTE: Completion block executes on main thread
-		// NOTE: Run only one directions calculation simultaneously on this object
+		// NOTE: Completion block runs on Main thread
+		
 		if (error) {
 			NSLog(@"Directions Error: %@ %@", error.localizedDescription, error.userInfo);
 			return;
@@ -438,7 +491,9 @@
 
 - (NSDate*)getRouteDateTimeEnd {
 
-	return self.dateTimeStart && self.routeMainDuration ? [NSDate dateWithTimeInterval:self.routeMainDuration.doubleValue sinceDate:self.dateTimeStart] : nil;
+	return (self.dateTimeStart && self.routeMainDuration)
+	? [NSDate dateWithTimeInterval:self.routeMainDuration.doubleValue sinceDate:self.dateTimeStart]
+	: nil;
 }
 
 
@@ -471,7 +526,9 @@
 								andCountry:CANADA_COUNTRY_NAME
 							andCountryCode:CANADA_COUNTRY_CODE];
 			
-			MKPlacemark* placemark = [Util placemarkWithLatitude:self.locationStartLatitude.doubleValue andLongitude:self.locationStartLongitude.doubleValue andAddressDictionary:addressDictionary];
+			MKPlacemark* placemark = [Util placemarkWithLatitude:self.locationStartLatitude.doubleValue
+													andLongitude:self.locationStartLongitude.doubleValue
+											andAddressDictionary:addressDictionary];
 
 			return [[MKMapItem alloc] initWithPlacemark:placemark];
 		}
@@ -489,7 +546,9 @@
 								andCountry:CANADA_COUNTRY_NAME
 							andCountryCode:CANADA_COUNTRY_CODE];
 			
-			MKPlacemark* placemark = [Util placemarkWithLatitude:self.locationEndLatitude.doubleValue andLongitude:self.locationEndLongitude.doubleValue andAddressDictionary:addressDictionary];
+			MKPlacemark* placemark = [Util placemarkWithLatitude:self.locationEndLatitude.doubleValue
+													andLongitude:self.locationEndLongitude.doubleValue
+											andAddressDictionary:addressDictionary];
 			
 			return [[MKMapItem alloc] initWithPlacemark:placemark];
 		}
@@ -588,7 +647,9 @@
 #
 
 
-+ (void)tryCreateRideWithAddressString:(NSString*)addressString andGeocoder:(CLGeocoder*)geocoder andSender:(id)sender {
++ (void)tryCreateRideWithAddressString:(NSString*)addressString
+						   andGeocoder:(CLGeocoder*)geocoder
+							 andSender:(id)sender {
 	
 	addressString = [addressString trimAll];
 	
@@ -596,8 +657,7 @@
 	
 	[geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray* placemarks, NSError* error) {
 		
-		// NOTE: Completion block executes on main thread
-		// NOTE: Run only one geocode simultaneously on this object
+		// NOTE: Completion block runs on Main thread
 		
 		// If there is a problem, log it; alert the user; and we are done.
 		if (error || placemarks.count < 1) {
@@ -608,14 +668,17 @@
 				NSLog(@"Geocode Error: No placemarks for address string: %@", addressString);
 			}
 			
-			[Util presentOKAlertWithTitle:@"Error" andMessage:[NSString stringWithFormat:@"Cannot geocode address: %@", addressString]];
+			//	[Util presentOKAlertWithTitle:@"Error" andMessage:[NSString stringWithFormat:@"Cannot geocode address: %@", addressString]];
 			
 			return;
 		}
 		
 		// Use first placemark as start location for new ride
 		CLPlacemark* placemark = placemarks[0];
-		Ride* ride = [Ride rideWithManagedObjectContext:[Util managedObjectContext] andDateTime:[NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL] andPlacemark:placemark andRideLocationType:RideLocationType_Start];
+		Ride* ride = [Ride rideWithManagedObjectContext:[Util managedObjectContext]
+											andDateTime:[NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL]
+										   andPlacemark:placemark
+									andRideLocationType:RideLocationType_Start];
 		NSLog(@"Geocode location: %@", placemark.location);
 		NSLog(@"Geocode locality: %@", placemark.locality);
 		NSLog(@"Geocode address: %@", placemark.addressDictionary);
@@ -678,11 +741,17 @@
 	if (!startDate || !startLatitude || !startLongitude || !endLatitude || !endLongitude) return nil;
 	
 	// Create placemarks for ride start and end locations
-	MKPlacemark* startPlacemark = [Util placemarkWithLatitude:startLatitude.doubleValue andLongitude:startLongitude.doubleValue andAddressDictionary:nil];
-	MKPlacemark* endPlacemark = [Util placemarkWithLatitude:endLatitude.doubleValue andLongitude:endLongitude.doubleValue andAddressDictionary:nil];
+	MKPlacemark* startPlacemark = [Util placemarkWithLatitude:startLatitude.doubleValue
+												 andLongitude:startLongitude.doubleValue
+										 andAddressDictionary:nil];
+	MKPlacemark* endPlacemark = [Util placemarkWithLatitude:endLatitude.doubleValue
+											   andLongitude:endLongitude.doubleValue
+									   andAddressDictionary:nil];
 	
 	// Create directions request for route by car for ride start time
-	return [Util directionsRequestWithDepartureDate:startDate andSourcePlacemark:startPlacemark andDestinationPlacemark:endPlacemark];
+	return [Util directionsRequestWithDepartureDate:startDate
+								 andSourcePlacemark:startPlacemark
+							andDestinationPlacemark:endPlacemark];
 }
 
 

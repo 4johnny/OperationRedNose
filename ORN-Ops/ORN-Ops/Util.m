@@ -46,51 +46,29 @@
 #
 
 
-+ (UIAlertController*)sharedOKAlertController {
++ (void)presentActionAlertWithViewController:(UIViewController*)viewController
+									andTitle:(NSString*)title
+								  andMessage:(NSString*)message
+								   andAction:(UIAlertAction*)action {
 	
-	// Singleton
+	if (!viewController) return;
 	
-	static UIAlertController* sharedOKAlertController = nil;
+	UIAlertController* actionAlertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
 	
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		
-		UIAlertAction* okAlertAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
-		sharedOKAlertController = [UIAlertController alertControllerWithTitle:@"Error" message:nil preferredStyle:UIAlertControllerStyleAlert];
-		[sharedOKAlertController addAction:okAlertAction];
-	});
-	
-	return sharedOKAlertController;
+	[actionAlertController addAction:action];
+	[actionAlertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+
+	[viewController presentViewController:actionAlertController animated:YES completion:nil];
 }
 
 
-+ (void)presentOKAlertWithTitle:(NSString*)title andMessage:(NSString*)message {
++ (void)presentOKAlertWithViewController:(UIViewController*)viewController
+								andTitle:(NSString*)title
+							  andMessage:(NSString*)message {
 	
-	// TODO: Singleton for now, but may need to alloc new controllers for each alert
-	UIAlertController* okAlertController = [Util sharedOKAlertController];
-	
-	okAlertController.title = title;
-	okAlertController.message = message;
-	
-	// Present via known top-level controller to allow for async callback alerts
-	id<UIApplicationDelegate> appDelegate = [UIApplication sharedApplication].delegate;
-	UIViewController* appRootViewController = (UIViewController*)appDelegate.window.rootViewController;
-	[appRootViewController presentViewController:okAlertController animated:YES completion:nil];
+	[Util presentActionAlertWithViewController:viewController andTitle:title andMessage:message andAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
 }
 
-
-+ (void)presentAlertWithTitle:(NSString*)title andMessage:(NSString*)message andAction:(UIAlertAction*)action {
-
-	UIAlertController* alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-	
-	[alertController addAction:action];
-	[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil]];
-	
-	// Present via known top-level controller to allow for async callback alerts
-	id<UIApplicationDelegate> appDelegate = [UIApplication sharedApplication].delegate;
-	UIViewController* appRootViewController = (UIViewController*)appDelegate.window.rootViewController;
-	[appRootViewController presentViewController:alertController animated:YES completion:nil];
-}
 
 
 #
@@ -121,7 +99,10 @@
 #
 
 
-+ (void)animateDropView:(UIView*)view withDropHeight:(CGFloat)dropHeight withDuration:(NSTimeInterval)duration withDelay:(NSTimeInterval)delay {
++ (void)animateDropView:(UIView*)view
+		 withDropHeight:(CGFloat)dropHeight
+		   withDuration:(NSTimeInterval)duration
+			  withDelay:(NSTimeInterval)delay {
 	
 	// Remember end frame for annotation
 	CGRect endFrame = view.frame;
@@ -170,13 +151,17 @@
 #
 
 
-+ (MKPlacemark*)placemarkWithLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude andAddressDictionary:(NSDictionary*)addressDictionary {
++ (MKPlacemark*)placemarkWithLatitude:(CLLocationDegrees)latitude
+						 andLongitude:(CLLocationDegrees)longitude
+				 andAddressDictionary:(NSDictionary*)addressDictionary {
 
 	return [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(latitude, longitude) addressDictionary:addressDictionary];
 }
 
 
-+ (MKDirectionsRequest*)directionsRequestWithDepartureDate:(NSDate*)departureDate andSourcePlacemark:(MKPlacemark*)sourcePlaceMark andDestinationPlacemark:(MKPlacemark*)destinationPlacemark {
++ (MKDirectionsRequest*)directionsRequestWithDepartureDate:(NSDate*)departureDate
+										andSourcePlacemark:(MKPlacemark*)sourcePlaceMark
+								   andDestinationPlacemark:(MKPlacemark*)destinationPlacemark {
 	
 	if (!departureDate || !sourcePlaceMark || !destinationPlacemark) return nil;
 	

@@ -22,7 +22,9 @@
 #
 
 
-- (instancetype)initWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
+- (instancetype)initWithRide:(Ride*)ride
+		 andRideLocationType:(RideLocationType)rideLocationType
+		andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
 	
 	self = [super init];
 	if (self) {
@@ -65,17 +67,28 @@
 }
 
 
-+ (instancetype)ridePointAnnotationWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
++ (instancetype)ridePointAnnotationWithRide:(Ride*)ride
+						andRideLocationType:(RideLocationType)rideLocationType
+					   andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
 
-	return [[RidePointAnnotation alloc] initWithRide:ride andRideLocationType:rideLocationType andNeedsAnimatesDrop:needsAnimatesDrop];
+	return [[RidePointAnnotation alloc] initWithRide:ride
+								 andRideLocationType:rideLocationType
+								andNeedsAnimatesDrop:needsAnimatesDrop];
 }
 
 
-+ (instancetype)ridePointAnnotation:(RidePointAnnotation*)ridePointAnnotation withRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
++ (instancetype)ridePointAnnotation:(RidePointAnnotation*)ridePointAnnotation
+						   withRide:(Ride*)ride
+				andRideLocationType:(RideLocationType)rideLocationType
+			   andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
 
 	return ridePointAnnotation
-	? [ridePointAnnotation initWithRide:ride andRideLocationType:rideLocationType andNeedsAnimatesDrop:needsAnimatesDrop]
-	: [RidePointAnnotation ridePointAnnotationWithRide:ride andRideLocationType:rideLocationType andNeedsAnimatesDrop:needsAnimatesDrop];
+	? [ridePointAnnotation initWithRide:ride
+					andRideLocationType:rideLocationType
+				   andNeedsAnimatesDrop:needsAnimatesDrop]
+	: [RidePointAnnotation ridePointAnnotationWithRide:ride
+								   andRideLocationType:rideLocationType
+								  andNeedsAnimatesDrop:needsAnimatesDrop];
 }
 
 

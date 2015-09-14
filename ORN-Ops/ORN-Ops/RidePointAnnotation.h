@@ -27,10 +27,19 @@
 # pragma mark Initializers
 #
 
-- (instancetype)initWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
+- (instancetype)initWithRide:(Ride*)ride
+		 andRideLocationType:(RideLocationType)rideLocationType
+		andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
+
 - (instancetype)init;
 
-+ (instancetype)ridePointAnnotationWithRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
-+ (instancetype)ridePointAnnotation:(RidePointAnnotation*)ridePointAnnotation withRide:(Ride*)ride andRideLocationType:(RideLocationType)rideLocationType andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
++ (instancetype)ridePointAnnotationWithRide:(Ride*)ride
+						andRideLocationType:(RideLocationType)rideLocationType
+					   andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
+
++ (instancetype)ridePointAnnotation:(RidePointAnnotation*)ridePointAnnotation
+						   withRide:(Ride*)ride
+				andRideLocationType:(RideLocationType)rideLocationType
+			   andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
 
 @end

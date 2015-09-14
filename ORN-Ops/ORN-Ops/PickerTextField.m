@@ -157,7 +157,7 @@
 	NSString* title = [self pickerView:pickerView titleForRow:row forComponent:component];
 	NSMutableParagraphStyle* paragraphStyle = [[NSMutableParagraphStyle alloc] init];
 	paragraphStyle.alignment = NSTextAlignmentLeft;
-	NSMutableAttributedString* attributedTitle = [[NSMutableAttributedString alloc] initWithString:title attributes:@{NSParagraphStyleAttributeName:paragraphStyle}];
+	NSMutableAttributedString* attributedTitle = [[NSMutableAttributedString alloc] initWithString:title attributes:@{ NSParagraphStyleAttributeName : paragraphStyle }];
 	
 	return attributedTitle;
 }

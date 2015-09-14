@@ -37,8 +37,7 @@
 
 + (instancetype)teamWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
-	return [[Team alloc] initWithEntity:[NSEntityDescription entityForName:TEAM_ENTITY_NAME inManagedObjectContext:managedObjectContext]
-		 insertIntoManagedObjectContext:managedObjectContext];
+	return [[Team alloc] initWithEntity:[NSEntityDescription entityForName:TEAM_ENTITY_NAME inManagedObjectContext:managedObjectContext] insertIntoManagedObjectContext:managedObjectContext];
 }
 
 
@@ -80,23 +79,28 @@
 - (void)postNotificationCreatedWithSender:(id)sender  {
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_CREATED_NOTIFICATION_NAME object:sender userInfo:
-	 @{TEAM_ENTITY_NAME : self,
-	   TEAM_UPDATED_LOCATION_NOTIFICATION_KEY : @YES
+	 @{
+	   TEAM_ENTITY_NAME : self,
+	   TEAM_UPDATED_LOCATION_NOTIFICATION_KEY : @YES,
 	   }];
 }
 
 
 - (void)postNotificationUpdatedWithSender:(id)sender {
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:sender userInfo:@{TEAM_ENTITY_NAME : self}];
+	[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:sender userInfo:
+	 @{
+	   TEAM_ENTITY_NAME : self,
+	   }];
 }
 
 
 - (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocation:(BOOL)updatedLocation {
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:sender userInfo:
-	 @{TEAM_ENTITY_NAME : self,
-	   TEAM_UPDATED_LOCATION_NOTIFICATION_KEY : @(updatedLocation)
+	 @{
+	   TEAM_ENTITY_NAME : self,
+	   TEAM_UPDATED_LOCATION_NOTIFICATION_KEY : @(updatedLocation),
 	   }];
 }
 
@@ -104,18 +108,22 @@
 - (void)postNotificationUpdatedWithSender:(id)sender andUpdatedRidesAssigned:(BOOL)updatedRidesAssigned {
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:sender userInfo:
-	 @{TEAM_ENTITY_NAME : self,
-	   TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY : @(updatedRidesAssigned)
+	 @{
+	   TEAM_ENTITY_NAME : self,
+	   TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY : @(updatedRidesAssigned),
 	   }];
 }
 
 
-- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocation:(BOOL)updatedLocation andUpdatedRidesAssigned:(BOOL)updatedRidesAssigned {
+- (void)postNotificationUpdatedWithSender:(id)sender
+					   andUpdatedLocation:(BOOL)updatedLocation
+				  andUpdatedRidesAssigned:(BOOL)updatedRidesAssigned {
 
 	[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:sender userInfo:
-	 @{TEAM_ENTITY_NAME : self,
+	 @{
+	   TEAM_ENTITY_NAME : self,
 	   TEAM_UPDATED_LOCATION_NOTIFICATION_KEY : @(updatedLocation),
-	   TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY : @(updatedRidesAssigned)
+	   TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY : @(updatedRidesAssigned),
 	   }];
 }
 
@@ -125,7 +133,12 @@
 #
 
 
-- (void)updateCurrentLocationWithLatitudeNumber:(NSNumber*)latitude andLongitudeNumber:(NSNumber*)longitude andStreet:(NSString*)street andCity:(NSString*)city andState:(NSString*)state andAddress:(NSString*)address {
+- (void)updateCurrentLocationWithLatitudeNumber:(NSNumber*)latitude
+							 andLongitudeNumber:(NSNumber*)longitude
+									  andStreet:(NSString*)street
+										andCity:(NSString*)city
+									   andState:(NSString*)state
+									 andAddress:(NSString*)address {
 
 	if (!address && street && city) {
 		
@@ -142,15 +155,30 @@
 }
 
 
-- (void)updateCurrentLocationWithLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude andStreet:(NSString*)street andCity:(NSString*)city andState:(NSString*)state andAddress:(NSString*)address {
+- (void)updateCurrentLocationWithLatitude:(CLLocationDegrees)latitude
+							 andLongitude:(CLLocationDegrees)longitude
+								andStreet:(NSString*)street
+								  andCity:(NSString*)city
+								 andState:(NSString*)state
+							   andAddress:(NSString*)address {
 	
-	[self updateCurrentLocationWithLatitudeNumber:@(latitude) andLongitudeNumber:@(longitude) andStreet:street andCity:city andState:state andAddress:address];
+	[self updateCurrentLocationWithLatitudeNumber:@(latitude)
+							   andLongitudeNumber:@(longitude)
+										andStreet:street
+										  andCity:city
+										 andState:state
+									   andAddress:address];
 }
 
 
 - (void)updateCurrentLocationWithPlacemark:(CLPlacemark*)placemark {
 	
-	[self updateCurrentLocationWithLatitude:placemark.location.coordinate.latitude andLongitude:placemark.location.coordinate.longitude andStreet:[placemark getAddressStreet] andCity:placemark.locality andState:[placemark getAddressState] andAddress:[placemark getAddressString]];
+	[self updateCurrentLocationWithLatitude:placemark.location.coordinate.latitude
+							   andLongitude:placemark.location.coordinate.longitude
+								  andStreet:[placemark getAddressStreet]
+									andCity:placemark.locality
+								   andState:[placemark getAddressState]
+								 andAddress:[placemark getAddressString]];
 }
 
 
@@ -206,7 +234,7 @@
 	return [self.ridesAssigned sortedArrayUsingDescriptors:
 			@[
 			  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY1 ascending:RIDE_FETCH_SORT_ASCENDING],
-			  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY2 ascending:RIDE_FETCH_SORT_ASCENDING]
+			  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY2 ascending:RIDE_FETCH_SORT_ASCENDING],
 			  ]];
 }
 
@@ -224,7 +252,9 @@
 						andCountry:CANADA_COUNTRY_NAME
 					andCountryCode:CANADA_COUNTRY_CODE];
 	
-	MKPlacemark* placemark = [Util placemarkWithLatitude:self.locationCurrentLatitude.doubleValue andLongitude:self.locationCurrentLongitude.doubleValue andAddressDictionary:addressDictionary];
+	MKPlacemark* placemark = [Util placemarkWithLatitude:self.locationCurrentLatitude.doubleValue
+											andLongitude:self.locationCurrentLongitude.doubleValue
+									andAddressDictionary:addressDictionary];
 	
 	return [[MKMapItem alloc] initWithPlacemark:placemark];
 }

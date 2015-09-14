@@ -22,7 +22,8 @@
 #
 
 
-- (instancetype)initWithTeam:(Team*)team andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
+- (instancetype)initWithTeam:(Team*)team
+		andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
 
 	self = [super init];
 	if (self) {
@@ -46,17 +47,22 @@
 }
 
 
-+ (instancetype)teamPointAnnotationWithTeam:(Team*)team andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
++ (instancetype)teamPointAnnotationWithTeam:(Team*)team
+					   andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
 	
 	return [[TeamPointAnnotation alloc] initWithTeam:team andNeedsAnimatesDrop:needsAnimatesDrop];
 }
 
 
-+ (instancetype)teamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation withTeam:(Team*)team andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
++ (instancetype)teamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation
+						   withTeam:(Team*)team
+			   andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop {
 
 	return teamPointAnnotation
-	? [teamPointAnnotation initWithTeam:team andNeedsAnimatesDrop:needsAnimatesDrop]
-	: [TeamPointAnnotation teamPointAnnotationWithTeam:team andNeedsAnimatesDrop:needsAnimatesDrop];
+	? [teamPointAnnotation initWithTeam:team
+				   andNeedsAnimatesDrop:needsAnimatesDrop]
+	: [TeamPointAnnotation teamPointAnnotationWithTeam:team
+								  andNeedsAnimatesDrop:needsAnimatesDrop];
 }
 
 

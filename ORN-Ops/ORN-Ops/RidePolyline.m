@@ -23,7 +23,9 @@
 #
 
 
-- (instancetype)initWithPolyline:(MKPolyline*)polyline andRide:(Ride*)ride andRideRouteType:(RideRouteType)rideRouteType {
+- (instancetype)initWithPolyline:(MKPolyline*)polyline
+						 andRide:(Ride*)ride
+				andRideRouteType:(RideRouteType)rideRouteType {
 	
 	// If no polyline provided, construct basic one from ride itself based on ride route type
 	
@@ -108,17 +110,28 @@
 }
 
 
-+ (instancetype)ridePolylineWithPolyline:(MKPolyline*)polyline andRide:(Ride*)ride andRideRouteType:(RideRouteType)rideRouteType {
++ (instancetype)ridePolylineWithPolyline:(MKPolyline*)polyline
+								 andRide:(Ride*)ride
+						andRideRouteType:(RideRouteType)rideRouteType {
 	
-	return [[RidePolyline alloc] initWithPolyline:polyline andRide:ride andRideRouteType:rideRouteType];
+	return [[RidePolyline alloc] initWithPolyline:polyline
+										  andRide:ride
+								 andRideRouteType:rideRouteType];
 }
 
 	
-+ (instancetype)ridePolyline:(RidePolyline*)ridePolyline withPolyline:(MKPolyline*)polyline andRide:(Ride*)ride andRideRouteType:(RideRouteType)rideRouteType {
++ (instancetype)ridePolyline:(RidePolyline*)ridePolyline
+				withPolyline:(MKPolyline*)polyline
+					 andRide:(Ride*)ride
+			andRideRouteType:(RideRouteType)rideRouteType {
 	
 	return ridePolyline
-	? [ridePolyline initWithPolyline:polyline andRide:ride andRideRouteType:rideRouteType]
-	: [RidePolyline ridePolylineWithPolyline:polyline andRide:ride andRideRouteType:rideRouteType];
+	? [ridePolyline initWithPolyline:polyline
+							 andRide:ride
+					andRideRouteType:rideRouteType]
+	: [RidePolyline ridePolylineWithPolyline:polyline
+									 andRide:ride
+							andRideRouteType:rideRouteType];
 }
 
 

@@ -115,7 +115,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	fetchRequest.sortDescriptors =
 	@[
 	  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY1 ascending:RIDE_FETCH_SORT_ASCENDING],
-	  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY2 ascending:RIDE_FETCH_SORT_ASCENDING]
+	  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY2 ascending:RIDE_FETCH_SORT_ASCENDING],
 	  ];
 	//fetchRequest.predicate = [NSPredicate predicateWithFormat:@"movie.id == %@", self.movie.id];
 	//fetchRequest.fetchBatchSize = PAGE_LIMIT;
@@ -146,7 +146,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	fetchRequest.sortDescriptors =
 	@[
 	  [NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY1 ascending:TEAM_FETCH_SORT_ASCENDING],
-	  [NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY2 ascending:TEAM_FETCH_SORT_ASCENDING]
+	  [NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY2 ascending:TEAM_FETCH_SORT_ASCENDING],
 	  ];
 	//fetchRequest.predicate = [NSPredicate predicateWithFormat:@"movie.id == %@", self.movie.id];
 	//fetchRequest.fetchBatchSize = PAGE_LIMIT;
@@ -259,9 +259,11 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 - (void)panAssignRideTeam {
 
 	// If we do not have two selected annotations, we are done
+	
 	id<MKAnnotation> firstSelectedAnnotation = self.rideTeamPanAssignmentAnchorAnnotation;
 	if (!firstSelectedAnnotation) return;
 	self.rideTeamPanAssignmentAnchorAnnotation = nil;
+	
 	id<MKAnnotation> lastSelectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
 	if (!lastSelectedAnnotation) return;
 	
@@ -283,6 +285,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	if (!ride || !team || ride.teamAssigned == team) return;
 	
 	// Ask user if should assign ride and team
+	
 	UIAlertAction* assignAlertAction = [UIAlertAction actionWithTitle:@"Assign" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
 		
 		// Assign team to ride, including route recalculations and notifications
@@ -293,7 +296,10 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	}];
 	
 	NSString* message = [NSString stringWithFormat:@"Team: %@\nRide: %@", [team getTitle], [ride getTitle]];
-	[Util presentAlertWithTitle:@"Assign team to ride?" andMessage:message andAction:assignAlertAction];
+	[Util presentActionAlertWithViewController:self
+									  andTitle:@"Assign team to ride?"
+									andMessage:message
+									 andAction:assignAlertAction];
 }
 
 
@@ -674,14 +680,14 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 			case RideRouteType_Prep:
 				
 				// Dotted line
-				renderer.lineDashPattern = @[@3, @8]; // renderer.lineDashPhase = 6;
+				renderer.lineDashPattern = @[ @3, @8 ]; // renderer.lineDashPhase = 6;
 				renderer.strokeColor = [UIColor blueColor];
 				break;
 				
 			case RideRouteType_Wait:
 				
 				// Dotted line
-				renderer.lineDashPattern = @[@3, @8]; // renderer.lineDashPhase = 6;
+				renderer.lineDashPattern = @[ @3, @8 ]; // renderer.lineDashPhase = 6;
 				renderer.strokeColor = [UIColor orangeColor];
 				break;
 
@@ -1084,7 +1090,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	
 	if (annotationShown) return;
 		
-	[Util presentOKAlertWithTitle:@"Alert" andMessage:@"Ride created but no start or end location annotations to show."];
+	[Util presentOKAlertWithViewController:self andTitle:@"Alert" andMessage:@"Ride created but no start or end location annotations to show."];
 }
 
 
@@ -1266,7 +1272,10 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	// Update existing overlay with annotation or create new ones, if possible
 	// NOTE: Overlays must always be re-added in order to trigger its view update properly
 	MKPolyline* polyline = self.polylineMode == PolylineMode_Route ? [ride polylineWithRideRouteType:rideRouteType] : nil;
-	ridePolyline = [RidePolyline ridePolyline:ridePolyline withPolyline:polyline andRide:ride andRideRouteType:rideRouteType];
+	ridePolyline = [RidePolyline ridePolyline:ridePolyline
+								 withPolyline:polyline
+									  andRide:ride
+							 andRideRouteType:rideRouteType];
 	if (!ridePolyline) return NO;
 	[self.mainMapView addOverlay:ridePolyline level:MKOverlayLevelAboveLabels];
 	if (wasRidePolylineInMapView && !didRemoveRidePolylineAnnotationFromMapView) {
@@ -1497,17 +1506,19 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	
 	if ([COMMAND_HELP isEqualToString:commandString]) {
 		
-		[Util presentOKAlertWithTitle:@"ORN Commands"
-						   andMessage:[NSString stringWithFormat:
-									   @"%@\n%@\n%@\n%@\n%@\n%@\n%@",
-									   COMMAND_HELP,
-									   COMMAND_SHOW_ALL,
-									   COMMAND_DELETE_ALL,
-									   COMMAND_DEMO,
-									   COMMAND_DEMO_RIDES,
-									   COMMAND_DEMO_TEAMS,
-									   COMMAND_DEMO_ASSIGN
-									   ]];
+		NSString* message =
+		[NSString stringWithFormat:
+		 @"%@\n%@\n%@\n%@\n%@\n%@\n%@",
+		 COMMAND_HELP,
+		 COMMAND_SHOW_ALL,
+		 COMMAND_DELETE_ALL,
+		 COMMAND_DEMO,
+		 COMMAND_DEMO_RIDES,
+		 COMMAND_DEMO_TEAMS,
+		 COMMAND_DEMO_ASSIGN
+		 ];
+		[Util presentOKAlertWithViewController:self andTitle:@"ORN Commands" andMessage:message];
+		
 		isCommandHandled = YES;
 		
 	} else if ([COMMAND_SHOW_ALL isEqualToString:commandString]) {
@@ -1520,13 +1531,11 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 		
 		UIAlertAction* deleteAllAlertAction = [UIAlertAction actionWithTitle:@"Delete All" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
 			
-			// WARNING: Cannot be undone!
 			[Util removePersistentStore];
 			[Util postNotificationDataModelResetWithSender:self];
 		}];
-		
-		[Util presentAlertWithTitle:@"!!! Warning !!!" andMessage:@"About to delete all data, which cannot be undone! Are you absolutely sure?!" andAction:deleteAllAlertAction];
-		
+		[Util presentActionAlertWithViewController:self andTitle:@"!!! Warning !!!" andMessage:@"About to delete all data, which cannot be undone! Are you absolutely sure?!" andAction:deleteAllAlertAction];
+
 		isCommandHandled = YES;
 		
 	} else if ([COMMAND_DEMO isEqualToString:commandString]) {
@@ -1667,7 +1676,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	CLLocationCoordinate2D worldCoords[6] =
 	{ {90, 0}, {90, 180}, {-90, 180}, {-90, 0}, {-90, -180}, {90, -180} };
 	
-	MKPolygon* worldOverlay = [MKPolygon polygonWithCoordinates:worldCoords count:6 interiorPolygons:@[[MainMapViewController getJurisdictionPolygon]]];
+	MKPolygon* worldOverlay = [MKPolygon polygonWithCoordinates:worldCoords count:6 interiorPolygons:@[ [MainMapViewController getJurisdictionPolygon] ]];
 	
 	[self.mainMapView addOverlay:worldOverlay];
 }

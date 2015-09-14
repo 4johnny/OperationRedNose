@@ -383,6 +383,7 @@
 	self.ride.passengerCount = @(self.passengerCountSegmentedControl.selectedSegmentIndex + 1);
 	
 	// Save location fields - try async geocode
+	
 	BOOL updatedLocationStart = NO;
 	NSString* viewAddressString = [self.startAddressTextField.text trimAll];
 	if (![NSString compareString:self.ride.locationStartAddress toString:viewAddressString]) {
@@ -392,7 +393,10 @@
 		
 		if (viewAddressString.length > 0) {
 			
-			[self.ride tryUpdateLocationWithAddressString:viewAddressString andRideLocationType:RideLocationType_Start andGeocoder:self.geocoder andSender:self]; // async
+			[self.ride tryUpdateLocationWithAddressString:viewAddressString
+									  andRideLocationType:RideLocationType_Start
+											  andGeocoder:self.geocoder
+												andSender:self]; // async
 			
 		} else {
 			
@@ -400,6 +404,7 @@
 			updatedLocationStart = YES;
 		}
 	}
+	
 	BOOL updatedLocationEnd = NO;
 	viewAddressString = [self.endAddressTextField.text trimAll];
 	if (![NSString compareString:self.ride.locationEndAddress toString:viewAddressString]) {
@@ -408,7 +413,10 @@
 		
 		if (viewAddressString.length > 0) {
 			
-			[self.ride tryUpdateLocationWithAddressString:viewAddressString andRideLocationType:RideLocationType_End andGeocoder:self.geocoder andSender:self]; // async
+			[self.ride tryUpdateLocationWithAddressString:viewAddressString
+									  andRideLocationType:RideLocationType_End
+											  andGeocoder:self.geocoder
+												andSender:self]; // async
 			
 		} else {
 			
@@ -435,7 +443,10 @@
 		
 	} else {
 		
-		[self.ride postNotificationUpdatedWithSender:self andUpdatedLocationStart:updatedLocationStart andUpdatedLocationEnd:updatedLocationEnd andUpdatedTeamAssigned:updatedTeamAssigned];
+		[self.ride postNotificationUpdatedWithSender:self
+							 andUpdatedLocationStart:updatedLocationStart
+							   andUpdatedLocationEnd:updatedLocationEnd
+							  andUpdatedTeamAssigned:updatedTeamAssigned];
 	}
 }
 

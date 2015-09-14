@@ -68,13 +68,21 @@
 - (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocation:(BOOL)updatedLocation;
 - (void)postNotificationUpdatedWithSender:(id)sender andUpdatedRidesAssigned:(BOOL)updatedRidesAssigned;
 
-- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocation:(BOOL)updatedLocation andUpdatedRidesAssigned:(BOOL)updatedRidesAssigned;
+- (void)postNotificationUpdatedWithSender:(id)sender
+					   andUpdatedLocation:(BOOL)updatedLocation
+				  andUpdatedRidesAssigned:(BOOL)updatedRidesAssigned;
 
 #
 # pragma mark Instance Helpers
 #
 
-- (void)updateCurrentLocationWithLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude andStreet:(NSString*)street andCity:(NSString*)city andState:(NSString*)state andAddress:(NSString*)address;
+- (void)updateCurrentLocationWithLatitude:(CLLocationDegrees)latitude
+							 andLongitude:(CLLocationDegrees)longitude
+								andStreet:(NSString*)street
+								  andCity:(NSString*)city
+								 andState:(NSString*)state
+							   andAddress:(NSString*)address;
+
 - (void)updateCurrentLocationWithPlacemark:(CLPlacemark*)placemark;
 - (void)clearCurrentLocation;
 
@@ -85,7 +93,7 @@
 
 - (MKMapItem*)mapItemForCurrentLocation;
 
-	- (NSTimeInterval)assignedDuration;
+- (NSTimeInterval)assignedDuration;
 - (CLLocationDistance)assignedDistance;
 
 @end

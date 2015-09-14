@@ -70,8 +70,14 @@
 # pragma mark Alert
 #
 
-+ (void)presentOKAlertWithTitle:(NSString*)title andMessage:(NSString*)message;
-+ (void)presentAlertWithTitle:(NSString*)title andMessage:(NSString*)message andAction:(UIAlertAction*)action;
++ (void)presentActionAlertWithViewController:(UIViewController*)viewController
+									andTitle:(NSString*)title
+								  andMessage:(NSString*)message
+								   andAction:(UIAlertAction*)action;
+
++ (void)presentOKAlertWithViewController:(UIViewController*)viewController
+								andTitle:(NSString*)title
+							  andMessage:(NSString*)message;
 
 #
 # pragma mark Notifications
@@ -86,15 +92,24 @@
 # pragma mark Views
 #
 
-+ (void)animateDropView:(UIView*)view withDropHeight:(CGFloat)dropHeight withDuration:(NSTimeInterval)duration withDelay:(NSTimeInterval)delay;
++ (void)animateDropView:(UIView*)view
+		 withDropHeight:(CGFloat)dropHeight
+		   withDuration:(NSTimeInterval)duration
+			  withDelay:(NSTimeInterval)delay;
+
 + (UIButton*)downArrowButton;
 
 #
 # pragma mark Maps
 #
 
-+ (MKPlacemark*)placemarkWithLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude andAddressDictionary:(NSDictionary*)addressDictionary;
-+ (MKDirectionsRequest*)directionsRequestWithDepartureDate:(NSDate*)departureDate andSourcePlacemark:(MKPlacemark*)sourcePlaceMark andDestinationPlacemark:(MKPlacemark*)destinationPlacemark;
++ (MKPlacemark*)placemarkWithLatitude:(CLLocationDegrees)latitude
+						 andLongitude:(CLLocationDegrees)longitude
+				 andAddressDictionary:(NSDictionary*)addressDictionary;
+
++ (MKDirectionsRequest*)directionsRequestWithDepartureDate:(NSDate*)departureDate
+										andSourcePlacemark:(MKPlacemark*)sourcePlaceMark
+								   andDestinationPlacemark:(MKPlacemark*)destinationPlacemark;
 
 #
 # pragma mark <ORNDataModelSource>

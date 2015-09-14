@@ -102,10 +102,18 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 # pragma mark Initializers
 #
 
-- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext andDateTime:(NSDate*)dateTime andPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType;
+- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
+								 andDateTime:(NSDate*)dateTime
+								andPlacemark:(CLPlacemark*)placemark
+						 andRideLocationType:(RideLocationType)rideLocationType;
+
 - (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
 
-+ (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext andDateTime:(NSDate*)dateTime andPlacemark:(CLPlacemark*)placemark andRideLocationType:(RideLocationType)rideLocationType;
++ (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
+								 andDateTime:(NSDate*)dateTime
+								andPlacemark:(CLPlacemark*)placemark
+						 andRideLocationType:(RideLocationType)rideLocationType;
+
 + (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
 
 #
@@ -116,6 +124,7 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 + (void)addUpdatedObserver:(id)observer withSelector:(SEL)selector;
 
 + (Ride*)rideFromNotification:(NSNotification*)notification;
+
 + (BOOL)isUpdatedLocationStartFromNotification:(NSNotification*)notification;
 + (BOOL)isUpdatedLocationEndFromNotification:(NSNotification*)notification;
 + (BOOL)isUpdatedTeamAssignedFromNotification:(NSNotification*)notification;
@@ -123,10 +132,16 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 - (void)postNotificationCreatedWithSender:(id)sender;
 - (void)postNotificationUpdatedWithSender:(id)sender;
 
-- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocationStart:(BOOL)updatedLocationStart andUpdatedLocationEnd:(BOOL)updatedLocationEnd;
+- (void)postNotificationUpdatedWithSender:(id)sender
+				  andUpdatedLocationStart:(BOOL)updatedLocationStart
+					andUpdatedLocationEnd:(BOOL)updatedLocationEnd;
+
 - (void)postNotificationUpdatedWithSender:(id)sender andUpdatedTeamAssigned:(BOOL)updatedTeamAssigned;
 
-- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocationStart:(BOOL)updatedLocationStart andUpdatedLocationEnd:(BOOL)updatedLocationEnd andUpdatedTeamAssigned:(BOOL)updatedTeamAssigned;
+- (void)postNotificationUpdatedWithSender:(id)sender
+				  andUpdatedLocationStart:(BOOL)updatedLocationStart
+					andUpdatedLocationEnd:(BOOL)updatedLocationEnd
+				   andUpdatedTeamAssigned:(BOOL)updatedTeamAssigned;
 
 #
 # pragma mark Instance Helpers
@@ -134,13 +149,29 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 
 - (void)assignTeam:(Team*)team withSender:(id)sender;
 
-- (void)updateLocationWithRideLocationType:(RideLocationType)rideLocationType andLatitude:(CLLocationDegrees)latitude andLongitude:(CLLocationDegrees)longitude andStreet:(NSString*)street andCity:(NSString*)city andState:(NSString*)state andAddress:(NSString*)address;
-- (void)updateLocationWithRideLocationType:(RideLocationType)rideLocationType andPlacemark:(CLPlacemark*)placemark;
+- (void)updateLocationWithRideLocationType:(RideLocationType)rideLocationType
+							   andLatitude:(CLLocationDegrees)latitude
+							  andLongitude:(CLLocationDegrees)longitude
+								 andStreet:(NSString*)street
+								   andCity:(NSString*)city
+								  andState:(NSString*)state
+								andAddress:(NSString*)address;
+
+- (void)updateLocationWithRideLocationType:(RideLocationType)rideLocationType
+							  andPlacemark:(CLPlacemark*)placemark;
+
 - (void)clearLocationWithRideLocationType:(RideLocationType)rideLocationType;
 
-- (void)tryUpdateLocationWithAddressString:(NSString*)addressString andRideLocationType:(RideLocationType)rideLocationType andGeocoder:(CLGeocoder*)geocoder andSender:(id)sender;
+- (void)tryUpdateLocationWithAddressString:(NSString*)addressString
+					   andRideLocationType:(RideLocationType)rideLocationType
+							   andGeocoder:(CLGeocoder*)geocoder
+								 andSender:(id)sender;
+
 - (void)tryUpdateMainRouteWithSender:(id)sender;
-- (void)tryUpdatePrepRouteWithLatitude:(NSNumber*)latitude andLongitude:(NSNumber*)longitude andSender:(id)sender;
+
+- (void)tryUpdatePrepRouteWithLatitude:(NSNumber*)latitude
+						  andLongitude:(NSNumber*)longitude
+							 andSender:(id)sender;
 
 - (void)clearMainRoute;
 - (void)clearPrepRoute;
@@ -161,7 +192,10 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 # pragma mark Class Helpers
 #
 
-+ (void)tryCreateRideWithAddressString:(NSString*)addressString andGeocoder:(CLGeocoder*)geocoder andSender:(id)sender;
++ (void)tryCreateRideWithAddressString:(NSString*)addressString
+						   andGeocoder:(CLGeocoder*)geocoder
+							 andSender:(id)sender;
+
 //+ (NSString*)stringFromStatus:(RideStatus)status;
 //+ (RideStatus)statusFromString:(NSString*)statusString;
 

@@ -26,10 +26,16 @@
 # pragma mark Initializers
 #
 
-- (instancetype)initWithTeam:(Team*)team andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
+- (instancetype)initWithTeam:(Team*)team
+		andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
+
 - (instancetype)init;
 
-+ (instancetype)teamPointAnnotationWithTeam:(Team*)team andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
-+ (instancetype)teamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation withTeam:(Team*)team andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
++ (instancetype)teamPointAnnotationWithTeam:(Team*)team
+					   andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
+
++ (instancetype)teamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation
+						   withTeam:(Team*)team
+			   andNeedsAnimatesDrop:(BOOL)needsAnimatesDrop;
 
 @end

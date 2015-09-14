@@ -26,10 +26,19 @@
 # pragma mark Initializers
 #
 
-- (instancetype)initWithPolyline:(MKPolyline*)polyline andRide:(Ride*)ride andRideRouteType:(RideRouteType)rideRouteType;
+- (instancetype)initWithPolyline:(MKPolyline*)polyline
+						 andRide:(Ride*)ride
+				andRideRouteType:(RideRouteType)rideRouteType;
+
 - (instancetype)init;
 
-+ (instancetype)ridePolylineWithPolyline:(MKPolyline*)polyline andRide:(Ride*)ride andRideRouteType:(RideRouteType)rideRouteType;
-+ (instancetype)ridePolyline:(RidePolyline*)ridePolyline withPolyline:(MKPolyline*)polyline andRide:(Ride*)ride andRideRouteType:(RideRouteType)rideRouteType;
++ (instancetype)ridePolylineWithPolyline:(MKPolyline*)polyline
+								 andRide:(Ride*)ride
+						andRideRouteType:(RideRouteType)rideRouteType;
+
++ (instancetype)ridePolyline:(RidePolyline*)ridePolyline
+				withPolyline:(MKPolyline*)polyline
+					 andRide:(Ride*)ride
+			andRideRouteType:(RideRouteType)rideRouteType;
 
 @end
