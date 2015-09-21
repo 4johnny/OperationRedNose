@@ -189,9 +189,9 @@
 		B25220301A9F391D00C3CE00 /* Data Model */ = {
 			isa = PBXGroup;
 			children = (
+				B24D4FCF1A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld */,
 				B24D4FD21A9D98E9008A0C7A /* Generated */,
 				B29CD76D1ABE9D9C00B21579 /* Categories */,
-				B24D4FCF1A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld */,
 			);
 			name = "Data Model";
 			sourceTree = "<group>";

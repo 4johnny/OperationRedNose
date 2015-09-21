@@ -113,30 +113,9 @@
 		
 		// Replace "save" button with "add"
 		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStyleDone target:self action:@selector(savePressed:)];
-		
-	} else {
-
-		// Extend edge "under bottom bars" to improve aesthetics when popping view controller
-		// NOTE: Done manually so that storyboard easier to design with
-
-		self.edgesForExtendedLayout = UIRectEdgeBottom;
 	}
 
 	[self configureView];
-}
-
-
-- (void)viewWillAppear:(BOOL)animated {
-	[super viewWillAppear:animated];
-	
-	self.navigationController.toolbarHidden = self.isAddMode;
-}
-
-
-- (void)viewWillDisappear:(BOOL)animated {
-	[super viewWillDisappear:animated];
-	
-	self.navigationController.toolbarHidden = YES;
 }
 
 
@@ -144,13 +123,6 @@
 	[super didReceiveMemoryWarning];
 	// Dispose of any resources that can be recreated.
 }
-
-/*
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
 
 
 #

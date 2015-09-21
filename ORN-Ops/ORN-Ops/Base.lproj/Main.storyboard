@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="49e-Tb-3d3">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <scenes>
         <!--Main Tab Bar Controller-->
@@ -424,11 +424,7 @@
                         </connections>
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
-                    <toolbarItems>
-                        <barButtonItem title="Map" style="plain" id="kTu-fP-ONQ"/>
-                        <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="W0z-Rr-aQw"/>
-                        <barButtonItem title="Delete" style="plain" id="CK8-xA-it2"/>
-                    </toolbarItems>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" title="Team" id="ToU-Mx-Iak">
                         <barButtonItem key="rightBarButtonItem" style="done" systemItem="save" id="FY0-3P-fXx">
                             <connections>
@@ -436,7 +432,6 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qpE-BM-fg9" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tapGestureRecognizer delaysTouchesBegan="YES" id="F0a-aH-rGx">
@@ -453,7 +448,7 @@
                 <navigationController storyboardIdentifier="teamsNavigationController" title="Teams Navigation Controller" id="kRe-vU-Y7a" customClass="BaseNavigationController" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Teams" image="ORN-Teams-Tab-Icon" id="zOE-tf-hrL"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Rpj-c3-GSa">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="Rpj-c3-GSa">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <connections>
@@ -505,7 +500,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="rideDetailTableViewController" title="Ride Detail View Controller" id="EOY-Bm-UjH" customClass="RideDetailTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="static" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="kqh-Zd-G9W">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="492"/>
+                        <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
@@ -1069,13 +1064,7 @@
                         </connections>
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <toolbarItems>
-                        <barButtonItem title="Route" style="plain" id="K8v-dn-AVY"/>
-                        <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="r4S-SY-Dwd"/>
-                        <barButtonItem title="Map" style="plain" id="4oZ-F4-xPQ"/>
-                        <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="bwZ-UA-iek"/>
-                        <barButtonItem title="Delete" style="plain" id="GiP-jb-09a"/>
-                    </toolbarItems>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" title="Ride" id="pwX-eP-kT9">
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="C4i-lz-FL3">
                             <connections>
@@ -1091,7 +1080,6 @@
                             <outlet property="backBarButtonItem" destination="C4i-lz-FL3" id="n21-Ed-FTD"/>
                         </connections>
                     </navigationItem>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="donationTextField" destination="IVW-ZY-bBn" id="NmW-0d-GI8"/>
                         <outlet property="endAddressTextField" destination="27Q-3u-cxw" id="WBn-Gm-DAE"/>
@@ -1126,16 +1114,13 @@
                 <navigationController storyboardIdentifier="ridesNavigationController" title="Rides Navigation Controller" id="pld-vm-oCy" customClass="BaseNavigationController" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Rides" image="ORN-Rides-Tab-Icon" id="gZ7-HR-NQq"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Sqk-Py-Gq4">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="Sqk-Py-Gq4">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="p0x-hN-Z5s" appends="YES" id="Ei5-XR-4zA"/>
                         </connections>
                     </navigationBar>
-                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="67j-0p-JPk">
-                        <autoresizingMask key="autoresizingMask"/>
-                    </toolbar>
                     <connections>
                         <segue destination="ePf-i9-3Hp" kind="relationship" relationship="rootViewController" id="RbD-S6-NHG"/>
                     </connections>

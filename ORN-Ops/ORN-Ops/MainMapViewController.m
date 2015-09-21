@@ -193,7 +193,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 
 	if (_calloutAccessoryColorGreen) return _calloutAccessoryColorGreen;
 	
-	_calloutAccessoryColorGreen = [UIColor colorWithHue:120.0/360.0 saturation:1.0 brightness:0.8 alpha:1];
+	_calloutAccessoryColorGreen = HSB(120.0, 1.0, 0.8);
 	
 	return _calloutAccessoryColorGreen;
 }
