@@ -16,6 +16,8 @@
 
 #define DATA_MODEL_RESET_NOTIFICATION_NAME	@"dataModelReset"
 
+#define DOWN_ARROW_STRING	@"▼"
+
 
 #
 # pragma mark - Implementation

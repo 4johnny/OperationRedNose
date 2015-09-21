@@ -73,6 +73,7 @@
 		B25A6F7E1AE3AD650074D04F /* Ride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ride.m; sourceTree = "<group>"; };
 		B27533431A9DA91700B3110C /* MainTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainTabBarController.h; sourceTree = "<group>"; };
 		B27533441A9DA91700B3110C /* MainTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainTabBarController.m; sourceTree = "<group>"; };
+		B2761C8B1BAFD0FD0022402E /* Macros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Macros.h; sourceTree = "<group>"; };
 		B27B4A6F1A9AB1FB009277E4 /* ORN-Ops.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ORN-Ops.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B27B4A731A9AB1FB009277E4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B27B4A741A9AB1FB009277E4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -287,6 +288,7 @@
 			children = (
 				B27B4A761A9AB1FB009277E4 /* AppDelegate.h */,
 				B27B4A771A9AB1FB009277E4 /* AppDelegate.m */,
+				B2761C8B1BAFD0FD0022402E /* Macros.h */,
 				B2C756231AA1BA8B00B148D3 /* Util.h */,
 				B2C756241AA1BA8B00B148D3 /* Util.m */,
 				B2C756261AA1BBD000B148D3 /* PrefixHeader.pch */,

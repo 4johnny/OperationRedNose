@@ -10,6 +10,13 @@
 
 
 #
+# pragma mark - Constants
+#
+
+#define ARROW_BUTTON_WIDTH	30
+
+
+#
 # pragma mark - Interface
 #
 
