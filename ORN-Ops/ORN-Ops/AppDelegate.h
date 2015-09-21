@@ -40,7 +40,7 @@
 - (void)removePersistentStore;
 
 #
-# pragma mark Helpers
+# pragma mark Helper Methods
 #
 
 + (NSURL*)applicationDocumentsDirectoryURL;

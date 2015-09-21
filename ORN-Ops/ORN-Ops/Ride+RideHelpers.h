@@ -21,7 +21,8 @@
 // NOTE: Sort keys indexed in data model
 #define RIDE_FETCH_SORT_KEY1		@"dateTimeStart"
 #define RIDE_FETCH_SORT_KEY2		@"locationStartLongitude"
-#define RIDE_FETCH_SORT_ASCENDING	YES
+#define RIDE_FETCH_SORT_ASC1		YES
+#define RIDE_FETCH_SORT_ASC2		YES
 #define RIDE_FETCH_BATCH_SIZE		20
 
 #define RIDE_STATUS_STRING_NONE			@"None"

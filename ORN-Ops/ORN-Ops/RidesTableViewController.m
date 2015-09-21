@@ -54,26 +54,21 @@
 	
 	if (_fetchedResultsController) return _fetchedResultsController;
 
-	// Build fetch request
 	NSFetchRequest* fetchRequest = [[NSFetchRequest alloc] initWithEntityName:RIDE_ENTITY_NAME];
 	fetchRequest.fetchBatchSize = RIDE_FETCH_BATCH_SIZE;
 	fetchRequest.sortDescriptors =
 	@[
-	  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY1 ascending:RIDE_FETCH_SORT_ASCENDING],
-	  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY2 ascending:RIDE_FETCH_SORT_ASCENDING]
+	  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY1 ascending:RIDE_FETCH_SORT_ASC1],
+	  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY2 ascending:RIDE_FETCH_SORT_ASC2],
 	  ];
-	// fetchRequest.predicate = [NSPredicate predicateWithFormat:@"<#format string#>", <#arguments#>];
 
-	// Perform fetch
-	// NOTE: nil for section name key path means "no sections".
 	_fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[Util managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
 	_fetchedResultsController.delegate = self;
-	NSError *error = nil;
+
+	NSError* error = nil;
 	if (![_fetchedResultsController performFetch:&error]) {
-		// TODO: Replace this implementation with code to handle the error appropriately.
-		// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+		
 		NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-		abort();
 	}
 	
 	return _fetchedResultsController;
@@ -140,14 +135,12 @@
 #
 
 
-// Return the number of sections.
 - (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView {
 	
 	return 1; //self.fetchedResultsController.sections.count;
 }
 
 
-// Return the number of rows in the section.
 - (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section {
 
 	return self.fetchedResultsController.fetchedObjects.count;
@@ -319,7 +312,7 @@
 
 
 #
-# pragma mark Helpers
+# pragma mark Helper Methods
 #
 
 
@@ -335,25 +328,22 @@
 }
 
 
-- (void)insertNewObject:(id)sender {
-	
-	NSManagedObjectContext *context = self.fetchedResultsController.managedObjectContext;
-	NSEntityDescription *entity = self.fetchedResultsController.fetchRequest.entity;
-	
-	Ride* newRide = [NSEntityDescription insertNewObjectForEntityForName:entity.name inManagedObjectContext:context];
-	newRide.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
-	NSLog(@"Created new Ride entity: %@", newRide);
-	
-	// Save the context
-	NSError *error = nil;
-	if (![context save:&error]) {
-		
-		// Replace this implementation with code to handle the error appropriately.
-		// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-		NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-		abort();
-	}
-}
+//- (void)insertNewObject:(id)sender {
+//	
+//	NSManagedObjectContext *context = self.fetchedResultsController.managedObjectContext;
+//	NSEntityDescription *entity = self.fetchedResultsController.fetchRequest.entity;
+//	
+//	Ride* newRide = [NSEntityDescription insertNewObjectForEntityForName:entity.name inManagedObjectContext:context];
+//	newRide.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
+//	NSLog(@"Created new Ride entity: %@", newRide);
+//	
+//	// Save the context
+//	NSError* error = nil;
+//	if (![context save:&error]) {
+//		
+//		NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+//	}
+//}
 
 
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath*)indexPath {

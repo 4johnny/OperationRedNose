@@ -56,29 +56,22 @@
 	
 	if (_teamFetchedResultsController) return _teamFetchedResultsController;
 	
-	// Create fetch request for teams
 	NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:TEAM_ENTITY_NAME];
 	fetchRequest.sortDescriptors =
 	@[
-	  [NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY1 ascending:TEAM_FETCH_SORT_ASCENDING],
-	  [NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY2 ascending:TEAM_FETCH_SORT_ASCENDING]
+	  [NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY1 ascending:TEAM_FETCH_SORT_ASC1],
+	  [NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY2 ascending:TEAM_FETCH_SORT_ASC2],
 	  ];
-	//fetchRequest.predicate = [NSPredicate predicateWithFormat:@"movie.id == %@", self.movie.id];
-	//fetchRequest.fetchBatchSize = PAGE_LIMIT;
-	//fetchRequest.fetchLimit = PAGE_LIMIT;
 	
-	// NOTE: nil for section name key path means "no sections"
 	_teamFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[Util managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
 	_teamFetchedResultsController.delegate = self;
 	
-	NSError *error = nil;
-	if ([_teamFetchedResultsController performFetch:&error]) return _teamFetchedResultsController;
-	
-	// TODO: Replace this with code to handle the error appropriately.
-	// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-	NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-	abort();
-	
+	NSError* error = nil;
+	if (![_teamFetchedResultsController performFetch:&error]) {
+		
+		NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+	}
+
 	return _teamFetchedResultsController;
 }
 

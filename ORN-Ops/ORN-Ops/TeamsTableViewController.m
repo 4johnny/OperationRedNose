@@ -24,6 +24,8 @@
 
 @interface TeamsTableViewController ()
 
+@property (strong, nonatomic) NSFetchedResultsController* fetchedResultsController;
+
 @end
 
 
@@ -33,6 +35,31 @@
 
 
 @implementation TeamsTableViewController
+
+
+- (NSFetchedResultsController*)fetchedResultsController {
+	
+	if (_fetchedResultsController) return _fetchedResultsController;
+	
+	NSFetchRequest* fetchRequest = [[NSFetchRequest alloc] initWithEntityName:TEAM_ENTITY_NAME];
+	fetchRequest.fetchBatchSize = TEAM_FETCH_BATCH_SIZE;
+	fetchRequest.sortDescriptors =
+	@[
+	  [NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY1 ascending:TEAM_FETCH_SORT_ASC1],
+	  [NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY2 ascending:TEAM_FETCH_SORT_ASC2],
+	  ];
+	
+	_fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[Util managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
+	_fetchedResultsController.delegate = self;
+	
+	NSError* error = nil;
+	if (![_fetchedResultsController performFetch:&error]) {
+		
+		NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+	}
+	
+	return _fetchedResultsController;
+}
 
 
 #
@@ -72,17 +99,16 @@
 #
 
 
-// Return the number of sections.
 - (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView {
 	
-    return 1;
+    return 1; //self.fetchedResultsController.sections.count;
 }
 
 
-// Return the number of rows in the section.
 - (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section {
 	
-    return 0;
+    return self.fetchedResultsController.fetchedObjects.count;
+//    return ((id<NSFetchedResultsSectionInfo>)self.fetchedResultsController.sections[section]).numberOfObjects;
 }
 
 
@@ -91,7 +117,8 @@
     UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:TEAMS_CELL_REUSE_ID forIndexPath:indexPath];
     
     // Configure the cell
-    
+	[self configureCell:cell atIndexPath:indexPath];
+	
     return cell;
 }
 
@@ -136,14 +163,93 @@
 
 
 #
+# pragma mark <NSFetchedResultsControllerDelegate>
+#
+
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController*)controller {
+	
+	// NOTE: Do *not* call reloadData between begin and end, since it will cancel animations
+	[self.tableView beginUpdates];
+}
+
+
+- (void)controller:(NSFetchedResultsController*)controller
+  didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo
+		   atIndex:(NSUInteger)sectionIndex
+	 forChangeType:(NSFetchedResultsChangeType)type {
+	
+	switch (type) {
+			
+		case NSFetchedResultsChangeInsert:
+			[self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+			break;
+			
+		case NSFetchedResultsChangeDelete:
+			[self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+			break;
+			
+		default:
+			return;
+	}
+}
+
+
+- (void)controller:(NSFetchedResultsController*)controller
+   didChangeObject:(id)anObject
+	   atIndexPath:(NSIndexPath*)indexPath
+	 forChangeType:(NSFetchedResultsChangeType)type
+	  newIndexPath:(NSIndexPath*)newIndexPath {
+	
+	UITableView *tableView = self.tableView;
+	
+	switch (type) {
+			
+		case NSFetchedResultsChangeInsert:
+			[tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+			break;
+			
+		case NSFetchedResultsChangeDelete:
+			[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+			break;
+			
+		case NSFetchedResultsChangeUpdate:
+			[self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+			break;
+			
+		case NSFetchedResultsChangeMove:
+			[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+			[tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+			break;
+	}
+}
+
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController*)controller {
+	
+	[self.tableView endUpdates];
+}
+
+
+/*
+ // Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
+ 
+ - (void)controllerDidChangeContent:(NSFetchedResultsController*)controller
+ {
+ // In the simplest, most efficient, case, reload the table view.
+ [self.tableView reloadData];
+ }
+ */
+
+
+#
 # pragma mark Notification Handlers
 #
 
 
 - (void)dataModelResetWithNotification:(NSNotification*)notification {
 	
-	// TODO: When impl fetchResultsController, uncomment following line
-//	self.fetchedResultsController = nil;
+	self.fetchedResultsController = nil;
 	
 	[self.tableView reloadData];
 }
@@ -174,7 +280,7 @@
 
 
 #
-# pragma mark Helpers
+# pragma mark Helper Methods
 #
 
 
@@ -187,6 +293,39 @@
 	
 	[Ride addCreatedObserver:self withSelector:@selector(rideCreatedWithNotification:)];
 	[Ride addUpdatedObserver:self withSelector:@selector(rideUpdatedWithNotification:)];	
+}
+
+
+- (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath*)indexPath {
+	
+	Team* team = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	
+	// Text
+	
+	NSString* teamTitle = [team getTitle];
+	
+	cell.textLabel.text = [NSString stringWithFormat:@"%@", teamTitle];
+	cell.textLabel.numberOfLines = 0;
+	cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
+	
+	// Detail Text
+	
+//	NSString* startDateString = ride.dateTimeStart ? [self.cellDateFormatter stringFromDate:ride.dateTimeStart]: RIDES_CELL_FIELD_EMPTY;
+//	NSString* startAddress = ride.locationStartAddress.length > 0 ? ride.locationStartAddress : RIDES_CELL_FIELD_EMPTY;
+//	NSString* startDetail = [NSString stringWithFormat:@"Start: %@ -> %@", startDateString, startAddress];
+	
+//	NSDate* routeDateTimeEnd = [ride getRouteDateTimeEnd];
+//	NSString* endDateString = routeDateTimeEnd ? [self.cellDateFormatter stringFromDate:routeDateTimeEnd]: RIDES_CELL_FIELD_EMPTY;
+//	NSString* endAddress = ride.locationEndAddress.length > 0 ? ride.locationEndAddress : RIDES_CELL_FIELD_EMPTY;
+//	NSString* endDetail = [NSString stringWithFormat:@"End: %@ -> %@", endDateString, endAddress];
+	
+//	NSString* durationString = ride.routeMainDuration ? [NSString stringWithFormat:@"%.0f", ride.routeMainDuration.doubleValue / (NSTimeInterval)SECONDS_PER_MINUTE] : RIDES_CELL_FIELD_EMPTY;
+//	NSString* distanceString = ride.routeMainDistance ? [NSString stringWithFormat:@"%.1f", ride.routeMainDistance.doubleValue / (CLLocationDistance)METERS_PER_KILOMETER] : RIDES_CELL_FIELD_EMPTY;
+//	NSString* routeDetail = [NSString stringWithFormat:@"%@ min | %@ km", durationString, distanceString];
+	
+//	cell.detailTextLabel.text = [NSString stringWithFormat:@"%@\n%@\n%@", startDetail, endDetail, routeDetail];
+//	cell.detailTextLabel.numberOfLines = 0;
+//	cell.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
 }
 
 
