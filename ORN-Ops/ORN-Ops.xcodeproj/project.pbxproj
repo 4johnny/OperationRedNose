@@ -17,6 +17,7 @@
 		B25220331AA0412C00C3CE00 /* DemoUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = B25220321AA0412C00C3CE00 /* DemoUtil.m */; };
 		B25A6F7F1AE3AD650074D04F /* Ride.m in Sources */ = {isa = PBXBuildFile; fileRef = B25A6F7E1AE3AD650074D04F /* Ride.m */; };
 		B27533451A9DA91700B3110C /* MainTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = B27533441A9DA91700B3110C /* MainTabBarController.m */; };
+		B2761C8E1BAFFA0D0022402E /* NSNumber+NumberHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2761C8D1BAFFA0D0022402E /* NSNumber+NumberHelpers.m */; };
 		B27B4A751A9AB1FB009277E4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A741A9AB1FB009277E4 /* main.m */; };
 		B27B4A781A9AB1FB009277E4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A771A9AB1FB009277E4 /* AppDelegate.m */; };
 		B27B4A811A9AB1FB009277E4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B27B4A7F1A9AB1FB009277E4 /* Main.storyboard */; };
@@ -74,6 +75,8 @@
 		B27533431A9DA91700B3110C /* MainTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainTabBarController.h; sourceTree = "<group>"; };
 		B27533441A9DA91700B3110C /* MainTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainTabBarController.m; sourceTree = "<group>"; };
 		B2761C8B1BAFD0FD0022402E /* Macros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Macros.h; sourceTree = "<group>"; };
+		B2761C8C1BAFFA0D0022402E /* NSNumber+NumberHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNumber+NumberHelpers.h"; sourceTree = "<group>"; };
+		B2761C8D1BAFFA0D0022402E /* NSNumber+NumberHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNumber+NumberHelpers.m"; sourceTree = "<group>"; };
 		B27B4A6F1A9AB1FB009277E4 /* ORN-Ops.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ORN-Ops.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B27B4A731A9AB1FB009277E4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B27B4A741A9AB1FB009277E4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -276,8 +279,6 @@
 				B25220371AA044B000C3CE00 /* Map Helpers */,
 				B241B1DB1ABD35CA0075C99E /* Controls */,
 				B261725E1A9E595D00BB7D67 /* Protocols */,
-				B29CD76C1ABE9D6600B21579 /* Categories */,
-				B25220341AA0415400C3CE00 /* Demo */,
 				B27B4A721A9AB1FB009277E4 /* Supporting Files */,
 			);
 			path = "ORN-Ops";
@@ -286,6 +287,8 @@
 		B27B4A721A9AB1FB009277E4 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				B25220341AA0415400C3CE00 /* Demo */,
+				B29CD76C1ABE9D6600B21579 /* Categories */,
 				B27B4A761A9AB1FB009277E4 /* AppDelegate.h */,
 				B27B4A771A9AB1FB009277E4 /* AppDelegate.m */,
 				B2761C8B1BAFD0FD0022402E /* Macros.h */,
@@ -320,6 +323,8 @@
 		B29CD76C1ABE9D6600B21579 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				B2761C8C1BAFFA0D0022402E /* NSNumber+NumberHelpers.h */,
+				B2761C8D1BAFFA0D0022402E /* NSNumber+NumberHelpers.m */,
 				B24580B31AB5460B0090758E /* NSString+StringHelpers.h */,
 				B24580B41AB5460B0090758E /* NSString+StringHelpers.m */,
 				B29CD7691ABE9D3200B21579 /* NSDate+DateHelpers.h */,
@@ -513,6 +518,7 @@
 				B25A6F7F1AE3AD650074D04F /* Ride.m in Sources */,
 				B28312261AAF2A8100B7C1A9 /* BasePolyline.m in Sources */,
 				B2EB5B701ABEE9F800FB3B5D /* BaseTextView.m in Sources */,
+				B2761C8E1BAFFA0D0022402E /* NSNumber+NumberHelpers.m in Sources */,
 				B28312291AAF322C00B7C1A9 /* RidePolyline.m in Sources */,
 				B2C756181AA1912B00B148D3 /* RideDetailTableViewController.m in Sources */,
 				B27CEDD71ACE852600512FA3 /* MKPolyline+PolylineHelpers.m in Sources */,

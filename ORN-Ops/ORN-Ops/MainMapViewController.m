@@ -123,7 +123,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	NSError *error = nil;
 	if (![_rideFetchedResultsController performFetch:&error]) {
 		
-		NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+		NSLog(@"Unresolved error: %@, %@", error, error.userInfo);
 	}
 	
 	return _rideFetchedResultsController;
@@ -147,7 +147,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	NSError* error = nil;
 	if (![_teamFetchedResultsController performFetch:&error]) {
 		
-		NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+		NSLog(@"Unresolved error: %@, %@", error, error.userInfo);
 	}
 	
 	return _teamFetchedResultsController;
@@ -321,6 +321,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 - (void)didReceiveMemoryWarning {
 	[super didReceiveMemoryWarning];
 	// Dispose of any resources that can be recreated.
+	
+	NSLog(@"Warning: Memory Low");
 }
 
 
@@ -1660,7 +1662,14 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	// Add juridisdiction inverse overlay to map view
 	
 	CLLocationCoordinate2D worldCoords[6] =
-	{ {90, 0}, {90, 180}, {-90, 180}, {-90, 0}, {-90, -180}, {90, -180} };
+	{
+		{90, 0},
+		{90, 180},
+		{-90, 180},
+		{-90, 0},
+		{-90, -180},
+		{90, -180},
+	};
 	
 	MKPolygon* worldOverlay = [MKPolygon polygonWithCoordinates:worldCoords count:6 interiorPolygons:@[ [MainMapViewController getJurisdictionPolygon] ]];
 	
@@ -1682,7 +1691,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 		{49.292304, -122.660694}, // Pitt River, E of Coquitlam
 		{49.352612, -122.624344}, // Siwash Island, Fraser River, E of Coquitlam
 		{49.332423, -122.924207}, // Indian Arm, W of Porty Moody
-		{49.296053, -122.950128}  // Burrard Inlet, N of Barnet Hwy, Burnaby
+		{49.296053, -122.950128}, // Burrard Inlet, N of Barnet Hwy, Burnaby
 	};
 	
 	return [MKPolygon polygonWithCoordinates:jurisdictionCoords count:10];

@@ -21,7 +21,7 @@
 #define RIDES_CELL_FIELD_EMPTY		@"?"
 
 #define SHOW_RIDE_DETAIL_SEQUE	@"showRideDetailSegue"
-#define SHOW_RIDE_ADD_SEQUE		@"showRideAddSegue"
+//#define SHOW_RIDE_ADD_SEQUE		@"showRideAddSegue"
 
 
 #
@@ -68,7 +68,7 @@
 	NSError* error = nil;
 	if (![_fetchedResultsController performFetch:&error]) {
 		
-		NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+		NSLog(@"Unresolved error: %@, %@", error, error.userInfo);
 	}
 	
 	return _fetchedResultsController;
@@ -107,10 +107,12 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+	
+	NSLog(@"Warning: Memory Low");
 }
 
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+- (void)prepareForSegue:(UIStoryboardSegue*)segue sender:(id)sender {
 	
 	if ([segue.identifier isEqualToString:SHOW_RIDE_DETAIL_SEQUE]) {
 		
@@ -265,7 +267,6 @@
 
 /*
  // Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
- 
  - (void)controllerDidChangeContent:(NSFetchedResultsController*)controller
  {
  // In the simplest, most efficient, case, reload the table view.
@@ -341,7 +342,7 @@
 //	NSError* error = nil;
 //	if (![context save:&error]) {
 //		
-//		NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+//		NSLog(@"Unresolved error: %@, %@", error, error.userInfo);
 //	}
 //}
 
@@ -353,27 +354,57 @@
 	// Text
 	
 	NSString* rideTitle = [ride getTitle];
-	NSString* teamAssignedTitle = ride.teamAssigned ? [ride.teamAssigned getTitle] : RIDES_CELL_FIELD_EMPTY;
-	NSString* sourceTitle = ride.sourceName.length > 0 ? ride.sourceName : RIDES_CELL_FIELD_EMPTY;
+	
+	NSString* teamAssignedTitle = ride.teamAssigned
+	? [ride.teamAssigned getTitle]
+	: RIDES_CELL_FIELD_EMPTY;
+	
+	NSString* sourceTitle = ride.sourceName.length > 0
+	? ride.sourceName
+	: RIDES_CELL_FIELD_EMPTY;
 	
 	cell.textLabel.text = [NSString stringWithFormat:@"%@ (%d) | Team: %@ | Source: %@", rideTitle, (int)ride.passengerCount.longValue, teamAssignedTitle, sourceTitle];
 	cell.textLabel.numberOfLines = 0;
 	cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	
-	// Detail Text
+	// Start Detail
 	
-	NSString* startDateString = ride.dateTimeStart ? [self.cellDateFormatter stringFromDate:ride.dateTimeStart]: RIDES_CELL_FIELD_EMPTY;
-	NSString* startAddress = ride.locationStartAddress.length > 0 ? ride.locationStartAddress : RIDES_CELL_FIELD_EMPTY;
+	NSString* startDateString = ride.dateTimeStart
+	? [self.cellDateFormatter stringFromDate:ride.dateTimeStart]
+	: RIDES_CELL_FIELD_EMPTY;
+	
+	NSString* startAddress = ride.locationStartAddress.length > 0
+	? ride.locationStartAddress
+	: RIDES_CELL_FIELD_EMPTY;
+	
 	NSString* startDetail = [NSString stringWithFormat:@"Start: %@ -> %@", startDateString, startAddress];
 	
+	// End Detail
+	
 	NSDate* routeDateTimeEnd = [ride getRouteDateTimeEnd];
-	NSString* endDateString = routeDateTimeEnd ? [self.cellDateFormatter stringFromDate:routeDateTimeEnd]: RIDES_CELL_FIELD_EMPTY;
-	NSString* endAddress = ride.locationEndAddress.length > 0 ? ride.locationEndAddress : RIDES_CELL_FIELD_EMPTY;
+	NSString* endDateString = routeDateTimeEnd
+	? [self.cellDateFormatter stringFromDate:routeDateTimeEnd]
+	: RIDES_CELL_FIELD_EMPTY;
+	
+	NSString* endAddress = ride.locationEndAddress.length > 0
+	? ride.locationEndAddress
+	: RIDES_CELL_FIELD_EMPTY;
+	
 	NSString* endDetail = [NSString stringWithFormat:@"End: %@ -> %@", endDateString, endAddress];
 	
-	NSString* durationString = ride.routeMainDuration ? [NSString stringWithFormat:@"%.0f", ride.routeMainDuration.doubleValue / (NSTimeInterval)SECONDS_PER_MINUTE] : RIDES_CELL_FIELD_EMPTY;
-	NSString* distanceString = ride.routeMainDistance ? [NSString stringWithFormat:@"%.1f", ride.routeMainDistance.doubleValue / (CLLocationDistance)METERS_PER_KILOMETER] : RIDES_CELL_FIELD_EMPTY;
+	// Route Detail
+	
+	NSString* durationString = ride.routeMainDuration
+	? [NSString stringWithFormat:@"%.0f", ride.routeMainDuration.doubleValue / (NSTimeInterval)SECONDS_PER_MINUTE]
+	: RIDES_CELL_FIELD_EMPTY;
+	
+	NSString* distanceString = ride.routeMainDistance
+	? [NSString stringWithFormat:@"%.1f", ride.routeMainDistance.doubleValue / (CLLocationDistance)METERS_PER_KILOMETER]
+	: RIDES_CELL_FIELD_EMPTY;
+	
 	NSString* routeDetail = [NSString stringWithFormat:@"%@ min | %@ km", durationString, distanceString];
+	
+	// Detail Text
 	
 	cell.detailTextLabel.text = [NSString stringWithFormat:@"%@\n%@\n%@", startDetail, endDetail, routeDetail];
 	cell.detailTextLabel.numberOfLines = 0;

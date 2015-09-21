@@ -222,7 +222,7 @@
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <segue destination="XpS-Zq-vPa" kind="show" identifier="showTableDetailSeque" id="ITb-aY-p1t"/>
+                                    <segue destination="XpS-Zq-vPa" kind="show" identifier="showTeamDetailSeque" id="ITb-aY-p1t"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -500,7 +500,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="rideDetailTableViewController" title="Ride Detail View Controller" id="EOY-Bm-UjH" customClass="RideDetailTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="static" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="kqh-Zd-G9W">
-                        <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                        <rect key="frame" x="0.0" y="64" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
@@ -1143,6 +1143,6 @@
         <image name="ORN-Teams-Tab-Icon" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="RWa-Ts-C4u"/>
+        <segue reference="mox-mc-g7Y"/>
     </inferredMetricsTieBreakers>
 </document>

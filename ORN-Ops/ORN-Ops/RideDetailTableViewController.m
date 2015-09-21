@@ -69,7 +69,7 @@
 	NSError* error = nil;
 	if (![_teamFetchedResultsController performFetch:&error]) {
 		
-		NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+		NSLog(@"Unresolved error: %@, %@", error, error.userInfo);
 	}
 
 	return _teamFetchedResultsController;
@@ -115,6 +115,8 @@
 - (void)didReceiveMemoryWarning {
 	[super didReceiveMemoryWarning];
 	// Dispose of any resources that can be recreated.
+	
+	NSLog(@"Warning: Memory Low");
 }
 
 
