@@ -39,6 +39,12 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	
+	// Remove section footer
+	self.tableView.sectionFooterHeight = 0;
+	
+	// Remove table footer
+	self.tableView.tableFooterView = [UIView new];
 }
 
 
@@ -47,6 +53,17 @@
     // Dispose of any resources that can be recreated.
 	
 	NSLog(@"Warning: Memory Low");
+}
+
+
+#
+# pragma mark <UITableViewDelegate>
+#
+
+
+- (CGFloat)tableView:(UITableView*)tableView heightForHeaderInSection:(NSInteger)section {
+
+	return 32.0;
 }
 
 
