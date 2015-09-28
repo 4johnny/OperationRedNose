@@ -130,9 +130,6 @@
 	// NOTE: String may be typed or pasted
 	// NOTE: Cannot rely on keyboards to constrain input char types, since different devices show different keyboards for same text field
 	
-	// If replacement string empty, we are done
-	if (string.length <= 0) return YES;
-	
 	// Donation field should conform to monetary format
 	if (textField == self.donationTextField) {
 		
