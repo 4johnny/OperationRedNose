@@ -922,7 +922,6 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	
 	[button addTarget:self action:@selector(leftCalloutAccessoryButtonTouchDown:) forControlEvents:UIControlEventTouchDown];
 	[button addTarget:self action:@selector(leftCalloutAccessoryButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
-	[button addTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
 	
 	button.alpha = 0.5;
 	[button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -939,7 +938,6 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 + (UIButton*)rightCalloutAccessoryButton {
 
 	UIButton* button = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-	[button addTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
 	
 	return button;
 }

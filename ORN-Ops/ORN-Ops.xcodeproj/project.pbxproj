@@ -23,7 +23,6 @@
 		B27B4A811A9AB1FB009277E4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B27B4A7F1A9AB1FB009277E4 /* Main.storyboard */; };
 		B27B4A831A9AB1FB009277E4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B27B4A821A9AB1FB009277E4 /* Images.xcassets */; };
 		B27B4A861A9AB1FB009277E4 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B27B4A841A9AB1FB009277E4 /* LaunchScreen.xib */; };
-		B27B4A921A9AB1FB009277E4 /* ORN_OpsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A911A9AB1FB009277E4 /* ORN_OpsTests.m */; };
 		B27CEDD11ACE4D1F00512FA3 /* Ride+RideHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B27CEDD01ACE4D1F00512FA3 /* Ride+RideHelpers.m */; };
 		B27CEDD71ACE852600512FA3 /* MKPolyline+PolylineHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B27CEDD61ACE852600512FA3 /* MKPolyline+PolylineHelpers.m */; };
 		B28312261AAF2A8100B7C1A9 /* BasePolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B28312251AAF2A8100B7C1A9 /* BasePolyline.m */; };
@@ -43,16 +42,6 @@
 		B2E76A251AA6D0A3004B55BB /* TeamPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E76A241AA6D0A3004B55BB /* TeamPointAnnotation.m */; };
 		B2EB5B701ABEE9F800FB3B5D /* BaseTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = B2EB5B6F1ABEE9F800FB3B5D /* BaseTextView.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		B27B4A8C1A9AB1FB009277E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B27B4A671A9AB1FB009277E4 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B27B4A6E1A9AB1FB009277E4;
-			remoteInfo = "ORN-Ops";
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		B2078B821A9DAF2A004AF662 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -85,9 +74,6 @@
 		B27B4A801A9AB1FB009277E4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B27B4A821A9AB1FB009277E4 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		B27B4A851A9AB1FB009277E4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		B27B4A8B1A9AB1FB009277E4 /* ORN-OpsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ORN-OpsTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B27B4A901A9AB1FB009277E4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B27B4A911A9AB1FB009277E4 /* ORN_OpsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ORN_OpsTests.m; sourceTree = "<group>"; };
 		B27CEDCF1ACE4D1F00512FA3 /* Ride+RideHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = "Ride+RideHelpers.h"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		B27CEDD01ACE4D1F00512FA3 /* Ride+RideHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "Ride+RideHelpers.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		B27CEDD51ACE852600512FA3 /* MKPolyline+PolylineHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKPolyline+PolylineHelpers.h"; sourceTree = "<group>"; };
@@ -133,13 +119,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B24C18711A9EF3D6008505BB /* MapKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B27B4A881A9AB1FB009277E4 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,7 +234,6 @@
 			isa = PBXGroup;
 			children = (
 				B27B4A711A9AB1FB009277E4 /* ORN-Ops */,
-				B27B4A8E1A9AB1FB009277E4 /* ORN-OpsTests */,
 				B27B4A701A9AB1FB009277E4 /* Products */,
 				B2078B841A9DAF30004AF662 /* Frameworks */,
 			);
@@ -265,7 +243,6 @@
 			isa = PBXGroup;
 			children = (
 				B27B4A6F1A9AB1FB009277E4 /* ORN-Ops.app */,
-				B27B4A8B1A9AB1FB009277E4 /* ORN-OpsTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -299,23 +276,6 @@
 				B27B4A821A9AB1FB009277E4 /* Images.xcassets */,
 				B27B4A731A9AB1FB009277E4 /* Info.plist */,
 				B27B4A741A9AB1FB009277E4 /* main.m */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		B27B4A8E1A9AB1FB009277E4 /* ORN-OpsTests */ = {
-			isa = PBXGroup;
-			children = (
-				B27B4A911A9AB1FB009277E4 /* ORN_OpsTests.m */,
-				B27B4A8F1A9AB1FB009277E4 /* Supporting Files */,
-			);
-			path = "ORN-OpsTests";
-			sourceTree = "<group>";
-		};
-		B27B4A8F1A9AB1FB009277E4 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				B27B4A901A9AB1FB009277E4 /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -410,31 +370,13 @@
 			productReference = B27B4A6F1A9AB1FB009277E4 /* ORN-Ops.app */;
 			productType = "com.apple.product-type.application";
 		};
-		B27B4A8A1A9AB1FB009277E4 /* ORN-OpsTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B27B4A981A9AB1FB009277E4 /* Build configuration list for PBXNativeTarget "ORN-OpsTests" */;
-			buildPhases = (
-				B27B4A871A9AB1FB009277E4 /* Sources */,
-				B27B4A881A9AB1FB009277E4 /* Frameworks */,
-				B27B4A891A9AB1FB009277E4 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				B27B4A8D1A9AB1FB009277E4 /* PBXTargetDependency */,
-			);
-			name = "ORN-OpsTests";
-			productName = "ORN-OpsTests";
-			productReference = B27B4A8B1A9AB1FB009277E4 /* ORN-OpsTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		B27B4A671A9AB1FB009277E4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Empath Solutions";
 				TargetAttributes = {
 					B27B4A6E1A9AB1FB009277E4 = {
@@ -445,10 +387,6 @@
 								enabled = 1;
 							};
 						};
-					};
-					B27B4A8A1A9AB1FB009277E4 = {
-						CreatedOnToolsVersion = 6.1.1;
-						TestTargetID = B27B4A6E1A9AB1FB009277E4;
 					};
 				};
 			};
@@ -466,7 +404,6 @@
 			projectRoot = "";
 			targets = (
 				B27B4A6E1A9AB1FB009277E4 /* ORN-Ops */,
-				B27B4A8A1A9AB1FB009277E4 /* ORN-OpsTests */,
 			);
 		};
 /* End PBXProject section */
@@ -479,13 +416,6 @@
 				B27B4A811A9AB1FB009277E4 /* Main.storyboard in Resources */,
 				B27B4A861A9AB1FB009277E4 /* LaunchScreen.xib in Resources */,
 				B27B4A831A9AB1FB009277E4 /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B27B4A891A9AB1FB009277E4 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -529,23 +459,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B27B4A871A9AB1FB009277E4 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B27B4A921A9AB1FB009277E4 /* ORN_OpsTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		B27B4A8D1A9AB1FB009277E4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B27B4A6E1A9AB1FB009277E4 /* ORN-Ops */;
-			targetProxy = B27B4A8C1A9AB1FB009277E4 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		B27B4A7F1A9AB1FB009277E4 /* Main.storyboard */ = {
@@ -587,6 +501,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -655,6 +570,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "ORN-Ops/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "-johnny.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
@@ -668,42 +584,9 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "ORN-Ops/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "-johnny.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-			};
-			name = Release;
-		};
-		B27B4A991A9AB1FB009277E4 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "ORN-OpsTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ORN-Ops.app/ORN-Ops";
-			};
-			name = Debug;
-		};
-		B27B4A9A1A9AB1FB009277E4 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "ORN-OpsTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ORN-Ops.app/ORN-Ops";
 			};
 			name = Release;
 		};
@@ -724,15 +607,6 @@
 			buildConfigurations = (
 				B27B4A961A9AB1FB009277E4 /* Debug */,
 				B27B4A971A9AB1FB009277E4 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B27B4A981A9AB1FB009277E4 /* Build configuration list for PBXNativeTarget "ORN-OpsTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B27B4A991A9AB1FB009277E4 /* Debug */,
-				B27B4A9A1A9AB1FB009277E4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
