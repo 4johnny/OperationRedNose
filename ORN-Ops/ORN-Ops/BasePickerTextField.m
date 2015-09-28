@@ -29,7 +29,7 @@
 
 @interface BasePickerTextField ()
 
-@property (nonatomic) id<UITextFieldDelegate> externalDelegate; // original delegate wired internally
+@property (nonatomic) id<UITextFieldDelegate> externalDelegate; // NOTE: Original delegate wired internally
 
 @end
 
@@ -72,6 +72,9 @@
 		// Intercept delegate internally
 		// NOTE: Delegate messages will manually be passed on to external delegate
 		super.delegate = self;
+
+		// Make room for shadow outside bounds
+		self.layer.masksToBounds = NO;
 		
 		// Arrow on right side of text field
 		UIButton* arrowButton = [Util downArrowButton];
@@ -129,7 +132,6 @@
 	if (shouldBeginEditing) {
 		
 	 	// Add shadow, since hiding caret
-		textField.layer.masksToBounds = NO;
 		textField.layer.shadowOpacity = 1.0;
 		textField.layer.shadowRadius = SHADOW_RADIUS; // default 3.0
 		textField.layer.shadowOffset = CGSizeMake(SHADOW_RADIUS, SHADOW_RADIUS); // default (0.0, -3.0)
@@ -159,7 +161,6 @@
 	[self.externalDelegate textFieldDidEndEditing:textField];
 	
 	// Remove shadow
-	textField.layer.masksToBounds = YES;
 	textField.layer.shadowOpacity = 0.0;
 }
 
@@ -197,6 +198,7 @@
 
 
 - (IBAction)arrowPressed:(UIButton*)sender {
+	// NOTE: Wired programmatically
 	
 	[self becomeFirstResponder];
 }
