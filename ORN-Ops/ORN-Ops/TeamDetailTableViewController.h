@@ -19,7 +19,7 @@
 # pragma mark - Interface
 #
 
-@interface TeamDetailTableViewController : UITableViewController <TeamModelSource>
+@interface TeamDetailTableViewController : UITableViewController <TeamModelSource, UITableViewDelegate>
 
 #
 # pragma mark Properties

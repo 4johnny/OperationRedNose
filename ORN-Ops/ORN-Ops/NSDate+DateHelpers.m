@@ -63,7 +63,7 @@
 	offsetComponents.minute = floor((dateComponents.minute + minuteInterval / 2.0) / minuteInterval) * minuteInterval;
 	dateComponents.minute = 0;
 
-	return [currentCalendar dateByAddingComponents:offsetComponents toDate:[currentCalendar dateFromComponents:dateComponents] options:0];
+	return [currentCalendar dateByAddingComponents:offsetComponents toDate:[currentCalendar dateFromComponents:dateComponents] options:kNilOptions];
 }
 
 

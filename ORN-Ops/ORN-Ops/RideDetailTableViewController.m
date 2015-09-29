@@ -100,8 +100,14 @@
 	// Uncomment the following line to display an Edit button in the navigation bar for this view controller.
 	// self.navigationItem.rightBarButtonItem = self.editButtonItem;
 	
-	self.addMode = (self.ride == nil);
+	// Remove section footer
+	self.tableView.sectionFooterHeight = 0;
 	
+	// Remove table footer
+	self.tableView.tableFooterView = [UIView new];
+	
+	// Configure access mode: add or edit
+	self.addMode = (self.ride == nil);
 	if (self.isAddMode) {
 		
 		// Replace "save" button with "add"
@@ -117,6 +123,17 @@
 	// Dispose of any resources that can be recreated.
 	
 	NSLog(@"Warning: Memory Low");
+}
+
+
+#
+# pragma mark <UITableViewDelegate>
+#
+
+
+- (CGFloat)tableView:(UITableView*)tableView heightForHeaderInSection:(NSInteger)section {
+		
+	return 32.0;
 }
 
 
@@ -255,11 +272,11 @@
 	NSCalendar* currentCalendar = [NSCalendar currentCalendar];
 	NSDateComponents* offsetComponents = [[NSDateComponents alloc] init];
 	offsetComponents.day = -1;
-	self.startTimeDatePickerTextField.minimumDate = [currentCalendar dateByAddingComponents:offsetComponents toDate:now options:0];
+	self.startTimeDatePickerTextField.minimumDate = [currentCalendar dateByAddingComponents:offsetComponents toDate:now options:kNilOptions];
 	
 	// Maximum date-time is one day from now
 	offsetComponents.day = 1;
-	self.startTimeDatePickerTextField.maximumDate = [currentCalendar dateByAddingComponents:offsetComponents toDate:now options:0];
+	self.startTimeDatePickerTextField.maximumDate = [currentCalendar dateByAddingComponents:offsetComponents toDate:now options:kNilOptions];
 }
 
 
