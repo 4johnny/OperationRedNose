@@ -244,6 +244,8 @@
 
 - (void)configureView {
 	
+	self.title = [@"Ride: " stringByAppendingString:[self.ride getTitle]];
+	
 	[self configureStartTimeDatePickerTextField];
 	[self configureTeamAssignedPickerTextField];
 	
