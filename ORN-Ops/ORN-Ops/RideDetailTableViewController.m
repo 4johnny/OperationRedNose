@@ -142,7 +142,7 @@
 #
 
 
-- (BOOL)textField:(UITextField*)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString*)string {
+- (BOOL)textField:(UITextField*)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(nonnull NSString*)string {
 	
 	// NOTE: String may be typed or pasted
 	// NOTE: Cannot rely on keyboards to constrain input char types, since different devices show different keyboards for same text field
@@ -282,7 +282,7 @@
 
 - (void)configureTeamAssignedPickerTextField {
 	
-	NSMutableArray* teamTitles = [NSMutableArray arrayWithCapacity:self.teamFetchedResultsController.fetchedObjects.count + 1];
+	NSMutableArray<NSString*>* teamTitles = [NSMutableArray arrayWithCapacity:self.teamFetchedResultsController.fetchedObjects.count + 1];
 	
 	[teamTitles addObject:TEAM_TITLE_NONE];
 	

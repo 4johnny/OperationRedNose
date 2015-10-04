@@ -75,7 +75,7 @@
 }
 
 
-- (void)postNotificationCreatedWithSender:(id)sender  {
+- (void)postNotificationCreatedWithSender:(id)sender {
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_CREATED_NOTIFICATION_NAME object:sender userInfo:
 	 @{
@@ -228,7 +228,7 @@
 }
 
 
-- (NSArray*)getSortedRidesAssigned {
+- (NSArray<Ride*>*)getSortedRidesAssigned {
 
 	return [self.ridesAssigned sortedArrayUsingDescriptors:
 			@[
@@ -242,7 +242,7 @@
 
 	if (!self.locationCurrentLatitude || !self.locationCurrentLongitude) return nil;
 	
-	NSDictionary* addressDictionary =
+	NSDictionary<NSString*,NSString*>* addressDictionary =
 	[CLPlacemark addressDictionary:nil
 						withStreet:self.locationCurrentStreet
 						   andCity:self.locationCurrentCity

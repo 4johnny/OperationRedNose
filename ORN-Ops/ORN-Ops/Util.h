@@ -100,7 +100,7 @@
 
 + (MKPlacemark*)placemarkWithLatitude:(CLLocationDegrees)latitude
 						 andLongitude:(CLLocationDegrees)longitude
-				 andAddressDictionary:(NSDictionary*)addressDictionary;
+				 andAddressDictionary:(NSDictionary<NSString*,NSString*>*)addressDictionary;
 
 + (MKDirectionsRequest*)directionsRequestWithDepartureDate:(NSDate*)departureDate
 										andSourcePlacemark:(MKPlacemark*)sourcePlaceMark

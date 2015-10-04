@@ -122,7 +122,7 @@
 }
 
 
-- (void)postNotificationCreatedWithSender:(id)sender  {
+- (void)postNotificationCreatedWithSender:(id)sender {
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_CREATED_NOTIFICATION_NAME object:sender userInfo:
 	 @{
@@ -304,7 +304,7 @@
 	
 	CLCircularRegion* jurisdictionRegion = [[CLCircularRegion alloc] initWithCenter:JURISDICTION_COORDINATE radius:JURISDICTION_SEARCH_RADIUS identifier:@"ORN Jurisdication Region"];
 	
-	[geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray* placemarks, NSError* error) {
+	[geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray<CLPlacemark*>* _Nullable placemarks, NSError* _Nullable error) {
 		
 		// NOTES: Completion block executes on main thread. Do not run more than one geocode simultaneously.
 		
@@ -354,7 +354,7 @@
 	
 	// Update main route duration, distance, and polyline with directions
 	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
-	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse* response, NSError* error) {
+	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse* _Nullable response, NSError* _Nullable error) {
 		
 		// NOTE: Completion block runs on Main thread
 		
@@ -403,7 +403,7 @@
 	
 	// Update prep route duration, distance, and polyline with directions
 	MKDirections* directions = [[MKDirections alloc] initWithRequest:directionsRequest];
-	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse* response, NSError* error) {
+	[directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse* _Nullable response, NSError* _Nullable error) {
 		
 		// NOTE: Completion block runs on Main thread
 		
@@ -516,7 +516,7 @@
 			
 			if (!self.locationStartLatitude || !self.locationStartLongitude) return nil;
 			
-			NSDictionary* addressDictionary =
+			NSDictionary<NSString*,NSString*>* addressDictionary =
 			[CLPlacemark addressDictionary:nil
 								withStreet:self.locationStartStreet
 								   andCity:self.locationStartCity
@@ -536,7 +536,7 @@
 
 			if (!self.locationEndLatitude || !self.locationEndLongitude) return nil;
 			
-			NSDictionary* addressDictionary =
+			NSDictionary<NSString*,NSString*>* addressDictionary =
 			[CLPlacemark addressDictionary:nil
 								withStreet:self.locationEndStreet
 								   andCity:self.locationEndCity
@@ -654,7 +654,7 @@
 	
 	CLCircularRegion* jurisdictionRegion = [[CLCircularRegion alloc] initWithCenter:JURISDICTION_COORDINATE radius:JURISDICTION_SEARCH_RADIUS identifier:@"ORN Jurisdication Region"];
 	
-	[geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray* placemarks, NSError* error) {
+	[geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray<CLPlacemark*>* _Nullable placemarks, NSError* _Nullable error) {
 		
 		// NOTE: Completion block runs on Main thread
 		

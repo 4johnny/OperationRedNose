@@ -48,7 +48,7 @@
 			
 			if (_polyline.pointCount % 2 == 1) {
 				
-				_locationCoordinate =  MKCoordinateForMapPoint(_polyline.points[midpointIndex]);
+				_locationCoordinate = MKCoordinateForMapPoint(_polyline.points[midpointIndex]);
 				
 			} else {
 				

@@ -90,7 +90,7 @@
 }
 
 
-+ (void)postNotificationDataModelResetWithSender:(id)sender  {
++ (void)postNotificationDataModelResetWithSender:(id)sender {
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:DATA_MODEL_RESET_NOTIFICATION_NAME object:sender userInfo:nil];
 }
@@ -155,7 +155,7 @@
 
 + (MKPlacemark*)placemarkWithLatitude:(CLLocationDegrees)latitude
 						 andLongitude:(CLLocationDegrees)longitude
-				 andAddressDictionary:(NSDictionary*)addressDictionary {
+				 andAddressDictionary:(NSDictionary<NSString*,NSString*>*)addressDictionary {
 
 	return [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(latitude, longitude) addressDictionary:addressDictionary];
 }

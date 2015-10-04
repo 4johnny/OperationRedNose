@@ -90,7 +90,7 @@
 - (void)tryUpdateAssignedRideRoutesWithSender:(id)sender;
 
 - (NSString*)getTitle;
-- (NSArray*)getSortedRidesAssigned;
+- (NSArray<Ride*>*)getSortedRidesAssigned;
 
 - (MKMapItem*)mapItemForCurrentLocation;
 

@@ -18,13 +18,13 @@
 # pragma mark Address Methods
 #
 
-+ (NSDictionary*)addressDictionary:(NSMutableDictionary*)addressDictionary
-						withStreet:(NSString*)street
-						   andCity:(NSString*)city
-						  andState:(NSString*)state
-							andZIP:(NSString*)ZIP
-						andCountry:(NSString*)country
-					andCountryCode:(NSString*)countryCode;
++ (NSDictionary<NSString*,NSString*>*)addressDictionary:(NSMutableDictionary<NSString*,NSString*>*)addressDictionary
+											 withStreet:(NSString*)street
+												andCity:(NSString*)city
+											   andState:(NSString*)state
+												 andZIP:(NSString*)ZIP
+											 andCountry:(NSString*)country
+										 andCountryCode:(NSString*)countryCode;
 
 - (NSString*)getAddressString;
 - (NSString*)getAddressStringFromDictionaryWithAddCountryName:(BOOL)addCountryName;

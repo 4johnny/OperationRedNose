@@ -23,17 +23,17 @@
 #
 
 
-+ (NSDictionary*)addressDictionary:(NSMutableDictionary*)addressDictionary
-						withStreet:(NSString*)street
-						   andCity:(NSString*)city
-						  andState:(NSString*)state
-							andZIP:(NSString*)ZIP
-						andCountry:(NSString*)country
-					andCountryCode:(NSString*)countryCode {
++ (NSDictionary<NSString*,NSString*>*)addressDictionary:(NSMutableDictionary<NSString*,NSString*>*)addressDictionary
+											 withStreet:(NSString*)street
+												andCity:(NSString*)city
+											   andState:(NSString*)state
+												 andZIP:(NSString*)ZIP
+											 andCountry:(NSString*)country
+										 andCountryCode:(NSString*)countryCode {
 	
 	if (!addressDictionary) {
 		
-		addressDictionary = [NSMutableDictionary dictionaryWithCapacity:6];
+		addressDictionary = [NSMutableDictionary<NSString*,NSString*> dictionaryWithCapacity:6];
 	}
 	
 	if (street.length > 0) {

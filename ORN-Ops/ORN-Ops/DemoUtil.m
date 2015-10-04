@@ -7,8 +7,6 @@
 //
 
 #import "DemoUtil.h"
-#import "Ride+RideHelpers.h"
-#import "Team+TeamHelpers.h"
 
 
 // NOTE: Caller is responsible for saving to persistent store
@@ -544,7 +542,7 @@
 #
 
 
-+ (void)loadDemoAssignTeams:(NSArray*)teams toRides:(NSArray*)rides {
++ (void)loadDemoAssignTeams:(NSArray<Team*>*)teams toRides:(NSArray<Ride*>*)rides {
 	
 	// Assign specific teams to specific rides
 	
@@ -562,10 +560,10 @@
 }
 
 
-+ (void)loadDemoAssignTeamsSelector:(NSDictionary*)args {
++ (void)loadDemoAssignTeamsSelector:(NSDictionary<NSString*,NSArray<__kindof NSManagedObject*>*>*)args {
 	
-	NSArray* teams = args[@"teams"];
-	NSArray* rides = args[@"rides"];
+	NSArray<Team*>* teams = args[@"teams"];
+	NSArray<Ride*>* rides = args[@"rides"];
 	
 	[DemoUtil loadDemoAssignTeams:teams toRides:rides];
 }

@@ -88,20 +88,6 @@
 
 
 #
-# pragma mark UIView
-#
-
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
-
-
-#
 # pragma mark UITextField
 #
 
@@ -165,7 +151,7 @@
 }
 
 
-- (BOOL)textField:(UITextField*)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString*)string {
+- (BOOL)textField:(UITextField*)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(nonnull NSString*)string {
 	
 	BOOL shouldChangeCharacters = !self.externalDelegate || [self.externalDelegate textField:textField shouldChangeCharactersInRange:range replacementString:string];
 

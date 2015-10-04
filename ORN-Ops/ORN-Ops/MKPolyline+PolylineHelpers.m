@@ -33,9 +33,9 @@
 - (instancetype)initWithCoder:(NSCoder*)decoder {
 	
 	// Decode coordinates from arrays - if none, we are done
-	NSArray* latitudes = [decoder decodeObjectForKey:POLYLINE_LATITUDES_CODING_KEY];
+	NSArray<NSNumber*>* latitudes = [decoder decodeObjectForKey:POLYLINE_LATITUDES_CODING_KEY];
 	if (latitudes.count == 0) return [self init];
-	NSArray* longitudes = [decoder decodeObjectForKey:POLYLINE_LONGITUDES_CODING_KEY];
+	NSArray<NSNumber*>* longitudes = [decoder decodeObjectForKey:POLYLINE_LONGITUDES_CODING_KEY];
 	NSUInteger pointCount = latitudes.count;
 	
 	// Translated coding-enabled objects into coordinates
@@ -60,8 +60,8 @@
 	
 	// Translate coordinates into coding-enabled objects
 	// NOTE: For simplicity, use 2 parallel arrays
-	NSMutableArray* latitudes = [NSMutableArray arrayWithCapacity:pointCount];
-	NSMutableArray* longitudes = [NSMutableArray arrayWithCapacity:pointCount];
+	NSMutableArray<NSNumber*>* latitudes = [NSMutableArray arrayWithCapacity:pointCount];
+	NSMutableArray<NSNumber*>* longitudes = [NSMutableArray arrayWithCapacity:pointCount];
 	for (int i = 0; i < pointCount; i++) {
 		
 		latitudes[i] = @(coordinates[i].latitude);

@@ -41,7 +41,7 @@
 				self.coordinate = CLLocationCoordinate2DMake(_ride.locationStartLatitude.doubleValue, _ride.locationStartLongitude.doubleValue);
 				titlePrefix = @"Start";
 				self.subtitle = _ride.locationStartAddress;
-  		  		break;
+				break;
 				
 			case RideLocationType_End:
 				self.coordinate = CLLocationCoordinate2DMake(_ride.locationEndLatitude.doubleValue, _ride.locationEndLongitude.doubleValue);
@@ -51,7 +51,7 @@
 				
 			default:
 			case RideLocationType_None:
-			    break;
+				break;
 		}
 		
 		self.title = [NSString stringWithFormat:@"%@: %@", titlePrefix, [_ride getTitle]];

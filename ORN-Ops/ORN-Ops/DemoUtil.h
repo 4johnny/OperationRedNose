@@ -9,6 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+#import "Ride+RideHelpers.h"
+#import "Team+TeamHelpers.h"
+
 
 #
 # pragma mark - Interface
@@ -24,7 +27,7 @@
 
 + (void)loadDemoRides;
 + (void)loadDemoTeams;
-+ (void)loadDemoAssignTeams:(NSArray*)teams toRides:(NSArray*)rides;
-+ (void)loadDemoAssignTeamsSelector:(NSDictionary*)args;
++ (void)loadDemoAssignTeams:(NSArray<Team*>*)teams toRides:(NSArray<Ride*>*)rides;
++ (void)loadDemoAssignTeamsSelector:(NSDictionary<NSString*,NSArray<__kindof NSManagedObject*>*>*)args;
 
 @end

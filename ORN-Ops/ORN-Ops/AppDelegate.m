@@ -45,7 +45,7 @@
 @implementation AppDelegate
 
 
-- (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions {
+- (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions {
 	// Override point for customization after application launch.
 
 	return YES;
@@ -163,13 +163,13 @@
 
 - (void)deleteAllObjectsWithEntityName:(NSString*)entityName {
 	
-	NSManagedObjectContext *moc = self.managedObjectContext;
+	NSManagedObjectContext* moc = self.managedObjectContext;
 	
-	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:entityName];
+	NSFetchRequest* fetchRequest = [[NSFetchRequest alloc] initWithEntityName:entityName];
 	[fetchRequest setIncludesPropertyValues:NO]; // Only fetch managedObjectID
 	
 	NSError* error;
-	NSArray* fetchedObjects = [moc executeFetchRequest:fetchRequest error:&error];
+	NSArray<NSManagedObject*>* fetchedObjects = [moc executeFetchRequest:fetchRequest error:&error];
 	for (NSManagedObject* object in fetchedObjects) {
 		
 		[moc deleteObject:object];

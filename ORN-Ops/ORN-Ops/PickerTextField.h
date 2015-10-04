@@ -19,7 +19,7 @@
 # pragma mark Properties
 #
 
-@property (nonatomic) NSArray* titles; // NSString
+@property (nonatomic) NSArray<NSString*>* titles;
 @property (nonatomic) NSInteger selectedRow;
 
 @end

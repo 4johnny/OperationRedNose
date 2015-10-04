@@ -42,7 +42,7 @@
 #
 
 
-- (void)setTitles:(NSArray*)titles {
+- (void)setTitles:(NSArray<NSString*>*)titles {
 	
 	_titles = titles;
 	
@@ -108,15 +108,6 @@
 }
 
 
-/*
- // Only override drawRect: if you perform custom drawing.
- // An empty implementation adversely affects performance during animation.
- - (void)drawRect:(CGRect)rect {
- // Drawing code
- }
- */
-
-
 #
 # pragma mark <UIPickerViewDataSource>
 #
@@ -169,7 +160,7 @@
 }
 
 
-- (UIView*)pickerView:(UIPickerView*)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView*)view {
+- (UIView*)pickerView:(UIPickerView*)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(nullable UIView*)view {
 
 	UILabel* label = (UILabel*)view;
 	if (!label) {

@@ -25,7 +25,7 @@
 
 - (NSString*)trimAll {
 	
-	NSArray* stringComponents = [self componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	NSArray<NSString*>* stringComponents = [self componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	stringComponents = [stringComponents filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self <> ''"]];
 	return [stringComponents componentsJoinedByString:@" "];
 }
@@ -38,7 +38,7 @@
 }
 
 
-+ (NSString*)longestStringInStrings:(NSArray*)strings {
++ (NSString*)longestStringInStrings:(NSArray<NSString*>*)strings {
 	
 	NSString* longestString = nil;
 	

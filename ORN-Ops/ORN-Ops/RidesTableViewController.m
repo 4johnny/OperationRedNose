@@ -92,13 +92,13 @@
 
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
+	[super viewDidLoad];
 	
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	// Uncomment the following line to preserve selection between presentations.
+	// self.clearsSelectionOnViewWillAppear = NO;
+	
+	// Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+	// self.navigationItem.rightBarButtonItem = self.editButtonItem;
 	
 	// Hide empty table cells
 	self.tableView.tableFooterView = [UIView new];
@@ -108,8 +108,8 @@
 
 
 - (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+	[super didReceiveMemoryWarning];
+	// Dispose of any resources that can be recreated.
 	
 	NSLog(@"Warning: Memory Low");
 }
@@ -149,40 +149,40 @@
 - (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section {
 
 	return self.fetchedResultsController.fetchedObjects.count;
-//    return ((id<NSFetchedResultsSectionInfo>)self.fetchedResultsController.sections[section]).numberOfObjects;
+	//	return ((id<NSFetchedResultsSectionInfo>)self.fetchedResultsController.sections[section]).numberOfObjects;
 }
 
 
-- (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath {
+- (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(nonnull NSIndexPath*)indexPath {
 	
-    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:RIDES_CELL_REUSE_ID forIndexPath:indexPath];
-    
-    // Configure the cell
+	UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:RIDES_CELL_REUSE_ID forIndexPath:indexPath];
+	
+	// Configure the cell
 	[self configureCell:cell atIndexPath:indexPath];
     
-    return cell;
+	return cell;
 }
 
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+	// Return NO if you do not want the specified item to be editable.
+	return YES;
 }
 */
 /*
 // Override to support editing the table view.
 - (void)tableView:(UITableView*)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath {
  
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
+	if (editingStyle == UITableViewCellEditingStyleDelete) {
  
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+		// Delete the row from the data source
+		[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
  
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
+	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
  
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+		// Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+	}
 }
 */
 /*
@@ -193,8 +193,8 @@
 /*
 // Override to support conditional rearranging of the table view.
 - (BOOL)tableView:(UITableView*)tableView canMoveRowAtIndexPath:(NSIndexPath*)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
+	// Return NO if you do not want the item to be re-orderable.
+	return YES;
 }
 */
 
@@ -212,7 +212,7 @@
 
 
 - (void)controller:(NSFetchedResultsController*)controller
-  didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo
+  didChangeSection:(nonnull id<NSFetchedResultsSectionInfo>)sectionInfo
 		   atIndex:(NSUInteger)sectionIndex
 	 forChangeType:(NSFetchedResultsChangeType)type {
 	
@@ -233,12 +233,12 @@
 
 
 - (void)controller:(NSFetchedResultsController*)controller
-   didChangeObject:(id)anObject
-	   atIndexPath:(NSIndexPath*)indexPath
+   didChangeObject:(nonnull id)anObject
+	   atIndexPath:(nullable NSIndexPath*)indexPath
 	 forChangeType:(NSFetchedResultsChangeType)type
-	  newIndexPath:(NSIndexPath*)newIndexPath {
+	  newIndexPath:(nullable NSIndexPath*)newIndexPath {
 	
-	UITableView *tableView = self.tableView;
+	UITableView* tableView = self.tableView;
 	
 	switch (type) {
 			
@@ -334,8 +334,8 @@
 
 //- (void)insertNewObject:(id)sender {
 //	
-//	NSManagedObjectContext *context = self.fetchedResultsController.managedObjectContext;
-//	NSEntityDescription *entity = self.fetchedResultsController.fetchRequest.entity;
+//	NSManagedObjectContext* context = self.fetchedResultsController.managedObjectContext;
+//	NSEntityDescription* entity = self.fetchedResultsController.fetchRequest.entity;
 //	
 //	Ride* newRide = [NSEntityDescription insertNewObjectForEntityForName:entity.name inManagedObjectContext:context];
 //	newRide.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
@@ -350,7 +350,7 @@
 //}
 
 
-- (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath*)indexPath {
+- (void)configureCell:(UITableViewCell*)cell atIndexPath:(nullable NSIndexPath*)indexPath {
 	
 	Ride* ride = [self.fetchedResultsController objectAtIndexPath:indexPath];
 

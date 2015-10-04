@@ -110,7 +110,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	
 	if (_rideFetchedResultsController) return _rideFetchedResultsController;
 	
-	NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:RIDE_ENTITY_NAME];
+	NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:RIDE_ENTITY_NAME];
 	fetchRequest.sortDescriptors =
 	@[
 	  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY1 ascending:RIDE_FETCH_SORT_ASC1],
@@ -120,7 +120,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	_rideFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[Util managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
 	_rideFetchedResultsController.delegate = self;
 	
-	NSError *error = nil;
+	NSError* error = nil;
 	if (![_rideFetchedResultsController performFetch:&error]) {
 		
 		NSLog(@"Unresolved error: %@, %@", error, error.userInfo);
@@ -190,7 +190,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 #
 
 
-- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event {
+- (void)touchesBegan:(NSSet<UITouch*>*)touches withEvent:(UIEvent*)event {
 	
 	[super touchesBegan:touches withEvent:event];
 	
@@ -198,15 +198,15 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 }
 
 
-- (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event {
-	
+- (void)touchesMoved:(NSSet<UITouch*>*)touches withEvent:(UIEvent*)event {
+
 	[super touchesMoved:touches withEvent:event];
 	
 	[self anchorRideTeamPanAssignment];
 }
 
 
-- (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event {
+- (void)touchesEnded:(NSSet<UITouch*>*)touches withEvent:(UIEvent*)event {
 	
 	[super touchesEnded:touches withEvent:event];
 	
@@ -214,7 +214,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 }
 
 
-- (void)touchesCancelled:(NSSet*)touches withEvent:(UIEvent*)event {
+- (void)touchesCancelled:(NSSet<UITouch*>*)touches withEvent:(UIEvent*)event {
 
 	[super touchesCancelled:touches withEvent:event];
 
@@ -272,7 +272,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	
 	// Ask user if should assign ride and team
 	
-	UIAlertAction* assignAlertAction = [UIAlertAction actionWithTitle:@"Assign" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+	UIAlertAction* assignAlertAction = [UIAlertAction actionWithTitle:@"Assign" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
 		
 		// Assign team to ride, including route recalculations and notifications
 		[ride assignTeam:team withSender:self];
@@ -324,14 +324,6 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	
 	NSLog(@"Warning: Memory Low");
 }
-
-
-/*
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
 
 
 #
@@ -412,7 +404,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 }
 
 
-- (void)mapView:(MKMapView*)mapView didAddAnnotationViews:(NSArray*)views {
+- (void)mapView:(MKMapView*)mapView didAddAnnotationViews:(NSArray<MKAnnotationView*>*)views {
 	
 	// Animate dropping for team point annotations
 	
@@ -440,7 +432,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 }
 
 
-- (void)mapView:(MKMapView*)mapView annotationView:(MKAnnotationView*)view calloutAccessoryControlTapped:(UIControl*)control {
+- (void)mapView:(MKMapView*)mapView annotationView:(nonnull MKAnnotationView*)view calloutAccessoryControlTapped:(nonnull UIControl*)control {
 	
 	[self.addressTextField resignFirstResponder];
 	
@@ -474,7 +466,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 			
 			case UIButtonTypeCustom: {
 				
-				NSMutableArray* mapItems = [NSMutableArray arrayWithCapacity:2];
+				NSMutableArray<MKMapItem*>* mapItems = [NSMutableArray arrayWithCapacity:2];
 				
 				MKMapItem* mapItem = [ride mapItemWithRideLocationType:RideLocationType_Start];
 				if (mapItem) {
@@ -498,7 +490,9 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 					}
 				}
 
-				NSDictionary* launchOptions = mapItems.count == 2 ? @{MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving} : nil;
+				NSDictionary<NSString*,id>* launchOptions = mapItems.count == 2
+				? @{ MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving }
+				: nil;
 				
 				if (![MKMapItem openMapsWithItems:mapItems launchOptions:launchOptions]) {
 					
@@ -535,7 +529,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 			
 			case UIButtonTypeCustom: {
 				
-				NSMutableArray* mapItems = [NSMutableArray arrayWithCapacity:2];
+				NSMutableArray<MKMapItem*>* mapItems = [NSMutableArray arrayWithCapacity:2];
 				
 				MKMapItem* mapItem = [team mapItemForCurrentLocation];
 				if (mapItem) {
@@ -550,7 +544,9 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 					[mapItems addObject:mapItem];
 				}
 				
-				NSDictionary* launchOptions = mapItems.count == 2 ? @{MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving} : nil;
+				NSDictionary<NSString*,id>* launchOptions = mapItems.count == 2
+				? @{ MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving }
+				: nil;
 				
 				if (![MKMapItem openMapsWithItems:mapItems launchOptions:launchOptions]) {
 					
@@ -570,7 +566,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 }
 
 
-- (void)mapView:(MKMapView*)mapView didSelectAnnotationView:(MKAnnotationView*)view {
+- (void)mapView:(MKMapView*)mapView didSelectAnnotationView:(nonnull MKAnnotationView*)view {
 
 	if ([view.annotation isKindOfClass:[MKUserLocation class]]) {
 		
@@ -607,7 +603,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 }
 
 
-- (void)mapView:(MKMapView*)mapView didDeselectAnnotationView:(MKAnnotationView*)view {
+- (void)mapView:(MKMapView*)mapView didDeselectAnnotationView:(nonnull MKAnnotationView*)view {
 	
 	// Delay deselection handler until _after_ new selection, if any
 	// NOTE: Push to next iteration of run loop
@@ -615,7 +611,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 }
 
 
-- (void)deselectedAnnotationView:(MKAnnotationView*)view {
+- (void)deselectedAnnotationView:(nonnull MKAnnotationView*)view {
 	
 	if ([view.annotation isKindOfClass:[MKUserLocation class]]) {
 		
@@ -644,14 +640,14 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 }
 
 
-- (MKOverlayRenderer*)mapView:(MKMapView*)mapView rendererForOverlay:(id<MKOverlay>)overlay {
+- (MKOverlayRenderer*)mapView:(MKMapView*)mapView rendererForOverlay:(nonnull id<MKOverlay>)overlay {
 	
 	if ([overlay isKindOfClass:[MKPolygon class]]) // Jurisdication inverse overlay
 	{
 		MKPolygonRenderer* renderer = [[MKPolygonRenderer alloc] initWithOverlay:overlay];
 		renderer.alpha = 0.2;
 		renderer.fillColor = [UIColor grayColor];
-									   
+		
 		return renderer;
 	}
 	
@@ -1101,7 +1097,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 							   andNeedsSelection:(BOOL)needsSelection {
 	
 	Ride* ride = [Ride rideFromNotification:notification];
-	NSArray* rideAnnotations = [self annotationsForRide:ride];
+	NSArray<id<MKAnnotation>>* rideAnnotations = [self annotationsForRide:ride];
 	
 	// Configure start annotation
 	BOOL isLocationUpdated = [Ride isUpdatedLocationStartFromNotification:notification];
@@ -1132,7 +1128,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
  */
 - (BOOL)configureViewWithRide:(Ride*)ride
 		  andRideLocationType:(RideLocationType)rideLocationType
-		 usingRideAnnotations:(NSArray*)rideAnnotations
+		 usingRideAnnotations:(NSArray<id<MKAnnotation>>*)rideAnnotations
 		 andIsLocationUpdated:(BOOL)isLocationUpdated
 			   andNeedsCenter:(BOOL)needsCenter
 			andNeedsSelection:(BOOL)needsSelection {
@@ -1195,7 +1191,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 - (BOOL)configureRideOverlaysWithNotification:(NSNotification*)notification {
 
 	Ride* ride = [Ride rideFromNotification:notification];
-	NSArray* rideOverlays = [self overlaysForRide:ride];
+	NSArray<id<MKOverlay>>* rideOverlays = [self overlaysForRide:ride];
 	
 	BOOL isRideSelected = [self isSelectedAnnotationForRide:ride];
 	BOOL isTeamAssignedSelected = [self isSelectedAnnotationForTeam:ride.teamAssigned];
@@ -1216,7 +1212,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
  */
 - (BOOL)configureViewWithRide:(Ride*)ride
 			 andRideRouteType:(RideRouteType)rideRouteType
-			usingRideOverlays:(NSArray*)rideOverlays
+			usingRideOverlays:(NSArray<id<MKOverlay>>*)rideOverlays
 			andIsRideSelected:(BOOL)isRideSelected
 	andIsTeamAssignedSelected:(BOOL)isTeamAssignedSelected {
 
@@ -1282,16 +1278,16 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 }
 
 
-- (NSArray*)annotationsForRide:(Ride*)ride {
+- (NSArray<RidePointAnnotation*>*)annotationsForRide:(Ride*)ride {
 	
-	return [self.mainMapView.annotations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
+	return (NSArray<RidePointAnnotation*>*)[self.mainMapView.annotations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id _Nonnull evaluatedObject, NSDictionary<NSString*,id>* _Nullable bindings) {
 		
 		return [evaluatedObject conformsToProtocol:@protocol(RideModelSource)] && ((id<RideModelSource>)evaluatedObject).ride == ride;
 	}]];
 }
 
 
-+ (RidePointAnnotation*)getRidePointAnnotationFromRideAnnotations:(NSArray*)rideAnnotations andRideLocationType:(RideLocationType)rideLocationType {
++ (RidePointAnnotation*)getRidePointAnnotationFromRideAnnotations:(NSArray<id<MKAnnotation>>*)rideAnnotations andRideLocationType:(RideLocationType)rideLocationType {
 	
 	// Return first ride point annotation found of given ride location type
 	// NOTE: Should be max 1
@@ -1319,16 +1315,16 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 }
 
 
-- (NSArray*)overlaysForRide:(Ride*)ride {
+- (NSArray<id<MKOverlay>>*)overlaysForRide:(Ride*)ride {
 	
-	return [self.mainMapView.overlays filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
+	return [self.mainMapView.overlays filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString*,id>* _Nullable bindings) {
 		
 		return [evaluatedObject conformsToProtocol:@protocol(RideModelSource)] && ((id<RideModelSource>)evaluatedObject).ride == ride;
 	}]];
 }
 
 
-+ (RidePolyline*)getRidePolylineFromRideOverlays:(NSArray*)rideOverlays andRideRouteType:(RideRouteType)rideRouteType {
++ (RidePolyline*)getRidePolylineFromRideOverlays:(NSArray<id<MKOverlay>>*)rideOverlays andRideRouteType:(RideRouteType)rideRouteType {
 	
 	// Return first ride polyline overlay found of given ride route type
 	// NOTE: Should be max 1
@@ -1376,7 +1372,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 							   andNeedsSelection:(BOOL)needsSelection {
 	
 	Team* team = [Team teamFromNotification:notification];
-	NSArray* teamAnnotations = [self annotationsForTeam:team];
+	NSArray<TeamPointAnnotation*>* teamAnnotations = [self annotationsForTeam:team];
 	
 	// Configure annotation
 	BOOL isLocationUpdated = [Team isUpdatedLocationFromNotification:notification];
@@ -1395,7 +1391,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
  Returns whether annotation is present
  */
 - (BOOL)configureViewWithTeam:(Team*)team
-		 usingTeamAnnotations:(NSArray*)teamAnnotations
+		 usingTeamAnnotations:(NSArray<TeamPointAnnotation*>*)teamAnnotations
 		 andIsLocationUpdated:(BOOL)isLocationUpdated
 			   andNeedsCenter:(BOOL)needsCenter
 			andNeedsSelection:(BOOL)needsSelection {
@@ -1450,16 +1446,16 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 }
 
 
-- (NSArray*)annotationsForTeam:(Team*)team {
+- (NSArray<TeamPointAnnotation*>*)annotationsForTeam:(Team*)team {
 	
-	return [self.mainMapView.annotations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary* bindings) {
+	return (NSArray<TeamPointAnnotation*>*)[self.mainMapView.annotations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id _Nonnull evaluatedObject, NSDictionary<NSString*,id>* _Nullable bindings) {
 		
 		return [evaluatedObject conformsToProtocol:@protocol(TeamModelSource)] && ((id<TeamModelSource>)evaluatedObject).team == team;
 	}]];
 }
 
 
-+ (TeamPointAnnotation*)getTeamPointAnnotationFromTeamPointAnnotations:(NSArray*)annotations {
++ (TeamPointAnnotation*)getTeamPointAnnotationFromTeamPointAnnotations:(NSArray<TeamPointAnnotation*>*)annotations {
 	
 	// Return first annotation found
 	// NOTE: Should be max 1
@@ -1471,7 +1467,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	
 	if (!team) return NO;
 	
-	MKPointAnnotation* selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
+	id<MKAnnotation> selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
 	
 	return [selectedAnnotation conformsToProtocol:@protocol(TeamModelSource)] && ((id<TeamModelSource>)selectedAnnotation).team == team;
 }
@@ -1515,7 +1511,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 		
 	} else if ([COMMAND_DELETE_ALL isEqualToString:commandString]) {
 		
-		UIAlertAction* deleteAllAlertAction = [UIAlertAction actionWithTitle:@"Delete All" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+		UIAlertAction* deleteAllAlertAction = [UIAlertAction actionWithTitle:@"Delete All" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
 			
 			[Util removePersistentStore];
 			[Util postNotificationDataModelResetWithSender:self];
@@ -1537,10 +1533,10 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 		[Util saveManagedObjectContext];
 
 		// Delay assignment so that drop animations are not cancelled
-		NSDictionary* args =
+		NSDictionary<NSString*,NSArray<__kindof NSManagedObject*>*>* args =
 		@{
 		  @"teams" : self.teamFetchedResultsController.fetchedObjects,
-		  @"rides" : self.rideFetchedResultsController.fetchedObjects
+		  @"rides" : self.rideFetchedResultsController.fetchedObjects,
 		  };
 		[[DemoUtil class] performSelector:@selector(loadDemoAssignTeamsSelector:) withObject:args afterDelay:2.0];
 		[Util saveManagedObjectContext];
