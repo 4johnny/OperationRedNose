@@ -212,6 +212,8 @@
 	
 	// Save location field - try async geocode
 	
+	self.team.locationCurrentTime = self.timeDatePickerTextField.date;
+	
 	BOOL updatedLocation = NO;
 	NSString* viewAddressString = [self.addressTextField.text trimAll];
 	if (![NSString compareString:self.team.locationCurrentAddress toString:viewAddressString]) {
@@ -231,6 +233,8 @@
 			updatedLocation = YES;
 		}
 	}
+	
+	self.team.locationCurrentIsManual = @(self.isManualSwitch.on);
 	
 	// Save notes fields
 	self.team.notes = [self.notesTextView.text trim];
