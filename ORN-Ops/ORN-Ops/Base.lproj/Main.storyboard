@@ -760,12 +760,19 @@
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Team" id="ToU-Mx-Iak">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="bJh-Kr-QTq"/>
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="bJh-Kr-QTq">
+                            <connections>
+                                <action selector="cancelPressed:" destination="XpS-Zq-vPa" id="ddl-Z5-aWG"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" style="done" systemItem="save" id="FY0-3P-fXx">
                             <connections>
                                 <action selector="savePressed:" destination="XpS-Zq-vPa" id="ilS-EG-XMI"/>
                             </connections>
                         </barButtonItem>
+                        <connections>
+                            <outlet property="backBarButtonItem" destination="bJh-Kr-QTq" id="wAf-2g-xsc"/>
+                        </connections>
                     </navigationItem>
                     <connections>
                         <outlet property="addressTextField" destination="chy-Fp-szy" id="Bxr-12-dN3"/>

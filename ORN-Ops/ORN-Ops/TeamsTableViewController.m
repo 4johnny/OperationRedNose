@@ -287,6 +287,8 @@
 	self.fetchedResultsController = nil;
 	
 	[self.tableView reloadData];
+	
+	[self.navigationController popToRootViewControllerAnimated:NO];
 }
 
 
@@ -356,7 +358,7 @@
 	
 	// End Detail
 	
-	Ride* lastRideAssigned = [team getSortedRidesAssigned].lastObject;
+	Ride* lastRideAssigned = [team getLastRideAssigned];
 
 	NSDate* routeDateTimeEnd = [lastRideAssigned getRouteDateTimeEnd];
 	NSString* endDateString = routeDateTimeEnd

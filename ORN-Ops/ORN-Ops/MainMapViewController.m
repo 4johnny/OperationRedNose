@@ -64,7 +64,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	PolylineMode_None = 	0,
 	
 	PolylineMode_Connect =	1,
-	PolylineMode_Route =	2
+	PolylineMode_Route =	2,
 };
 
 
@@ -520,7 +520,14 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 				
 				// Create ride detail controller; inject data model; and push onto navigation stack
 				TeamDetailTableViewController* teamDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:TEAM_DETAIL_TABLE_VIEW_CONTROLLER_ID];
+				
+				// Remove "cancel" button
+				teamDetailTableViewController.navigationItem.leftBarButtonItem = nil;
+				
+				// Inject data model
 				teamDetailTableViewController.team = team;
+				
+				// Push ont navigation stack
 				[self.navigationController pushViewController:teamDetailTableViewController animated:YES];
 				
 				return;
@@ -537,8 +544,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 					[mapItems addObject:mapItem];
 				}
 				
-				Ride* rideAssigned = [team getSortedRidesAssigned].firstObject;
-				mapItem = [rideAssigned mapItemWithRideLocationType:RideLocationType_Start];
+				Ride* firstRideAssigned = [team getFirstRideAssigned];
+				mapItem = [firstRideAssigned mapItemWithRideLocationType:RideLocationType_Start];
 				if (mapItem) {
 					
 					[mapItems addObject:mapItem];
@@ -1052,6 +1059,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	[self clearAllOverlays];
 	
 	[self configureView];
+	
+	[self.navigationController popToRootViewControllerAnimated:NO];
 }
 
 
@@ -1513,7 +1522,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 		
 	} else if ([COMMAND_DELETE_ALL isEqualToString:commandString]) {
 		
-		UIAlertAction* deleteAllAlertAction = [UIAlertAction actionWithTitle:@"Delete All" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+		UIAlertAction* deleteAllAlertAction = [UIAlertAction actionWithTitle:@"Delete All" style:UIAlertActionStyleDestructive handler:^(UIAlertAction* _Nonnull action) {
 			
 			[Util removePersistentStore];
 			[Util postNotificationDataModelResetWithSender:self];

@@ -303,7 +303,7 @@
 	
 	[geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray<CLPlacemark*>* _Nullable placemarks, NSError* _Nullable error) {
 		
-		// NOTES: Completion block executes on main thread. Do not run more than one geocode simultaneously.
+		// NOTES: Completion block executes on main thread
 		
 		// If there is a problem, log it; alert the user; and we are done.
 		if (error || placemarks.count < 1) {

@@ -263,9 +263,6 @@
 				B25220351AA0441A00C3CE00 /* Storyboards */,
 				B25220301A9F391D00C3CE00 /* Data Model */,
 				B25220361AA0444200C3CE00 /* Controllers */,
-				B25220371AA044B000C3CE00 /* Map Helpers */,
-				B241B1DB1ABD35CA0075C99E /* Controls */,
-				B261725E1A9E595D00BB7D67 /* Protocols */,
 				B27B4A721A9AB1FB009277E4 /* Supporting Files */,
 			);
 			path = "ORN-Ops";
@@ -274,6 +271,9 @@
 		B27B4A721A9AB1FB009277E4 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				B261725E1A9E595D00BB7D67 /* Protocols */,
+				B241B1DB1ABD35CA0075C99E /* Controls */,
+				B25220371AA044B000C3CE00 /* Map Helpers */,
 				B25220341AA0415400C3CE00 /* Demo */,
 				B29CD76C1ABE9D6600B21579 /* Categories */,
 				B27B4A761A9AB1FB009277E4 /* AppDelegate.h */,

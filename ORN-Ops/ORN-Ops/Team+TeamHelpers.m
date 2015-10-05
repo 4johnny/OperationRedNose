@@ -147,13 +147,13 @@
 	self.locationCurrentCity = city;
 	self.locationCurrentState = state;
 	
-	if (!address && street && city) {
+	if (!address && (street && city)) {
 		address = [NSString stringWithFormat:@"%@, %@", street, city];
 	}
 	self.locationCurrentAddress = address;
 	
-	if (!time) {
-		time = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
+	if (!time && ((latitude && longitude) || (street && city) || (address))) {
+		time = [NSDate date];
 	}
 	self.locationCurrentTime = time;
 		
@@ -168,7 +168,7 @@
 								 andState:(NSString*)state
 							   andAddress:(NSString*)address
 								  andTime:(NSDate*)time
-							  andIsManual:(BOOL)isManual {
+							  andIsManual:(NSNumber*)isManual {
 	
 	[self updateCurrentLocationWithLatitudeNumber:@(latitude)
 							   andLongitudeNumber:@(longitude)
@@ -177,26 +177,75 @@
 										 andState:state
 									   andAddress:address
 										  andTime:time
-									  andIsManual:@(isManual)];
+									  andIsManual:isManual];
 }
 
 
-//- (void)updateCurrentLocationWithPlacemark:(CLPlacemark*)placemark {
-//	
-//	[self updateCurrentLocationWithLatitude:placemark.location.coordinate.latitude
-//							   andLongitude:placemark.location.coordinate.longitude
-//								  andStreet:[placemark getAddressStreet]
-//									andCity:placemark.locality
-//								   andState:[placemark getAddressState]
-//								 andAddress:[placemark getAddressString]
-//									andTime:<#(NSDate *)#>
-//								andIsManual:NO];
-//}
+- (void)updateCurrentLocationWithPlacemark:(CLPlacemark*)placemark {
+	
+	[self updateCurrentLocationWithLatitude:placemark.location.coordinate.latitude
+							   andLongitude:placemark.location.coordinate.longitude
+								  andStreet:[placemark getAddressStreet]
+									andCity:placemark.locality
+								   andState:[placemark getAddressState]
+								 andAddress:[placemark getAddressString]
+									andTime:nil
+								andIsManual:nil];
+}
 
 
 - (void)clearCurrentLocation {
 	
 	[self updateCurrentLocationWithLatitudeNumber:nil andLongitudeNumber:nil andStreet:nil andCity:nil andState:nil andAddress:nil andTime:nil andIsManual:nil];
+}
+
+
+/*
+ Geocode given address string relative to jurisdiction, asynchronously
+ */
+- (void)tryUpdateCurrentLocationWithAddressString:(NSString*)addressString
+									  andGeocoder:(CLGeocoder*)geocoder
+										andSender:(id)sender {
+	
+	addressString = [addressString trimAll];
+	
+	CLCircularRegion* jurisdictionRegion = [[CLCircularRegion alloc] initWithCenter:JURISDICTION_COORDINATE radius:JURISDICTION_SEARCH_RADIUS identifier:@"ORN Jurisdication Region"];
+	
+	[geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray<CLPlacemark*>* _Nullable placemarks, NSError* _Nullable error) {
+		
+		// NOTES: Completion block executes on main thread
+		
+		// If there is a problem, log it; alert the user; and we are done.
+		if (error || placemarks.count < 1) {
+			
+			if (error) {
+				NSLog(@"Geocode Error: %@ %@", error.localizedDescription, error.userInfo);
+			} else if (placemarks.count < 1) {
+				NSLog(@"Geocode Error: No placemarks for address string: %@", addressString);
+			}
+			
+			//	[Util presentOKAlertWithTitle:@"Error" andMessage:[NSString stringWithFormat:@"Cannot geocode address: %@", addressString]];
+			
+			return;
+		}
+		
+		// Use first placemark resolved from address as location
+		CLPlacemark* placemark = placemarks[0];
+		[self updateCurrentLocationWithPlacemark:placemark];
+		NSLog(@"Geocode location: %@", placemark.location);
+		NSLog(@"Geocode locality: %@", placemark.locality);
+		NSLog(@"Geocode address: %@", placemark.addressDictionary);
+		
+		// Persist and notify
+		[Util saveManagedObjectContext];
+		[self postNotificationUpdatedWithSender:sender andUpdatedLocation:YES];
+		Ride* firstRideAssigned = [self getFirstRideAssigned];
+		[firstRideAssigned postNotificationUpdatedWithSender:self];
+		NSLog(@"Team: %@", self);
+		
+		// Try to recalculate prep route
+		[firstRideAssigned tryUpdatePrepRouteWithLatitude:@(placemark.location.coordinate.latitude) andLongitude:@(placemark.location.coordinate.longitude) andSender:self]; // async
+	}];
 }
 
 
@@ -253,6 +302,18 @@
 	}
 	
 	return status;
+}
+
+
+- (Ride*)getFirstRideAssigned {
+	
+	return [self getSortedRidesAssigned].firstObject;
+}
+
+
+- (Ride*)getLastRideAssigned {
+	
+	return [self getSortedRidesAssigned].lastObject;
 }
 
 

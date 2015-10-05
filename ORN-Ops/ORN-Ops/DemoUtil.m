@@ -372,7 +372,7 @@
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
 									andTime:nil
-								andIsManual:YES];
+								andIsManual:@YES];
 
 	[team postNotificationCreatedWithSender:self];
 	
@@ -388,7 +388,7 @@
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
 									andTime:nil
-								andIsManual:YES];
+								andIsManual:@YES];
 	[team postNotificationCreatedWithSender:self];
 }
 
@@ -410,7 +410,7 @@
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
 									andTime:nil
-								andIsManual:YES];
+								andIsManual:@YES];
 	[team postNotificationCreatedWithSender:self];
 	
 	team = [Team teamWithManagedObjectContext:moc];
@@ -425,7 +425,7 @@
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
 									andTime:nil
-								andIsManual:YES];
+								andIsManual:@YES];
 	[team postNotificationCreatedWithSender:self];
 }
 
@@ -447,7 +447,7 @@
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
 									andTime:nil
-								andIsManual:YES];
+								andIsManual:@YES];
 	[team postNotificationCreatedWithSender:self];
 	
 	team = [Team teamWithManagedObjectContext:moc];
@@ -462,7 +462,7 @@
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
 									andTime:nil
-								andIsManual:YES];
+								andIsManual:@YES];
 	[team postNotificationCreatedWithSender:self];
 }
 
@@ -493,7 +493,7 @@
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
 									andTime:nil
-								andIsManual:YES];
+								andIsManual:@YES];
 	[team postNotificationCreatedWithSender:self];
 	
 	team = [Team teamWithManagedObjectContext:moc];
@@ -508,7 +508,7 @@
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
 									andTime:nil
-								andIsManual:YES];
+								andIsManual:@YES];
 	[team postNotificationCreatedWithSender:self];
 }
 
@@ -530,7 +530,7 @@
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
 									andTime:nil
-								andIsManual:YES];
+								andIsManual:@YES];
 	[team postNotificationCreatedWithSender:self];
 	
 	// NOTE: Team missing name
@@ -545,7 +545,7 @@
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
 									andTime:nil
-								andIsManual:YES];
+								andIsManual:@YES];
 	[team postNotificationCreatedWithSender:self];
 }
 
@@ -566,7 +566,7 @@
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
 									andTime:nil
-								andIsManual:YES];
+								andIsManual:@YES];
 	[team postNotificationCreatedWithSender:self];
 }
 

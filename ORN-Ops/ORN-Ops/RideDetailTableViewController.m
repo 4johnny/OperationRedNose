@@ -324,7 +324,7 @@
 	}
 	
 	// Save other dispatch fields
-	self.ride.sourceName = [self.sourceTextField.text trim];
+	self.ride.sourceName = [self.sourceTextField.text trimAll];
 	self.ride.donationAmount = self.donationTextField.text.length > 0 ? [NSDecimalNumber decimalNumberWithString:self.donationTextField.text] : nil;
 	
 	// Save passenger fields
@@ -339,8 +339,8 @@
 	NSString* viewAddressString = [self.startAddressTextField.text trimAll];
 	if (![NSString compareString:self.ride.locationStartAddress toString:viewAddressString]) {
 		
-		[self.ride clearMainRoute];
 		[self.ride clearPrepRoute];
+		[self.ride clearMainRoute];
 		
 		if (viewAddressString.length > 0) {
 			
@@ -384,7 +384,7 @@
 	self.ride.vehicleSeatBeltCount = @(self.seatBeltCountSegmentedControl.selectedSegmentIndex);
 	
 	// Save notes fields
-	self.ride.notes = [self.notesTextView.text trimAll];
+	self.ride.notes = [self.notesTextView.text trim];
 	
 	// Persist data model to store and notify observers
 	[Util saveManagedObjectContext];

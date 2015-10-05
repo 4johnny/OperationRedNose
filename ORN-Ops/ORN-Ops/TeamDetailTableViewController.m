@@ -7,6 +7,7 @@
 //
 
 #import "TeamDetailTableViewController.h"
+#import "Ride+RideHelpers.h"
 
 
 #
@@ -20,6 +21,8 @@
 #
 
 @property (nonatomic, getter=isAddMode) BOOL addMode;
+
+@property (nonatomic) CLGeocoder* geocoder;
 
 @property (nonatomic) NSNumberFormatter* currencyNumberFormatter;
 
@@ -37,6 +40,16 @@
 #
 # pragma mark Property Accessors
 #
+
+
+- (CLGeocoder*)geocoder {
+	
+	if (_geocoder) return _geocoder;
+	
+	_geocoder = [[CLGeocoder alloc] init];
+	
+	return _geocoder;
+}
 
 
 - (NSNumberFormatter*)currencyNumberFormatter {
@@ -118,8 +131,24 @@
 	
 	[self.view endEditing:YES];
 
-	//	[TeamDetailTableViewController saveManagedObjectContext];
-	[self.navigationController popViewControllerAnimated:YES];
+	[self saveDataModelFromView];
+	
+	if (self.isAddMode) {
+		
+		[self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+		
+	} else {
+		
+		[self.navigationController popViewControllerAnimated:YES];
+	}
+}
+
+
+- (IBAction)cancelPressed:(UIBarButtonItem*)sender {
+	
+	[self.view endEditing:YES];
+	
+	[self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -172,19 +201,39 @@
 		self.team = [Team teamWithManagedObjectContext:[Util managedObjectContext]];
 	}
 	
-	// Save dispatch field: start time - try async calculate route
-	
-	// Save dispatch field: team assigned
-	
-	// Save other dispatch fields
+	// Save dispatch fields
+	self.team.isActive = @(self.isActiveSwitch.on);
 	
 	// Save team fields
+	self.team.name = [self.nameTextField.text trimAll];
+	self.team.members = [self.membersTextField.text trimAll];
+	self.team.phoneNumber = [self.phoneNumberTextField.text trimAll];
+	self.team.isMascot = @(self.isMascotSwitch.on);
 	
-	// Save location fields - try async geocode
+	// Save location field - try async geocode
+	
 	BOOL updatedLocation = NO;
+	NSString* viewAddressString = [self.addressTextField.text trimAll];
+	if (![NSString compareString:self.team.locationCurrentAddress toString:viewAddressString]) {
+		
+		Ride* firstRideAssigned = [self.team getFirstRideAssigned];
+		[firstRideAssigned clearPrepRoute];
+		
+		if (viewAddressString.length > 0) {
+			
+			[self.team tryUpdateCurrentLocationWithAddressString:viewAddressString
+													 andGeocoder:self.geocoder
+													   andSender:self]; // async
+			
+		} else {
+			
+			[self.team clearCurrentLocation];
+			updatedLocation = YES;
+		}
+	}
 	
 	// Save notes fields
-	self.team.notes = [self.notesTextView.text trimAll];
+	self.team.notes = [self.notesTextView.text trim];
 	
 	// Persist data model to store and notify observers
 	[Util saveManagedObjectContext];

@@ -83,15 +83,19 @@
 								 andState:(NSString*)state
 							   andAddress:(NSString*)address
 								  andTime:(NSDate*)time
-							  andIsManual:(BOOL)isManual;
+							  andIsManual:(NSNumber*)isManual;
 
-//- (void)updateCurrentLocationWithPlacemark:(CLPlacemark*)placemark;
 - (void)clearCurrentLocation;
 
+- (void)tryUpdateCurrentLocationWithAddressString:(NSString*)addressString
+									  andGeocoder:(CLGeocoder*)geocoder
+										andSender:(id)sender;
 - (void)tryUpdateAssignedRideRoutesWithSender:(id)sender;
 
 - (NSString*)getTitle;
 - (NSString*)getStatusText;
+- (Ride*)getFirstRideAssigned;
+- (Ride*)getLastRideAssigned;
 - (NSArray<Ride*>*)getSortedRidesAssigned;
 
 - (MKMapItem*)mapItemForCurrentLocation;

@@ -288,6 +288,8 @@
 	self.fetchedResultsController = nil;
 	
 	[self.tableView reloadData];
+	
+	[self.navigationController popToRootViewControllerAnimated:NO];
 }
 
 
