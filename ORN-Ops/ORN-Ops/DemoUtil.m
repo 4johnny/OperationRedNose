@@ -42,6 +42,7 @@
 	// Vancouver to nowhere - also missing passenger info
 	ride = [Ride rideWithManagedObjectContext:moc];
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
+	ride.donationAmount = [NSDecimalNumber decimalNumberWithString:@"3.50"];
 	[ride updateLocationWithRideLocationType:RideLocationType_Start
 								 andLatitude:49.287826
 								andLongitude:-123.123834
@@ -70,6 +71,7 @@
 	ride.passengerNameFirst = @"Rob";
 	ride.passengerNameLast = @"Jankovic";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
+	ride.donationAmount = [NSDecimalNumber decimalNumberWithString:@"20"];
 	[ride updateLocationWithRideLocationType:RideLocationType_Start
 								 andLatitude:49.2818704
 								andLongitude:-123.1081611
@@ -92,6 +94,7 @@
 	ride.passengerNameFirst = @"Joe";
 	ride.passengerNameLast = @"Roberts";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
+	ride.donationAmount = [NSDecimalNumber decimalNumberWithString:@"15.00"];
 	[ride updateLocationWithRideLocationType:RideLocationType_Start
 								 andLatitude:49.27665770574511
 								andLongitude:-123.0847680657702
@@ -121,6 +124,7 @@
 	ride.passengerNameFirst = @"Janet";
 	ride.passengerNameLast = @"Peterson";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
+	ride.donationAmount = [NSDecimalNumber zero];
 	[ride updateLocationWithRideLocationType:RideLocationType_Start
 								 andLatitude:49.24274
 								andLongitude:-123.014073
@@ -143,6 +147,7 @@
 	ride.passengerNameFirst = @"Morris";
 	ride.passengerNameLast = @"Sander";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
+	ride.donationAmount = [NSDecimalNumber one];
 	[ride updateLocationWithRideLocationType:RideLocationType_Start
 								 andLatitude:49.2660725
 								andLongitude:-123.0024237
@@ -172,6 +177,7 @@
 	ride.passengerNameFirst = @"Dorothy";
 	ride.passengerNameLast = @"Kansas";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
+	ride.donationAmount = [NSDecimalNumber decimalNumberWithString:@"22"];
 	[ride updateLocationWithRideLocationType:RideLocationType_Start
 								 andLatitude:49.18302
 								andLongitude:-122.953496
@@ -194,6 +200,7 @@
 	ride.passengerNameFirst = @"Jeff";
 	ride.passengerNameLast = @"Donofrio";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
+	ride.donationAmount = [NSDecimalNumber decimalNumberWithString:@"17"];
 	[ride updateLocationWithRideLocationType:RideLocationType_Start
 								 andLatitude:49.231407
 								andLongitude:-122.893559
@@ -216,6 +223,7 @@
 	ride.passengerNameFirst = @"Adrianna";
 	ride.passengerNameLast = @"Butler";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
+	ride.donationAmount = [NSDecimalNumber decimalNumberWithString:@"9"];
 	[ride updateLocationWithRideLocationType:RideLocationType_Start
 								 andLatitude:49.202296
 								andLongitude:-122.9382
@@ -253,6 +261,7 @@
 	ride.passengerNameFirst = @"Danny";
 	ride.passengerNameLast = @"Tao";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
+	ride.donationAmount = [NSDecimalNumber decimalNumberWithString:@"4.75"];
 	[ride updateLocationWithRideLocationType:RideLocationType_Start
 								 andLatitude:49.26374147501311
 								andLongitude:-122.8691647300472
@@ -282,6 +291,7 @@
 	ride.passengerNameFirst = @"Tara";
 	ride.passengerNameLast = @"Hughes";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
+	ride.donationAmount = [NSDecimalNumber decimalNumberWithString:@"3.10"];
 	[ride updateLocationWithRideLocationType:RideLocationType_Start
 								 andLatitude:49.25625588056973
 								andLongitude:-122.7782533932433
@@ -311,6 +321,7 @@
 	ride.passengerNameFirst = @"Farai";
 	ride.passengerNameLast = @"Cole";
 	ride.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
+	ride.donationAmount = [NSDecimalNumber decimalNumberWithString:@"8"];
 	[ride updateLocationWithRideLocationType:RideLocationType_Start
 								 andLatitude:49.30258801423837
 								andLongitude:-122.8759178752116
@@ -359,7 +370,10 @@
 								  andStreet:@"1001 W Georgia St"
 									andCity:@"Vancouver"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
-								 andAddress:nil];
+								 andAddress:nil
+									andTime:nil
+								andIsManual:YES];
+
 	[team postNotificationCreatedWithSender:self];
 	
 	team = [Team teamWithManagedObjectContext:moc];
@@ -372,7 +386,9 @@
 								  andStreet:@"2201 Commercial Dr"
 									andCity:@"Vancouver"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
-								 andAddress:nil];
+								 andAddress:nil
+									andTime:nil
+								andIsManual:YES];
 	[team postNotificationCreatedWithSender:self];
 }
 
@@ -392,7 +408,9 @@
 								  andStreet:@"3730 Burke St"
 									andCity:@"Burnaby"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
-								 andAddress:nil];
+								 andAddress:nil
+									andTime:nil
+								andIsManual:YES];
 	[team postNotificationCreatedWithSender:self];
 	
 	team = [Team teamWithManagedObjectContext:moc];
@@ -405,7 +423,9 @@
 								  andStreet:@"4688 Canada Way"
 									andCity:@"Burnaby"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
-								 andAddress:nil];
+								 andAddress:nil
+									andTime:nil
+								andIsManual:YES];
 	[team postNotificationCreatedWithSender:self];
 }
 
@@ -425,7 +445,9 @@
 								  andStreet:@"934 17th St"
 									andCity:@"New Westminster"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
-								 andAddress:nil];
+								 andAddress:nil
+									andTime:nil
+								andIsManual:YES];
 	[team postNotificationCreatedWithSender:self];
 	
 	team = [Team teamWithManagedObjectContext:moc];
@@ -438,7 +460,9 @@
 								  andStreet:@"209 Columbia St E"
 									andCity:@"New Westminster"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
-								 andAddress:nil];
+								 andAddress:nil
+									andTime:nil
+								andIsManual:YES];
 	[team postNotificationCreatedWithSender:self];
 }
 
@@ -467,7 +491,9 @@
 								  andStreet:@"501 N Rd"
 									andCity:@"Coquitlam"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
-								 andAddress:nil];
+								 andAddress:nil
+									andTime:nil
+								andIsManual:YES];
 	[team postNotificationCreatedWithSender:self];
 	
 	team = [Team teamWithManagedObjectContext:moc];
@@ -480,7 +506,9 @@
 								  andStreet:@"2991 Lougheed Hwy"
 									andCity:@"Coquitlam"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
-								 andAddress:nil];
+								 andAddress:nil
+									andTime:nil
+								andIsManual:YES];
 	[team postNotificationCreatedWithSender:self];
 }
 
@@ -500,7 +528,9 @@
 								  andStreet:@"13 McLean Ave"
 									andCity:@"Port Coquitlam"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
-								 andAddress:nil];
+								 andAddress:nil
+									andTime:nil
+								andIsManual:YES];
 	[team postNotificationCreatedWithSender:self];
 	
 	// NOTE: Team missing name
@@ -513,7 +543,9 @@
 								  andStreet:@"4016 Joseph Pl"
 									andCity:@"Port Coquitlam"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
-								 andAddress:nil];
+								 andAddress:nil
+									andTime:nil
+								andIsManual:YES];
 	[team postNotificationCreatedWithSender:self];
 }
 
@@ -532,7 +564,9 @@
 								  andStreet:@"1300 David Ave"
 									andCity:@"Port Moody"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
-								 andAddress:nil];
+								 andAddress:nil
+									andTime:nil
+								andIsManual:YES];
 	[team postNotificationCreatedWithSender:self];
 }
 

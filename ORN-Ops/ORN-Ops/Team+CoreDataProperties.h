@@ -2,7 +2,7 @@
 //  Team+CoreDataProperties.h
 //  ORN-Ops
 //
-//  Created by Johnny on 2015-10-03.
+//  Created by Johnny on 2015-10-04.
 //  Copyright © 2015 Empath Solutions. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -19,10 +19,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSNumber *isMascot;
 @property (nullable, nonatomic, retain) NSString *locationCurrentAddress;
 @property (nullable, nonatomic, retain) NSString *locationCurrentCity;
+@property (nullable, nonatomic, retain) NSNumber *locationCurrentIsManual;
 @property (nullable, nonatomic, retain) NSNumber *locationCurrentLatitude;
 @property (nullable, nonatomic, retain) NSNumber *locationCurrentLongitude;
 @property (nullable, nonatomic, retain) NSString *locationCurrentState;
 @property (nullable, nonatomic, retain) NSString *locationCurrentStreet;
+@property (nullable, nonatomic, retain) NSDate *locationCurrentTime;
 @property (nullable, nonatomic, retain) NSString *members;
 @property (nullable, nonatomic, retain) NSString *name;
 @property (nullable, nonatomic, retain) NSString *notes;

@@ -23,7 +23,6 @@
 #define TEAM_FETCH_SORT_ASC2		YES
 #define TEAM_FETCH_BATCH_SIZE		20
 
-
 #
 # pragma mark - Protocol
 #
@@ -82,19 +81,23 @@
 								andStreet:(NSString*)street
 								  andCity:(NSString*)city
 								 andState:(NSString*)state
-							   andAddress:(NSString*)address;
+							   andAddress:(NSString*)address
+								  andTime:(NSDate*)time
+							  andIsManual:(BOOL)isManual;
 
-- (void)updateCurrentLocationWithPlacemark:(CLPlacemark*)placemark;
+//- (void)updateCurrentLocationWithPlacemark:(CLPlacemark*)placemark;
 - (void)clearCurrentLocation;
 
 - (void)tryUpdateAssignedRideRoutesWithSender:(id)sender;
 
 - (NSString*)getTitle;
+- (NSString*)getStatusText;
 - (NSArray<Ride*>*)getSortedRidesAssigned;
 
 - (MKMapItem*)mapItemForCurrentLocation;
 
 - (NSTimeInterval)assignedDuration;
 - (CLLocationDistance)assignedDistance;
+- (NSDecimalNumber*)assignedDonations;
 
 @end

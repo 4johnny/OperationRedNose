@@ -17,9 +17,6 @@
 #define DONATION_TEXT_LENGTH_MAX	8 // NOTE: Arbitrary limit to ensure number fits in NSDecimal
 #define DONATION_TEXT_DECIMAL_COUNT	2
 
-#define DATE_PICKER_LOCALE				@"en_CA"
-#define DATE_PICKER_DATETIME_FORMAT		@"EEE MMM dd HH:mm"
-
 #
 # pragma mark - Interface
 #
@@ -246,39 +243,12 @@
 	
 	self.title = [@"Ride: " stringByAppendingString:[self.ride getTitle]];
 	
-	[self configureStartTimeDatePickerTextField];
 	[self configureTeamAssignedPickerTextField];
 	
 	if (!self.isAddMode) {
 		
 		[self loadDataModelIntoView];
 	}
-}
-
-
-/*
- Constrain start-time date picker
- */
-- (void)configureStartTimeDatePickerTextField {
-
-	// Basic config
-	self.startTimeDatePickerTextField.minuteInterval = TIME_MINUTE_INTERVAL;
-	self.startTimeDatePickerTextField.locale = [NSLocale localeWithLocaleIdentifier:DATE_PICKER_LOCALE];
-	self.startTimeDatePickerTextField.dateFormat = DATE_PICKER_DATETIME_FORMAT;
-	
-	// Get date-time for now
-	NSDate* now = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
-	self.startTimeDatePickerTextField.date = now;
-	
-	// Minimum date-time is one day before now
-	NSCalendar* currentCalendar = [NSCalendar currentCalendar];
-	NSDateComponents* offsetComponents = [[NSDateComponents alloc] init];
-	offsetComponents.day = -1;
-	self.startTimeDatePickerTextField.minimumDate = [currentCalendar dateByAddingComponents:offsetComponents toDate:now options:kNilOptions];
-	
-	// Maximum date-time is one day from now
-	offsetComponents.day = 1;
-	self.startTimeDatePickerTextField.maximumDate = [currentCalendar dateByAddingComponents:offsetComponents toDate:now options:kNilOptions];
 }
 
 
@@ -298,7 +268,6 @@
 }
 
 
-// Load ride data model into view fields
 - (void)loadDataModelIntoView {
 	
 	// Load dispatch fields
@@ -329,7 +298,6 @@
 }
 
 
-// Save ride data model from view fields
 - (void)saveDataModelFromView {
 	
 	if (self.isAddMode) {

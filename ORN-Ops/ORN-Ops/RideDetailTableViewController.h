@@ -24,13 +24,13 @@
 @interface RideDetailTableViewController : UITableViewController <RideModelSource, UITableViewDelegate, UITextFieldDelegate, NSFetchedResultsControllerDelegate>
 
 #
-# pragma mark Properties
+# pragma mark Data Model Properties
 #
 
 @property (weak, nonatomic) Ride* ride;
 
 #
-# pragma mark Outlets
+# pragma mark UI Outlets
 #
 
 // Dispatch

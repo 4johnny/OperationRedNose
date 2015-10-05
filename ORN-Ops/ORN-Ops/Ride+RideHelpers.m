@@ -221,7 +221,6 @@
 								andAddress:(NSString*)address {
 	
 	if (!address && street && city) {
-		
 		address = [NSString stringWithFormat:@"%@, %@", street, city];
 	}
 	
@@ -235,7 +234,6 @@
 			self.locationStartStreet = street;
 			self.locationStartCity = city;
 			self.locationStartState = state;
-			
 			self.locationStartAddress = address;
 			
 			break;
@@ -247,7 +245,6 @@
 			self.locationEndStreet = street;
 			self.locationEndCity = city;
 			self.locationEndState = state;
-			
 			self.locationEndAddress = address;
 			
 			break;

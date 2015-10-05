@@ -10,6 +10,13 @@
 #import "BasePickerTextField.h"
 
 #
+# pragma mark Date-Time Constants
+#
+
+#define DATE_PICKER_LOCALE				@"en_CA"
+#define DATE_PICKER_DATETIME_FORMAT		@"EEE MMM dd HH:mm"
+
+#
 # pragma mark - Interface
 #
 

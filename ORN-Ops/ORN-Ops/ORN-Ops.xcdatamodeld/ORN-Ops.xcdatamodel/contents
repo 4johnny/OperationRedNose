@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7549" systemVersion="14D131" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="8195" systemVersion="14F27" minimumToolsVersion="Xcode 4.3">
     <entity name="Ride" representedClassName="Ride" syncable="YES">
         <attribute name="dateTimeStart" optional="YES" attributeType="Date" indexed="YES" syncable="YES"/>
         <attribute name="donationAmount" optional="YES" attributeType="Decimal" minValueString="0" syncable="YES"/>
@@ -42,10 +42,12 @@
         <attribute name="isMascot" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="locationCurrentAddress" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationCurrentCity" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="locationCurrentIsManual" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="locationCurrentLatitude" optional="YES" attributeType="Double" syncable="YES"/>
         <attribute name="locationCurrentLongitude" optional="YES" attributeType="Double" syncable="YES"/>
         <attribute name="locationCurrentState" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="locationCurrentStreet" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="locationCurrentTime" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="members" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
@@ -54,6 +56,6 @@
     </entity>
     <elements>
         <element name="Ride" positionX="-63" positionY="98" width="135" height="570"/>
-        <element name="Team" positionX="153" positionY="428" width="144" height="238"/>
+        <element name="Team" positionX="153" positionY="396" width="153" height="268"/>
     </elements>
 </model>

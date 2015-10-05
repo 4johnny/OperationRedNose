@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2078B861A9DB406004AF662 /* MainMapViewController.m */; };
+		B22CC4BE1BC1E15F00256034 /* Team+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = B22CC4BB1BC1E15F00256034 /* Team+CoreDataProperties.m */; settings = {ASSET_TAGS = (); }; };
+		B22CC4BF1BC1E15F00256034 /* Team.m in Sources */ = {isa = PBXBuildFile; fileRef = B22CC4BD1BC1E15F00256034 /* Team.m */; settings = {ASSET_TAGS = (); }; };
 		B241B1DE1ABD408D0075C99E /* DatePickerTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B241B1DD1ABD408D0075C99E /* DatePickerTextField.m */; };
 		B241B1E11ABD65330075C99E /* BasePickerTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B241B1E01ABD65330075C99E /* BasePickerTextField.m */; };
 		B24580B51AB5460B0090758E /* NSString+StringHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B24580B41AB5460B0090758E /* NSString+StringHelpers.m */; };
@@ -28,8 +30,6 @@
 		B28312291AAF322C00B7C1A9 /* RidePolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B28312281AAF322C00B7C1A9 /* RidePolyline.m */; };
 		B28A34871BC0861D00493E09 /* Ride+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = B28A34801BC0861D00493E09 /* Ride+CoreDataProperties.m */; settings = {ASSET_TAGS = (); }; };
 		B28A34881BC0861D00493E09 /* Ride.m in Sources */ = {isa = PBXBuildFile; fileRef = B28A34821BC0861D00493E09 /* Ride.m */; settings = {ASSET_TAGS = (); }; };
-		B28A34891BC0861D00493E09 /* Team+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = B28A34841BC0861D00493E09 /* Team+CoreDataProperties.m */; settings = {ASSET_TAGS = (); }; };
-		B28A348A1BC0861D00493E09 /* Team.m in Sources */ = {isa = PBXBuildFile; fileRef = B28A34861BC0861D00493E09 /* Team.m */; settings = {ASSET_TAGS = (); }; };
 		B2907B841A9F1903008A0301 /* RidePointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B2907B831A9F1903008A0301 /* RidePointAnnotation.m */; };
 		B29CD76B1ABE9D3200B21579 /* NSDate+DateHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B29CD76A1ABE9D3200B21579 /* NSDate+DateHelpers.m */; };
 		B2B116BF1AB9191500F22B00 /* PickerTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B2B116BE1AB9191500F22B00 /* PickerTextField.m */; };
@@ -50,6 +50,10 @@
 		B2078B851A9DB406004AF662 /* MainMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMapViewController.h; sourceTree = "<group>"; };
 		B2078B861A9DB406004AF662 /* MainMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MainMapViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		B2078B8E1A9DC043004AF662 /* ORNDataModelSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ORNDataModelSource.h; sourceTree = "<group>"; };
+		B22CC4BA1BC1E15F00256034 /* Team+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Team+CoreDataProperties.h"; sourceTree = "<group>"; };
+		B22CC4BB1BC1E15F00256034 /* Team+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Team+CoreDataProperties.m"; sourceTree = "<group>"; };
+		B22CC4BC1BC1E15F00256034 /* Team.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Team.h; sourceTree = "<group>"; };
+		B22CC4BD1BC1E15F00256034 /* Team.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Team.m; sourceTree = "<group>"; };
 		B241B1DC1ABD408D0075C99E /* DatePickerTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatePickerTextField.h; sourceTree = "<group>"; };
 		B241B1DD1ABD408D0075C99E /* DatePickerTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatePickerTextField.m; sourceTree = "<group>"; };
 		B241B1DF1ABD65330075C99E /* BasePickerTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BasePickerTextField.h; sourceTree = "<group>"; };
@@ -86,10 +90,6 @@
 		B28A34801BC0861D00493E09 /* Ride+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Ride+CoreDataProperties.m"; sourceTree = "<group>"; };
 		B28A34811BC0861D00493E09 /* Ride.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ride.h; sourceTree = "<group>"; };
 		B28A34821BC0861D00493E09 /* Ride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ride.m; sourceTree = "<group>"; };
-		B28A34831BC0861D00493E09 /* Team+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Team+CoreDataProperties.h"; sourceTree = "<group>"; };
-		B28A34841BC0861D00493E09 /* Team+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Team+CoreDataProperties.m"; sourceTree = "<group>"; };
-		B28A34851BC0861D00493E09 /* Team.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Team.h; sourceTree = "<group>"; };
-		B28A34861BC0861D00493E09 /* Team.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Team.m; sourceTree = "<group>"; };
 		B2907B821A9F1903008A0301 /* RidePointAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RidePointAnnotation.h; sourceTree = "<group>"; };
 		B2907B831A9F1903008A0301 /* RidePointAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RidePointAnnotation.m; sourceTree = "<group>"; };
 		B29CD7691ABE9D3200B21579 /* NSDate+DateHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+DateHelpers.h"; sourceTree = "<group>"; };
@@ -166,14 +166,14 @@
 		B24D4FD21A9D98E9008A0C7A /* Generated */ = {
 			isa = PBXGroup;
 			children = (
+				B22CC4BA1BC1E15F00256034 /* Team+CoreDataProperties.h */,
+				B22CC4BB1BC1E15F00256034 /* Team+CoreDataProperties.m */,
+				B22CC4BC1BC1E15F00256034 /* Team.h */,
+				B22CC4BD1BC1E15F00256034 /* Team.m */,
 				B28A347F1BC0861D00493E09 /* Ride+CoreDataProperties.h */,
 				B28A34801BC0861D00493E09 /* Ride+CoreDataProperties.m */,
 				B28A34811BC0861D00493E09 /* Ride.h */,
 				B28A34821BC0861D00493E09 /* Ride.m */,
-				B28A34831BC0861D00493E09 /* Team+CoreDataProperties.h */,
-				B28A34841BC0861D00493E09 /* Team+CoreDataProperties.m */,
-				B28A34851BC0861D00493E09 /* Team.h */,
-				B28A34861BC0861D00493E09 /* Team.m */,
 			);
 			name = Generated;
 			sourceTree = "<group>";
@@ -439,12 +439,12 @@
 				B24580B81AB584C00090758E /* BaseNavigationController.m in Sources */,
 				B2907B841A9F1903008A0301 /* RidePointAnnotation.m in Sources */,
 				B241B1E11ABD65330075C99E /* BasePickerTextField.m in Sources */,
-				B28A34891BC0861D00493E09 /* Team+CoreDataProperties.m in Sources */,
+				B22CC4BE1BC1E15F00256034 /* Team+CoreDataProperties.m in Sources */,
 				B2C7561E1AA1A97900B148D3 /* TeamDetailTableViewController.m in Sources */,
 				B24580B51AB5460B0090758E /* NSString+StringHelpers.m in Sources */,
 				B2E76A251AA6D0A3004B55BB /* TeamPointAnnotation.m in Sources */,
 				B25220331AA0412C00C3CE00 /* DemoUtil.m in Sources */,
-				B28A348A1BC0861D00493E09 /* Team.m in Sources */,
+				B22CC4BF1BC1E15F00256034 /* Team.m in Sources */,
 				B27533451A9DA91700B3110C /* MainTabBarController.m in Sources */,
 				B2C756251AA1BA8B00B148D3 /* Util.m in Sources */,
 				B29CD76B1ABE9D3200B21579 /* NSDate+DateHelpers.m in Sources */,

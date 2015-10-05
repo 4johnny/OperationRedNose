@@ -15,6 +15,14 @@
 
 @interface TeamDetailTableViewController ()
 
+#
+# pragma mark Properties
+#
+
+@property (nonatomic, getter=isAddMode) BOOL addMode;
+
+@property (nonatomic) NSNumberFormatter* currencyNumberFormatter;
+
 @end
 
 
@@ -24,6 +32,24 @@
 
 
 @implementation TeamDetailTableViewController
+
+
+#
+# pragma mark Property Accessors
+#
+
+
+- (NSNumberFormatter*)currencyNumberFormatter {
+	
+	if (!_currencyNumberFormatter) {
+		
+		_currencyNumberFormatter = [[NSNumberFormatter alloc] init];
+		_currencyNumberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+		_currencyNumberFormatter.locale = [NSLocale currentLocale];
+	}
+	
+	return _currencyNumberFormatter;
+}
 
 
 #
@@ -45,6 +71,16 @@
 	
 	// Remove table footer
 	self.tableView.tableFooterView = [UIView new];
+
+	// Configure access mode: add or edit
+	self.addMode = (self.team == nil);
+	if (self.isAddMode) {
+		
+		// Replace "save" button with "add"
+		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStyleDone target:self action:@selector(savePressed:)];
+	}
+	
+	[self configureView];
 }
 
 
@@ -84,6 +120,82 @@
 
 	//	[TeamDetailTableViewController saveManagedObjectContext];
 	[self.navigationController popViewControllerAnimated:YES];
+}
+
+
+#
+# pragma mark Helpers
+#
+
+
+- (void)configureView {
+	
+	self.title = [@"Team: " stringByAppendingString:[self.team getTitle]];
+	
+	if (!self.isAddMode) {
+		
+		[self loadDataModelIntoView];
+	}
+}
+
+
+- (void)loadDataModelIntoView {
+	
+	// Load dispatch fields
+	self.isActiveSwitch.on = self.team.isActive.boolValue;
+	self.rideCountLabel.text = [NSString stringWithFormat:@"%d", (int)self.team.ridesAssigned.count];
+	self.durationLabel.text = [NSString stringWithFormat:@"%.0f min", self.team.assignedDuration / (NSTimeInterval)SECONDS_PER_MINUTE];
+	self.distanceLabel.text = [NSString stringWithFormat:@"%.1f km", self.team.assignedDistance / (CLLocationDistance)METERS_PER_KILOMETER];
+	self.donationsLabel.text =  [self.currencyNumberFormatter stringFromNumber:self.team.assignedDonations];
+	
+	// Load team fields
+	self.nameTextField.text = self.team.name;
+	self.membersTextField.text = self.team.members;
+	self.phoneNumberTextField.text = self.team.phoneNumber;
+	self.isMascotSwitch.on = self.team.isMascot.boolValue;
+	
+	// Load location fields
+	self.timeDatePickerTextField.date = self.team.locationCurrentTime;
+	self.addressTextField.text = self.team.locationCurrentAddress;
+	self.coordinatesLabel.text = [NSString stringWithFormat:@"(%.7f,%.7f)", self.team.locationCurrentLatitude.doubleValue, self.team.locationCurrentLongitude.doubleValue];
+	self.isManualSwitch.on = self.team.locationCurrentIsManual.boolValue;
+	
+	// Load notes fields
+	self.notesTextView.text = self.team.notes;
+}
+
+
+- (void)saveDataModelFromView {
+	
+	if (self.isAddMode) {
+		
+		self.team = [Team teamWithManagedObjectContext:[Util managedObjectContext]];
+	}
+	
+	// Save dispatch field: start time - try async calculate route
+	
+	// Save dispatch field: team assigned
+	
+	// Save other dispatch fields
+	
+	// Save team fields
+	
+	// Save location fields - try async geocode
+	BOOL updatedLocation = NO;
+	
+	// Save notes fields
+	self.team.notes = [self.notesTextView.text trimAll];
+	
+	// Persist data model to store and notify observers
+	[Util saveManagedObjectContext];
+	if (self.isAddMode) {
+		
+		[self.team postNotificationCreatedWithSender:self];
+		
+	} else {
+		
+		[self.team postNotificationUpdatedWithSender:self andUpdatedLocation:updatedLocation];
+	}
 }
 
 

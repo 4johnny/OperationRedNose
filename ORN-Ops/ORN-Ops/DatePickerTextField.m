@@ -126,6 +126,9 @@
 		
 		// Create re-usable date formatter
 		_dateFormatter = [[NSDateFormatter alloc] init];
+		
+		// Constrain
+		[self constrain];
 	}
 	
 	return self;
@@ -141,6 +144,33 @@
 	// NOTE: Wired manually in initializer
 
 	self.text = [self.dateFormatter stringFromDate:self.datePicker.date];
+}
+
+
+#
+# pragma mark Helper Methods
+#
+
+
+- (void)constrain {
+	
+	// Basic config
+	self.minuteInterval = TIME_MINUTE_INTERVAL;
+	self.locale = [NSLocale localeWithLocaleIdentifier:DATE_PICKER_LOCALE];
+	self.dateFormat = DATE_PICKER_DATETIME_FORMAT;
+	
+	// Get date-time for now
+	self.date = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
+	
+	// Minimum date-time is one day before now
+	NSCalendar* currentCalendar = [NSCalendar currentCalendar];
+	NSDateComponents* offsetComponents = [[NSDateComponents alloc] init];
+	offsetComponents.day = -1;
+	self.minimumDate = [currentCalendar dateByAddingComponents:offsetComponents toDate:self.date options:kNilOptions];
+	
+	// Maximum date-time is one day from now
+	offsetComponents.day = 1;
+	self.maximumDate = [currentCalendar dateByAddingComponents:offsetComponents toDate:self.date options:kNilOptions];
 }
 
 

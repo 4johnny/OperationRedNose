@@ -137,20 +137,27 @@
 									  andStreet:(NSString*)street
 										andCity:(NSString*)city
 									   andState:(NSString*)state
-									 andAddress:(NSString*)address {
+									 andAddress:(NSString*)address
+										andTime:(NSDate*)time
+									andIsManual:(NSNumber*)isManual {
 
-	if (!address && street && city) {
-		
-		address = [NSString stringWithFormat:@"%@, %@", street, city];
-	}
-	
 	self.locationCurrentLatitude = latitude;
 	self.locationCurrentLongitude = longitude;
 	self.locationCurrentStreet = street;
 	self.locationCurrentCity = city;
 	self.locationCurrentState = state;
 	
+	if (!address && street && city) {
+		address = [NSString stringWithFormat:@"%@, %@", street, city];
+	}
 	self.locationCurrentAddress = address;
+	
+	if (!time) {
+		time = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
+	}
+	self.locationCurrentTime = time;
+		
+	self.locationCurrentIsManual = isManual;
 }
 
 
@@ -159,31 +166,37 @@
 								andStreet:(NSString*)street
 								  andCity:(NSString*)city
 								 andState:(NSString*)state
-							   andAddress:(NSString*)address {
+							   andAddress:(NSString*)address
+								  andTime:(NSDate*)time
+							  andIsManual:(BOOL)isManual {
 	
 	[self updateCurrentLocationWithLatitudeNumber:@(latitude)
 							   andLongitudeNumber:@(longitude)
 										andStreet:street
 										  andCity:city
 										 andState:state
-									   andAddress:address];
+									   andAddress:address
+										  andTime:time
+									  andIsManual:@(isManual)];
 }
 
 
-- (void)updateCurrentLocationWithPlacemark:(CLPlacemark*)placemark {
-	
-	[self updateCurrentLocationWithLatitude:placemark.location.coordinate.latitude
-							   andLongitude:placemark.location.coordinate.longitude
-								  andStreet:[placemark getAddressStreet]
-									andCity:placemark.locality
-								   andState:[placemark getAddressState]
-								 andAddress:[placemark getAddressString]];
-}
+//- (void)updateCurrentLocationWithPlacemark:(CLPlacemark*)placemark {
+//	
+//	[self updateCurrentLocationWithLatitude:placemark.location.coordinate.latitude
+//							   andLongitude:placemark.location.coordinate.longitude
+//								  andStreet:[placemark getAddressStreet]
+//									andCity:placemark.locality
+//								   andState:[placemark getAddressState]
+//								 andAddress:[placemark getAddressString]
+//									andTime:<#(NSDate *)#>
+//								andIsManual:NO];
+//}
 
 
 - (void)clearCurrentLocation {
 	
-	[self updateCurrentLocationWithLatitudeNumber:nil andLongitudeNumber:nil andStreet:nil andCity:nil andState:nil andAddress:nil];
+	[self updateCurrentLocationWithLatitudeNumber:nil andLongitudeNumber:nil andStreet:nil andCity:nil andState:nil andAddress:nil andTime:nil andIsManual:nil];
 }
 
 
@@ -225,6 +238,21 @@
 	if (self.name.length > 0 && self.members.length > 0) return [NSString stringWithFormat:@"%@: %@", self.name, self.members];
 
 	return TEAM_TITLE_DEFAULT;
+}
+
+
+- (NSString*)getStatusText {
+
+	NSString* status = nil;
+	
+	if (!self.isActive.boolValue) {
+		status = @"Inactive";
+	}
+	if (self.isMascot.boolValue) {
+		status = [NSString stringWithFormat:@"%@Mascot", status ? @", " : @""];
+	}
+	
+	return status;
 }
 
 
@@ -282,6 +310,21 @@
 	}
 	
 	return distance;
+}
+
+
+- (NSDecimalNumber*)assignedDonations {
+	
+	// Accumulate donations for all assigned rides
+	NSDecimalNumber* donations = [NSDecimalNumber zero] ; // CAD$
+	for (Ride* rideAssigned in self.ridesAssigned) {
+		
+		if (!rideAssigned.donationAmount) continue;
+		
+		donations = [donations decimalNumberByAdding:rideAssigned.donationAmount];
+	}
+	
+	return donations;
 }
 
 

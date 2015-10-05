@@ -20,7 +20,7 @@
 @interface MainMapViewController : UIViewController <NSFetchedResultsControllerDelegate, UITextFieldDelegate, MKMapViewDelegate>
 
 #
-# pragma mark Outlets
+# pragma mark UI Outlets
 #
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem* avatarBarButtonItem;

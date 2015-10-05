@@ -32,8 +32,6 @@
 #define RIDE_STATUS_STRING_COMPLETED	@"Completed"
 #define RIDE_STATUS_STRING_CANCELLED	@"Cancelled"
 
-#define TIME_MINUTE_INTERVAL	15
-
 #
 # pragma mark - Enums
 #

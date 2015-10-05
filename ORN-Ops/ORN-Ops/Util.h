@@ -27,6 +27,12 @@
 #define MAP_SPAN_LOCATION_DELTA_LOCALE			2.0 // degrees
 
 #
+# pragma mark Date-Time Constants
+#
+
+#define TIME_MINUTE_INTERVAL	15
+
+#
 # pragma mark Jurisdication Constants
 #
 

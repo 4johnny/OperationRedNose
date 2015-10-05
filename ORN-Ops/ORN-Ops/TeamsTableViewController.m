@@ -337,10 +337,10 @@
 	
 	// Text
 	
-	NSString* teamTitle = [team getTitle];
-	NSString* activeStatus = team.isActive ? @"Active" : @"Inactive";
+	NSString* status = [team getStatusText];
+	status = status.length > 0 ? [NSString stringWithFormat:@" (%@)", status] : @"";
+	cell.textLabel.text = [NSString stringWithFormat:@"%@%@ | Rides: %d", [team getTitle], status, (int)team.ridesAssigned.count];
 	
-	cell.textLabel.text = [NSString stringWithFormat:@"%@ (%@) | Rides: %d", teamTitle, activeStatus, (int)team.ridesAssigned.count];
 	cell.textLabel.numberOfLines = 0;
 	cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	

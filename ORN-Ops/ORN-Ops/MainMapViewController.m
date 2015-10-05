@@ -1478,8 +1478,10 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 #
 
 
-// Handle command string
-// Returns whether command string was handled
+/*
+ * Handle command string
+ * Returns whether command string was handled
+ */
 - (BOOL)handleCommandString:(NSString*)commandString {
 	
 	commandString = [commandString lowercaseString];

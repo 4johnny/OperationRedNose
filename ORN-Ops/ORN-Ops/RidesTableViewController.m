@@ -356,8 +356,6 @@
 
 	// Text
 	
-	NSString* rideTitle = [ride getTitle];
-	
 	NSString* teamAssignedTitle = ride.teamAssigned
 	? [ride.teamAssigned getTitle]
 	: RIDES_CELL_FIELD_EMPTY;
@@ -366,7 +364,7 @@
 	? ride.sourceName
 	: RIDES_CELL_FIELD_EMPTY;
 	
-	cell.textLabel.text = [NSString stringWithFormat:@"%@ (%d) | Team: %@ | Source: %@", rideTitle, (int)ride.passengerCount.longValue, teamAssignedTitle, sourceTitle];
+	cell.textLabel.text = [NSString stringWithFormat:@"%@ (%d) | Team: %@ | Source: %@", [ride getTitle], (int)ride.passengerCount.longValue, teamAssignedTitle, sourceTitle];
 	cell.textLabel.numberOfLines = 0;
 	cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	
