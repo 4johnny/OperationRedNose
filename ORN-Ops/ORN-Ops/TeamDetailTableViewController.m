@@ -117,6 +117,40 @@
 
 
 #
+# pragma mark <UITextFieldDelegate>
+#
+
+
+- (BOOL)textField:(UITextField*)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(nonnull NSString*)string {
+	
+	// NOTE: String may be typed or pasted
+	// NOTE: Cannot rely on keyboards to constrain input char types, since different devices show different keyboards for same text field
+	// NOTE: Check fields in order of most likely used, since this method is called per char entered
+	
+	if (textField == self.phoneNumberTextField) {
+		
+		// Reject non-phone number chars
+		
+		if ([string rangeOfCharacterFromSet:[NSCharacterSet nonPhoneNumberCharacterSet]].location != NSNotFound) return NO;
+		
+	}
+	
+	return YES;
+}
+
+
+/*
+ User hit keyboard return key
+ */
+- (BOOL)textFieldShouldReturn:(UITextField*)textField {
+	
+	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:textField andIsAddmode:self.isAddMode];
+	
+	return NO; // Do not perform default text-field behaviour
+}
+
+
+#
 # pragma mark Action Handlers
 #
 
@@ -149,6 +183,24 @@
 	[self.view endEditing:YES];
 	
 	[self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+- (IBAction)isActiveValueChanged:(UISwitch*)sender {
+
+	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender andIsAddmode:self.isAddMode];
+}
+
+
+- (IBAction)isMascotValueChanged:(UISwitch*)sender {
+
+	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender andIsAddmode:self.isAddMode];
+}
+
+
+- (IBAction)isManualValueChanged:(UISwitch*)sender {
+
+	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender andIsAddmode:self.isAddMode];
 }
 
 

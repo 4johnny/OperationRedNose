@@ -18,4 +18,7 @@
 @property (nonatomic) IBInspectable CGFloat borderWidth;
 @property (nonatomic) IBInspectable UIColor* borderColor;
 
+- (void)makeNextTaggedViewFirstResponderWithCurrentTaggedView:(UIView*)taggedView
+												 andIsAddmode:(BOOL)isAddMode;
+
 @end

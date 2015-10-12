@@ -54,4 +54,19 @@
 }
 
 
+- (void)makeNextTaggedViewFirstResponderWithCurrentTaggedView:(UIView*)taggedView
+												 andIsAddmode:(BOOL)isAddMode {
+	
+	if (![taggedView isKindOfClass:UITextField.class] && !isAddMode) return;
+	
+	// Put focus on next field, if needs keyboard
+	UIView* nextView = [self viewWithTag:(taggedView.tag + 1)];
+	if (![nextView becomeFirstResponder]) {
+		
+		// Remove focus and keyboard from current field
+		[taggedView resignFirstResponder];
+	}
+}
+
+
 @end

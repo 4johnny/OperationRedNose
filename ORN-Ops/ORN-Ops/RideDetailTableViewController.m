@@ -185,7 +185,7 @@
  */
 - (BOOL)textFieldShouldReturn:(UITextField*)textField {
 
-	[self makeNextTaggedViewFirstResponderWithCurrentTaggedView:textField];
+	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:textField andIsAddmode:self.isAddMode];
 	
 	return NO; // Do not perform default text-field behaviour
 }
@@ -240,18 +240,18 @@
 
 - (IBAction)passengerCountValueChanged:(UISegmentedControl*)sender {
 
-	[self makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender];
+	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender andIsAddmode:self.isAddMode];
 }
 
 - (IBAction)transmissionValueChanged:(UISegmentedControl*)sender {
 	
-	[self makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender];
+	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender andIsAddmode:self.isAddMode];
 }
 
 
 - (IBAction)seatBeltCountValueChanged:(UISegmentedControl*)sender {
 	
-	[self makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender];
+	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender andIsAddmode:self.isAddMode];
 }
 
 
@@ -284,20 +284,6 @@
 	
 	self.teamAssignedPickerTextField.titles = teamTitles;
 	self.teamAssignedPickerTextField.selectedRow = 0; // "None"
-}
-
-
-- (void)makeNextTaggedViewFirstResponderWithCurrentTaggedView:(UIView*)taggedView {
-
-	if (![taggedView isKindOfClass:UITextField.class] && !self.addMode) return;
-
-	// Put focus on next field, if needs keyboard
-	UIView* nextView = [self.view viewWithTag:(taggedView.tag + 1)];
-	if (![nextView becomeFirstResponder]) {
-		
-		// Remove focus and keyboard from current field
-		[taggedView resignFirstResponder];
-	}
 }
 
 
