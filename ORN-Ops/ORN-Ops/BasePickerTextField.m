@@ -81,6 +81,14 @@
 		[arrowButton addTarget:self action:@selector(arrowPressed:) forControlEvents:UIControlEventTouchUpInside];
 		self.rightView = arrowButton;
 		self.rightViewMode = UITextFieldViewModeAlways;
+		
+		// Next button on input accessory toolbar
+		UIBarButtonItem* flexibleButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+		UIBarButtonItem* nextButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(nextPressed:)];
+		UIToolbar* toolbar = [UIToolbar new];
+		toolbar.items = @[ flexibleButton, nextButton ];
+		[toolbar sizeToFit];
+		self.inputAccessoryView = toolbar;
 	}
 	
 	return self;
@@ -113,7 +121,9 @@
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField*)textField {
 	
-	BOOL shouldBeginEditing = !self.externalDelegate || [self.externalDelegate textFieldShouldBeginEditing:textField];
+	BOOL shouldBeginEditing =
+	![self.externalDelegate respondsToSelector:@selector(textFieldShouldBeginEditing:)] ||
+	[self.externalDelegate textFieldShouldBeginEditing:textField];
 	
 	if (shouldBeginEditing) {
 		
@@ -130,13 +140,18 @@
 
 - (void)textFieldDidBeginEditing:(UITextField*)textField {
 
-	[self.externalDelegate textFieldDidBeginEditing:textField];
+	if ([self.externalDelegate respondsToSelector:@selector(textFieldDidBeginEditing:)]) {
+		
+		[self.externalDelegate textFieldDidBeginEditing:textField];
+	}
 }
 
 
 - (BOOL)textFieldShouldEndEditing:(UITextField*)textField {
 
-	BOOL shouldEndEditing = !self.externalDelegate || [self.externalDelegate textFieldShouldEndEditing:textField];
+	BOOL shouldEndEditing =
+	![self.externalDelegate respondsToSelector:@selector(textFieldShouldEndEditing:)] ||
+	[self.externalDelegate textFieldShouldEndEditing:textField];
 	
 	return shouldEndEditing;
 }
@@ -144,16 +159,21 @@
 
 - (void)textFieldDidEndEditing:(UITextField*)textField {
 
-	[self.externalDelegate textFieldDidEndEditing:textField];
-	
 	// Remove shadow
 	textField.layer.shadowOpacity = 0.0;
+	
+	if ([self.externalDelegate respondsToSelector:@selector(textFieldDidEndEditing:)]) {
+
+		[self.externalDelegate textFieldDidEndEditing:textField];
+	}
 }
 
 
 - (BOOL)textField:(UITextField*)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(nonnull NSString*)string {
 	
-	BOOL shouldChangeCharacters = !self.externalDelegate || [self.externalDelegate textField:textField shouldChangeCharactersInRange:range replacementString:string];
+	BOOL shouldChangeCharacters =
+	![self.externalDelegate respondsToSelector:@selector(textField:shouldChangeCharactersInRange:replacementString:)] ||
+ 	[self.externalDelegate textField:textField shouldChangeCharactersInRange:range replacementString:string];
 
 	// Disable input via external keyboard
 	// NOTE: Ignore external delegate
@@ -164,7 +184,9 @@
 
 - (BOOL)textFieldShouldClear:(UITextField*)textField {
 
-	BOOL shouldClear = !self.externalDelegate || [self.externalDelegate textFieldShouldClear:textField];
+	BOOL shouldClear =
+	![self.externalDelegate respondsToSelector:@selector(textFieldShouldClear:)] ||
+	[self.externalDelegate textFieldShouldClear:textField];
 	
 	return shouldClear;
 }
@@ -172,7 +194,9 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField*)textField {
 	
-	BOOL shouldReturn = !self.externalDelegate || [self.externalDelegate textFieldShouldReturn:textField];
+	BOOL shouldReturn =
+	![self.externalDelegate respondsToSelector:@selector(textFieldShouldReturn:)] ||
+	[self.externalDelegate textFieldShouldReturn:textField];
 
 	return shouldReturn;
 }
@@ -187,6 +211,13 @@
 	// NOTE: Wired programmatically
 	
 	[self becomeFirstResponder];
+}
+
+
+- (IBAction)nextPressed:(UIBarButtonItem*)sender {
+	// NOTE: Wired programmatically
+
+	[self.delegate textFieldShouldReturn:self];
 }
 
 

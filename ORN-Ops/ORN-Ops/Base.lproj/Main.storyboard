@@ -893,6 +893,9 @@
                                                     <rect key="frame" x="128" y="4" width="464" height="30"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
+                                                    <connections>
+                                                        <outlet property="delegate" destination="EOY-Bm-UjH" id="d8f-mh-LNb"/>
+                                                    </connections>
                                                 </textField>
                                             </subviews>
                                             <constraints>
@@ -924,6 +927,9 @@
                                                     <rect key="frame" x="128" y="4" width="464" height="30"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
+                                                    <connections>
+                                                        <outlet property="delegate" destination="EOY-Bm-UjH" id="seG-LI-awU"/>
+                                                    </connections>
                                                 </textField>
                                             </subviews>
                                             <constraints>
