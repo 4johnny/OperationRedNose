@@ -143,17 +143,22 @@
 	
 	// NOTE: String may be typed or pasted
 	// NOTE: Cannot rely on keyboards to constrain input char types, since different devices show different keyboards for same text field
+	// NOTE: Check fields in order of most likely used, since this method is called per char entered
 	
-	// Donation field should conform to monetary format
-	if (textField == self.donationTextField) {
+	if (textField == self.phoneNumberTextField) {
+	
+		// Reject non-phone number chars
+		
+		if ([string rangeOfCharacterFromSet:[NSCharacterSet nonPhoneNumberCharacterSet]].location != NSNotFound) return NO;
+		
+	} else if (textField == self.donationTextField) {
 		
 		// Reject replacement string exceeding max length
 		// NOTE: Optimization to avoid further checks below
 		if (string.length > DONATION_TEXT_LENGTH_MAX) return NO;
 		
-		// Reject non-decimal chars
-		NSCharacterSet* nonDecimalSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789."].invertedSet;
-		if ([string rangeOfCharacterFromSet:nonDecimalSet].location != NSNotFound) return NO;
+		// Reject non-monetary chars
+		if ([string rangeOfCharacterFromSet:[NSCharacterSet nonMonetaryCharacterSet]].location != NSNotFound) return NO;
 		
 		// Reject more than one decimal-point char
 		if ([string containsString:@"."] && [textField.text containsString:@"."]) return NO;
@@ -170,7 +175,7 @@
 			if (decimalNumbers.length > DONATION_TEXT_DECIMAL_COUNT) return NO;
 		}
 	}
-	
+
 	return YES;
 }
 
@@ -179,10 +184,9 @@
  User hit keyboard return key
  */
 - (BOOL)textFieldShouldReturn:(UITextField*)textField {
-	
-	// Remove focus and keyboard
-	[textField resignFirstResponder];
 
+	[self makeNextTaggedViewFirstResponderWithCurrentTaggedView:textField];
+	
 	return NO; // Do not perform default text-field behaviour
 }
 
@@ -234,6 +238,23 @@
 }
 
 
+- (IBAction)passengerCountValueChanged:(UISegmentedControl*)sender {
+
+	[self makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender];
+}
+
+- (IBAction)transmissionValueChanged:(UISegmentedControl*)sender {
+	
+	[self makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender];
+}
+
+
+- (IBAction)seatBeltCountValueChanged:(UISegmentedControl*)sender {
+	
+	[self makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender];
+}
+
+
 #
 # pragma mark Helpers
 #
@@ -263,6 +284,20 @@
 	
 	self.teamAssignedPickerTextField.titles = teamTitles;
 	self.teamAssignedPickerTextField.selectedRow = 0; // "None"
+}
+
+
+- (void)makeNextTaggedViewFirstResponderWithCurrentTaggedView:(UIView*)taggedView {
+
+	if (![taggedView isKindOfClass:UITextField.class] && !self.addMode) return;
+
+	// Put focus on next field, if needs keyboard
+	UIView* nextView = [self.view viewWithTag:(taggedView.tag + 1)];
+	if (![nextView becomeFirstResponder]) {
+		
+		// Remove focus and keyboard from current field
+		[taggedView resignFirstResponder];
+	}
 }
 
 

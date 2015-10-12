@@ -28,6 +28,49 @@
 
 
 #
+# pragma mark Initializers
+#
+
+//+ (void)initialize {
+//	
+//}
+
+
+- (instancetype)init {
+	self = [super init];
+	
+	if (self) {
+		
+		// Data validation char sets
+		
+		_phoneNumberCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789-()+*#,;"];
+		_nonPhoneNumberCharacterSet = self.phoneNumberCharacterSet.invertedSet;
+		
+		_monetaryCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789."];
+		_nonMonetaryCharacterSet = self.monetaryCharacterSet.invertedSet;
+	}
+	
+	return self;
+}
+
+
++ (instancetype)sharedUtil {
+	
+	// Singleton
+	
+	static Util* sharedUtil = nil;
+	
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		
+		sharedUtil = [[Util alloc] init];
+	});
+	
+	return sharedUtil;
+}
+
+
+#
 # pragma mark Responder
 #
 

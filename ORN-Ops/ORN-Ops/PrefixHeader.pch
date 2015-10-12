@@ -15,6 +15,7 @@
 #import "Util.h"
 
 #import "NSNumber+NumberHelpers.h"
+#import "NSCharacterSet+CharacterSetHelpers.h"
 #import "NSString+StringHelpers.h"
 #import "NSDate+DateHelpers.h"
 #import "CLPlacemark+PlacemarkHelpers.h"

@@ -62,6 +62,22 @@
 @interface Util : NSObject
 
 #
+# pragma mark Initializers
+#
+
++ (instancetype)sharedUtil;
+
+#
+# pragma mark NSCharacterSet
+#
+
+@property (nonatomic) NSCharacterSet* phoneNumberCharacterSet;
+@property (nonatomic) NSCharacterSet* nonPhoneNumberCharacterSet;
+
+@property (nonatomic) NSCharacterSet* monetaryCharacterSet;
+@property (nonatomic) NSCharacterSet* nonMonetaryCharacterSet;
+
+#
 # pragma mark Responder
 #
 
