@@ -1501,7 +1501,7 @@
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" title="Ride" id="pwX-eP-kT9">
+                    <navigationItem key="navigationItem" title="New Ride" id="pwX-eP-kT9">
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="C4i-lz-FL3">
                             <connections>
                                 <action selector="cancelPressed:" destination="EOY-Bm-UjH" id="XtO-hM-Pb6"/>

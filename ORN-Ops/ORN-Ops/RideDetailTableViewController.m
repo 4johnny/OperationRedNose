@@ -241,8 +241,6 @@
 
 - (void)configureView {
 	
-	self.title = [@"Ride: " stringByAppendingString:[self.ride getTitle]];
-	
 	[self configureTeamAssignedPickerTextField];
 	
 	if (!self.isAddMode) {
@@ -269,6 +267,9 @@
 
 
 - (void)loadDataModelIntoView {
+	
+	// Navbar title
+	self.title = [@"Ride: " stringByAppendingString:[self.ride getTitle]];
 	
 	// Load dispatch fields
 	self.startTimeDatePickerTextField.date = self.ride.dateTimeStart;
