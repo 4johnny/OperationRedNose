@@ -45,6 +45,11 @@
 @implementation TeamsTableViewController
 
 
+#
+# pragma mark Properties
+#
+
+
 - (NSFetchedResultsController*)fetchedResultsController {
 	
 	if (_fetchedResultsController) return _fetchedResultsController;

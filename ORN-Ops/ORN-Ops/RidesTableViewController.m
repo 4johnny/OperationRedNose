@@ -334,24 +334,6 @@
 }
 
 
-//- (void)insertNewObject:(id)sender {
-//	
-//	NSManagedObjectContext* context = self.fetchedResultsController.managedObjectContext;
-//	NSEntityDescription* entity = self.fetchedResultsController.fetchRequest.entity;
-//	
-//	Ride* newRide = [NSEntityDescription insertNewObjectForEntityForName:entity.name inManagedObjectContext:context];
-//	newRide.dateTimeStart = [NSDate dateRoundedToMinuteInterval:TIME_MINUTE_INTERVAL];
-//	NSLog(@"Created new Ride entity: %@", newRide);
-//	
-//	// Save the context
-//	NSError* error = nil;
-//	if (![context save:&error]) {
-//		
-//		NSLog(@"Unresolved error: %@, %@", error, error.userInfo);
-//	}
-//}
-
-
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(nullable NSIndexPath*)indexPath {
 	
 	Ride* ride = [self.fetchedResultsController objectAtIndexPath:indexPath];
