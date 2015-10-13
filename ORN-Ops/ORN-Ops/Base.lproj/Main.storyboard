@@ -242,7 +242,11 @@
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" title="Teams" id="lRU-wE-c3o">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="Gd6-34-HHs"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="Gd6-34-HHs">
+                            <connections>
+                                <segue destination="p4Y-Zn-vgq" kind="presentation" id="mnv-ae-8CM"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VJQ-IQ-9V8" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -254,7 +258,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="teamDetailTableViewController" title="Team Detail View Controller" id="XpS-Zq-vPa" customClass="TeamDetailTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="static" style="grouped" separatorStyle="none" allowsSelection="NO" rowHeight="38" sectionHeaderHeight="32" sectionFooterHeight="1" id="kj8-Sz-QNp">
-                        <rect key="frame" x="0.0" y="64" width="600" height="487"/>
+                        <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <gestureRecognizers/>
@@ -822,7 +826,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="2121" y="1488"/>
+            <point key="canvasLocation" x="2835" y="1488"/>
         </scene>
         <!--Teams Navigation Controller-->
         <scene sceneID="7vX-Vp-Rir">
@@ -875,14 +879,14 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="2121" y="384"/>
+            <point key="canvasLocation" x="2121" y="416"/>
         </scene>
         <!--Ride Detail View Controller-->
         <scene sceneID="l1U-Q4-vZF">
             <objects>
                 <tableViewController storyboardIdentifier="rideDetailTableViewController" title="Ride Detail View Controller" id="EOY-Bm-UjH" customClass="RideDetailTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="static" style="grouped" separatorStyle="none" allowsSelection="NO" rowHeight="38" sectionHeaderHeight="32" sectionFooterHeight="1" id="kqh-Zd-G9W">
-                        <rect key="frame" x="0.0" y="64" width="600" height="487"/>
+                        <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <gestureRecognizers/>
@@ -1610,6 +1614,32 @@
             </objects>
             <point key="canvasLocation" x="729" y="746"/>
         </scene>
+        <!--Team Add Navigation Controller-->
+        <scene sceneID="shU-3z-IVB">
+            <objects>
+                <navigationController storyboardIdentifier="teamAddNavigationController" title="Team Add Navigation Controller" id="p4Y-Zn-vgq" customClass="BaseNavigationController" sceneMemberID="viewController">
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="m2l-AU-3XP">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="WIb-hZ-br9" appends="YES" id="BYi-6T-3zS"/>
+                        </connections>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="XpS-Zq-vPa" kind="relationship" relationship="rootViewController" id="0lM-2R-3z9"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fvN-2v-13u" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="WIb-hZ-br9">
+                    <connections>
+                        <action selector="navigationBarTapped:" destination="p4Y-Zn-vgq" id="Z74-p6-8t6"/>
+                        <outlet property="delegate" destination="p4Y-Zn-vgq" id="d6u-V4-gqg"/>
+                    </connections>
+                </tapGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="2121" y="1160"/>
+        </scene>
     </scenes>
     <resources>
         <image name="ORN-Bar-Button-Item" width="22" height="30"/>
@@ -1618,6 +1648,7 @@
         <image name="ORN-Teams-Tab-Icon" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="mox-mc-g7Y"/>
+        <segue reference="0lM-2R-3z9"/>
+        <segue reference="RWa-Ts-C4u"/>
     </inferredMetricsTieBreakers>
 </document>

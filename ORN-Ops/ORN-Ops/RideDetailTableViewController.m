@@ -289,7 +289,7 @@
 
 - (void)loadDataModelIntoView {
 	
-	// Navbar title
+	// Load navbar title
 	self.title = [@"Ride: " stringByAppendingString:[self.ride getTitle]];
 	
 	// Load dispatch fields

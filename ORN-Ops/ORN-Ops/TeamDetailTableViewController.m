@@ -211,8 +211,6 @@
 
 - (void)configureView {
 	
-	self.title = [@"Team: " stringByAppendingString:[self.team getTitle]];
-	
 	if (!self.isAddMode) {
 		
 		[self loadDataModelIntoView];
@@ -221,6 +219,9 @@
 
 
 - (void)loadDataModelIntoView {
+
+	// Load navbar title
+	self.title = [@"Team: " stringByAppendingString:[self.team getTitle]];
 	
 	// Load dispatch fields
 	self.isActiveSwitch.on = self.team.isActive.boolValue;
