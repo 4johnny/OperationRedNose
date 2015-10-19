@@ -90,7 +90,8 @@
 + (void)presentActionAlertWithViewController:(UIViewController*)viewController
 									andTitle:(NSString*)title
 								  andMessage:(NSString*)message
-								   andAction:(UIAlertAction*)action;
+								   andAction:(UIAlertAction*)action
+							andCancelHandler:(void (^)(UIAlertAction* action))cancelHandler;
 
 + (void)presentOKAlertWithViewController:(UIViewController*)viewController
 								andTitle:(NSString*)title

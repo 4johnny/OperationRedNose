@@ -30,7 +30,7 @@
 
 @interface RidesTableViewController ()
 
-@property (strong, nonatomic) NSFetchedResultsController* fetchedResultsController;
+@property (strong, nonatomic) NSFetchedResultsController* ridesFetchedResultsController;
 
 @property (nonatomic) NSDateFormatter* cellDateFormatter;
 
@@ -50,9 +50,9 @@
 #
 
 
-- (NSFetchedResultsController*)fetchedResultsController {
+- (NSFetchedResultsController*)ridesFetchedResultsController {
 	
-	if (_fetchedResultsController) return _fetchedResultsController;
+	if (_ridesFetchedResultsController) return _ridesFetchedResultsController;
 
 	NSFetchRequest* fetchRequest = [[NSFetchRequest alloc] initWithEntityName:RIDE_ENTITY_NAME];
 	fetchRequest.fetchBatchSize = RIDE_FETCH_BATCH_SIZE;
@@ -62,16 +62,16 @@
 	  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY2 ascending:RIDE_FETCH_SORT_ASC2],
 	  ];
 
-	_fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[Util managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
-	_fetchedResultsController.delegate = self;
+	_ridesFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[Util managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
+	_ridesFetchedResultsController.delegate = self;
 
 	NSError* error = nil;
-	if (![_fetchedResultsController performFetch:&error]) {
+	if (![_ridesFetchedResultsController performFetch:&error]) {
 		
 		NSLog(@"Unresolved error: %@, %@", error, error.userInfo);
 	}
 	
-	return _fetchedResultsController;
+	return _ridesFetchedResultsController;
 }
 
 
@@ -121,7 +121,7 @@
 		
 		// Inject ride model into ride view controller
 		RideDetailTableViewController* rideDetailTableViewController = (RideDetailTableViewController*)segue.destinationViewController;
-		rideDetailTableViewController.ride = [self.fetchedResultsController objectAtIndexPath:[self.tableView indexPathForSelectedRow]];
+		rideDetailTableViewController.ride = [self.ridesFetchedResultsController objectAtIndexPath:[self.tableView indexPathForSelectedRow]];
 		
 		// Remove "cancel" button
 		rideDetailTableViewController.navigationItem.leftBarButtonItem = nil;
@@ -142,14 +142,14 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView {
 	
-	return 1; //self.fetchedResultsController.sections.count;
+	return 1; //self.ridesFetchedResultsController.sections.count;
 }
 
 
 - (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section {
 
-	return self.fetchedResultsController.fetchedObjects.count;
-	//	return ((id<NSFetchedResultsSectionInfo>)self.fetchedResultsController.sections[section]).numberOfObjects;
+	return self.ridesFetchedResultsController.fetchedObjects.count;
+	//	return ((id<NSFetchedResultsSectionInfo>)self.ridesFetchedResultsController.sections[section]).numberOfObjects;
 }
 
 
@@ -170,21 +170,27 @@
 	return YES;
 }
 */
-/*
-// Override to support editing the table view.
+
 - (void)tableView:(UITableView*)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath {
- 
+
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
- 
-		// Delete the row from the data source
-		[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
- 
-	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
- 
-		// Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+		
+		Ride* ride = [self.ridesFetchedResultsController objectAtIndexPath:indexPath];
+		
+		NSString* alertTitle = [NSString stringWithFormat:@"Delete ride: %@", [ride getTitle]];
+		UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction* _Nonnull action) {
+			
+			[ride delete];
+			[ride postNotificationDeletedWithSender:self];
+			[Util saveManagedObjectContext];
+		}];
+		[Util presentActionAlertWithViewController:self andTitle:alertTitle andMessage:@"Cannot be undone! Are you sure?" andAction:deleteAction andCancelHandler:^(UIAlertAction* action) {
+			
+			[self.tableView setEditing:NO animated:YES];
+		}];
 	}
 }
-*/
+
 /*
 // Override to support rearranging the table view.
 - (void)tableView:(UITableView*)tableView moveRowAtIndexPath:(NSIndexPath*)fromIndexPath toIndexPath:(NSIndexPath*)toIndexPath {
@@ -285,7 +291,7 @@
 
 - (void)dataModelResetWithNotification:(NSNotification*)notification {
 
-	self.fetchedResultsController = nil;
+	self.ridesFetchedResultsController = nil;
 	
 	[self.tableView reloadData];
 	
@@ -299,6 +305,12 @@
 }
 
 
+- (void)rideDeletedWithNotification:(NSNotification*)notification {
+	
+	[self.tableView reloadData];
+}
+
+
 - (void)rideUpdatedWithNotification:(NSNotification*)notification {
 
 	[self.tableView reloadData];
@@ -306,6 +318,12 @@
 
 
 - (void)teamCreatedWithNotification:(NSNotification*)notification {
+	
+	[self.tableView reloadData];
+}
+
+
+- (void)teamDeletedWithNotification:(NSNotification*)notification {
 	
 	[self.tableView reloadData];
 }
@@ -327,16 +345,18 @@
 	[Util addDataModelResetObserver:self withSelector:@selector(dataModelResetWithNotification:)];
 	
 	[Ride addCreatedObserver:self withSelector:@selector(rideCreatedWithNotification:)];
+	[Ride addDeletedObserver:self withSelector:@selector(rideDeletedWithNotification:)];
 	[Ride addUpdatedObserver:self withSelector:@selector(rideUpdatedWithNotification:)];
 
 	[Team addCreatedObserver:self withSelector:@selector(teamCreatedWithNotification:)];
+	[Team addDeletedObserver:self withSelector:@selector(teamDeletedWithNotification:)];
 	[Team addUpdatedObserver:self withSelector:@selector(teamUpdatedWithNotification:)];
 }
 
 
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(nullable NSIndexPath*)indexPath {
 	
-	Ride* ride = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	Ride* ride = [self.ridesFetchedResultsController objectAtIndexPath:indexPath];
 
 	// Text
 	

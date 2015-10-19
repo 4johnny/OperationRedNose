@@ -94,14 +94,15 @@
 + (void)presentActionAlertWithViewController:(UIViewController*)viewController
 									andTitle:(NSString*)title
 								  andMessage:(NSString*)message
-								   andAction:(UIAlertAction*)action {
+								   andAction:(UIAlertAction*)action
+							andCancelHandler:(void (^ __nullable)(UIAlertAction* action))cancelHandler {
 	
 	if (!viewController) return;
 	
 	UIAlertController* actionAlertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
 	
 	[actionAlertController addAction:action];
-	[actionAlertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+	[actionAlertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:cancelHandler]];
 
 	[viewController presentViewController:actionAlertController animated:YES completion:nil];
 }
@@ -111,7 +112,11 @@
 								andTitle:(NSString*)title
 							  andMessage:(NSString*)message {
 	
-	[Util presentActionAlertWithViewController:viewController andTitle:title andMessage:message andAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+	[Util presentActionAlertWithViewController:viewController
+									  andTitle:title
+									andMessage:message
+									 andAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]
+							  andCancelHandler:nil];
 }
 
 

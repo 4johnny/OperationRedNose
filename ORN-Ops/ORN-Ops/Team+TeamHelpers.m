@@ -15,6 +15,7 @@
 #
 
 #define TEAM_CREATED_NOTIFICATION_NAME					@"teamCreated"
+#define TEAM_DELETED_NOTIFICATION_NAME					@"teamDeleted"
 #define TEAM_UPDATED_NOTIFICATION_NAME					@"teamUpdated"
 
 #define TEAM_UPDATED_LOCATION_NOTIFICATION_KEY			@"teamUpdatedLocation"
@@ -57,6 +58,12 @@
 }
 
 
++ (void)addDeletedObserver:(id)observer withSelector:(SEL)selector {
+	
+	[[NSNotificationCenter defaultCenter] addObserver:observer selector:selector name:TEAM_DELETED_NOTIFICATION_NAME object:nil];
+}
+
+
 + (Team*)teamFromNotification:(NSNotification*)notification {
 	
 	return notification.userInfo[TEAM_ENTITY_NAME];
@@ -85,12 +92,24 @@
 }
 
 
+- (void)postNotificationDeletedWithSender:(id)sender {	
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_DELETED_NOTIFICATION_NAME object:sender userInfo:
+	 @{
+	   TEAM_ENTITY_NAME : self,
+	   TEAM_UPDATED_LOCATION_NOTIFICATION_KEY : @YES,
+	   }
+	 ];
+}
+
+
 - (void)postNotificationUpdatedWithSender:(id)sender {
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:sender userInfo:
 	 @{
 	   TEAM_ENTITY_NAME : self,
-	   }];
+	   }
+	 ];
 }
 
 
@@ -110,7 +129,8 @@
 	 @{
 	   TEAM_ENTITY_NAME : self,
 	   TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY : @(updatedRidesAssigned),
-	   }];
+	   }
+	 ];
 }
 
 
@@ -123,13 +143,28 @@
 	   TEAM_ENTITY_NAME : self,
 	   TEAM_UPDATED_LOCATION_NOTIFICATION_KEY : @(updatedLocation),
 	   TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY : @(updatedRidesAssigned),
-	   }];
+	   }
+	 ];
 }
 
 
 #
 # pragma mark Instance Helpers
 #
+
+
+- (void)delete {
+	
+	if (self.isDeleted) return;
+	
+	// Remove any assigned rides, including route recalculations and notifications
+	for (Ride* rideAssigned in [self.ridesAssigned mutableCopy]) {
+		
+		[rideAssigned assignTeam:nil withSender:self];
+	}
+	
+	[self.managedObjectContext deleteObject:self];
+}
 
 
 - (void)updateCurrentLocationWithLatitudeNumber:(NSNumber*)latitude

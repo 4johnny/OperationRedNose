@@ -30,7 +30,7 @@
 
 @interface TeamsTableViewController ()
 
-@property (strong, nonatomic) NSFetchedResultsController* fetchedResultsController;
+@property (strong, nonatomic) NSFetchedResultsController* teamsFetchedResultsController;
 
 @property (nonatomic) NSDateFormatter* cellDateFormatter;
 
@@ -50,9 +50,9 @@
 #
 
 
-- (NSFetchedResultsController*)fetchedResultsController {
+- (NSFetchedResultsController*)teamsFetchedResultsController {
 	
-	if (_fetchedResultsController) return _fetchedResultsController;
+	if (_teamsFetchedResultsController) return _teamsFetchedResultsController;
 	
 	NSFetchRequest* fetchRequest = [[NSFetchRequest alloc] initWithEntityName:TEAM_ENTITY_NAME];
 	fetchRequest.fetchBatchSize = TEAM_FETCH_BATCH_SIZE;
@@ -62,16 +62,16 @@
 	  [NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY2 ascending:TEAM_FETCH_SORT_ASC2],
 	  ];
 	
-	_fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[Util managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
-	_fetchedResultsController.delegate = self;
+	_teamsFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[Util managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
+	_teamsFetchedResultsController.delegate = self;
 	
 	NSError* error = nil;
-	if (![_fetchedResultsController performFetch:&error]) {
+	if (![_teamsFetchedResultsController performFetch:&error]) {
 		
 		NSLog(@"Unresolved error: %@, %@", error, error.userInfo);
 	}
 	
-	return _fetchedResultsController;
+	return _teamsFetchedResultsController;
 }
 
 
@@ -121,7 +121,7 @@
 		
 		// Inject team model into team view controller
 		TeamDetailTableViewController* teamDetailTableViewController = (TeamDetailTableViewController*)segue.destinationViewController;
-		teamDetailTableViewController.team = [self.fetchedResultsController objectAtIndexPath:[self.tableView indexPathForSelectedRow]];
+		teamDetailTableViewController.team = [self.teamsFetchedResultsController objectAtIndexPath:[self.tableView indexPathForSelectedRow]];
 		
 		// Remove "cancel" button
 		teamDetailTableViewController.navigationItem.leftBarButtonItem = nil;
@@ -142,14 +142,14 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView {
 	
-	return 1; //self.fetchedResultsController.sections.count;
+	return 1; //self.teamsFetchedResultsController.sections.count;
 }
 
 
 - (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section {
 	
-	return self.fetchedResultsController.fetchedObjects.count;
-	//	return ((id<NSFetchedResultsSectionInfo>)self.fetchedResultsController.sections[section]).numberOfObjects;
+	return self.teamsFetchedResultsController.fetchedObjects.count;
+	//	return ((id<NSFetchedResultsSectionInfo>)self.teamsFetchedResultsController.sections[section]).numberOfObjects;
 }
 
 
@@ -172,21 +172,27 @@
 }
 */
 
-/*
-// Override to support editing the table view.
+
 - (void)tableView:(UITableView*)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath {
  
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
- 
-		// Delete the row from the data source
-		[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+		
+		Team* team = [self.teamsFetchedResultsController objectAtIndexPath:indexPath];
+		
+		NSString* alertTitle = [NSString stringWithFormat:@"Delete team: %@", [team getTitle]];
+		UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction* _Nonnull action) {
 
-	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
- 
-		// Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+			[team delete];
+			[team postNotificationDeletedWithSender:self];
+			[Util saveManagedObjectContext];
+		}];
+		[Util presentActionAlertWithViewController:self andTitle:alertTitle andMessage:@"Cannot be undone! Are you sure?" andAction:deleteAction andCancelHandler:^(UIAlertAction* action) {
+			
+			[self.tableView setEditing:NO animated:YES];
+		}];
 	}
 }
-*/
+
 
 /*
 // Override to support rearranging the table view.
@@ -289,7 +295,7 @@
 
 - (void)dataModelResetWithNotification:(NSNotification*)notification {
 	
-	self.fetchedResultsController = nil;
+	self.teamsFetchedResultsController = nil;
 	
 	[self.tableView reloadData];
 	
@@ -303,6 +309,12 @@
 }
 
 
+- (void)teamDeletedWithNotification:(NSNotification*)notification {
+	
+	[self.tableView reloadData];
+}
+
+
 - (void)teamUpdatedWithNotification:(NSNotification*)notification {
 	
 	[self.tableView reloadData];
@@ -311,6 +323,12 @@
 
 - (void)rideCreatedWithNotification:(NSNotification*)notification {
 
+	[self.tableView reloadData];
+}
+
+
+- (void)rideDeletedWithNotification:(NSNotification*)notification {
+	
 	[self.tableView reloadData];
 }
 
@@ -331,16 +349,18 @@
 	[Util addDataModelResetObserver:self withSelector:@selector(dataModelResetWithNotification:)];
 	
 	[Team addCreatedObserver:self withSelector:@selector(teamCreatedWithNotification:)];
+	[Team addDeletedObserver:self withSelector:@selector(teamDeletedWithNotification:)];
 	[Team addUpdatedObserver:self withSelector:@selector(teamUpdatedWithNotification:)];
 	
 	[Ride addCreatedObserver:self withSelector:@selector(rideCreatedWithNotification:)];
-	[Ride addUpdatedObserver:self withSelector:@selector(rideUpdatedWithNotification:)];	
+	[Ride addDeletedObserver:self withSelector:@selector(rideDeletedWithNotification:)];
+	[Ride addUpdatedObserver:self withSelector:@selector(rideUpdatedWithNotification:)];
 }
 
 
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(nonnull NSIndexPath *)indexPath {
 	
-	Team* team = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	Team* team = [self.teamsFetchedResultsController objectAtIndexPath:indexPath];
 	
 	// Text
 	

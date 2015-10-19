@@ -15,6 +15,7 @@
 #
 
 #define RIDE_CREATED_NOTIFICATION_NAME					@"rideCreated"
+#define RIDE_DELETED_NOTIFICATION_NAME					@"rideDeleted"
 #define RIDE_UPDATED_NOTIFICATION_NAME					@"rideUpdated"
 
 #define RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY	@"rideUpdatedLocationStart"
@@ -92,6 +93,12 @@
 }
 
 
++ (void)addDeletedObserver:(id)observer withSelector:(SEL)selector {
+	
+	[[NSNotificationCenter defaultCenter] addObserver:observer selector:selector name:RIDE_DELETED_NOTIFICATION_NAME object:nil];
+}
+
+
 + (void)addUpdatedObserver:(id)observer withSelector:(SEL)selector {
 	
 	[[NSNotificationCenter defaultCenter] addObserver:observer selector:selector name:RIDE_UPDATED_NOTIFICATION_NAME object:nil];
@@ -129,7 +136,20 @@
 	   RIDE_ENTITY_NAME : self,
 	   RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : @YES,
 	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : @YES,
-	   }];
+	   }
+	 ];
+}
+
+
+- (void)postNotificationDeletedWithSender:(id)sender {
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_DELETED_NOTIFICATION_NAME object:sender userInfo:
+	 @{
+	   RIDE_ENTITY_NAME : self,
+	   RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : @YES,
+	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : @YES,
+	   }
+	 ];
 }
 
 
@@ -138,7 +158,8 @@
 	[[NSNotificationCenter defaultCenter] postNotificationName:RIDE_UPDATED_NOTIFICATION_NAME object:sender userInfo:
 	 @{
 	   RIDE_ENTITY_NAME : self,
-	   }];
+	   }
+	 ];
 }
 
 
@@ -151,7 +172,8 @@
 	   RIDE_ENTITY_NAME : self,
 	   RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : @(updatedLocationStart),
 	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : @(updatedLocationEnd),
-	   }];
+	   }
+	 ];
 }
 
 
@@ -161,7 +183,8 @@
 	 @{
 	   RIDE_ENTITY_NAME : self,
 	   RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY : @(updatedTeamAssigned),
-	   }];
+	   }
+	 ];
 }
 
 
@@ -176,13 +199,28 @@
 	   RIDE_UPDATED_LOCATION_START_NOTIFICATION_KEY : @(updatedLocationStart),
 	   RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY : @(updatedLocationEnd),
 	   RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY : @(updatedTeamAssigned),
-	   }];
+	   }
+	 ];
 }
 
 
 #
 # pragma mark Instance Helpers
 #
+
+
+- (void)delete {
+	
+	if (self.isDeleted) return;
+	
+	// Remove team assigned if any, including route recalculations and notifications
+	if (self.teamAssigned) {
+		
+		[self assignTeam:nil withSender:self];
+	}
+	
+	[self.managedObjectContext deleteObject:self];
+}
 
 
 /*

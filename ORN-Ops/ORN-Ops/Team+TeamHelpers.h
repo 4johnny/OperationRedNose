@@ -56,6 +56,7 @@
 #
 
 + (void)addCreatedObserver:(id)observer withSelector:(SEL)selector;
++ (void)addDeletedObserver:(id)observer withSelector:(SEL)selector;
 + (void)addUpdatedObserver:(id)observer withSelector:(SEL)selector;
 
 + (Team*)teamFromNotification:(NSNotification*)notification;
@@ -63,10 +64,15 @@
 + (BOOL)isUpdatedRidesAssignedFromNotification:(NSNotification*)notification;
 
 - (void)postNotificationCreatedWithSender:(id)sender;
+- (void)postNotificationDeletedWithSender:(id)sender;
+
 - (void)postNotificationUpdatedWithSender:(id)sender;
 
-- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocation:(BOOL)updatedLocation;
-- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedRidesAssigned:(BOOL)updatedRidesAssigned;
+- (void)postNotificationUpdatedWithSender:(id)sender
+					   andUpdatedLocation:(BOOL)updatedLocation;
+
+- (void)postNotificationUpdatedWithSender:(id)sender
+				  andUpdatedRidesAssigned:(BOOL)updatedRidesAssigned;
 
 - (void)postNotificationUpdatedWithSender:(id)sender
 					   andUpdatedLocation:(BOOL)updatedLocation
@@ -75,6 +81,8 @@
 #
 # pragma mark Instance Helpers
 #
+
+- (void)delete;
 
 - (void)updateCurrentLocationWithLatitude:(CLLocationDegrees)latitude
 							 andLongitude:(CLLocationDegrees)longitude

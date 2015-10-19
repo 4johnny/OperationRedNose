@@ -78,8 +78,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 # pragma mark Properties
 #
 
-@property (strong, nonatomic) NSFetchedResultsController* rideFetchedResultsController;
-@property (strong, nonatomic) NSFetchedResultsController* teamFetchedResultsController;
+@property (strong, nonatomic) NSFetchedResultsController* ridesFetchedResultsController;
+@property (strong, nonatomic) NSFetchedResultsController* teamsFetchedResultsController;
 
 @property (nonatomic) PolylineMode polylineMode;
 
@@ -108,7 +108,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 
 - (NSFetchedResultsController*)rideFetchedResultsController {
 	
-	if (_rideFetchedResultsController) return _rideFetchedResultsController;
+	if (_ridesFetchedResultsController) return _ridesFetchedResultsController;
 	
 	NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:RIDE_ENTITY_NAME];
 	fetchRequest.sortDescriptors =
@@ -117,22 +117,22 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY2 ascending:RIDE_FETCH_SORT_ASC2],
 	  ];
 	
-	_rideFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[Util managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
-	_rideFetchedResultsController.delegate = self;
+	_ridesFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[Util managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
+	_ridesFetchedResultsController.delegate = self;
 	
 	NSError* error = nil;
-	if (![_rideFetchedResultsController performFetch:&error]) {
+	if (![_ridesFetchedResultsController performFetch:&error]) {
 		
 		NSLog(@"Unresolved error: %@, %@", error, error.userInfo);
 	}
 	
-	return _rideFetchedResultsController;
+	return _ridesFetchedResultsController;
 }
 
 
-- (NSFetchedResultsController*)teamFetchedResultsController {
+- (NSFetchedResultsController*)teamsFetchedResultsController {
 	
-	if (_teamFetchedResultsController) return _teamFetchedResultsController;
+	if (_teamsFetchedResultsController) return _teamsFetchedResultsController;
 	
 	NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:TEAM_ENTITY_NAME];
 	fetchRequest.sortDescriptors =
@@ -141,16 +141,16 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	  [NSSortDescriptor sortDescriptorWithKey:TEAM_FETCH_SORT_KEY2 ascending:TEAM_FETCH_SORT_ASC2],
 	  ];
 	
-	_teamFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[Util managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
-	_teamFetchedResultsController.delegate = self;
+	_teamsFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[Util managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
+	_teamsFetchedResultsController.delegate = self;
 	
 	NSError* error = nil;
-	if (![_teamFetchedResultsController performFetch:&error]) {
+	if (![_teamsFetchedResultsController performFetch:&error]) {
 		
 		NSLog(@"Unresolved error: %@, %@", error, error.userInfo);
 	}
 	
-	return _teamFetchedResultsController;
+	return _teamsFetchedResultsController;
 }
 
 
@@ -282,10 +282,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	}];
 	
 	NSString* message = [NSString stringWithFormat:@"Team: %@\nRide: %@", [team getTitle], [ride getTitle]];
-	[Util presentActionAlertWithViewController:self
-									  andTitle:@"Assign team to ride?"
-									andMessage:message
-									 andAction:assignAlertAction];
+	[Util presentActionAlertWithViewController:self andTitle:@"Assign team to ride?" andMessage:message andAction:assignAlertAction andCancelHandler:nil];
 }
 
 
@@ -602,7 +599,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 			[ride postNotificationUpdatedWithSender:self];
 		}
 		
-		NSLog(@"Teams[%d] selected: %@", (int)[self.teamFetchedResultsController.fetchedObjects indexOfObject:team], team);
+		NSLog(@"Teams[%d] selected: %@", (int)[self.teamsFetchedResultsController.fetchedObjects indexOfObject:team], team);
 	}
 
 	// Remember selected annotation for next selection
@@ -723,7 +720,9 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	
 	// Set pin color based on status
 	// NOTE: By convention, color for route start is green, and end is red.  If no team assigned, start is purple.
-	ridePinAnnotationView.pinColor = ridePointAnnotation.rideLocationType == RideLocationType_End ? MKPinAnnotationColorRed : (ride.teamAssigned ? MKPinAnnotationColorGreen : MKPinAnnotationColorPurple);
+	ridePinAnnotationView.pinColor = ridePointAnnotation.rideLocationType == RideLocationType_End
+	? MKPinAnnotationColorRed
+	: (ride.teamAssigned ? MKPinAnnotationColorGreen : MKPinAnnotationColorPurple);
 	
 	// Add/update/remove left callout accessory
 	// NOTE: Do not set for update, to avoid re-animation
@@ -1052,8 +1051,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 
 - (void)dataModelResetWithNotification:(NSNotification*)notification {
 	
-	self.rideFetchedResultsController = nil;
-	self.teamFetchedResultsController = nil;
+	self.ridesFetchedResultsController = nil;
+	self.teamsFetchedResultsController = nil;
 	
 	[self clearAllAnnotations];
 	[self clearAllOverlays];
@@ -1073,7 +1072,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 
 	BOOL createdFromMapView = (notification.object == self);
 	
-	BOOL annotationShown = [self configureRideAnnotationsWithNotification:notification andNeedsCenter:createdFromMapView andNeedsSelection:createdFromMapView];
+	BOOL annotationShown = [self configureRideAnnotationsWithNotification:notification andNeedsCenter:createdFromMapView andNeedsSelection:createdFromMapView andNeedsDelete:NO];
 	
 	if (!createdFromMapView) return;
 		
@@ -1085,10 +1084,17 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 }
 
 
+- (void)rideDeletedWithNotification:(NSNotification*)notification {
+
+	(void)[self configureRideAnnotationsWithNotification:notification andNeedsCenter:NO andNeedsSelection:NO andNeedsDelete:YES];
+	(void)[self configureRideOverlaysWithNotification:notification andNeedsDelete:YES];
+}
+
+
 - (void)rideUpdatedWithNotification:(NSNotification*)notification {
 	
-	[self configureRideAnnotationsWithNotification:notification andNeedsCenter:NO andNeedsSelection:NO];
-	[self configureRideOverlaysWithNotification:notification];
+	(void)[self configureRideAnnotationsWithNotification:notification andNeedsCenter:NO andNeedsSelection:NO andNeedsDelete:NO];
+	(void)[self configureRideOverlaysWithNotification:notification andNeedsDelete:NO];
 }
 
 
@@ -1103,7 +1109,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
  */
 - (BOOL)configureRideAnnotationsWithNotification:(NSNotification*)notification
 								  andNeedsCenter:(BOOL)needsCenter
-							   andNeedsSelection:(BOOL)needsSelection {
+							   andNeedsSelection:(BOOL)needsSelection
+								  andNeedsDelete:(BOOL)needsDelete {
 	
 	Ride* ride = [Ride rideFromNotification:notification];
 	NSArray<id<MKAnnotation>>* rideAnnotations = [self annotationsForRide:ride];
@@ -1115,7 +1122,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 										 usingRideAnnotations:rideAnnotations
 										 andIsLocationUpdated:isLocationUpdated
 											   andNeedsCenter:needsCenter
-											andNeedsSelection:needsSelection];
+											andNeedsSelection:needsSelection
+											   andNeedsDelete:needsDelete];
 	
 	// Configure end annotation
 	// NOTE: Start annotation takes precedence for center and selection
@@ -1125,7 +1133,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 									   usingRideAnnotations:rideAnnotations
 									   andIsLocationUpdated:isLocationUpdated
 											 andNeedsCenter:(needsCenter && !startAnnotationPresent)
-										  andNeedsSelection:(needsSelection && !startAnnotationPresent)];
+										  andNeedsSelection:(needsSelection && !startAnnotationPresent)
+											 andNeedsDelete:needsDelete];
 	
 	return startAnnotationPresent || endAnnotationPresent;
 }
@@ -1140,7 +1149,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 		 usingRideAnnotations:(NSArray<id<MKAnnotation>>*)rideAnnotations
 		 andIsLocationUpdated:(BOOL)isLocationUpdated
 			   andNeedsCenter:(BOOL)needsCenter
-			andNeedsSelection:(BOOL)needsSelection {
+			andNeedsSelection:(BOOL)needsSelection
+			   andNeedsDelete:(BOOL)needsDelete {
 	
 	RidePointAnnotation* ridePointAnnotation = [MainMapViewController getRidePointAnnotationFromRideAnnotations:rideAnnotations andRideLocationType:rideLocationType];
 	BOOL wasRidePointAnnotationInMapView = (ridePointAnnotation != nil);
@@ -1156,6 +1166,9 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 			didRemoveRidePointAnnotationFromMapView = YES;
 		}
 	}
+	
+	// If deleting, we are done
+	if (needsDelete) return NO;
 
 	// If no location, we are done
 	NSNumber* locationLatitude = [ride latitudeWithRideLocationType:rideLocationType];
@@ -1197,7 +1210,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
  Configure ride overlays, consistent with given ride notification
  Returns whether at least one overlay is present
  */
-- (BOOL)configureRideOverlaysWithNotification:(NSNotification*)notification {
+- (BOOL)configureRideOverlaysWithNotification:(NSNotification*)notification andNeedsDelete:(BOOL)needsDelete {
 
 	Ride* ride = [Ride rideFromNotification:notification];
 	NSArray<id<MKOverlay>>* rideOverlays = [self overlaysForRide:ride];
@@ -1205,11 +1218,11 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	BOOL isRideSelected = [self isSelectedAnnotationForRide:ride];
 	BOOL isTeamAssignedSelected = [self isSelectedAnnotationForTeam:ride.teamAssigned];
 	
-	BOOL mainOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Main usingRideOverlays:rideOverlays andIsRideSelected:isRideSelected andIsTeamAssignedSelected:isTeamAssignedSelected];
+	BOOL mainOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Main usingRideOverlays:rideOverlays andIsRideSelected:isRideSelected andIsTeamAssignedSelected:isTeamAssignedSelected andNeedsDelete:needsDelete];
 	
-	BOOL prepOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Prep usingRideOverlays:rideOverlays andIsRideSelected:isRideSelected andIsTeamAssignedSelected:isTeamAssignedSelected];
+	BOOL prepOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Prep usingRideOverlays:rideOverlays andIsRideSelected:isRideSelected andIsTeamAssignedSelected:isTeamAssignedSelected andNeedsDelete:needsDelete];
 	
-	BOOL waitOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Wait usingRideOverlays:rideOverlays andIsRideSelected:isRideSelected andIsTeamAssignedSelected:isTeamAssignedSelected];
+	BOOL waitOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Wait usingRideOverlays:rideOverlays andIsRideSelected:isRideSelected andIsTeamAssignedSelected:isTeamAssignedSelected andNeedsDelete:needsDelete];
 
 	return mainOverlayPresent || prepOverlayPresent || waitOverlayPresent;
 }
@@ -1223,7 +1236,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 			 andRideRouteType:(RideRouteType)rideRouteType
 			usingRideOverlays:(NSArray<id<MKOverlay>>*)rideOverlays
 			andIsRideSelected:(BOOL)isRideSelected
-	andIsTeamAssignedSelected:(BOOL)isTeamAssignedSelected {
+	andIsTeamAssignedSelected:(BOOL)isTeamAssignedSelected
+			   andNeedsDelete:(BOOL)needsDelete {
 
 	RidePolyline* ridePolyline = [MainMapViewController getRidePolylineFromRideOverlays:rideOverlays andRideRouteType:rideRouteType];
 	BOOL wasRidePolylineInMapView = (ridePolyline != nil);
@@ -1238,6 +1252,10 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 		didRemoveRidePolylineAnnotationFromMapView = YES;
 	}
 	
+	// If deleting, we are done
+	if (needsDelete) return NO;
+	
+	// If ride or team assigned is not selected, we are done
 	switch (rideRouteType) {
 		
 		case RideRouteType_Main:
@@ -1355,14 +1373,21 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 
 
 - (void)teamCreatedWithNotification:(NSNotification*)notification {
+	
+	[self configureTeamAnnotationsWithNotification:notification andNeedsCenter:NO andNeedsSelection:NO andNeedsDelete:NO];
+}
 
-	[self configureTeamAnnotationsWithNotification:notification andNeedsCenter:NO andNeedsSelection:NO];
+
+- (void)teamDeletedWithNotification:(NSNotification*)notification {
+	
+	[self configureTeamAnnotationsWithNotification:notification andNeedsCenter:NO andNeedsSelection:NO andNeedsDelete:YES];
+	// NOTE: Overlays for teams are handled by assigned rides
 }
 
 
 - (void)teamUpdatedWithNotification:(NSNotification*)notification {
 	
-	[self configureTeamAnnotationsWithNotification:notification andNeedsCenter:NO andNeedsSelection:NO];
+	[self configureTeamAnnotationsWithNotification:notification andNeedsCenter:NO andNeedsSelection:NO andNeedsDelete:NO];
 	// NOTE: Overlays for teams are handled by assigned rides
 }
 
@@ -1378,7 +1403,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
  */
 - (BOOL)configureTeamAnnotationsWithNotification:(NSNotification*)notification
 								  andNeedsCenter:(BOOL)needsCenter
-							   andNeedsSelection:(BOOL)needsSelection {
+							   andNeedsSelection:(BOOL)needsSelection
+								  andNeedsDelete:(BOOL)needsDelete {
 	
 	Team* team = [Team teamFromNotification:notification];
 	NSArray<TeamPointAnnotation*>* teamAnnotations = [self annotationsForTeam:team];
@@ -1389,7 +1415,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 									usingTeamAnnotations:teamAnnotations
 									andIsLocationUpdated:isLocationUpdated
 										  andNeedsCenter:needsCenter
-									   andNeedsSelection:needsSelection];
+									   andNeedsSelection:needsSelection
+										  andNeedsDelete:needsDelete];
 	
 	return annotationPresent;
 }
@@ -1403,7 +1430,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 		 usingTeamAnnotations:(NSArray<TeamPointAnnotation*>*)teamAnnotations
 		 andIsLocationUpdated:(BOOL)isLocationUpdated
 			   andNeedsCenter:(BOOL)needsCenter
-			andNeedsSelection:(BOOL)needsSelection {
+			andNeedsSelection:(BOOL)needsSelection
+			   andNeedsDelete:(BOOL)needsDelete {
 	
 	TeamPointAnnotation* teamPointAnnotation = [MainMapViewController getTeamPointAnnotationFromTeamPointAnnotations:teamAnnotations];
 	BOOL wasTeamPointAnnotationInMapView = (teamPointAnnotation != nil);
@@ -1419,6 +1447,9 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 			didRemoveAnnotationFromMapView = YES;
 		}
 	}
+	
+	// If deleting, we are done
+	if (needsDelete) return NO;
 
 	// If no location, we are done
 	NSNumber* locationLatitude = team.locationCurrentLatitude;
@@ -1527,7 +1558,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 			[Util removePersistentStore];
 			[Util postNotificationDataModelResetWithSender:self];
 		}];
-		[Util presentActionAlertWithViewController:self andTitle:@"!!! Warning !!!" andMessage:@"About to delete all data, which cannot be undone! Are you absolutely sure?!" andAction:deleteAllAlertAction];
+		[Util presentActionAlertWithViewController:self andTitle:@"!!! Warning !!!" andMessage:@"About to delete all data, which cannot be undone! Are you absolutely sure?!" andAction:deleteAllAlertAction andCancelHandler:nil];
 
 		isCommandHandled = YES;
 		
@@ -1546,8 +1577,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 		// Delay assignment so that drop animations are not cancelled
 		NSDictionary<NSString*,NSArray<__kindof NSManagedObject*>*>* args =
 		@{
-		  @"teams" : self.teamFetchedResultsController.fetchedObjects,
-		  @"rides" : self.rideFetchedResultsController.fetchedObjects,
+		  @"teams" : self.teamsFetchedResultsController.fetchedObjects,
+		  @"rides" : self.ridesFetchedResultsController.fetchedObjects,
 		  };
 		[[DemoUtil class] performSelector:@selector(loadDemoAssignTeamsSelector:) withObject:args afterDelay:2.0];
 		[Util saveManagedObjectContext];
@@ -1576,7 +1607,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 		
 		// Assign teams to rides
 		[self configureJurisdictionRegionView];
-		[DemoUtil loadDemoAssignTeams:self.teamFetchedResultsController.fetchedObjects toRides:self.rideFetchedResultsController.fetchedObjects];
+		[DemoUtil loadDemoAssignTeams:self.teamsFetchedResultsController.fetchedObjects toRides:self.rideFetchedResultsController.fetchedObjects];
 		[Util saveManagedObjectContext];
 		
 		isCommandHandled = YES;
@@ -1600,9 +1631,11 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	[Util addDataModelResetObserver:self withSelector:@selector(dataModelResetWithNotification:)];
 	
 	[Ride addCreatedObserver:self withSelector:@selector(rideCreatedWithNotification:)];
+	[Ride addDeletedObserver:self withSelector:@selector(rideDeletedWithNotification:)];
 	[Ride addUpdatedObserver:self withSelector:@selector(rideUpdatedWithNotification:)];
 
 	[Team addCreatedObserver:self withSelector:@selector(teamCreatedWithNotification:)];
+	[Team addDeletedObserver:self withSelector:@selector(teamDeletedWithNotification:)];
 	[Team addUpdatedObserver:self withSelector:@selector(teamUpdatedWithNotification:)];
 }
 
@@ -1637,7 +1670,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 
 - (void)loadTeamsDataModel {
 	
-	for (Team* team in self.teamFetchedResultsController.fetchedObjects) {
+	for (Team* team in self.teamsFetchedResultsController.fetchedObjects) {
 		
 		[team postNotificationUpdatedWithSender:self andUpdatedLocation:YES];
 	}

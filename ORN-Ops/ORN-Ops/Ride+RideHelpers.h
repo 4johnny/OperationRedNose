@@ -120,6 +120,7 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 #
 
 + (void)addCreatedObserver:(id)observer withSelector:(SEL)selector;
++ (void)addDeletedObserver:(id)observer withSelector:(SEL)selector;
 + (void)addUpdatedObserver:(id)observer withSelector:(SEL)selector;
 
 + (Ride*)rideFromNotification:(NSNotification*)notification;
@@ -129,13 +130,16 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 + (BOOL)isUpdatedTeamAssignedFromNotification:(NSNotification*)notification;
 
 - (void)postNotificationCreatedWithSender:(id)sender;
+- (void)postNotificationDeletedWithSender:(id)sender;
+
 - (void)postNotificationUpdatedWithSender:(id)sender;
 
 - (void)postNotificationUpdatedWithSender:(id)sender
 				  andUpdatedLocationStart:(BOOL)updatedLocationStart
 					andUpdatedLocationEnd:(BOOL)updatedLocationEnd;
 
-- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedTeamAssigned:(BOOL)updatedTeamAssigned;
+- (void)postNotificationUpdatedWithSender:(id)sender
+				   andUpdatedTeamAssigned:(BOOL)updatedTeamAssigned;
 
 - (void)postNotificationUpdatedWithSender:(id)sender
 				  andUpdatedLocationStart:(BOOL)updatedLocationStart
@@ -145,6 +149,8 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 #
 # pragma mark Instance Helpers
 #
+
+- (void)delete;
 
 - (void)assignTeam:(Team*)team withSender:(id)sender;
 
