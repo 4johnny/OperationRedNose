@@ -401,11 +401,14 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	if ([annotation isKindOfClass:[MKUserLocation class]]) return nil;
 	
-	if ([annotation isKindOfClass:[RidePointAnnotation class]]) return [self mapView:mapView viewForRidePointAnnotation:(RidePointAnnotation*)annotation];
+	if ([annotation isKindOfClass:[RidePointAnnotation class]])
+		return [self mapView:mapView viewForRidePointAnnotation:(RidePointAnnotation*)annotation];
 	
-	if ([annotation isKindOfClass:[TeamPointAnnotation class]]) return [self mapView:mapView viewForTeamPointAnnotation:(TeamPointAnnotation*)annotation];
+	if ([annotation isKindOfClass:[TeamPointAnnotation class]])
+		return [self mapView:mapView viewForTeamPointAnnotation:(TeamPointAnnotation*)annotation];
 	
-	if ([annotation isKindOfClass:[RidePolyline class]]) return [self mapView:mapView viewForRidePolylineAnnotation:(RidePolyline*)annotation];
+	if ([annotation isKindOfClass:[RidePolyline class]])
+		return [self mapView:mapView viewForRidePolylineAnnotation:(RidePolyline*)annotation];
 
 	return nil;
 }
@@ -415,10 +418,9 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	// Animate dropping for team point annotations
 	
-	for (int i = 0; i < views.count; i++) {
-		
-		MKAnnotationView* view = views[i];
-		
+	int i = 0;
+	for (MKAnnotationView* view in views) {
+
 		// If not team annotation, we are done with this view
 		if (![view.annotation isKindOfClass:[TeamPointAnnotation class]]) continue;
 		
@@ -435,6 +437,8 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 		// Animate dropping view
 		[Util animateDropView:view withDropHeight:self.view.frame.size.height withDuration:0.25 withDelay:(0.04 * i)];
+		
+		i++;
 	}
 }
 
@@ -454,58 +458,15 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		switch (buttonType) {
 				
 			case UIButtonTypeDetailDisclosure: {
-				
-				// Create ride detail controller
-				RideDetailTableViewController* rideDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:RIDE_DETAIL_TABLE_VIEW_CONTROLLER_ID];
-				
-				// Remove "cancel" button
-				rideDetailTableViewController.navigationItem.leftBarButtonItem = nil;
 
-				// Inject data model
-				rideDetailTableViewController.ride = ride;
-				
-				// Push onto navigation stack
-				[self.navigationController pushViewController:rideDetailTableViewController animated:YES];
-				
+				[self showDetailViewControllerWithRide:ride];
 				return;
 				
 			} // case
 			
 			case UIButtonTypeCustom: {
-				
-				NSMutableArray<MKMapItem*>* mapItems = [NSMutableArray arrayWithCapacity:2];
-				
-				MKMapItem* mapItem = [ride mapItemWithRideLocationType:RideLocationType_Start];
-				if (mapItem) {
-					
-					[mapItems addObject:mapItem];
-				}
-				
-				mapItem = [ride mapItemWithRideLocationType:RideLocationType_End];
-				if (mapItem) {
-					
-					[mapItems addObject:mapItem];
-				}
 
-				if (mapItems.count < 2) {
-					
-					mapItem = [ride.teamAssigned mapItemForCurrentLocation];
-					
-					if (mapItem) {
-						
-						[mapItems insertObject:mapItem atIndex:0];
-					}
-				}
-
-				NSDictionary<NSString*,id>* launchOptions = mapItems.count == 2
-				? @{ MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving }
-				: nil;
-				
-				if (![MKMapItem openMapsWithItems:mapItems launchOptions:launchOptions]) {
-					
-					NSLog(@"Failed to open ride route in Maps app");
-				}
-				
+				[self launchMapsAppWithRide:ride];
 				return;
 				
 			} // case
@@ -524,49 +485,15 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		switch (buttonType) {
 				
 			case UIButtonTypeDetailDisclosure: {
-				
-				// Create ride detail controller; inject data model; and push onto navigation stack
-				TeamDetailTableViewController* teamDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:TEAM_DETAIL_TABLE_VIEW_CONTROLLER_ID];
-				
-				// Remove "cancel" button
-				teamDetailTableViewController.navigationItem.leftBarButtonItem = nil;
-				
-				// Inject data model
-				teamDetailTableViewController.team = team;
-				
-				// Push ont navigation stack
-				[self.navigationController pushViewController:teamDetailTableViewController animated:YES];
-				
+
+				[self showDetailViewControllerWithTeam:team];
 				return;
 				
 			} // case
 			
 			case UIButtonTypeCustom: {
-				
-				NSMutableArray<MKMapItem*>* mapItems = [NSMutableArray arrayWithCapacity:2];
-				
-				MKMapItem* mapItem = [team mapItemForCurrentLocation];
-				if (mapItem) {
-					
-					[mapItems addObject:mapItem];
-				}
-				
-				Ride* firstRideAssigned = [team getFirstRideAssigned];
-				mapItem = [firstRideAssigned mapItemWithRideLocationType:RideLocationType_Start];
-				if (mapItem) {
-					
-					[mapItems addObject:mapItem];
-				}
-				
-				NSDictionary<NSString*,id>* launchOptions = mapItems.count == 2
-				? @{ MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving }
-				: nil;
-				
-				if (![MKMapItem openMapsWithItems:mapItems launchOptions:launchOptions]) {
-					
-					NSLog(@"Failed to open team route in Maps app");
-				}
-				
+
+				[self launchMapsAppWithTeam:team];
 				return;
 				
 			} // case
@@ -712,7 +639,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 - (MKAnnotationView*)mapView:(MKMapView*)mapView viewForRidePointAnnotation:(RidePointAnnotation*)ridePointAnnotation {
 	
-	MKPinAnnotationView* ridePinAnnotationView = (MKPinAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:ridePointAnnotation andIdentifier:ridePointAnnotation.rideLocationType == RideLocationType_End ? RIDE_END_ANNOTATION_ID : RIDE_START_ANNOTATION_ID];
+	MKPinAnnotationView* ridePinAnnotationView = (MKPinAnnotationView*)[self dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:ridePointAnnotation andIdentifier:ridePointAnnotation.rideLocationType == RideLocationType_End ? RIDE_END_ANNOTATION_ID : RIDE_START_ANNOTATION_ID];
 	
 	[self configureRidePinAnnotationView:ridePinAnnotationView withRidePointAnnotation:ridePointAnnotation];
 	
@@ -804,7 +731,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 - (MKAnnotationView*)mapView:(MKMapView*)mapView viewForTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
 	
-	MKAnnotationView* teamAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:teamPointAnnotation andIdentifier:teamPointAnnotation.team.isMascot.boolValue ? TEAM_MASCOT_ANNOTATION_ID : TEAM_NORMAL_ANNOTATION_ID];
+	MKAnnotationView* teamAnnotationView = (MKAnnotationView*)[self dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:teamPointAnnotation andIdentifier:teamPointAnnotation.team.isMascot.boolValue ? TEAM_MASCOT_ANNOTATION_ID : TEAM_NORMAL_ANNOTATION_ID];
 	
 	[self configureTeamAnnotationView:teamAnnotationView withTeamPointAnnotation:teamPointAnnotation];
 	
@@ -857,7 +784,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 - (MKAnnotationView*)mapView:(MKMapView*)mapView viewForRidePolylineAnnotation:(RidePolyline*)ridePolylineAnnotation {
 	
-	MKAnnotationView* ridePolylineAnnotationView = (MKAnnotationView*)[MainMapViewController dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:ridePolylineAnnotation andIdentifier:RIDE_POLYLINE_ANNOTATION_ID];
+	MKAnnotationView* ridePolylineAnnotationView = (MKAnnotationView*)[self dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:ridePolylineAnnotation andIdentifier:RIDE_POLYLINE_ANNOTATION_ID];
 
 	[self configureRidePolylineAnnotationView:ridePolylineAnnotationView withRidePolylineAnnotation:ridePolylineAnnotation];
 	
@@ -887,7 +814,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 }
 
 
-+ (MKAnnotationView*)dequeueReusableAnnotationViewWithMapView:(MKMapView*)mapView andAnnotation:(id<MKAnnotation>)annotation andIdentifier:(NSString*)identifier {
+- (MKAnnotationView*)dequeueReusableAnnotationViewWithMapView:(MKMapView*)mapView andAnnotation:(id<MKAnnotation>)annotation andIdentifier:(NSString*)identifier {
 	
 	// Reuse pooled annotation view if possible
 	MKAnnotationView* annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
@@ -905,7 +832,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		
 		annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
 		annotationView.canShowCallout = YES;
-		annotationView.rightCalloutAccessoryView = [MainMapViewController rightCalloutAccessoryButton];
+		annotationView.rightCalloutAccessoryView = [self rightCalloutAccessoryButton];
 		
 	} else if ([identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ||
 			   [identifier isEqualToString:TEAM_NORMAL_ANNOTATION_ID]) {
@@ -913,7 +840,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
 		annotationView.image = [UIImage imageNamed:[identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ? @"ORN-Team-Mascot-Map-Annotation" : @"ORN-Team-Map-Annotation"];
 		annotationView.canShowCallout = YES;
-		annotationView.rightCalloutAccessoryView = [MainMapViewController rightCalloutAccessoryButton];
+		annotationView.rightCalloutAccessoryView = [self rightCalloutAccessoryButton];
 
 	} else if ([identifier isEqualToString:RIDE_POLYLINE_ANNOTATION_ID]) {
 		
@@ -947,7 +874,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 }
 
 
-+ (UIButton*)rightCalloutAccessoryButton {
+- (UIButton*)rightCalloutAccessoryButton {
 
 	UIButton* button = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
 	
@@ -1051,6 +978,120 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	// NOTE: Wired programmatically
 	
 	sender.tintAdjustmentMode = UIViewTintAdjustmentModeAutomatic;
+}
+
+
+#
+# pragma mark Action Handler Helpers
+#
+
+
+- (void)launchMapsAppWithRide:(Ride*)ride {
+
+	NSAssert(ride, @"Ride must exist");
+	if (!ride) return;
+
+	NSMutableArray<MKMapItem*>* mapItems = [NSMutableArray arrayWithCapacity:2];
+	
+	MKMapItem* mapItem = [ride mapItemWithRideLocationType:RideLocationType_Start];
+	if (mapItem) {
+		
+		[mapItems addObject:mapItem];
+	}
+	
+	mapItem = [ride mapItemWithRideLocationType:RideLocationType_End];
+	if (mapItem) {
+		
+		[mapItems addObject:mapItem];
+	}
+	
+	if (mapItems.count < 2) {
+		
+		mapItem = [ride.teamAssigned mapItemForCurrentLocation];
+		
+		if (mapItem) {
+			
+			[mapItems insertObject:mapItem atIndex:0];
+		}
+	}
+	
+	NSDictionary<NSString*,id>* launchOptions = mapItems.count == 2
+	? @{ MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving }
+	: nil;
+	
+	if (![MKMapItem openMapsWithItems:mapItems launchOptions:launchOptions]) {
+		
+		NSLog(@"Failed to open ride route in Maps app");
+	}
+}
+
+
+- (void)showDetailViewControllerWithRide:(Ride*)ride {
+
+	NSAssert(ride, @"Ride must exist");
+	if (!ride) return;
+	
+	// Create ride detail controller
+	RideDetailTableViewController* rideDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:RIDE_DETAIL_TABLE_VIEW_CONTROLLER_ID];
+	
+	// Remove "cancel" button
+	rideDetailTableViewController.navigationItem.leftBarButtonItem = nil;
+	
+	// Inject data model
+	rideDetailTableViewController.ride = ride;
+	
+	// Push onto navigation stack
+	[self.navigationController pushViewController:rideDetailTableViewController animated:YES];
+}
+
+
+- (void)launchMapsAppWithTeam:(Team*)team {
+	
+	NSAssert(team, @"Team must exist");
+	if (!team) return;
+
+	NSMutableArray<MKMapItem*>* mapItems = [NSMutableArray arrayWithCapacity:2];
+	
+	MKMapItem* mapItem = [team mapItemForCurrentLocation];
+	if (mapItem) {
+		
+		[mapItems addObject:mapItem];
+	}
+	
+	Ride* firstRideAssigned = [team getFirstRideAssigned];
+	mapItem = [firstRideAssigned mapItemWithRideLocationType:RideLocationType_Start];
+	if (mapItem) {
+		
+		[mapItems addObject:mapItem];
+	}
+	
+	NSDictionary<NSString*,id>* launchOptions = mapItems.count == 2
+	? @{ MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving }
+	: nil;
+	
+	if (![MKMapItem openMapsWithItems:mapItems launchOptions:launchOptions]) {
+		
+		NSLog(@"Failed to open team route in Maps app");
+	}
+}
+
+
+- (void)showDetailViewControllerWithTeam:(Team*)team {
+	
+	NSAssert(team, @"Team must exist");
+	if (!team) return;
+	
+	// Create team detail controller
+	TeamDetailTableViewController* teamDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:TEAM_DETAIL_TABLE_VIEW_CONTROLLER_ID];
+	
+	// Remove "cancel" button
+	teamDetailTableViewController.navigationItem.leftBarButtonItem = nil;
+	
+	// Inject data model
+	teamDetailTableViewController.team = team;
+	
+	// Push onto navigation stack
+	[self.navigationController pushViewController:teamDetailTableViewController animated:YES];
 }
 
 
