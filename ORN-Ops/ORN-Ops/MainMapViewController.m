@@ -68,6 +68,16 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 };
 
 
+typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
+	
+	Configure_None =		0,
+	
+	Configure_Center =	1 << 0,
+	Configure_Select =	1 << 1,
+	Configure_Delete =	1 << 2,
+};
+
+
 #
 # pragma mark - Interface
 #
@@ -1072,7 +1082,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 
 	BOOL createdFromMapView = (notification.object == self);
 	
-	BOOL annotationShown = [self configureRideAnnotationsWithNotification:notification andNeedsCenter:createdFromMapView andNeedsSelection:createdFromMapView andNeedsDelete:NO];
+	BOOL annotationShown = [self configureRideAnnotationsWithNotification:notification andOptions:(createdFromMapView ? ( Configure_Center | Configure_Select ) : Configure_None)];
 	
 	if (!createdFromMapView) return;
 		
@@ -1086,15 +1096,15 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 
 - (void)rideDeletedWithNotification:(NSNotification*)notification {
 
-	(void)[self configureRideAnnotationsWithNotification:notification andNeedsCenter:NO andNeedsSelection:NO andNeedsDelete:YES];
-	(void)[self configureRideOverlaysWithNotification:notification andNeedsDelete:YES];
+	(void)[self configureRideAnnotationsWithNotification:notification andOptions:Configure_Delete];
+	(void)[self configureRideOverlaysWithNotification:notification andOptions:Configure_Delete];
 }
 
 
 - (void)rideUpdatedWithNotification:(NSNotification*)notification {
 	
-	(void)[self configureRideAnnotationsWithNotification:notification andNeedsCenter:NO andNeedsSelection:NO andNeedsDelete:NO];
-	(void)[self configureRideOverlaysWithNotification:notification andNeedsDelete:NO];
+	(void)[self configureRideAnnotationsWithNotification:notification andOptions:Configure_None];
+	(void)[self configureRideOverlaysWithNotification:notification andOptions:Configure_None];
 }
 
 
@@ -1108,9 +1118,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
  Returns whether at least one annotation is present
  */
 - (BOOL)configureRideAnnotationsWithNotification:(NSNotification*)notification
-								  andNeedsCenter:(BOOL)needsCenter
-							   andNeedsSelection:(BOOL)needsSelection
-								  andNeedsDelete:(BOOL)needsDelete {
+									  andOptions:(ConfigureOptions)options {
 	
 	Ride* ride = [Ride rideFromNotification:notification];
 	NSArray<id<MKAnnotation>>* rideAnnotations = [self annotationsForRide:ride];
@@ -1121,20 +1129,19 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 										  andRideLocationType:RideLocationType_Start
 										 usingRideAnnotations:rideAnnotations
 										 andIsLocationUpdated:isLocationUpdated
-											   andNeedsCenter:needsCenter
-											andNeedsSelection:needsSelection
-											   andNeedsDelete:needsDelete];
+												   andOptions:options];
 	
 	// Configure end annotation
 	// NOTE: Start annotation takes precedence for center and selection
 	isLocationUpdated = [Ride isUpdatedLocationEndFromNotification:notification];
+	if (startAnnotationPresent) {
+		options &= ~( Configure_Center | Configure_Select );
+	}
 	BOOL endAnnotationPresent = [self configureViewWithRide:ride
 										andRideLocationType:RideLocationType_End
 									   usingRideAnnotations:rideAnnotations
 									   andIsLocationUpdated:isLocationUpdated
-											 andNeedsCenter:(needsCenter && !startAnnotationPresent)
-										  andNeedsSelection:(needsSelection && !startAnnotationPresent)
-											 andNeedsDelete:needsDelete];
+												 andOptions:options];
 	
 	return startAnnotationPresent || endAnnotationPresent;
 }
@@ -1148,9 +1155,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 		  andRideLocationType:(RideLocationType)rideLocationType
 		 usingRideAnnotations:(NSArray<id<MKAnnotation>>*)rideAnnotations
 		 andIsLocationUpdated:(BOOL)isLocationUpdated
-			   andNeedsCenter:(BOOL)needsCenter
-			andNeedsSelection:(BOOL)needsSelection
-			   andNeedsDelete:(BOOL)needsDelete {
+				   andOptions:(ConfigureOptions)options {
 	
 	RidePointAnnotation* ridePointAnnotation = [MainMapViewController getRidePointAnnotationFromRideAnnotations:rideAnnotations andRideLocationType:rideLocationType];
 	BOOL wasRidePointAnnotationInMapView = (ridePointAnnotation != nil);
@@ -1168,7 +1173,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	}
 	
 	// If deleting, we are done
-	if (needsDelete) return NO;
+	if (options & Configure_Delete) return NO;
 
 	// If no location, we are done
 	NSNumber* locationLatitude = [ride latitudeWithRideLocationType:rideLocationType];
@@ -1192,12 +1197,12 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 		[self.mainMapView addAnnotation:ridePointAnnotation];
 	}
 	
-	if (needsCenter) {
+	if (options & Configure_Center) {
 		
 		[self.mainMapView setCenterCoordinate:CLLocationCoordinate2DMake(locationLatitude.doubleValue, locationLongitude.doubleValue) animated:YES];
 	}
 	
-	if (needsSelection) {
+	if (options & Configure_Select) {
 		
 		[self.mainMapView selectAnnotation:ridePointAnnotation animated:YES];
 	}
@@ -1210,7 +1215,8 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
  Configure ride overlays, consistent with given ride notification
  Returns whether at least one overlay is present
  */
-- (BOOL)configureRideOverlaysWithNotification:(NSNotification*)notification andNeedsDelete:(BOOL)needsDelete {
+- (BOOL)configureRideOverlaysWithNotification:(NSNotification*)notification
+								   andOptions:(ConfigureOptions)options {
 
 	Ride* ride = [Ride rideFromNotification:notification];
 	NSArray<id<MKOverlay>>* rideOverlays = [self overlaysForRide:ride];
@@ -1218,11 +1224,11 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	BOOL isRideSelected = [self isSelectedAnnotationForRide:ride];
 	BOOL isTeamAssignedSelected = [self isSelectedAnnotationForTeam:ride.teamAssigned];
 	
-	BOOL mainOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Main usingRideOverlays:rideOverlays andIsRideSelected:isRideSelected andIsTeamAssignedSelected:isTeamAssignedSelected andNeedsDelete:needsDelete];
+	BOOL mainOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Main usingRideOverlays:rideOverlays andIsRideSelected:isRideSelected andIsTeamAssignedSelected:isTeamAssignedSelected andOptions:options];
 	
-	BOOL prepOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Prep usingRideOverlays:rideOverlays andIsRideSelected:isRideSelected andIsTeamAssignedSelected:isTeamAssignedSelected andNeedsDelete:needsDelete];
+	BOOL prepOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Prep usingRideOverlays:rideOverlays andIsRideSelected:isRideSelected andIsTeamAssignedSelected:isTeamAssignedSelected andOptions:options];
 	
-	BOOL waitOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Wait usingRideOverlays:rideOverlays andIsRideSelected:isRideSelected andIsTeamAssignedSelected:isTeamAssignedSelected andNeedsDelete:needsDelete];
+	BOOL waitOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Wait usingRideOverlays:rideOverlays andIsRideSelected:isRideSelected andIsTeamAssignedSelected:isTeamAssignedSelected andOptions:options];
 
 	return mainOverlayPresent || prepOverlayPresent || waitOverlayPresent;
 }
@@ -1237,7 +1243,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 			usingRideOverlays:(NSArray<id<MKOverlay>>*)rideOverlays
 			andIsRideSelected:(BOOL)isRideSelected
 	andIsTeamAssignedSelected:(BOOL)isTeamAssignedSelected
-			   andNeedsDelete:(BOOL)needsDelete {
+				   andOptions:(ConfigureOptions)options {
 
 	RidePolyline* ridePolyline = [MainMapViewController getRidePolylineFromRideOverlays:rideOverlays andRideRouteType:rideRouteType];
 	BOOL wasRidePolylineInMapView = (ridePolyline != nil);
@@ -1253,7 +1259,7 @@ typedef NS_ENUM(NSInteger, PolylineMode) {
 	}
 	
 	// If deleting, we are done
-	if (needsDelete) return NO;
+	if (options & Configure_Delete) return NO;
 	
 	// If ride or team assigned is not selected, we are done
 	switch (rideRouteType) {
