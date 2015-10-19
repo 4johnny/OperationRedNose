@@ -178,15 +178,8 @@
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
 		
 		Team* team = [self.teamsFetchedResultsController objectAtIndexPath:indexPath];
-		
-		NSString* alertTitle = [NSString stringWithFormat:@"Delete team: %@", [team getTitle]];
-		UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction* _Nonnull action) {
 
-			[team delete];
-			[team postNotificationDeletedWithSender:self];
-			[Util saveManagedObjectContext];
-		}];
-		[Util presentActionAlertWithViewController:self andTitle:alertTitle andMessage:@"Cannot be undone! Are you sure?" andAction:deleteAction andCancelHandler:^(UIAlertAction* action) {
+		[Util presentDeleteAlertWithViewController:self andDataObject:team andCancelHandler:^(UIAlertAction*action) {
 			
 			[self.tableView setEditing:NO animated:YES];
 		}];

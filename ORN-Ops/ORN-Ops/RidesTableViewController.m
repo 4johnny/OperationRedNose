@@ -176,15 +176,8 @@
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
 		
 		Ride* ride = [self.ridesFetchedResultsController objectAtIndexPath:indexPath];
-		
-		NSString* alertTitle = [NSString stringWithFormat:@"Delete ride: %@", [ride getTitle]];
-		UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction* _Nonnull action) {
-			
-			[ride delete];
-			[ride postNotificationDeletedWithSender:self];
-			[Util saveManagedObjectContext];
-		}];
-		[Util presentActionAlertWithViewController:self andTitle:alertTitle andMessage:@"Cannot be undone! Are you sure?" andAction:deleteAction andCancelHandler:^(UIAlertAction* action) {
+
+		[Util presentDeleteAlertWithViewController:self andDataObject:ride andCancelHandler:^(UIAlertAction*action) {
 			
 			[self.tableView setEditing:NO animated:YES];
 		}];

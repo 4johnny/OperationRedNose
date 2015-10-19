@@ -6,8 +6,6 @@
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
-#import <CoreLocation/CoreLocation.h>
-#import <MapKit/MapKit.h>
 #import "Ride.h"
 
 #
@@ -95,7 +93,7 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 # pragma mark - Interface
 #
 
-@interface Ride (RideHelpers)
+@interface Ride (RideHelpers) <ORNDataObject>
 
 #
 # pragma mark Initializers
@@ -150,8 +148,6 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 # pragma mark Instance Helpers
 #
 
-- (void)delete;
-
 - (void)assignTeam:(Team*)team withSender:(id)sender;
 
 - (void)updateLocationWithRideLocationType:(RideLocationType)rideLocationType
@@ -178,7 +174,6 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 - (void)clearPrepRoute;
 
 - (NSString*)getPassengerName;
-- (NSString*)getTitle;
 - (NSDate*)getRouteDateTimeEnd;
 
 - (NSNumber*)latitudeWithRideLocationType:(RideLocationType)rideLocationType;

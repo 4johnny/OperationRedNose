@@ -32,14 +32,6 @@
 @property (readonly, strong, nonatomic) NSManagedObjectModel* managedObjectModel;
 
 #
-# pragma mark Core Data Helpers
-#
-
-- (void)saveManagedObjectContext;
-- (void)deleteAllObjectsWithEntityName:(NSString*)entityName;
-- (void)removePersistentStore;
-
-#
 # pragma mark Helper Methods
 #
 

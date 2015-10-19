@@ -42,6 +42,37 @@
 
 
 #
+# pragma mark <ORNDataObject>
+#
+
+
+- (NSString*)getTitle {
+	
+	if (self.name.length > 0 && self.members.length == 0) return self.name;
+	if (self.name.length == 0 && self.members.length > 0) return self.members;
+	if (self.name.length > 0 && self.members.length > 0) return [NSString stringWithFormat:@"%@: %@", self.name, self.members];
+	
+	return TEAM_TITLE_DEFAULT;
+}
+
+
+- (void)delete {
+	
+	if (self.isDeleted) return;
+	
+	// Remove any assigned rides, including route recalculations and notifications
+	for (Ride* rideAssigned in [self.ridesAssigned mutableCopy]) {
+		
+		[rideAssigned assignTeam:nil withSender:self];
+	}
+	
+	[self.managedObjectContext deleteObject:self];
+	
+	[self postNotificationDeletedWithSender:self];
+}
+
+
+#
 # pragma mark Notifications
 #
 
@@ -151,20 +182,6 @@
 #
 # pragma mark Instance Helpers
 #
-
-
-- (void)delete {
-	
-	if (self.isDeleted) return;
-	
-	// Remove any assigned rides, including route recalculations and notifications
-	for (Ride* rideAssigned in [self.ridesAssigned mutableCopy]) {
-		
-		[rideAssigned assignTeam:nil withSender:self];
-	}
-	
-	[self.managedObjectContext deleteObject:self];
-}
 
 
 - (void)updateCurrentLocationWithLatitudeNumber:(NSNumber*)latitude
@@ -312,16 +329,6 @@
 			continue;
 		}
 	}
-}
-
-
-- (NSString*)getTitle {
-
-	if (self.name.length > 0 && self.members.length == 0) return self.name;
-	if (self.name.length == 0 && self.members.length > 0) return self.members;
-	if (self.name.length > 0 && self.members.length > 0) return [NSString stringWithFormat:@"%@: %@", self.name, self.members];
-
-	return TEAM_TITLE_DEFAULT;
 }
 
 

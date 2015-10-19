@@ -83,6 +83,35 @@
 
 
 #
+# pragma mark <ORNDataObject>
+#
+
+
+- (NSString*)getTitle {
+	
+	NSString* passengerName = [self getPassengerName];
+	
+	return passengerName.length > 0 ? passengerName : RIDE_TITLE_DEFAULT;
+}
+
+
+- (void)delete {
+	
+	if (self.isDeleted) return;
+	
+	// Remove team assigned if any, including route recalculations and notifications
+	if (self.teamAssigned) {
+		
+		[self assignTeam:nil withSender:self];
+	}
+	
+	[self.managedObjectContext deleteObject:self];
+	
+	[self postNotificationDeletedWithSender:self];
+}
+
+
+#
 # pragma mark Notifications
 #
 
@@ -207,20 +236,6 @@
 #
 # pragma mark Instance Helpers
 #
-
-
-- (void)delete {
-	
-	if (self.isDeleted) return;
-	
-	// Remove team assigned if any, including route recalculations and notifications
-	if (self.teamAssigned) {
-		
-		[self assignTeam:nil withSender:self];
-	}
-	
-	[self.managedObjectContext deleteObject:self];
-}
 
 
 /*
@@ -512,14 +527,6 @@
 	
 	// Combine first and last name
 	return [NSString stringWithFormat:@"%@ %@", self.passengerNameFirst, self.passengerNameLast];
-}
-
-
-- (NSString*)getTitle {
-	
-	NSString* passengerName = [self getPassengerName];
-	
-	return passengerName.length > 0 ? passengerName : RIDE_TITLE_DEFAULT;
 }
 
 

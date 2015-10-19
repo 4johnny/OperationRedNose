@@ -334,6 +334,18 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 
 #
+# pragma mark <UIContentContainer>
+#
+
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+	[super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+	
+	[self dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+#
 # pragma mark <NSFetchedResultsControllerDelegate>
 #
 
@@ -459,7 +471,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 				
 			case UIButtonTypeDetailDisclosure: {
 
-				[self showDetailViewControllerWithRide:ride];
+				[self presentActionSheetWithCalloutAccessoryControl:control andRide:ride];
 				return;
 				
 			} // case
@@ -486,7 +498,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 				
 			case UIButtonTypeDetailDisclosure: {
 
-				[self showDetailViewControllerWithTeam:team];
+				[self presentActionSheetWithCalloutAccessoryControl:control andTeam:team];
 				return;
 				
 			} // case
@@ -879,6 +891,99 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	UIButton* button = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
 	
 	return button;
+}
+
+
+- (void)presentActionSheetWithActions:(NSArray<UIAlertAction*>*)alertActions andReferenceView:(UIView*)referenceView {
+	
+	UIAlertController* actionSheetController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+
+	for (UIAlertAction* alertAction in alertActions) {
+		
+		[actionSheetController addAction:alertAction];
+	}
+	
+	// Add "cancel" action to sheet
+	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+	[actionSheetController addAction:cancelAction];
+	
+	// Configure popover for iPad
+	UIPopoverPresentationController* alertPopoverPresentationController = actionSheetController.popoverPresentationController;
+	alertPopoverPresentationController.sourceView = self.view;
+	CGRect sourceRect = [referenceView convertRect:referenceView.frame toView:self.view];
+	alertPopoverPresentationController.sourceRect = sourceRect;
+	alertPopoverPresentationController.permittedArrowDirections =
+	(
+	 UIPopoverArrowDirectionDown |
+	 UIPopoverArrowDirectionLeft
+	 );
+	
+	// Present action sheet
+	[self presentViewController:actionSheetController animated:YES completion:nil];
+}
+
+
+- (void)presentActionSheetWithReferenceView:(UIView*)referenceView andRide:(Ride*)ride {
+	
+	NSAssert(ride, @"Ride must exist");
+	if (!ride) return;
+
+	UIAlertAction* detailAction = [UIAlertAction actionWithTitle:@"Show detail" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+		
+		[self showDetailViewControllerWithRide:ride];
+	}];
+
+	UIAlertAction* routeAction = [UIAlertAction actionWithTitle:@"Route with Maps app" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+		
+		[self launchMapsAppWithRide:ride];
+	}];
+	
+	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction* _Nonnull action) {
+		
+		[Util presentDeleteAlertWithViewController:self andDataObject:ride andCancelHandler:nil];
+	}];
+	
+	[self presentActionSheetWithActions:@[detailAction, routeAction, deleteAction] andReferenceView:referenceView];
+}
+
+
+- (void)presentActionSheetWithReferenceView:(UIView*)referenceView andTeam:(Team*)team {
+	
+	NSAssert(team, @"Team must exist");
+	if (!team) return;
+	
+	UIAlertAction* detailAction = [UIAlertAction actionWithTitle:@"Show detail" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+		
+		[self showDetailViewControllerWithTeam:team];
+	}];
+	
+	UIAlertAction* routeAction = [UIAlertAction actionWithTitle:@"Route with Maps app" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+		
+		[self launchMapsAppWithTeam:team];
+	}];
+	
+	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction* _Nonnull action) {
+		
+		[Util presentDeleteAlertWithViewController:self andDataObject:team andCancelHandler:nil];
+	}];
+	
+	[self presentActionSheetWithActions:@[detailAction, routeAction, deleteAction] andReferenceView:referenceView];
+}
+
+
+- (void)presentActionSheetWithCalloutAccessoryControl:(UIControl*)control andRide:(Ride*)ride {
+	
+	UIView* mapAnnotationCalloutView = control.superview.superview; // internal MKSmallCalloutContainerView
+	
+	[self presentActionSheetWithReferenceView:mapAnnotationCalloutView andRide:ride];
+}
+
+
+- (void)presentActionSheetWithCalloutAccessoryControl:(UIControl*)control andTeam:(Team*)team {
+	
+	UIView* mapAnnotationCalloutView = control.superview.superview; // internal MKSmallCalloutContainerView
+	
+	[self presentActionSheetWithReferenceView:mapAnnotationCalloutView andTeam:team];
 }
 
 

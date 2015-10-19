@@ -99,6 +99,7 @@
 		B29CD76A1ABE9D3200B21579 /* NSDate+DateHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+DateHelpers.m"; sourceTree = "<group>"; };
 		B2B116BD1AB9191500F22B00 /* PickerTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PickerTextField.h; sourceTree = "<group>"; };
 		B2B116BE1AB9191500F22B00 /* PickerTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PickerTextField.m; sourceTree = "<group>"; };
+		B2B9BDE81BD5010400FDDD38 /* ORNDataObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ORNDataObject.h; sourceTree = "<group>"; };
 		B2C756131AA1905E00B148D3 /* RidesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RidesTableViewController.h; sourceTree = "<group>"; };
 		B2C756141AA1905E00B148D3 /* RidesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = RidesTableViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		B2C756161AA1912B00B148D3 /* RideDetailTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RideDetailTableViewController.h; sourceTree = "<group>"; };
@@ -238,6 +239,7 @@
 		B261725E1A9E595D00BB7D67 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				B2B9BDE81BD5010400FDDD38 /* ORNDataObject.h */,
 				B2078B8E1A9DC043004AF662 /* ORNDataModelSource.h */,
 			);
 			name = Protocols;

@@ -43,7 +43,7 @@
 # pragma mark - Interface
 #
 
-@interface Team (TeamHelpers)
+@interface Team (TeamHelpers) <ORNDataObject>
 
 #
 # pragma mark Initializers

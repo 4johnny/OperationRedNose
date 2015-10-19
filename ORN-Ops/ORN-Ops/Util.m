@@ -120,6 +120,23 @@
 }
 
 
++ (void)presentDeleteAlertWithViewController:(UIViewController*)viewController
+							   andDataObject:(id<ORNDataObject>)dataObject
+							andCancelHandler:(void (^ __nullable)(UIAlertAction* action))cancelHandler {
+	
+	NSString* alertTitle = [NSString stringWithFormat:@"Delete %@: %@", [NSStringFromClass(dataObject.class) lowercaseString], [dataObject getTitle]];
+	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction* _Nonnull action) {
+		
+		[dataObject delete];
+		[Util saveManagedObjectContext];
+	}];
+	[Util presentActionAlertWithViewController:viewController
+									  andTitle:alertTitle
+									andMessage:@"Cannot be undone! Are you sure?"
+									 andAction:deleteAction
+							  andCancelHandler:cancelHandler];
+}
+
 
 #
 # pragma mark Notifications

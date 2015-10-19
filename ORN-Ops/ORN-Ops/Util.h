@@ -10,6 +10,7 @@
 #import <MapKit/MapKit.h>
 
 #import "Macros.h"
+#import "ORNDataObject.h"
 
 
 #
@@ -96,6 +97,10 @@
 + (void)presentOKAlertWithViewController:(UIViewController*)viewController
 								andTitle:(NSString*)title
 							  andMessage:(NSString*)message;
+
++ (void)presentDeleteAlertWithViewController:(UIViewController*)viewController
+							   andDataObject:(id<ORNDataObject>)dataObject
+							andCancelHandler:(void (^)(UIAlertAction* action))cancelHandler;
 
 #
 # pragma mark Notifications
