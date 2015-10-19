@@ -1224,11 +1224,29 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	BOOL isRideSelected = [self isSelectedAnnotationForRide:ride];
 	BOOL isTeamAssignedSelected = [self isSelectedAnnotationForTeam:ride.teamAssigned];
 	
-	BOOL mainOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Main usingRideOverlays:rideOverlays andIsRideSelected:isRideSelected andIsTeamAssignedSelected:isTeamAssignedSelected andOptions:options];
+	BOOL mainOverlayPresent =
+	[self configureViewWithRide:ride
+			   andRideRouteType:RideRouteType_Main
+			  usingRideOverlays:rideOverlays
+			  andIsRideSelected:isRideSelected
+	  andIsTeamAssignedSelected:isTeamAssignedSelected
+					 andOptions:options];
 	
-	BOOL prepOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Prep usingRideOverlays:rideOverlays andIsRideSelected:isRideSelected andIsTeamAssignedSelected:isTeamAssignedSelected andOptions:options];
+	BOOL prepOverlayPresent =
+	[self configureViewWithRide:ride
+			   andRideRouteType:RideRouteType_Prep
+			  usingRideOverlays:rideOverlays
+			  andIsRideSelected:isRideSelected
+	  andIsTeamAssignedSelected:isTeamAssignedSelected
+					 andOptions:options];
 	
-	BOOL waitOverlayPresent = [self configureViewWithRide:ride andRideRouteType:RideRouteType_Wait usingRideOverlays:rideOverlays andIsRideSelected:isRideSelected andIsTeamAssignedSelected:isTeamAssignedSelected andOptions:options];
+	BOOL waitOverlayPresent =
+	[self configureViewWithRide:ride
+			   andRideRouteType:RideRouteType_Wait
+			  usingRideOverlays:rideOverlays
+			  andIsRideSelected:isRideSelected
+	  andIsTeamAssignedSelected:isTeamAssignedSelected
+					 andOptions:options];
 
 	return mainOverlayPresent || prepOverlayPresent || waitOverlayPresent;
 }
@@ -1380,20 +1398,20 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 - (void)teamCreatedWithNotification:(NSNotification*)notification {
 	
-	[self configureTeamAnnotationsWithNotification:notification andNeedsCenter:NO andNeedsSelection:NO andNeedsDelete:NO];
+	[self configureTeamAnnotationsWithNotification:notification andOptions:Configure_None];
 }
 
 
 - (void)teamDeletedWithNotification:(NSNotification*)notification {
 	
-	[self configureTeamAnnotationsWithNotification:notification andNeedsCenter:NO andNeedsSelection:NO andNeedsDelete:YES];
+	[self configureTeamAnnotationsWithNotification:notification andOptions:Configure_Delete];
 	// NOTE: Overlays for teams are handled by assigned rides
 }
 
 
 - (void)teamUpdatedWithNotification:(NSNotification*)notification {
 	
-	[self configureTeamAnnotationsWithNotification:notification andNeedsCenter:NO andNeedsSelection:NO andNeedsDelete:NO];
+	[self configureTeamAnnotationsWithNotification:notification andOptions:Configure_None];
 	// NOTE: Overlays for teams are handled by assigned rides
 }
 
@@ -1408,9 +1426,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
  Returns whether at least one annotation is present
  */
 - (BOOL)configureTeamAnnotationsWithNotification:(NSNotification*)notification
-								  andNeedsCenter:(BOOL)needsCenter
-							   andNeedsSelection:(BOOL)needsSelection
-								  andNeedsDelete:(BOOL)needsDelete {
+									  andOptions:(ConfigureOptions)options {
 	
 	Team* team = [Team teamFromNotification:notification];
 	NSArray<TeamPointAnnotation*>* teamAnnotations = [self annotationsForTeam:team];
@@ -1420,9 +1436,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	BOOL annotationPresent = [self configureViewWithTeam:team
 									usingTeamAnnotations:teamAnnotations
 									andIsLocationUpdated:isLocationUpdated
-										  andNeedsCenter:needsCenter
-									   andNeedsSelection:needsSelection
-										  andNeedsDelete:needsDelete];
+											  andOptions:options];
 	
 	return annotationPresent;
 }
@@ -1435,9 +1449,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 - (BOOL)configureViewWithTeam:(Team*)team
 		 usingTeamAnnotations:(NSArray<TeamPointAnnotation*>*)teamAnnotations
 		 andIsLocationUpdated:(BOOL)isLocationUpdated
-			   andNeedsCenter:(BOOL)needsCenter
-			andNeedsSelection:(BOOL)needsSelection
-			   andNeedsDelete:(BOOL)needsDelete {
+				   andOptions:(ConfigureOptions)options {
 	
 	TeamPointAnnotation* teamPointAnnotation = [MainMapViewController getTeamPointAnnotationFromTeamPointAnnotations:teamAnnotations];
 	BOOL wasTeamPointAnnotationInMapView = (teamPointAnnotation != nil);
@@ -1455,7 +1467,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	}
 	
 	// If deleting, we are done
-	if (needsDelete) return NO;
+	if (options & Configure_Delete) return NO;
 
 	// If no location, we are done
 	NSNumber* locationLatitude = team.locationCurrentLatitude;
@@ -1478,12 +1490,12 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		[self.mainMapView addAnnotation:teamPointAnnotation];
 	}
 	
-	if (needsCenter) {
+	if (options & Configure_Center) {
 		
 		[self.mainMapView setCenterCoordinate:CLLocationCoordinate2DMake(locationLatitude.doubleValue, locationLongitude.doubleValue) animated:YES];
 	}
 	
-	if (needsSelection) {
+	if (options & Configure_Select) {
 		
 		[self.mainMapView selectAnnotation:teamPointAnnotation animated:YES];
 	}
