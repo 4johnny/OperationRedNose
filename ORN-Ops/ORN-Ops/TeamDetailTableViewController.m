@@ -97,6 +97,16 @@
 }
 
 
+- (void)viewDidAppear:(BOOL)animated {
+	
+	if (self.isAddMode) {
+		
+		// Show keyboard on first entry field
+		[self.nameTextField becomeFirstResponder];
+	}
+}
+
+
 - (void)didReceiveMemoryWarning {
 	[super didReceiveMemoryWarning];
 	// Dispose of any resources that can be recreated.
