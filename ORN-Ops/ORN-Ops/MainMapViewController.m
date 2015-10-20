@@ -1579,9 +1579,11 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	// Configure annotation
 	BOOL isLocationUpdated = [Team isUpdatedLocationFromNotification:notification];
+	BOOL isMascotUpdated = [Team isUpdatedMascotFromNotification:notification];
 	BOOL annotationPresent = [self configureViewWithTeam:team
 									usingTeamAnnotations:teamAnnotations
 									andIsLocationUpdated:isLocationUpdated
+									  andIsMascotUpdated:isMascotUpdated
 											  andOptions:options];
 	
 	return annotationPresent;
@@ -1595,14 +1597,15 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 - (BOOL)configureViewWithTeam:(Team*)team
 		 usingTeamAnnotations:(NSArray<TeamPointAnnotation*>*)teamAnnotations
 		 andIsLocationUpdated:(BOOL)isLocationUpdated
+		   andIsMascotUpdated:(BOOL)isMascotUpdated
 				   andOptions:(ConfigureOptions)options {
 	
 	TeamPointAnnotation* teamPointAnnotation = [MainMapViewController getTeamPointAnnotationFromTeamPointAnnotations:teamAnnotations];
 	BOOL wasTeamPointAnnotationInMapView = (teamPointAnnotation != nil);
 	
-	// Remove existing annotation if location updated
+	// Remove existing annotation if location or mascot updated
 	BOOL didRemoveAnnotationFromMapView = NO;
-	if (isLocationUpdated) {
+	if (isLocationUpdated || isMascotUpdated) {
 		
 		if (wasTeamPointAnnotationInMapView) {
 			

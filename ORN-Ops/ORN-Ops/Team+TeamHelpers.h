@@ -61,6 +61,7 @@
 
 + (Team*)teamFromNotification:(NSNotification*)notification;
 + (BOOL)isUpdatedLocationFromNotification:(NSNotification*)notification;
++ (BOOL)isUpdatedMascotFromNotification:(NSNotification*)notification;
 + (BOOL)isUpdatedRidesAssignedFromNotification:(NSNotification*)notification;
 
 - (void)postNotificationCreatedWithSender:(id)sender;
@@ -70,6 +71,10 @@
 
 - (void)postNotificationUpdatedWithSender:(id)sender
 					   andUpdatedLocation:(BOOL)updatedLocation;
+
+- (void)postNotificationUpdatedWithSender:(id)sender
+					   andUpdatedLocation:(BOOL)updatedLocation
+						 andUpdatedMascot:(BOOL)updatedMascot;
 
 - (void)postNotificationUpdatedWithSender:(id)sender
 				  andUpdatedRidesAssigned:(BOOL)updatedRidesAssigned;

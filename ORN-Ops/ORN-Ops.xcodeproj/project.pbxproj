@@ -212,11 +212,11 @@
 		B25220361AA0444200C3CE00 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				B24580B91AB58C1B0090758E /* General */,
-				B2C756221AA1AD4200B148D3 /* Main Tab Bar */,
 				B2C756211AA1AD1400B148D3 /* Main Map */,
 				B2C756201AA1AD0A00B148D3 /* Rides */,
 				B2C7561F1AA1ACFE00B148D3 /* Teams */,
+				B2C756221AA1AD4200B148D3 /* Main Tab Bar */,
+				B24580B91AB58C1B0090758E /* General */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";

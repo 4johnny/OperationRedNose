@@ -258,10 +258,17 @@
 	self.team.isActive = @(self.isActiveSwitch.on);
 	
 	// Save team fields
+	
 	self.team.name = [self.nameTextField.text trimAll];
 	self.team.members = [self.membersTextField.text trimAll];
 	self.team.phoneNumber = [self.phoneNumberTextField.text trimAll];
-	self.team.isMascot = @(self.isMascotSwitch.on);
+	
+	BOOL updatedMascot = NO;
+	if (self.team.isMascot.boolValue != self.isMascotSwitch.on) {
+		
+		self.team.isMascot = @(self.isMascotSwitch.on);
+		updatedMascot = YES;
+	}
 	
 	// Save location field - try async geocode
 	
@@ -300,7 +307,9 @@
 		
 	} else {
 		
-		[self.team postNotificationUpdatedWithSender:self andUpdatedLocation:updatedLocation];
+		[self.team postNotificationUpdatedWithSender:self
+								  andUpdatedLocation:updatedLocation
+									andUpdatedMascot:updatedMascot];
 	}
 }
 

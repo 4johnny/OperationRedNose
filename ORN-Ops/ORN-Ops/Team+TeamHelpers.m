@@ -19,6 +19,7 @@
 #define TEAM_UPDATED_NOTIFICATION_NAME					@"teamUpdated"
 
 #define TEAM_UPDATED_LOCATION_NOTIFICATION_KEY			@"teamUpdatedLocation"
+#define TEAM_UPDATED_MASCOT_NOTIFICATION_KEY			@"teamUpdatedMascot"
 #define TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY	@"teamUpdatedRidesAssigned"
 
 
@@ -107,6 +108,12 @@
 }
 
 
++ (BOOL)isUpdatedMascotFromNotification:(NSNotification*)notification {
+	
+	return [Util isValueFromNotification:notification withKey:TEAM_UPDATED_MASCOT_NOTIFICATION_KEY];
+}
+
+
 + (BOOL)isUpdatedRidesAssignedFromNotification:(NSNotification*)notification {
 	
 	return [Util isValueFromNotification:notification withKey:TEAM_UPDATED_RIDES_ASSIGNED_NOTIFICATION_KEY];
@@ -144,8 +151,9 @@
 }
 
 
-- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedLocation:(BOOL)updatedLocation {
-	
+- (void)postNotificationUpdatedWithSender:(id)sender
+					   andUpdatedLocation:(BOOL)updatedLocation {
+
 	[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:sender userInfo:
 	 @{
 	   TEAM_ENTITY_NAME : self,
@@ -154,7 +162,21 @@
 }
 
 
-- (void)postNotificationUpdatedWithSender:(id)sender andUpdatedRidesAssigned:(BOOL)updatedRidesAssigned {
+- (void)postNotificationUpdatedWithSender:(id)sender
+					   andUpdatedLocation:(BOOL)updatedLocation
+						 andUpdatedMascot:(BOOL)updatedMascot {
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:sender userInfo:
+	 @{
+	   TEAM_ENTITY_NAME : self,
+	   TEAM_UPDATED_LOCATION_NOTIFICATION_KEY : @(updatedLocation),
+	   TEAM_UPDATED_MASCOT_NOTIFICATION_KEY : @(updatedMascot),
+	   }];
+}
+
+
+- (void)postNotificationUpdatedWithSender:(id)sender
+				  andUpdatedRidesAssigned:(BOOL)updatedRidesAssigned {
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:TEAM_UPDATED_NOTIFICATION_NAME object:sender userInfo:
 	 @{
