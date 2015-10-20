@@ -93,6 +93,8 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 @property (nonatomic) PolylineMode polylineMode;
 
+@property (weak, nonatomic) UIAlertController* actionSheetController;
+
 @property (weak, nonatomic) id<MKAnnotation> rideTeamPanAssignmentAnchorAnnotation;
 @property (weak, nonatomic) id<MKAnnotation> previousSelectedAnnotation;
 
@@ -341,7 +343,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
 	[super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 	
-	[self dismissViewControllerAnimated:YES completion:nil];
+	[[self.actionSheetController presentingViewController] dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -920,6 +922,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	// Present action sheet
 	[self presentViewController:actionSheetController animated:YES completion:nil];
+	self.actionSheetController = actionSheetController;
 }
 
 
