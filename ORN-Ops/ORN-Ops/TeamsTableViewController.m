@@ -34,6 +34,8 @@
 
 @property (nonatomic) NSDateFormatter* cellDateFormatter;
 
+@property (weak, nonatomic) TeamDetailTableViewController* teamDetailTableViewController;
+
 @end
 
 
@@ -120,11 +122,11 @@
 	if ([segue.identifier isEqualToString:SHOW_TEAM_DETAIL_SEQUE]) {
 		
 		// Inject team model into team view controller
-		TeamDetailTableViewController* teamDetailTableViewController = (TeamDetailTableViewController*)segue.destinationViewController;
-		teamDetailTableViewController.team = [self.teamsFetchedResultsController objectAtIndexPath:[self.tableView indexPathForSelectedRow]];
+		self.teamDetailTableViewController = (TeamDetailTableViewController*)segue.destinationViewController;
+		self.teamDetailTableViewController.team = [self.teamsFetchedResultsController objectAtIndexPath:[self.tableView indexPathForSelectedRow]];
 		
 		// Remove "cancel" button
-		teamDetailTableViewController.navigationItem.leftBarButtonItem = nil;
+		self.teamDetailTableViewController.navigationItem.leftBarButtonItem = nil;
 	}
 	
 	//	if ([segue.identifier isEqualToString:SHOW_TEAM_ADD_SEQUE]) {
@@ -303,6 +305,11 @@
 
 
 - (void)teamDeletedWithNotification:(NSNotification*)notification {
+	
+	if (self.teamDetailTableViewController.team == [Team teamFromNotification:notification]) {
+		
+		[self.navigationController popToRootViewControllerAnimated:YES];
+	}
 	
 	[self.tableView reloadData];
 }

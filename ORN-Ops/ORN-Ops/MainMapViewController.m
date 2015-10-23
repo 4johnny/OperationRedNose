@@ -92,15 +92,16 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 @property (strong, nonatomic) NSFetchedResultsController* teamsFetchedResultsController;
 
 @property (nonatomic) PolylineMode polylineMode;
-
-@property (weak, nonatomic) UIAlertController* actionSheetController;
+@property (nonatomic) CLGeocoder* geocoder;
+@property (nonatomic) NSDateFormatter* annotationDateFormatter;
+@property (nonatomic) UIColor* calloutAccessoryColorGreen;
 
 @property (weak, nonatomic) id<MKAnnotation> rideTeamPanAssignmentAnchorAnnotation;
 @property (weak, nonatomic) id<MKAnnotation> previousSelectedAnnotation;
 
-@property (nonatomic) CLGeocoder* geocoder;
-@property (nonatomic) NSDateFormatter* annotationDateFormatter;
-@property (nonatomic) UIColor* calloutAccessoryColorGreen;
+@property (weak, nonatomic) UIAlertController* actionSheetController;
+@property (weak, nonatomic) RideDetailTableViewController* rideDetailTableViewController;
+@property (weak, nonatomic) TeamDetailTableViewController* teamDetailTableViewController;
 
 @end
 
@@ -1094,6 +1095,44 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 #
 
 
+- (void)showDetailViewControllerWithRide:(Ride*)ride {
+	
+	NSAssert(ride, @"Ride must exist");
+	if (!ride) return;
+	
+	// Create ride detail controller
+	self.rideDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:RIDE_DETAIL_TABLE_VIEW_CONTROLLER_ID];
+	
+	// Remove "cancel" button
+	self.rideDetailTableViewController.navigationItem.leftBarButtonItem = nil;
+	
+	// Inject data model
+	self.rideDetailTableViewController.ride = ride;
+	
+	// Push onto navigation stack
+	[self.navigationController pushViewController:self.rideDetailTableViewController animated:YES];
+}
+
+
+- (void)showDetailViewControllerWithTeam:(Team*)team {
+	
+	NSAssert(team, @"Team must exist");
+	if (!team) return;
+	
+	// Create team detail controller
+	self.teamDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:TEAM_DETAIL_TABLE_VIEW_CONTROLLER_ID];
+	
+	// Remove "cancel" button
+	self.teamDetailTableViewController.navigationItem.leftBarButtonItem = nil;
+	
+	// Inject data model
+	self.teamDetailTableViewController.team = team;
+	
+	// Push onto navigation stack
+	[self.navigationController pushViewController:self.teamDetailTableViewController animated:YES];
+}
+
+
 - (void)launchMapsAppWithRide:(Ride*)ride {
 
 	NSAssert(ride, @"Ride must exist");
@@ -1134,25 +1173,6 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 }
 
 
-- (void)showDetailViewControllerWithRide:(Ride*)ride {
-
-	NSAssert(ride, @"Ride must exist");
-	if (!ride) return;
-	
-	// Create ride detail controller
-	RideDetailTableViewController* rideDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:RIDE_DETAIL_TABLE_VIEW_CONTROLLER_ID];
-	
-	// Remove "cancel" button
-	rideDetailTableViewController.navigationItem.leftBarButtonItem = nil;
-	
-	// Inject data model
-	rideDetailTableViewController.ride = ride;
-	
-	// Push onto navigation stack
-	[self.navigationController pushViewController:rideDetailTableViewController animated:YES];
-}
-
-
 - (void)launchMapsAppWithTeam:(Team*)team {
 	
 	NSAssert(team, @"Team must exist");
@@ -1181,25 +1201,6 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		
 		NSLog(@"Failed to open team route in Maps app");
 	}
-}
-
-
-- (void)showDetailViewControllerWithTeam:(Team*)team {
-	
-	NSAssert(team, @"Team must exist");
-	if (!team) return;
-	
-	// Create team detail controller
-	TeamDetailTableViewController* teamDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:TEAM_DETAIL_TABLE_VIEW_CONTROLLER_ID];
-	
-	// Remove "cancel" button
-	teamDetailTableViewController.navigationItem.leftBarButtonItem = nil;
-	
-	// Inject data model
-	teamDetailTableViewController.team = team;
-	
-	// Push onto navigation stack
-	[self.navigationController pushViewController:teamDetailTableViewController animated:YES];
 }
 
 
@@ -1244,6 +1245,11 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 
 - (void)rideDeletedWithNotification:(NSNotification*)notification {
+
+	if (self.rideDetailTableViewController.ride == [Ride rideFromNotification:notification]) {
+		
+		[self.navigationController popToRootViewControllerAnimated:YES];
+	}
 
 	(void)[self configureRideAnnotationsWithNotification:notification andOptions:Configure_Delete];
 	(void)[self configureRideOverlaysWithNotification:notification andOptions:Configure_Delete];
@@ -1552,6 +1558,11 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 
 - (void)teamDeletedWithNotification:(NSNotification*)notification {
+	
+	if (self.teamDetailTableViewController.team == [Team teamFromNotification:notification]) {
+		
+		[self.navigationController popToRootViewControllerAnimated:YES];
+	}
 	
 	[self configureTeamAnnotationsWithNotification:notification andOptions:Configure_Delete];
 	// NOTE: Overlays for teams are handled by assigned rides

@@ -34,6 +34,8 @@
 
 @property (nonatomic) NSDateFormatter* cellDateFormatter;
 
+@property (weak, nonatomic) RideDetailTableViewController* rideDetailTableViewController;
+
 @end
 
 
@@ -120,11 +122,11 @@
 	if ([segue.identifier isEqualToString:SHOW_RIDE_DETAIL_SEQUE]) {
 		
 		// Inject ride model into ride view controller
-		RideDetailTableViewController* rideDetailTableViewController = (RideDetailTableViewController*)segue.destinationViewController;
-		rideDetailTableViewController.ride = [self.ridesFetchedResultsController objectAtIndexPath:[self.tableView indexPathForSelectedRow]];
+		self.rideDetailTableViewController = (RideDetailTableViewController*)segue.destinationViewController;
+		self.rideDetailTableViewController.ride = [self.ridesFetchedResultsController objectAtIndexPath:[self.tableView indexPathForSelectedRow]];
 		
 		// Remove "cancel" button
-		rideDetailTableViewController.navigationItem.leftBarButtonItem = nil;
+		self.rideDetailTableViewController.navigationItem.leftBarButtonItem = nil;
 	}
 	
 	//	if ([segue.identifier isEqualToString:SHOW_RIDE_ADD_SEQUE]) {
@@ -299,6 +301,11 @@
 
 
 - (void)rideDeletedWithNotification:(NSNotification*)notification {
+	
+	if (self.rideDetailTableViewController.ride == [Ride rideFromNotification:notification]) {
+		
+		[self.navigationController popToRootViewControllerAnimated:YES];
+	}
 	
 	[self.tableView reloadData];
 }
