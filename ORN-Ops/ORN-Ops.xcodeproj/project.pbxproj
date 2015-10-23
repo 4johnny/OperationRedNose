@@ -3,18 +3,18 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 47;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		B2078B871A9DB406004AF662 /* MainMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2078B861A9DB406004AF662 /* MainMapViewController.m */; };
-		B22CC4BE1BC1E15F00256034 /* Team+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = B22CC4BB1BC1E15F00256034 /* Team+CoreDataProperties.m */; settings = {ASSET_TAGS = (); }; };
-		B22CC4BF1BC1E15F00256034 /* Team.m in Sources */ = {isa = PBXBuildFile; fileRef = B22CC4BD1BC1E15F00256034 /* Team.m */; settings = {ASSET_TAGS = (); }; };
+		B22CC4BE1BC1E15F00256034 /* Team+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = B22CC4BB1BC1E15F00256034 /* Team+CoreDataProperties.m */; };
+		B22CC4BF1BC1E15F00256034 /* Team.m in Sources */ = {isa = PBXBuildFile; fileRef = B22CC4BD1BC1E15F00256034 /* Team.m */; };
 		B241B1DE1ABD408D0075C99E /* DatePickerTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B241B1DD1ABD408D0075C99E /* DatePickerTextField.m */; };
 		B241B1E11ABD65330075C99E /* BasePickerTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B241B1E01ABD65330075C99E /* BasePickerTextField.m */; };
 		B24580B51AB5460B0090758E /* NSString+StringHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B24580B41AB5460B0090758E /* NSString+StringHelpers.m */; };
 		B24580B81AB584C00090758E /* BaseNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = B24580B71AB584C00090758E /* BaseNavigationController.m */; };
-		B24BFF931BCB7CD1000B2ACE /* NSCharacterSet+CharacterSetHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B24BFF921BCB7CD1000B2ACE /* NSCharacterSet+CharacterSetHelpers.m */; settings = {ASSET_TAGS = (); }; };
+		B24BFF931BCB7CD1000B2ACE /* NSCharacterSet+CharacterSetHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B24BFF921BCB7CD1000B2ACE /* NSCharacterSet+CharacterSetHelpers.m */; };
 		B24C18711A9EF3D6008505BB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2078B821A9DAF2A004AF662 /* MapKit.framework */; };
 		B24D4FD11A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B24D4FCF1A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld */; };
 		B25220331AA0412C00C3CE00 /* DemoUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = B25220321AA0412C00C3CE00 /* DemoUtil.m */; };
@@ -29,8 +29,8 @@
 		B27CEDD71ACE852600512FA3 /* MKPolyline+PolylineHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B27CEDD61ACE852600512FA3 /* MKPolyline+PolylineHelpers.m */; };
 		B28312261AAF2A8100B7C1A9 /* BasePolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B28312251AAF2A8100B7C1A9 /* BasePolyline.m */; };
 		B28312291AAF322C00B7C1A9 /* RidePolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = B28312281AAF322C00B7C1A9 /* RidePolyline.m */; };
-		B28A34871BC0861D00493E09 /* Ride+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = B28A34801BC0861D00493E09 /* Ride+CoreDataProperties.m */; settings = {ASSET_TAGS = (); }; };
-		B28A34881BC0861D00493E09 /* Ride.m in Sources */ = {isa = PBXBuildFile; fileRef = B28A34821BC0861D00493E09 /* Ride.m */; settings = {ASSET_TAGS = (); }; };
+		B28A34871BC0861D00493E09 /* Ride+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = B28A34801BC0861D00493E09 /* Ride+CoreDataProperties.m */; };
+		B28A34881BC0861D00493E09 /* Ride.m in Sources */ = {isa = PBXBuildFile; fileRef = B28A34821BC0861D00493E09 /* Ride.m */; };
 		B2907B841A9F1903008A0301 /* RidePointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B2907B831A9F1903008A0301 /* RidePointAnnotation.m */; };
 		B29CD76B1ABE9D3200B21579 /* NSDate+DateHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B29CD76A1ABE9D3200B21579 /* NSDate+DateHelpers.m */; };
 		B2B116BF1AB9191500F22B00 /* PickerTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B2B116BE1AB9191500F22B00 /* PickerTextField.m */; };
@@ -408,7 +408,7 @@
 				};
 			};
 			buildConfigurationList = B27B4A6A1A9AB1FB009277E4 /* Build configuration list for PBXProject "ORN-Ops" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
