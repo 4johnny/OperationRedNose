@@ -932,12 +932,12 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	NSAssert(ride, @"Ride must exist");
 	if (!ride) return;
 
-	UIAlertAction* detailAction = [UIAlertAction actionWithTitle:@"Show detail" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+	UIAlertAction* detailAction = [UIAlertAction actionWithTitle:@"Show Detail" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
 		
 		[self showDetailViewControllerWithRide:ride];
 	}];
 
-	UIAlertAction* routeAction = [UIAlertAction actionWithTitle:@"Route with Maps app" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+	UIAlertAction* routeAction = [UIAlertAction actionWithTitle:@"Route in Maps" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
 		
 		[self launchMapsAppWithRide:ride];
 	}];
@@ -956,12 +956,12 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	NSAssert(team, @"Team must exist");
 	if (!team) return;
 	
-	UIAlertAction* detailAction = [UIAlertAction actionWithTitle:@"Show detail" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+	UIAlertAction* detailAction = [UIAlertAction actionWithTitle:@"Show Detail" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
 		
 		[self showDetailViewControllerWithTeam:team];
 	}];
 	
-	UIAlertAction* routeAction = [UIAlertAction actionWithTitle:@"Route with Maps app" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+	UIAlertAction* routeAction = [UIAlertAction actionWithTitle:@"Route in Maps" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
 		
 		[self launchMapsAppWithTeam:team];
 	}];
