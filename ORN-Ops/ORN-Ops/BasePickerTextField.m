@@ -29,7 +29,7 @@
 
 @interface BasePickerTextField ()
 
-@property (nonatomic) id<UITextFieldDelegate> externalDelegate; // NOTE: Original delegate wired internally
+@property (weak, nonatomic) id<UITextFieldDelegate> externalDelegate; // NOTE: Original delegate wired internally
 
 @end
 
