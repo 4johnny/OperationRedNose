@@ -20,6 +20,7 @@
 #
 
 @property (nonatomic) NSArray<NSString*>* titles;
+@property (nonatomic) NSArray<NSNumber*>* pickableStatuses;
 @property (nonatomic) NSInteger selectedRow;
 
 @end

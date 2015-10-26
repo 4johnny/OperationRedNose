@@ -283,16 +283,23 @@
 
 - (void)configureTeamAssignedPickerTextField {
 	
-	NSMutableArray<NSString*>* teamTitles = [NSMutableArray arrayWithCapacity:self.teamFetchedResultsController.fetchedObjects.count + 1];
+	NSUInteger numberOfTitles = self.teamFetchedResultsController.fetchedObjects.count;
+	
+	NSMutableArray<NSString*>* teamTitles = [NSMutableArray arrayWithCapacity:(numberOfTitles + 1)];
+	NSMutableArray<NSNumber*>* teamPickableStatuses = [NSMutableArray arrayWithCapacity:(numberOfTitles + 1)];
 	
 	[teamTitles addObject:TEAM_TITLE_NONE];
+	[teamPickableStatuses addObject:@YES];
 	
 	for (Team* team in self.teamFetchedResultsController.fetchedObjects) {
 		
 		[teamTitles addObject:[team getTitle]];
+		[teamPickableStatuses addObject:team.isActive];
 	}
 	
 	self.teamAssignedPickerTextField.titles = teamTitles;
+	self.teamAssignedPickerTextField.pickableStatuses = teamPickableStatuses;
+	
 	self.teamAssignedPickerTextField.selectedRow = 0; // "None"
 }
 

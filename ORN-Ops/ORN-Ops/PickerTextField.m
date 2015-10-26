@@ -68,7 +68,7 @@
 	if (!(_maxTitleLabelWidth < 0)) return _maxTitleLabelWidth;
 	
 	NSString* longestTitle = [NSString longestStringInStrings:self.titles];
-	UILabel* longestTitleLabel = [PickerTextField labelWithTitle:longestTitle];
+	UILabel* longestTitleLabel = [PickerTextField labelWithAttributedTitle:[[NSAttributedString alloc] initWithString:longestTitle]];
 	_maxTitleLabelWidth = [longestTitleLabel sizeThatFits:CG_SIZE_MAX].width;
 	
 	return _maxTitleLabelWidth;
@@ -132,23 +132,34 @@
 
 - (void)pickerView:(UIPickerView*)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
 	
-	self.text = [self pickerView:self.pickerView titleForRow:row forComponent:component];
+	self.attributedText = [self pickerView:self.pickerView attributedTitleForRow:row forComponent:component];
 }
 
 
-- (NSString*)pickerView:(UIPickerView*)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-	
-	return self.titles[row];
-}
+//- (NSString*)pickerView:(UIPickerView*)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+//	
+//	return self.titles[row];
+//}
 
 
 - (NSAttributedString*)pickerView:(UIPickerView*)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component {
 	
+	NSAssert(self.titles.count == self.pickableStatuses.count, @"Must have pickable status for each title");
+	NSAssert(0 <= row && row < self.titles.count, @"Row must be in range of titles");
+	
+	// Show non-pickable titles in red
+	UIColor* titleColor = self.pickableStatuses[row].boolValue ? [UIColor blackColor] : [UIColor redColor];
+	
 	// Left-align titles
-	NSString* title = [self pickerView:pickerView titleForRow:row forComponent:component];
 	NSMutableParagraphStyle* paragraphStyle = [[NSMutableParagraphStyle alloc] init];
 	paragraphStyle.alignment = NSTextAlignmentLeft;
-	NSMutableAttributedString* attributedTitle = [[NSMutableAttributedString alloc] initWithString:title attributes:@{ NSParagraphStyleAttributeName : paragraphStyle }];
+	
+	NSAttributedString* attributedTitle =
+ 	[[NSAttributedString alloc] initWithString:self.titles[row] attributes:
+	@{
+	  NSForegroundColorAttributeName : titleColor,
+	  NSParagraphStyleAttributeName : paragraphStyle,
+	  }];
 	
 	return attributedTitle;
 }
@@ -164,8 +175,8 @@
 
 	UILabel* label = (UILabel*)view;
 	if (!label) {
-		
-		label = [PickerTextField labelWithTitle:[self pickerView:pickerView titleForRow:row forComponent:component]];
+
+		label = [PickerTextField labelWithAttributedTitle:[self pickerView:pickerView attributedTitleForRow:row forComponent:component]];
 		CGFloat labelWidth = MIN(self.maxTitleLabelWidth, pickerView.bounds.size.width);
 		label.frame = CGRectMake(0, 0, labelWidth, [self pickerView:pickerView rowHeightForComponent:component]);
 	}
@@ -179,10 +190,10 @@
 #
 
 
-+ (UILabel*)labelWithTitle:(NSString*)title {
++ (UILabel*)labelWithAttributedTitle:(NSAttributedString*)attributedTitle {
 
 	UILabel* label = [[UILabel alloc] init];
-	label.text = title;
+	label.attributedText = attributedTitle;
 	label.font = [UIFont fontWithName:label.font.fontName size:TITLE_FONT_SIZE];
 	
 	return label;
