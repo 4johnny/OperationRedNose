@@ -20,6 +20,7 @@
 #import "NSDate+DateHelpers.h"
 #import "CLPlacemark+PlacemarkHelpers.h"
 #import "MKPolyline+PolylineHelpers.h"
+#import "MKMapCamera+MapCameraHelpers.h"
 #import "UIView+ViewHelpers.h"
 
 #endif

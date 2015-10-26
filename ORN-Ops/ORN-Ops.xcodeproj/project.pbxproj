@@ -17,6 +17,7 @@
 		B24BFF931BCB7CD1000B2ACE /* NSCharacterSet+CharacterSetHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B24BFF921BCB7CD1000B2ACE /* NSCharacterSet+CharacterSetHelpers.m */; };
 		B24C18711A9EF3D6008505BB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2078B821A9DAF2A004AF662 /* MapKit.framework */; };
 		B24D4FD11A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B24D4FCF1A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld */; };
+		B24DE0461BDE17A3004E7190 /* MKMapCamera+MapCameraHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B24DE0451BDE17A3004E7190 /* MKMapCamera+MapCameraHelpers.m */; };
 		B25220331AA0412C00C3CE00 /* DemoUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = B25220321AA0412C00C3CE00 /* DemoUtil.m */; };
 		B27533451A9DA91700B3110C /* MainTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = B27533441A9DA91700B3110C /* MainTabBarController.m */; };
 		B2761C8E1BAFFA0D0022402E /* NSNumber+NumberHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2761C8D1BAFFA0D0022402E /* NSNumber+NumberHelpers.m */; };
@@ -66,6 +67,8 @@
 		B24BFF911BCB7CD1000B2ACE /* NSCharacterSet+CharacterSetHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSCharacterSet+CharacterSetHelpers.h"; sourceTree = "<group>"; };
 		B24BFF921BCB7CD1000B2ACE /* NSCharacterSet+CharacterSetHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSCharacterSet+CharacterSetHelpers.m"; sourceTree = "<group>"; };
 		B24D4FD01A9D98E0008A0C7A /* ORN-Ops.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ORN-Ops.xcdatamodel"; sourceTree = "<group>"; };
+		B24DE0441BDE17A3004E7190 /* MKMapCamera+MapCameraHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMapCamera+MapCameraHelpers.h"; sourceTree = "<group>"; };
+		B24DE0451BDE17A3004E7190 /* MKMapCamera+MapCameraHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMapCamera+MapCameraHelpers.m"; sourceTree = "<group>"; };
 		B25220311AA0412C00C3CE00 /* DemoUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoUtil.h; sourceTree = "<group>"; };
 		B25220321AA0412C00C3CE00 /* DemoUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = DemoUtil.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		B27533431A9DA91700B3110C /* MainTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainTabBarController.h; sourceTree = "<group>"; };
@@ -310,6 +313,8 @@
 				B2CA60D21AE39BB800CC2533 /* CLPlacemark+PlacemarkHelpers.m */,
 				B27CEDD51ACE852600512FA3 /* MKPolyline+PolylineHelpers.h */,
 				B27CEDD61ACE852600512FA3 /* MKPolyline+PolylineHelpers.m */,
+				B24DE0441BDE17A3004E7190 /* MKMapCamera+MapCameraHelpers.h */,
+				B24DE0451BDE17A3004E7190 /* MKMapCamera+MapCameraHelpers.m */,
 				B2E12A9A1ABEE74F00CB5202 /* UIView+ViewHelpers.h */,
 				B2E12A9B1ABEE74F00CB5202 /* UIView+ViewHelpers.m */,
 			);
@@ -448,6 +453,7 @@
 				B241B1E11ABD65330075C99E /* BasePickerTextField.m in Sources */,
 				B22CC4BE1BC1E15F00256034 /* Team+CoreDataProperties.m in Sources */,
 				B2C7561E1AA1A97900B148D3 /* TeamDetailTableViewController.m in Sources */,
+				B24DE0461BDE17A3004E7190 /* MKMapCamera+MapCameraHelpers.m in Sources */,
 				B24580B51AB5460B0090758E /* NSString+StringHelpers.m in Sources */,
 				B2E76A251AA6D0A3004B55BB /* TeamPointAnnotation.m in Sources */,
 				B25220331AA0412C00C3CE00 /* DemoUtil.m in Sources */,

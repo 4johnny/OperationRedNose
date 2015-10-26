@@ -1049,22 +1049,53 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 }
 
 
+- (BOOL)moveMapCameraVerticalWithAnimated:(BOOL)animated {
+
+	if (self.mainMapView.camera.pitch <= 0) return NO;
+	
+	MKMapCamera* mapCamera = [self.mainMapView.camera copy];
+	mapCamera.altitude = mapCamera.distanceFromCenter;
+	mapCamera.pitch = 0;
+	
+	[self.mainMapView setCamera:mapCamera animated:animated];
+	
+	return YES;
+}
+
+
 - (IBAction)mapTypeChanged:(UISegmentedControl*)sender {
 	
 	switch (self.mapTypeSegmentedControl.selectedSegmentIndex) {
 			
 		default:
-		case 0:
+		case 0: // Standard
+			
 			self.mainMapView.mapType = MKMapTypeStandard;
 			break;
 			
-		case 1:
-			self.mainMapView.mapType = MKMapTypeHybrid;
-			break;
+		case 1: { // Hybrid
+
+			double delayInSeconds = [self moveMapCameraVerticalWithAnimated:YES] ? 0.5 : 0;
 			
-		case 2:
-			self.mainMapView.mapType = MKMapTypeSatellite;
+			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+				
+				self.mainMapView.mapType = MKMapTypeHybrid;
+			});
+			
 			break;
+		}
+			
+		case 2: { // Satellite
+			
+			double delayInSeconds = [self moveMapCameraVerticalWithAnimated:YES] ? 0.5 : 0;
+			
+			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+
+				self.mainMapView.mapType = MKMapTypeSatellite;
+			});
+						   
+			break;
+		}
 	}
 }
 
