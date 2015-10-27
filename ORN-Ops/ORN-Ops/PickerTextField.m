@@ -59,7 +59,7 @@
 - (void)setSelectedRow:(NSInteger)selectedRow {
 	
 	[self.pickerView selectRow:selectedRow inComponent:0 animated:NO];
-	self.attributedText = [self pickerView:self.pickerView attributedTitleForRow:selectedRow forComponent:0];
+	[self pickerView:self.pickerView didSelectRow:selectedRow inComponent:0];
 }
 
 
@@ -132,14 +132,14 @@
 
 - (void)pickerView:(UIPickerView*)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
 	
-	self.attributedText = [self pickerView:self.pickerView attributedTitleForRow:row forComponent:component];
+	self.text = [self pickerView:self.pickerView titleForRow:row forComponent:component];
 }
 
 
-//- (NSString*)pickerView:(UIPickerView*)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-//	
-//	return self.titles[row];
-//}
+- (NSString*)pickerView:(UIPickerView*)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+	
+	return self.titles[row];
+}
 
 
 - (NSAttributedString*)pickerView:(UIPickerView*)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component {
