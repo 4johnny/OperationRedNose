@@ -299,8 +299,6 @@
 	
 	self.teamAssignedPickerTextField.titles = teamTitles;
 	self.teamAssignedPickerTextField.pickableStatuses = teamPickableStatuses;
-	
-	self.teamAssignedPickerTextField.selectedRow = 0; // "None"
 }
 
 

@@ -24,6 +24,8 @@
 
 @property (readonly, nonatomic) UIPickerView* pickerView; // decorated picker view
 
+@property (nonatomic) NSInteger initialSelectedRow;
+
 @property (nonatomic) CGFloat maxTitleLabelWidth;
 
 @end
@@ -56,10 +58,21 @@
 }
 
 
+- (void)setSelectedRow:(NSInteger)selectedRow withAnimated:(BOOL)animated {
+	
+	if ([self.pickerView selectedRowInComponent:0] <= 0) {
+		
+		self.initialSelectedRow = selectedRow;
+	}
+	
+	[self.pickerView selectRow:selectedRow inComponent:0 animated:animated];
+	[self pickerView:self.pickerView didSelectRow:selectedRow inComponent:0];
+}
+
+
 - (void)setSelectedRow:(NSInteger)selectedRow {
 	
-	[self.pickerView selectRow:selectedRow inComponent:0 animated:NO];
-	[self pickerView:self.pickerView didSelectRow:selectedRow inComponent:0];
+	[self setSelectedRow:selectedRow withAnimated:NO];
 }
 
 
@@ -132,7 +145,14 @@
 
 - (void)pickerView:(UIPickerView*)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
 	
-	self.text = [self pickerView:self.pickerView titleForRow:row forComponent:component];
+	if (row == self.initialSelectedRow || self.pickableStatuses[row].boolValue) {
+		
+		self.text = [self pickerView:self.pickerView titleForRow:row forComponent:component];
+		
+	} else {
+
+		[self setSelectedRow:self.initialSelectedRow withAnimated:YES];
+	}
 }
 
 
