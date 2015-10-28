@@ -40,6 +40,7 @@
 #define MAP_ANNOTATION_DISTANCE_FORMAT	@"%.1f km"
 #define MAP_ANNOTATION_FIELD_EMPTY		@"?"
 
+#define DISPATCH_DATETIME_FORMAT		@"HH:mm"
 
 #
 # pragma mark Command Constants
@@ -95,6 +96,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 @property (nonatomic) PolylineMode polylineMode;
 @property (nonatomic) CLGeocoder* geocoder;
 @property (nonatomic) NSDateFormatter* annotationDateFormatter;
+@property (nonatomic) NSDateFormatter* dispatchDateFormatter;
 @property (nonatomic) UIColor* calloutAccessoryColorGreen;
 
 @property (weak, nonatomic) id<MKAnnotation> rideTeamPanAssignmentAnchorAnnotation;
@@ -186,6 +188,17 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	_annotationDateFormatter.dateFormat = MAP_ANNOTATION_DATETIME_FORMAT;
 
 	return _annotationDateFormatter;
+}
+
+
+- (NSDateFormatter*)dispatchDateFormatter {
+	
+	if (_dispatchDateFormatter) return _dispatchDateFormatter;
+	
+	_dispatchDateFormatter = [[NSDateFormatter alloc] init];
+	_dispatchDateFormatter.dateFormat = DISPATCH_DATETIME_FORMAT;
+	
+	return _dispatchDateFormatter;
 }
 
 
@@ -1317,10 +1330,11 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	NSAssert(ride, @"First ride assigned must exist");
 	
 	NSString* messageBody =
-	[NSString stringWithFormat:@"ORN Dispatch\n\n%@, %@\n%@ passengers\n%@, %@, %@ seatbelts\n\nFrom: %@ (%@ min, %@ km)\n\nTo: %@ (%@ min, %@ km)",
+	[NSString stringWithFormat:@"ORN Dispatch\n\n%@, %@, %@ passengers (%@)\n%@, %@, %@ seatbelts\n\nFrom: %@ (%@ min, %@ km)\n\nTo: %@ (%@ min, %@ km)",
 	 ride.passengerNameFirst,
 	 (ride.passengerPhoneNumber.length > 0 ? ride.passengerPhoneNumber : @"(no phone #)"),
 	 ride.passengerCount,
+	 [self.annotationDateFormatter stringFromDate:ride.dateTimeStart],
 	 (ride.vehicleDescription.length > 0 ? ride.vehicleDescription : @"(no vehicle description)"),
 	 (ride.vehicleTransmission.integerValue == VehicleTransmission_Manual ? @"manual" : @"automatic"),
 	 ride.vehicleSeatBeltCount,
