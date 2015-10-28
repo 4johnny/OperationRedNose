@@ -141,8 +141,7 @@
 		
 		// Reject non-phone number chars
 		
-		if ([string rangeOfCharacterFromSet:[NSCharacterSet nonPhoneNumberCharacterSet]].location != NSNotFound) return NO;
-		
+		if ([string rangeOfCharacterFromSet:[NSCharacterSet phoneNumberCharacterSetInverted]].location != NSNotFound) return NO;
 	}
 	
 	return YES;
@@ -243,6 +242,7 @@
 	// Load team fields
 	self.nameTextField.text = self.team.name;
 	self.membersTextField.text = self.team.members;
+	self.emailAddressTextField.text = self.team.emailAddress;
 	self.phoneNumberTextField.text = self.team.phoneNumber;
 	self.isMascotSwitch.on = self.team.isMascot.boolValue;
 	
@@ -271,6 +271,7 @@
 	
 	self.team.name = [self.nameTextField.text trimAll];
 	self.team.members = [self.membersTextField.text trimAll];
+	self.team.emailAddress = [self.emailAddressTextField.text trimAll];
 	self.team.phoneNumber = [self.phoneNumberTextField.text trimAll];
 	
 	BOOL updatedMascot = NO;

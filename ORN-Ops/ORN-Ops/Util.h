@@ -73,10 +73,10 @@
 #
 
 @property (nonatomic) NSCharacterSet* phoneNumberCharacterSet;
-@property (nonatomic) NSCharacterSet* nonPhoneNumberCharacterSet;
+@property (nonatomic) NSCharacterSet* phoneNumberCharacterSetInverted;
 
 @property (nonatomic) NSCharacterSet* monetaryCharacterSet;
-@property (nonatomic) NSCharacterSet* nonMonetaryCharacterSet;
+@property (nonatomic) NSCharacterSet* monetaryCharacterSetInverted;
 
 #
 # pragma mark Responder

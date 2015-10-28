@@ -19,9 +19,9 @@
 #
 
 + (NSCharacterSet*)phoneNumberCharacterSet;
-+ (NSCharacterSet*)nonPhoneNumberCharacterSet;
++ (NSCharacterSet*)phoneNumberCharacterSetInverted;
 
 + (NSCharacterSet*)monetaryCharacterSet;
-+ (NSCharacterSet*)nonMonetaryCharacterSet;
++ (NSCharacterSet*)monetaryCharacterSetInverted;
 
 @end

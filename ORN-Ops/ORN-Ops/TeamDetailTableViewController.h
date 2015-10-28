@@ -42,6 +42,7 @@
 // Team
 @property (weak, nonatomic) IBOutlet UITextField *nameTextField;
 @property (weak, nonatomic) IBOutlet UITextField *membersTextField;
+@property (weak, nonatomic) IBOutlet UITextField *emailAddressTextField;
 @property (weak, nonatomic) IBOutlet UITextField *phoneNumberTextField;
 @property (weak, nonatomic) IBOutlet UISwitch *isMascotSwitch;
 

@@ -8,6 +8,7 @@
 
 #import <CoreData/CoreData.h>
 #import <CoreLocation/CoreLocation.h>
+#import <MessageUI/MFMessageComposeViewController.h>
 
 #import "MainMapViewController.h"
 #import "Ride+RideHelpers.h"
@@ -82,7 +83,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 # pragma mark - Interface
 #
 
-@interface MainMapViewController ()
+@interface MainMapViewController () <MFMessageComposeViewControllerDelegate>
 
 #
 # pragma mark Properties
@@ -937,7 +938,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		[self showDetailViewControllerWithRide:ride];
 	}];
 
-	UIAlertAction* routeAction = [UIAlertAction actionWithTitle:@"Directions" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+	UIAlertAction* directionsAction = [UIAlertAction actionWithTitle:@"Directions" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
 		
 		[self launchMapsAppWithRide:ride];
 	}];
@@ -947,7 +948,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		[Util presentDeleteAlertWithViewController:self andDataObject:ride andCancelHandler:nil];
 	}];
 	
-	[self presentActionSheetWithActions:@[detailAction, routeAction, deleteAction] andReferenceView:referenceView];
+	[self presentActionSheetWithActions:@[detailAction, directionsAction, deleteAction] andReferenceView:referenceView];
 }
 
 
@@ -956,12 +957,17 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	NSAssert(team, @"Team must exist");
 	if (!team) return;
 	
+	UIAlertAction* dispatchAction = [UIAlertAction actionWithTitle:@"Dispatch" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+		
+		[self launchMessagesAppWithTeam:team];
+	}];
+	
 	UIAlertAction* detailAction = [UIAlertAction actionWithTitle:@"Details" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
 		
 		[self showDetailViewControllerWithTeam:team];
 	}];
 	
-	UIAlertAction* routeAction = [UIAlertAction actionWithTitle:@"Directions" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+	UIAlertAction* directionsAction = [UIAlertAction actionWithTitle:@"Directions" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
 		
 		[self launchMapsAppWithTeam:team];
 	}];
@@ -971,7 +977,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		[Util presentDeleteAlertWithViewController:self andDataObject:team andCancelHandler:nil];
 	}];
 	
-	[self presentActionSheetWithActions:@[detailAction, routeAction, deleteAction] andReferenceView:referenceView];
+	[self presentActionSheetWithActions:@[dispatchAction, detailAction, directionsAction, deleteAction] andReferenceView:referenceView];
 }
 
 
@@ -1007,6 +1013,44 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	label.layer.cornerRadius = 5.0;
 	
 	return label;
+}
+
+
+#
+# pragma mark <MFMessageComposeViewControllerDelegate>
+#
+
+
+- (void)messageComposeViewController:(MFMessageComposeViewController*)controller didFinishWithResult:(MessageComposeResult)result {
+	
+	[self dismissViewControllerAnimated:YES completion:^{
+		
+		switch (result) {
+				
+			case MessageComposeResultSent:
+				
+				NSLog(@"Team dispatch message was sent");
+				//	[Util presentOKAlertWithViewController:self andTitle:@"Success" andMessage:@"Team dispatch message was sent"];
+				
+				break;
+				
+			case MessageComposeResultCancelled:
+				
+				[Util presentOKAlertWithViewController:self andTitle:@"Warning" andMessage:@"Team dispatch message was cancelled"];
+				
+				break;
+				
+			case MessageComposeResultFailed:
+				
+				[Util presentOKAlertWithViewController:self andTitle:@"Error" andMessage:@"Team dispatch message failed to send"];
+				
+				break;
+				
+			default:
+				NSAssert(NO, @"Should never get here");
+				break;
+		}
+	}];
 }
 
 
@@ -1075,7 +1119,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			
 		case 1: { // Hybrid
 
-			double delayInSeconds = [self moveMapCameraVerticalWithAnimated:YES] ? 0.5 : 0;
+			double delayInSeconds = [self moveMapCameraVerticalWithAnimated:YES] ? 0.6 : 0;
 			
 			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 				
@@ -1087,7 +1131,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			
 		case 2: { // Satellite
 			
-			double delayInSeconds = [self moveMapCameraVerticalWithAnimated:YES] ? 0.5 : 0;
+			double delayInSeconds = [self moveMapCameraVerticalWithAnimated:YES] ? 0.6  : 0;
 			
 			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 
@@ -1199,7 +1243,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	if (![MKMapItem openMapsWithItems:mapItems launchOptions:launchOptions]) {
 		
-		NSLog(@"Failed to open ride route in Maps app");
+		NSLog(@"Failed to open ride directions in Maps app");
 	}
 }
 
@@ -1230,8 +1274,44 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	if (![MKMapItem openMapsWithItems:mapItems launchOptions:launchOptions]) {
 		
-		NSLog(@"Failed to open team route in Maps app");
+		NSLog(@"Failed to open team directions in Maps app");
 	}
+}
+
+
+- (void)launchMessagesAppWithTeam:(Team*)team {
+	
+	NSAssert(team, @"Team must exist");
+	if (!team) return;
+
+	if (![MFMessageComposeViewController canSendText]) {
+		
+		[Util presentOKAlertWithViewController:self andTitle:@"Alert" andMessage:@"Messages app not available"];
+		return;
+	}
+	
+	if (team.emailAddress.length <= 0 && team.phoneNumber.length <= 0) {
+		
+		[Util presentOKAlertWithViewController:self andTitle:@"Alert" andMessage:@"Team has no email or phone #"];
+		return;
+	}
+	
+	// Populate Messages app data model
+	
+	MFMessageComposeViewController* messageComposeViewController = [[MFMessageComposeViewController alloc] init];
+	messageComposeViewController.messageComposeDelegate = self;
+
+	// Prefer Apple ID e-mail over phone number
+	messageComposeViewController.recipients =
+	@[
+	  team.emailAddress.length > 0 ? team.emailAddress : team.phoneNumber
+	  ];
+	
+	NSString* messageBody = @"ORN Dispatch\n(Info here)";
+	
+	messageComposeViewController.body = messageBody;
+	
+	[self presentViewController:messageComposeViewController animated:YES completion:nil];
 }
 
 

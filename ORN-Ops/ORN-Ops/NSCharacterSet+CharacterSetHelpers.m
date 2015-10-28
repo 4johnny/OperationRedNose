@@ -28,9 +28,9 @@
 }
 
 
-+ (NSCharacterSet*)nonPhoneNumberCharacterSet {
++ (NSCharacterSet*)phoneNumberCharacterSetInverted {
 	
-	return [Util sharedUtil].nonPhoneNumberCharacterSet;
+	return [Util sharedUtil].phoneNumberCharacterSetInverted;
 }
 
 
@@ -40,9 +40,9 @@
 }
 
 
-+ (NSCharacterSet*)nonMonetaryCharacterSet {
++ (NSCharacterSet*)monetaryCharacterSetInverted {
 
-	return [Util sharedUtil].nonMonetaryCharacterSet;
+	return [Util sharedUtil].monetaryCharacterSetInverted;
 }
 
 

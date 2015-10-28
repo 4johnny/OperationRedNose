@@ -159,7 +159,7 @@
 	
 		// Reject non-phone number chars
 		
-		if ([string rangeOfCharacterFromSet:[NSCharacterSet nonPhoneNumberCharacterSet]].location != NSNotFound) return NO;
+		if ([string rangeOfCharacterFromSet:[NSCharacterSet phoneNumberCharacterSetInverted]].location != NSNotFound) return NO;
 		
 	} else if (textField == self.donationTextField) {
 		
@@ -168,7 +168,7 @@
 		if (string.length > DONATION_TEXT_LENGTH_MAX) return NO;
 		
 		// Reject non-monetary chars
-		if ([string rangeOfCharacterFromSet:[NSCharacterSet nonMonetaryCharacterSet]].location != NSNotFound) return NO;
+		if ([string rangeOfCharacterFromSet:[NSCharacterSet monetaryCharacterSetInverted]].location != NSNotFound) return NO;
 		
 		// Reject more than one decimal-point char
 		if ([string containsString:@"."] && [textField.text containsString:@"."]) return NO;

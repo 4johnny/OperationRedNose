@@ -44,10 +44,10 @@
 		// Data validation char sets
 		
 		_phoneNumberCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789-()+*#,;"];
-		_nonPhoneNumberCharacterSet = self.phoneNumberCharacterSet.invertedSet;
+		_phoneNumberCharacterSetInverted = _phoneNumberCharacterSet.invertedSet;
 		
 		_monetaryCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789."];
-		_nonMonetaryCharacterSet = self.monetaryCharacterSet.invertedSet;
+		_monetaryCharacterSetInverted = _monetaryCharacterSet.invertedSet;
 	}
 	
 	return self;
@@ -111,12 +111,14 @@
 + (void)presentOKAlertWithViewController:(UIViewController*)viewController
 								andTitle:(NSString*)title
 							  andMessage:(NSString*)message {
+
+	if (!viewController) return;
 	
-	[Util presentActionAlertWithViewController:viewController
-									  andTitle:title
-									andMessage:message
-									 andAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]
-							  andCancelHandler:nil];
+	UIAlertController* actionAlertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+	
+	[actionAlertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+	
+	[viewController presentViewController:actionAlertController animated:YES completion:nil];
 }
 
 
