@@ -1330,14 +1330,14 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	NSAssert(ride, @"First ride assigned must exist");
 	
 	NSString* messageBody =
-	[NSString stringWithFormat:@"ORN Dispatch\n\n%@, %@, %@ passengers (%@)\n%@, %@, %@ seatbelts\n\nFrom: %@ (%@ min, %@ km)\n\nTo: %@ (%@ min, %@ km)",
+	[NSString stringWithFormat:@"ORN Dispatch\n\n%@, %@, %lu passengers (%@)\n%@, %@, %lu seatbelts\n\nFrom: %@ (%@ min, %@ km)\n\nTo: %@ (%@ min, %@ km)",
 	 ride.passengerNameFirst,
 	 (ride.passengerPhoneNumber.length > 0 ? ride.passengerPhoneNumber : @"(no phone #)"),
-	 ride.passengerCount,
+	 ride.passengerCount.unsignedLongValue,
 	 [self.annotationDateFormatter stringFromDate:ride.dateTimeStart],
 	 (ride.vehicleDescription.length > 0 ? ride.vehicleDescription : @"(no vehicle description)"),
 	 (ride.vehicleTransmission.integerValue == VehicleTransmission_Manual ? @"manual" : @"automatic"),
-	 ride.vehicleSeatBeltCount,
+	 ride.vehicleSeatBeltCount.unsignedLongValue,
 	 ride.locationStartAddress,
 	 [NSString stringWithFormat:@"%.0f", ride.routePrepDuration.doubleValue / (NSTimeInterval)SECONDS_PER_MINUTE],
 	 [NSString stringWithFormat:@"%.1f", ride.routePrepDistance.doubleValue / (CLLocationDistance)METERS_PER_KILOMETER],
