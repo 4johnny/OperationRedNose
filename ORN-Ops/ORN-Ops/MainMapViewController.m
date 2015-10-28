@@ -541,7 +541,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			[ride postNotificationUpdatedWithSender:self];
 		}
 		
-		NSLog(@"Rides[%d] selected: %@", (int)[self.rideFetchedResultsController.fetchedObjects indexOfObject:ride], ride);
+		NSLog(@"Rides[%lu] selected: %@", (unsigned long)[self.rideFetchedResultsController.fetchedObjects indexOfObject:ride], ride);
 		
 	} else if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
 		
@@ -552,7 +552,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			[ride postNotificationUpdatedWithSender:self];
 		}
 		
-		NSLog(@"Teams[%d] selected: %@", (int)[self.teamsFetchedResultsController.fetchedObjects indexOfObject:team], team);
+		NSLog(@"Teams[%lu] selected: %@", (unsigned long)[self.teamsFetchedResultsController.fetchedObjects indexOfObject:team], team);
 	}
 
 	// Remember selected annotation for next selection
@@ -959,7 +959,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	UIAlertAction* dispatchAction = [UIAlertAction actionWithTitle:@"Dispatch" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
 		
-		[self launchMessagesAppWithTeam:team];
+		[self launchMessagesAppWithDispatchForTeam:team];
 	}];
 	
 	UIAlertAction* detailAction = [UIAlertAction actionWithTitle:@"Details" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
@@ -1279,24 +1279,30 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 }
 
 
-- (void)launchMessagesAppWithTeam:(Team*)team {
+- (void)launchMessagesAppWithDispatchForTeam:(Team*)team {
 	
 	NSAssert(team, @"Team must exist");
 	if (!team) return;
 
 	if (![MFMessageComposeViewController canSendText]) {
 		
-		[Util presentOKAlertWithViewController:self andTitle:@"Alert" andMessage:@"Messages app not available"];
+		[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Alert" andMessage:@"Messages app not available"];
+		return;
+	}
+	
+	if (team.ridesAssigned.count <= 0) {
+		
+		[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Alert" andMessage:@"Team has no rides assigned"];
 		return;
 	}
 	
 	if (team.emailAddress.length <= 0 && team.phoneNumber.length <= 0) {
 		
-		[Util presentOKAlertWithViewController:self andTitle:@"Alert" andMessage:@"Team has no email or phone #"];
+		[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Alert" andMessage:@"Team has no email or phone #"];
 		return;
 	}
 	
-	// Populate Messages app data model
+	// Populate data model for Messages app
 	
 	MFMessageComposeViewController* messageComposeViewController = [[MFMessageComposeViewController alloc] init];
 	messageComposeViewController.messageComposeDelegate = self;
@@ -1307,7 +1313,24 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	  team.emailAddress.length > 0 ? team.emailAddress : team.phoneNumber
 	  ];
 	
-	NSString* messageBody = @"ORN Dispatch\n(Info here)";
+	Ride* ride = [team getFirstRideAssigned];
+	NSAssert(ride, @"First ride assigned must exist");
+	
+	NSString* messageBody =
+	[NSString stringWithFormat:@"ORN Dispatch\n\n%@, %@\n%@ passengers\n%@, %@, %@ seatbelts\n\nFrom: %@ (%@ min, %@ km)\n\nTo: %@ (%@ min, %@ km)",
+	 ride.passengerNameFirst,
+	 (ride.passengerPhoneNumber.length > 0 ? ride.passengerPhoneNumber : @"(no phone #)"),
+	 ride.passengerCount,
+	 (ride.vehicleDescription.length > 0 ? ride.vehicleDescription : @"(no vehicle description)"),
+	 (ride.vehicleTransmission.integerValue == VehicleTransmission_Manual ? @"manual" : @"automatic"),
+	 ride.vehicleSeatBeltCount,
+	 ride.locationStartAddress,
+	 [NSString stringWithFormat:@"%.0f", ride.routePrepDuration.doubleValue / (NSTimeInterval)SECONDS_PER_MINUTE],
+	 [NSString stringWithFormat:@"%.1f", ride.routePrepDistance.doubleValue / (CLLocationDistance)METERS_PER_KILOMETER],
+	 ride.locationEndAddress,
+	 [NSString stringWithFormat:@"%.0f", ride.routeMainDuration.doubleValue / (NSTimeInterval)SECONDS_PER_MINUTE],
+	 [NSString stringWithFormat:@"%.1f", ride.routeMainDistance.doubleValue / (CLLocationDistance)METERS_PER_KILOMETER]
+	 ];
 	
 	messageComposeViewController.body = messageBody;
 	

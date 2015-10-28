@@ -366,7 +366,7 @@
 	
 	NSString* status = [team getStatusText];
 	status = status.length > 0 ? [NSString stringWithFormat:@" (%@)", status] : @"";
-	cell.textLabel.text = [NSString stringWithFormat:@"%@%@ | Rides: %d", [team getTitle], status, (int)team.ridesAssigned.count];
+	cell.textLabel.text = [NSString stringWithFormat:@"%@%@ | Rides: %lu", [team getTitle], status, (unsigned long)team.ridesAssigned.count];
 	
 	cell.textLabel.numberOfLines = 0;
 	cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
