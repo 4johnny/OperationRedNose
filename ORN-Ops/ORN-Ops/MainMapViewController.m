@@ -946,22 +946,27 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	NSAssert(ride, @"Ride must exist");
 	if (!ride) return;
 
-	UIAlertAction* detailAction = [UIAlertAction actionWithTitle:@"Details" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+	UIAlertAction* callAction = [UIAlertAction actionWithTitle:@"Call" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
 		
-		[self showDetailViewControllerWithRide:ride];
+		[self launchPhoneAppWithRide:ride];
 	}];
-
+	
 	UIAlertAction* directionsAction = [UIAlertAction actionWithTitle:@"Directions" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
 		
 		[self launchMapsAppWithRide:ride];
 	}];
 	
+	UIAlertAction* detailAction = [UIAlertAction actionWithTitle:@"Details" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+		
+		[self showDetailViewControllerWithRide:ride];
+	}];
+
 	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction* _Nonnull action) {
 		
 		[Util presentDeleteAlertWithViewController:self andDataObject:ride andCancelHandler:nil];
 	}];
 	
-	[self presentActionSheetWithActions:@[detailAction, directionsAction, deleteAction] andReferenceView:referenceView];
+	[self presentActionSheetWithActions:@[callAction, directionsAction, detailAction, deleteAction] andReferenceView:referenceView];
 }
 
 
@@ -975,9 +980,9 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		[self launchMessagesAppWithDispatchForTeam:team];
 	}];
 	
-	UIAlertAction* detailAction = [UIAlertAction actionWithTitle:@"Details" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+	UIAlertAction* callAction = [UIAlertAction actionWithTitle:@"Call" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
 		
-		[self showDetailViewControllerWithTeam:team];
+		[self launchPhoneAppWithTeam:team];
 	}];
 	
 	UIAlertAction* directionsAction = [UIAlertAction actionWithTitle:@"Directions" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
@@ -985,12 +990,17 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		[self launchMapsAppWithTeam:team];
 	}];
 	
+	UIAlertAction* detailAction = [UIAlertAction actionWithTitle:@"Details" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+		
+		[self showDetailViewControllerWithTeam:team];
+	}];
+	
 	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction* _Nonnull action) {
 		
 		[Util presentDeleteAlertWithViewController:self andDataObject:team andCancelHandler:nil];
 	}];
 	
-	[self presentActionSheetWithActions:@[dispatchAction, detailAction, directionsAction, deleteAction] andReferenceView:referenceView];
+	[self presentActionSheetWithActions:@[dispatchAction, callAction, directionsAction, detailAction, deleteAction] andReferenceView:referenceView];
 }
 
 
@@ -1043,19 +1053,19 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			case MessageComposeResultSent:
 				
 				NSLog(@"Team dispatch message was sent");
-				//	[Util presentOKAlertWithViewController:self andTitle:@"Success" andMessage:@"Team dispatch message was sent"];
+				//	[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Info" andMessage:@"Team dispatch message was sent"];
 				
 				break;
 				
 			case MessageComposeResultCancelled:
 				
-				[Util presentOKAlertWithViewController:self andTitle:@"Warning" andMessage:@"Team dispatch message was cancelled"];
+				[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Warning" andMessage:@"Team dispatch message was cancelled"];
 				
 				break;
 				
 			case MessageComposeResultFailed:
 				
-				[Util presentOKAlertWithViewController:self andTitle:@"Error" andMessage:@"Team dispatch message failed to send"];
+				[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Error" andMessage:@"Team dispatch message failed to send"];
 				
 				break;
 				
@@ -1183,49 +1193,127 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 #
 
 
-- (void)showDetailViewControllerWithRide:(Ride*)ride {
-	
-	NSAssert(ride, @"Ride must exist");
-	if (!ride) return;
-	
-	// Create ride detail controller
-	self.rideDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:RIDE_DETAIL_TABLE_VIEW_CONTROLLER_ID];
-	
-	// Remove "cancel" button
-	self.rideDetailTableViewController.navigationItem.leftBarButtonItem = nil;
-	
-	// Inject data model
-	self.rideDetailTableViewController.ride = ride;
-	
-	// Push onto navigation stack
-	[self.navigationController pushViewController:self.rideDetailTableViewController animated:YES];
-}
-
-
-- (void)showDetailViewControllerWithTeam:(Team*)team {
+- (void)launchMessagesAppWithDispatchForTeam:(Team*)team {
 	
 	NSAssert(team, @"Team must exist");
 	if (!team) return;
 	
-	// Create team detail controller
-	self.teamDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:TEAM_DETAIL_TABLE_VIEW_CONTROLLER_ID];
+	if (team.ridesAssigned.count <= 0) {
+		
+		[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Alert" andMessage:@"Team has no rides assigned"];
+		return;
+	}
 	
-	// Remove "cancel" button
-	self.teamDetailTableViewController.navigationItem.leftBarButtonItem = nil;
+	if (team.emailAddress.length <= 0 && team.phoneNumber.length <= 0) {
+		
+		[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Alert" andMessage:@"Team has no email or phone #"];
+		return;
+	}
 	
-	// Inject data model
-	self.teamDetailTableViewController.team = team;
+	if (![MFMessageComposeViewController canSendText]) {
+		
+		[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Alert" andMessage:@"Messages app not available"];
+		return;
+	}
 	
-	// Push onto navigation stack
-	[self.navigationController pushViewController:self.teamDetailTableViewController animated:YES];
+	// Populate data model for Messages app
+	
+	MFMessageComposeViewController* messageComposeViewController = [[MFMessageComposeViewController alloc] init];
+	messageComposeViewController.messageComposeDelegate = self;
+	
+	// Prefer Apple ID e-mail over phone number
+	messageComposeViewController.recipients =
+	@[
+	  team.emailAddress.length > 0 ? team.emailAddress : team.phoneNumber
+	  ];
+	
+	Ride* ride = [team getFirstRideAssigned];
+	NSAssert(ride, @"First ride assigned must exist");
+	
+	messageComposeViewController.body =
+	
+	[NSString stringWithFormat:
+	 @"ORN Dispatch\n\n"
+	 @"%@, %@, %lu passengers (%@)\n"
+	 @"%@, %@, %lu seatbelts\n\n"
+	 @"From: %@ (%@ min, %@ km)\n\n"
+	 @"To: %@ (%@ min, %@ km)",
+	 
+	 ride.passengerNameFirst,
+	 (ride.passengerPhoneNumber.length > 0 ? ride.passengerPhoneNumber : @"(no phone #)"),
+	 ride.passengerCount.unsignedLongValue,
+	 [self.annotationDateFormatter stringFromDate:ride.dateTimeStart],
+	 
+	 (ride.vehicleDescription.length > 0 ? ride.vehicleDescription : @"(no vehicle description)"),
+	 (ride.vehicleTransmission.integerValue == VehicleTransmission_Manual ? @"manual" : @"automatic"),
+	 ride.vehicleSeatBeltCount.unsignedLongValue,
+	 
+	 ride.locationStartAddress,
+	 [NSString stringWithFormat:@"%.0f", ride.routePrepDuration.doubleValue / (NSTimeInterval)SECONDS_PER_MINUTE],
+	 [NSString stringWithFormat:@"%.1f", ride.routePrepDistance.doubleValue / (CLLocationDistance)METERS_PER_KILOMETER],
+	 
+	 ride.locationEndAddress,
+	 [NSString stringWithFormat:@"%.0f", ride.routeMainDuration.doubleValue / (NSTimeInterval)SECONDS_PER_MINUTE],
+	 [NSString stringWithFormat:@"%.1f", ride.routeMainDistance.doubleValue / (CLLocationDistance)METERS_PER_KILOMETER]
+	 ];
+	
+	[self presentViewController:messageComposeViewController animated:YES completion:nil];
+}
+
+
+- (void)launchPhoneAppWithRide:(Ride*)ride {
+	
+	[self launchPhoneAppWithPhoneNumber:ride.passengerPhoneNumber andEntityName:@"Ride"];
+}
+
+
+- (void)launchPhoneAppWithTeam:(Team*)team {
+
+	[self launchPhoneAppWithPhoneNumber:team.phoneNumber andEntityName:@"Team"];
+}
+
+
+- (void)launchPhoneAppWithPhoneNumber:(NSString*)phoneNumber andEntityName:(NSString*)entityName {
+	
+	NSAssert(entityName.length > 0, @"Object name must exist");
+	if (entityName.length <= 0) return;
+	
+	if (phoneNumber.length <= 0) {
+		
+		[Util presentOKAlertWithViewController:self andTitle:@"Call Alert" andMessage:[NSString stringWithFormat:@"%@ has no phone #", entityName]];
+		return;
+	}
+	
+	NSString* encodedPhoneString = [phoneNumber stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet phoneNumberCharacterSet]];
+	if (!encodedPhoneString) {
+		
+		[Util presentOKAlertWithViewController:self andTitle:@"Call Alert" andMessage:[NSString stringWithFormat:@"%@ phone # not valid", entityName]];
+		return;
+	}
+	
+	UIApplication* sharedApplication = [UIApplication sharedApplication];
+	
+	// NOTE: Scheme "telprompt" may not be available, so fall back to known scheme "tel".
+	NSURL* callURL = [NSURL URLWithString:[@"telprompt:" stringByAppendingString:encodedPhoneString]];
+	if (![sharedApplication canOpenURL:callURL]) {
+
+		callURL = [NSURL URLWithString:[@"tel:" stringByAppendingString:encodedPhoneString]];
+		if (![sharedApplication canOpenURL:callURL]) {
+			
+			[Util presentOKAlertWithViewController:self andTitle:@"Call Alert" andMessage:@"Phone app not available"];
+			return;
+		}
+	}
+	
+	[sharedApplication openURL:callURL];
 }
 
 
 - (void)launchMapsAppWithRide:(Ride*)ride {
-
+	
 	NSAssert(ride, @"Ride must exist");
 	if (!ride) return;
-
+	
 	NSMutableArray<MKMapItem*>* mapItems = [NSMutableArray arrayWithCapacity:2];
 	
 	MKMapItem* mapItem = [ride mapItemWithRideLocationType:RideLocationType_Start];
@@ -1265,7 +1353,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	NSAssert(team, @"Team must exist");
 	if (!team) return;
-
+	
 	NSMutableArray<MKMapItem*>* mapItems = [NSMutableArray arrayWithCapacity:2];
 	
 	MKMapItem* mapItem = [team mapItemForCurrentLocation];
@@ -1292,63 +1380,41 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 }
 
 
-- (void)launchMessagesAppWithDispatchForTeam:(Team*)team {
+- (void)showDetailViewControllerWithRide:(Ride*)ride {
+	
+	NSAssert(ride, @"Ride must exist");
+	if (!ride) return;
+	
+	// Create ride detail controller
+	self.rideDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:RIDE_DETAIL_TABLE_VIEW_CONTROLLER_ID];
+	
+	// Remove "cancel" button
+	self.rideDetailTableViewController.navigationItem.leftBarButtonItem = nil;
+	
+	// Inject data model
+	self.rideDetailTableViewController.ride = ride;
+	
+	// Push onto navigation stack
+	[self.navigationController pushViewController:self.rideDetailTableViewController animated:YES];
+}
+
+
+- (void)showDetailViewControllerWithTeam:(Team*)team {
 	
 	NSAssert(team, @"Team must exist");
 	if (!team) return;
-
-	if (![MFMessageComposeViewController canSendText]) {
-		
-		[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Alert" andMessage:@"Messages app not available"];
-		return;
-	}
 	
-	if (team.ridesAssigned.count <= 0) {
-		
-		[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Alert" andMessage:@"Team has no rides assigned"];
-		return;
-	}
+	// Create team detail controller
+	self.teamDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:TEAM_DETAIL_TABLE_VIEW_CONTROLLER_ID];
 	
-	if (team.emailAddress.length <= 0 && team.phoneNumber.length <= 0) {
-		
-		[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Alert" andMessage:@"Team has no email or phone #"];
-		return;
-	}
+	// Remove "cancel" button
+	self.teamDetailTableViewController.navigationItem.leftBarButtonItem = nil;
 	
-	// Populate data model for Messages app
+	// Inject data model
+	self.teamDetailTableViewController.team = team;
 	
-	MFMessageComposeViewController* messageComposeViewController = [[MFMessageComposeViewController alloc] init];
-	messageComposeViewController.messageComposeDelegate = self;
-
-	// Prefer Apple ID e-mail over phone number
-	messageComposeViewController.recipients =
-	@[
-	  team.emailAddress.length > 0 ? team.emailAddress : team.phoneNumber
-	  ];
-	
-	Ride* ride = [team getFirstRideAssigned];
-	NSAssert(ride, @"First ride assigned must exist");
-	
-	NSString* messageBody =
-	[NSString stringWithFormat:@"ORN Dispatch\n\n%@, %@, %lu passengers (%@)\n%@, %@, %lu seatbelts\n\nFrom: %@ (%@ min, %@ km)\n\nTo: %@ (%@ min, %@ km)",
-	 ride.passengerNameFirst,
-	 (ride.passengerPhoneNumber.length > 0 ? ride.passengerPhoneNumber : @"(no phone #)"),
-	 ride.passengerCount.unsignedLongValue,
-	 [self.annotationDateFormatter stringFromDate:ride.dateTimeStart],
-	 (ride.vehicleDescription.length > 0 ? ride.vehicleDescription : @"(no vehicle description)"),
-	 (ride.vehicleTransmission.integerValue == VehicleTransmission_Manual ? @"manual" : @"automatic"),
-	 ride.vehicleSeatBeltCount.unsignedLongValue,
-	 ride.locationStartAddress,
-	 [NSString stringWithFormat:@"%.0f", ride.routePrepDuration.doubleValue / (NSTimeInterval)SECONDS_PER_MINUTE],
-	 [NSString stringWithFormat:@"%.1f", ride.routePrepDistance.doubleValue / (CLLocationDistance)METERS_PER_KILOMETER],
-	 ride.locationEndAddress,
-	 [NSString stringWithFormat:@"%.0f", ride.routeMainDuration.doubleValue / (NSTimeInterval)SECONDS_PER_MINUTE],
-	 [NSString stringWithFormat:@"%.1f", ride.routeMainDistance.doubleValue / (CLLocationDistance)METERS_PER_KILOMETER]
-	 ];
-	
-	messageComposeViewController.body = messageBody;
-	
-	[self presentViewController:messageComposeViewController animated:YES completion:nil];
+	// Push onto navigation stack
+	[self.navigationController pushViewController:self.teamDetailTableViewController animated:YES];
 }
 
 
@@ -1388,7 +1454,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	if (annotationShown) return;
 		
-	[Util presentOKAlertWithViewController:self andTitle:@"Alert" andMessage:@"Ride created but no start or end location annotations to show."];
+	[Util presentOKAlertWithViewController:self andTitle:@"Creation Alert" andMessage:@"Ride created but no location annotations to show"];
 }
 
 
@@ -1887,7 +1953,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			[Util removePersistentStore];
 			[Util postNotificationDataModelResetWithSender:self];
 		}];
-		[Util presentActionAlertWithViewController:self andTitle:@"!!! Warning !!!" andMessage:@"About to delete all data, which cannot be undone! Are you absolutely sure?!" andAction:deleteAllAlertAction andCancelHandler:nil];
+		[Util presentActionAlertWithViewController:self andTitle:@"!!! Deletion Warning !!!" andMessage:@"About to delete all data, which cannot be undone! Are you absolutely sure?!" andAction:deleteAllAlertAction andCancelHandler:nil];
 
 		isCommandHandled = YES;
 		
