@@ -247,7 +247,7 @@
 	self.isMascotSwitch.on = self.team.isMascot.boolValue;
 	
 	// Load location fields
-	self.timeDatePickerTextField.date = self.team.locationCurrentTime;
+	self.timeDatePickerTextField.date = self.team.locationCurrentTime ?: [NSDate date];
 	self.addressTextField.text = self.team.locationCurrentAddress;
 	self.coordinatesLabel.text = [NSString stringWithFormat:@"(%.7f,%.7f)", self.team.locationCurrentLatitude.doubleValue, self.team.locationCurrentLongitude.doubleValue];
 	self.isManualSwitch.on = self.team.locationCurrentIsManual.boolValue;
