@@ -95,11 +95,12 @@
 								  andCity:(NSString*)city
 								 andState:(NSString*)state
 							   andAddress:(NSString*)address
-								  andTime:(NSDate*)time
-							  andIsManual:(NSNumber*)isManual;
+								  andTime:(NSDate*)time;
 
 - (void)clearCurrentLocation;
 
+- (void)persistCurrentLocationWithSender:(id)sender;
+	
 - (void)tryUpdateCurrentLocationWithAddressString:(NSString*)addressString
 									  andGeocoder:(CLGeocoder*)geocoder
 										andSender:(id)sender;

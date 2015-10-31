@@ -472,70 +472,6 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 }
 
 
-- (void)mapView:(MKMapView*)mapView annotationView:(nonnull MKAnnotationView*)view calloutAccessoryControlTapped:(nonnull UIControl*)control {
-	
-	[self.addressTextField resignFirstResponder];
-	
-	UIButtonType buttonType = ((UIButton*)control).buttonType;
-	
-	if ([view.annotation isKindOfClass:[MKUserLocation class]]) return;
-	
-	if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) {
-		
-		Ride* ride = ((RidePointAnnotation*)view.annotation).ride;
-		
-		switch (buttonType) {
-				
-			case UIButtonTypeDetailDisclosure: {
-
-				[self presentActionSheetWithCalloutAccessoryControl:control andRide:ride];
-				return;
-				
-			} // case
-			
-			case UIButtonTypeCustom: {
-
-				[self launchMapsAppWithRide:ride];
-				return;
-				
-			} // case
-				
-			default:
-				return;
-				
-		} // switch
-		
-	} // if
-	
-	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
-		
-		Team* team = ((TeamPointAnnotation*)view.annotation).team;
-		
-		switch (buttonType) {
-				
-			case UIButtonTypeDetailDisclosure: {
-
-				[self presentActionSheetWithCalloutAccessoryControl:control andTeam:team];
-				return;
-				
-			} // case
-			
-			case UIButtonTypeCustom: {
-
-				[self launchMapsAppWithTeam:team];
-				return;
-				
-			} // case
-				
-			default:
-				return;
-				
-		} // switch
-		
-	} // if
-}
-
-
 - (void)mapView:(MKMapView*)mapView didSelectAnnotationView:(nonnull MKAnnotationView*)view {
 
 	if ([view.annotation isKindOfClass:[MKUserLocation class]]) {
@@ -658,6 +594,146 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	}
 	
 	return nil;
+}
+
+
+- (void)mapView:(MKMapView*)mapView annotationView:(nonnull MKAnnotationView*)view calloutAccessoryControlTapped:(nonnull UIControl*)control {
+	
+	[self.addressTextField resignFirstResponder];
+	
+	UIButtonType buttonType = ((UIButton*)control).buttonType;
+	
+	if ([view.annotation isKindOfClass:[MKUserLocation class]]) return;
+	
+	if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) {
+		
+		Ride* ride = ((RidePointAnnotation*)view.annotation).ride;
+		
+		switch (buttonType) {
+				
+			case UIButtonTypeDetailDisclosure: {
+				
+				[self presentActionSheetWithCalloutAccessoryControl:control andRide:ride];
+				return;
+				
+			} // case
+				
+			case UIButtonTypeCustom: {
+				
+				[self launchMapsAppWithRide:ride];
+				return;
+				
+			} // case
+				
+			default:
+				return;
+				
+		} // switch
+		
+	} // if
+	
+	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
+		
+		Team* team = ((TeamPointAnnotation*)view.annotation).team;
+		
+		switch (buttonType) {
+				
+			case UIButtonTypeDetailDisclosure: {
+				
+				[self presentActionSheetWithCalloutAccessoryControl:control andTeam:team];
+				return;
+				
+			} // case
+				
+			case UIButtonTypeCustom: {
+				
+				[self launchMapsAppWithTeam:team];
+				return;
+				
+			} // case
+				
+			default:
+				return;
+				
+		} // switch
+		
+	} // if
+}
+
+
+- (void)mapView:(MKMapView*)mapView annotationView:(MKAnnotationView*)view didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState {
+
+	NSAssert([view.annotation isKindOfClass:[TeamPointAnnotation class]], @"Annotation must be team point");
+	
+	if ([view.annotation isKindOfClass:[MKUserLocation class]]) return;
+	
+	if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) return;
+		
+	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
+		
+		Team* team = ((TeamPointAnnotation*)view.annotation).team;
+		
+		switch (newState) {
+				
+			case MKAnnotationViewDragStateStarting:
+				
+				view.dragState = MKAnnotationViewDragStateDragging;
+				break;
+				
+			case MKAnnotationViewDragStateDragging:
+				
+				// Do nothing
+				break;
+				
+			case MKAnnotationViewDragStateEnding: {
+				
+				view.dragState = MKAnnotationViewDragStateNone;
+				
+				[self.mainMapView deselectAnnotation:view.annotation animated:NO];
+				
+				CLLocationCoordinate2D dropCoordinate = view.annotation.coordinate;
+				
+				UIAlertAction* moveAction = [UIAlertAction actionWithTitle:@"Move" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+					
+					[team updateCurrentLocationWithLatitude:dropCoordinate.latitude andLongitude:dropCoordinate.longitude andStreet:nil andCity:nil andState:nil andAddress:nil andTime:nil];
+					
+					[self.mainMapView selectAnnotation:view.annotation animated:NO];
+					[team persistCurrentLocationWithSender:self];
+					
+					NSString* addressString = [NSString stringWithFormat:@"%f,%f", dropCoordinate.latitude, dropCoordinate.longitude];
+					[team tryUpdateCurrentLocationWithAddressString:addressString
+														andGeocoder:self.geocoder
+														  andSender:self]; // async
+				}];
+				
+				NSString* title = @"Move team to location?";
+				NSString* message = [NSString stringWithFormat:@"Team: %@\nLocation: (%.7f,%.7f)", [team getTitle], dropCoordinate.latitude, dropCoordinate.longitude];
+				[Util presentActionAlertWithViewController:self andTitle:title andMessage:message andAction:moveAction andCancelHandler:^(UIAlertAction *action) {
+					
+					// Move team annotation view back to its pre-drag location
+					[self.mainMapView selectAnnotation:view.annotation animated:NO];
+					[team postNotificationUpdatedWithSender:self andUpdatedLocation:YES];
+				}];
+				
+				break;
+			}
+				
+			case MKAnnotationViewDragStateCanceling:
+				
+				view.dragState = MKAnnotationViewDragStateNone;
+				break;
+				
+			case MKAnnotationViewDragStateNone:
+				
+				// Do nothing
+				break;
+				
+			default:
+				NSAssert(NO, @"Should never get here");
+				break;
+				
+		} // switch
+	} // if
 }
 
 
@@ -869,6 +945,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
 		annotationView.image = [UIImage imageNamed:[identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ? @"ORN-Team-Mascot-Map-Annotation" : @"ORN-Team-Map-Annotation"];
 		annotationView.canShowCallout = YES;
+		annotationView.draggable = YES;
 		annotationView.rightCalloutAccessoryView = [self rightCalloutAccessoryButton];
 
 	} else if ([identifier isEqualToString:RIDE_POLYLINE_ANNOTATION_ID]) {
@@ -1528,6 +1605,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	RidePointAnnotation* ridePointAnnotation = [MainMapViewController getRidePointAnnotationFromRideAnnotations:rideAnnotations andRideLocationType:rideLocationType];
 	BOOL wasRidePointAnnotationInMapView = (ridePointAnnotation != nil);
+	BOOL wasRidePointAnnotationSelected = (wasRidePointAnnotationInMapView && ridePointAnnotation == self.mainMapView.selectedAnnotations.firstObject);
 	
 	// Remove existing annotation if location updated
 	BOOL didRemoveRidePointAnnotationFromMapView = NO;
@@ -1571,7 +1649,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		[self.mainMapView setCenterCoordinate:CLLocationCoordinate2DMake(locationLatitude.doubleValue, locationLongitude.doubleValue) animated:YES];
 	}
 	
-	if (options & Configure_Select) {
+	if ((options & Configure_Select) || wasRidePointAnnotationSelected) {
 		
 		[self.mainMapView selectAnnotation:ridePointAnnotation animated:YES];
 	}
@@ -1830,6 +1908,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	TeamPointAnnotation* teamPointAnnotation = [MainMapViewController getTeamPointAnnotationFromTeamPointAnnotations:teamAnnotations];
 	BOOL wasTeamPointAnnotationInMapView = (teamPointAnnotation != nil);
+	BOOL wasTeamPointAnnotationSelected = (wasTeamPointAnnotationInMapView && teamPointAnnotation == self.mainMapView.selectedAnnotations.firstObject);
 	
 	// Remove existing annotation if location or mascot updated
 	BOOL didRemoveAnnotationFromMapView = NO;
@@ -1852,7 +1931,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	if (!locationLatitude || !locationLongitude) return NO;
 	
 	// Update existing annotation or create new one
-	teamPointAnnotation = [TeamPointAnnotation teamPointAnnotation:teamPointAnnotation withTeam:team andNeedsAnimatesDrop:isLocationUpdated];
+	teamPointAnnotation = [TeamPointAnnotation teamPointAnnotation:teamPointAnnotation withTeam:team andNeedsAnimatesDrop:NO];
 	if (wasTeamPointAnnotationInMapView && !didRemoveAnnotationFromMapView) {
 
 		MKAnnotationView* teamAnnotationView = [self.mainMapView viewForAnnotation:teamPointAnnotation];
@@ -1872,7 +1951,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		[self.mainMapView setCenterCoordinate:CLLocationCoordinate2DMake(locationLatitude.doubleValue, locationLongitude.doubleValue) animated:YES];
 	}
 	
-	if (options & Configure_Select) {
+	if ((options & Configure_Select) || wasTeamPointAnnotationSelected) {
 		
 		[self.mainMapView selectAnnotation:teamPointAnnotation animated:YES];
 	}

@@ -371,8 +371,7 @@
 									andCity:@"Vancouver"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
-									andTime:nil
-								andIsManual:@YES];
+									andTime:nil];
 
 	[team postNotificationCreatedWithSender:self];
 	
@@ -387,8 +386,7 @@
 									andCity:@"Vancouver"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
-									andTime:nil
-								andIsManual:@YES];
+									andTime:nil];
 	[team postNotificationCreatedWithSender:self];
 }
 
@@ -409,8 +407,7 @@
 									andCity:@"Burnaby"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
-									andTime:nil
-								andIsManual:@YES];
+									andTime:nil];
 	[team postNotificationCreatedWithSender:self];
 	
 	team = [Team teamWithManagedObjectContext:moc];
@@ -424,8 +421,7 @@
 									andCity:@"Burnaby"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
-									andTime:nil
-								andIsManual:@YES];
+									andTime:nil];
 	[team postNotificationCreatedWithSender:self];
 }
 
@@ -446,8 +442,7 @@
 									andCity:@"New Westminster"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
-									andTime:nil
-								andIsManual:@YES];
+									andTime:nil];
 	[team postNotificationCreatedWithSender:self];
 	
 	team = [Team teamWithManagedObjectContext:moc];
@@ -461,8 +456,7 @@
 									andCity:@"New Westminster"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
-									andTime:nil
-								andIsManual:@YES];
+									andTime:nil];
 	[team postNotificationCreatedWithSender:self];
 }
 
@@ -492,8 +486,7 @@
 									andCity:@"Coquitlam"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
-									andTime:nil
-								andIsManual:@YES];
+									andTime:nil];
 	[team postNotificationCreatedWithSender:self];
 	
 	team = [Team teamWithManagedObjectContext:moc];
@@ -507,8 +500,7 @@
 									andCity:@"Coquitlam"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
-									andTime:nil
-								andIsManual:@YES];
+									andTime:nil];
 	[team postNotificationCreatedWithSender:self];
 }
 
@@ -529,8 +521,7 @@
 									andCity:@"Port Coquitlam"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
-									andTime:nil
-								andIsManual:@YES];
+									andTime:nil];
 	[team postNotificationCreatedWithSender:self];
 	
 	// NOTE: Team missing name
@@ -544,8 +535,7 @@
 									andCity:@"Port Coquitlam"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
-									andTime:nil
-								andIsManual:@YES];
+									andTime:nil];
 	[team postNotificationCreatedWithSender:self];
 }
 
@@ -565,8 +555,7 @@
 									andCity:@"Port Moody"
 								   andState:BRITISH_COLUMBIA_STATE_CODE
 								 andAddress:nil
-									andTime:nil
-								andIsManual:@YES];
+									andTime:nil];
 	[team postNotificationCreatedWithSender:self];
 }
 

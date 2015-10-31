@@ -212,8 +212,7 @@
 										andCity:(NSString*)city
 									   andState:(NSString*)state
 									 andAddress:(NSString*)address
-										andTime:(NSDate*)time
-									andIsManual:(NSNumber*)isManual {
+										andTime:(NSDate*)time {
 
 	self.locationCurrentLatitude = latitude;
 	self.locationCurrentLongitude = longitude;
@@ -230,8 +229,9 @@
 		time = [NSDate date];
 	}
 	self.locationCurrentTime = time;
-		
-	self.locationCurrentIsManual = isManual;
+	
+	// NOTE: Always manual for now
+	self.locationCurrentIsManual = @YES;
 }
 
 
@@ -241,8 +241,7 @@
 								  andCity:(NSString*)city
 								 andState:(NSString*)state
 							   andAddress:(NSString*)address
-								  andTime:(NSDate*)time
-							  andIsManual:(NSNumber*)isManual {
+								  andTime:(NSDate*)time {
 	
 	[self updateCurrentLocationWithLatitudeNumber:@(latitude)
 							   andLongitudeNumber:@(longitude)
@@ -250,8 +249,7 @@
 										  andCity:city
 										 andState:state
 									   andAddress:address
-										  andTime:time
-									  andIsManual:isManual];
+										  andTime:time];
 }
 
 
@@ -263,14 +261,26 @@
 									andCity:placemark.locality
 								   andState:[placemark getAddressState]
 								 andAddress:[placemark getAddressString]
-									andTime:nil
-								andIsManual:nil];
+									andTime:nil];
 }
 
 
 - (void)clearCurrentLocation {
 	
-	[self updateCurrentLocationWithLatitudeNumber:nil andLongitudeNumber:nil andStreet:nil andCity:nil andState:nil andAddress:nil andTime:nil andIsManual:nil];
+	[self updateCurrentLocationWithLatitudeNumber:nil andLongitudeNumber:nil andStreet:nil andCity:nil andState:nil andAddress:nil andTime:nil];
+}
+
+
+- (void)persistCurrentLocationWithSender:(id)sender {
+	
+	[Util saveManagedObjectContext];
+	[self postNotificationUpdatedWithSender:sender andUpdatedLocation:YES];
+	Ride* firstRideAssigned = [self getFirstRideAssigned];
+	[firstRideAssigned postNotificationUpdatedWithSender:self];
+	NSLog(@"Team: %@", self);
+	
+	// Try to recalculate prep route
+	[firstRideAssigned tryUpdatePrepRouteWithLatitude:self.locationCurrentLatitude andLongitude:self.locationCurrentLongitude andSender:self]; // async
 }
 
 
@@ -311,14 +321,7 @@
 		NSLog(@"Geocode address: %@", placemark.addressDictionary);
 		
 		// Persist and notify
-		[Util saveManagedObjectContext];
-		[self postNotificationUpdatedWithSender:sender andUpdatedLocation:YES];
-		Ride* firstRideAssigned = [self getFirstRideAssigned];
-		[firstRideAssigned postNotificationUpdatedWithSender:self];
-		NSLog(@"Team: %@", self);
-		
-		// Try to recalculate prep route
-		[firstRideAssigned tryUpdatePrepRouteWithLatitude:@(placemark.location.coordinate.latitude) andLongitude:@(placemark.location.coordinate.longitude) andSender:self]; // async
+		[self persistCurrentLocationWithSender:sender];
 	}];
 }
 
