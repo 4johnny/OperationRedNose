@@ -466,7 +466,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		if (!MKMapRectContainsPoint(mapView.visibleMapRect, point)) continue;
 
 		// Animate dropping view
-		[view animateDropWithHeight:self.view.frame.size.height andDuration:0.25 andDelay:(0.04 * i)];
+		[view animateDropFromHeight:self.view.frame.size.height andDuration:0.25 andDelay:(0.04 * i)];
 		
 		i++;
 	}
@@ -1475,7 +1475,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			[team updateCurrentLocationWithLatitude:dropCoordinate.latitude andLongitude:dropCoordinate.longitude andStreet:nil andCity:nil andState:nil andAddress:nil andTime:nil];
 			
 			[team persistCurrentLocationWithSender:self];
-			[self.mainMapView selectAnnotation:annotation animated:NO];
+			[self.mainMapView selectAnnotation:annotation animated:YES];
 			
 			NSString* addressString = [NSString stringWithFormat:@"%f,%f", dropCoordinate.latitude, dropCoordinate.longitude];
 			[team tryUpdateCurrentLocationWithAddressString:addressString
@@ -1488,8 +1488,12 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		[Util presentActionAlertWithViewController:self andTitle:title andMessage:message andAction:moveAction andCancelHandler:^(UIAlertAction* action) {
 			
 			// Move team annotation view back to its pre-drag location
-			[team postNotificationUpdatedWithSender:self andUpdatedLocation:YES];
-			[self.mainMapView selectAnnotation:annotation animated:NO];
+			CGPoint centerPoint = [self.mainMapView convertCoordinate:CLLocationCoordinate2DMake(team.locationCurrentLatitude.doubleValue, team.locationCurrentLongitude.doubleValue) toPointToView:self.mainMapView];
+			[annotationView animateMoveToCenterPoint:centerPoint andDuration:0.5 andDelay:0 andNeedsSquash:YES completion:^{
+				
+				[team postNotificationUpdatedWithSender:self andUpdatedLocation:YES];
+				[self.mainMapView selectAnnotation:annotation animated:YES];
+			}];
 		}];
 	}
 }

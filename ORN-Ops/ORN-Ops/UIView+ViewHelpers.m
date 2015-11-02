@@ -66,7 +66,7 @@
 }
 
 
-- (void)animateDropWithHeight:(CGFloat)dropHeight
+- (void)animateDropFromHeight:(CGFloat)dropHeight
 				  andDuration:(NSTimeInterval)duration
 					 andDelay:(NSTimeInterval)delay {
 
@@ -83,8 +83,6 @@
 		
 	} completion:^(BOOL finished) {
 		
-		if (!finished) return; // Exit block
-		
 		// Animate squash, completing with un-squash
 		[UIView animateWithDuration:0.05 animations:^{
 			
@@ -92,11 +90,47 @@
 			
 		} completion:^(BOOL finished){
 			
-			if (!finished) return; // Exit block
+			[UIView animateWithDuration:0.1 animations:^{
+				
+				self.transform = CGAffineTransformIdentity;
+			}];
+		}];
+	}];
+}
+
+
+- (void)animateMoveToCenterPoint:(CGPoint)centerPoint
+					 andDuration:(NSTimeInterval)duration
+						andDelay:(NSTimeInterval)delay
+				  andNeedsSquash:(BOOL)needsSquash
+					  completion:(void (^)(void))completion {
+
+	[UIView animateWithDuration:duration delay:delay options:UIViewAnimationOptionCurveEaseInOut animations:^{
+		
+		self.center = centerPoint;
+		
+	} completion:^(BOOL finished) {
+		
+		if (!needsSquash) {
+			
+			if (completion) completion();
+			return;
+		}
+		
+		// Animate squash, completing with un-squash
+		[UIView animateWithDuration:0.05 animations:^{
+			
+			self.transform = CGAffineTransformMakeScale(0.9, 0.9);
+			
+		} completion:^(BOOL finished){
 			
 			[UIView animateWithDuration:0.1 animations:^{
 				
 				self.transform = CGAffineTransformIdentity;
+				
+			} completion:^(BOOL finished) {
+				
+				if (completion) completion();
 			}];
 		}];
 	}];
