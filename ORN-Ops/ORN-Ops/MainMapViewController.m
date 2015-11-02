@@ -466,7 +466,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		if (!MKMapRectContainsPoint(mapView.visibleMapRect, point)) continue;
 
 		// Animate dropping view
-		[Util animateDropView:view withDropHeight:self.view.frame.size.height withDuration:0.25 withDelay:(0.04 * i)];
+		[view animateDropWithHeight:self.view.frame.size.height andDuration:0.25 andDelay:(0.04 * i)];
 		
 		i++;
 	}

@@ -16,8 +16,6 @@
 
 #define DATA_MODEL_RESET_NOTIFICATION_NAME	@"dataModelReset"
 
-#define DOWN_ARROW_STRING	@"▼"
-
 
 #
 # pragma mark - Implementation
@@ -160,58 +158,6 @@
 + (void)postNotificationDataModelResetWithSender:(id)sender {
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:DATA_MODEL_RESET_NOTIFICATION_NAME object:sender userInfo:nil];
-}
-
-
-#
-# pragma mark Views
-#
-
-
-+ (void)animateDropView:(UIView*)view
-		 withDropHeight:(CGFloat)dropHeight
-		   withDuration:(NSTimeInterval)duration
-			  withDelay:(NSTimeInterval)delay {
-	
-	// Remember end frame for annotation
-	CGRect endFrame = view.frame;
-	
-	// Move annotation out of view
-	view.frame = CGRectMake(view.frame.origin.x, view.frame.origin.y - dropHeight, view.frame.size.width, view.frame.size.height);
-	
-	// Animate drop, completing with squash effect
-	[UIView animateWithDuration:duration delay:delay options:UIViewAnimationOptionCurveLinear animations:^{
-		
-		view.frame = endFrame;
-		
-	} completion:^(BOOL finished) {
-		
-		if (!finished) return; // Exit block
-		
-		// Animate squash, completing with un-squash
-		[UIView animateWithDuration:0.05 animations:^{
-			
-			view.transform = CGAffineTransformMakeScale(1.0, 0.8);
-			
-		} completion:^(BOOL finished){
-			
-			if (!finished) return; // Exit block
-			
-			[UIView animateWithDuration:0.1 animations:^{
-				
-				view.transform = CGAffineTransformIdentity;
-			}];
-		}];
-	}];
-}
-
-
-+ (UIButton*)downArrowButton {
-	
-	UIButton* downArrowButton = [UIButton buttonWithType:UIButtonTypeSystem];
-	[downArrowButton setTitle:DOWN_ARROW_STRING forState:UIControlStateNormal];
-	
-	return downArrowButton;
 }
 
 

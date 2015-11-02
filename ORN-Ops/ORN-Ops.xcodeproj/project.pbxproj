@@ -43,6 +43,7 @@
 		B2C756251AA1BA8B00B148D3 /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C756241AA1BA8B00B148D3 /* Util.m */; };
 		B2CA60D31AE39BB800CC2533 /* CLPlacemark+PlacemarkHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2CA60D21AE39BB800CC2533 /* CLPlacemark+PlacemarkHelpers.m */; };
 		B2E12A9C1ABEE74F00CB5202 /* UIView+ViewHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E12A9B1ABEE74F00CB5202 /* UIView+ViewHelpers.m */; };
+		B2E1AA6D1BE74178008347ED /* UIButton+ButtonHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E1AA6C1BE74178008347ED /* UIButton+ButtonHelpers.m */; };
 		B2E76A221AA64572004B55BB /* Team+TeamHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E76A211AA64572004B55BB /* Team+TeamHelpers.m */; };
 		B2E76A251AA6D0A3004B55BB /* TeamPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E76A241AA6D0A3004B55BB /* TeamPointAnnotation.m */; };
 		B2EB5B701ABEE9F800FB3B5D /* BaseTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = B2EB5B6F1ABEE9F800FB3B5D /* BaseTextView.m */; };
@@ -121,6 +122,8 @@
 		B2CA60D21AE39BB800CC2533 /* CLPlacemark+PlacemarkHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CLPlacemark+PlacemarkHelpers.m"; sourceTree = "<group>"; };
 		B2E12A9A1ABEE74F00CB5202 /* UIView+ViewHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+ViewHelpers.h"; sourceTree = "<group>"; };
 		B2E12A9B1ABEE74F00CB5202 /* UIView+ViewHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ViewHelpers.m"; sourceTree = "<group>"; };
+		B2E1AA6B1BE74178008347ED /* UIButton+ButtonHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+ButtonHelpers.h"; sourceTree = "<group>"; };
+		B2E1AA6C1BE74178008347ED /* UIButton+ButtonHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+ButtonHelpers.m"; sourceTree = "<group>"; };
 		B2E76A201AA64572004B55BB /* Team+TeamHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Team+TeamHelpers.h"; sourceTree = "<group>"; };
 		B2E76A211AA64572004B55BB /* Team+TeamHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Team+TeamHelpers.m"; sourceTree = "<group>"; };
 		B2E76A231AA6D0A3004B55BB /* TeamPointAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeamPointAnnotation.h; sourceTree = "<group>"; };
@@ -322,6 +325,8 @@
 				B24DE0451BDE17A3004E7190 /* MKMapCamera+MapCameraHelpers.m */,
 				B2E12A9A1ABEE74F00CB5202 /* UIView+ViewHelpers.h */,
 				B2E12A9B1ABEE74F00CB5202 /* UIView+ViewHelpers.m */,
+				B2E1AA6B1BE74178008347ED /* UIButton+ButtonHelpers.h */,
+				B2E1AA6C1BE74178008347ED /* UIButton+ButtonHelpers.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -460,6 +465,7 @@
 				B241B1E11ABD65330075C99E /* BasePickerTextField.m in Sources */,
 				B2C7561E1AA1A97900B148D3 /* TeamDetailTableViewController.m in Sources */,
 				B24DE0461BDE17A3004E7190 /* MKMapCamera+MapCameraHelpers.m in Sources */,
+				B2E1AA6D1BE74178008347ED /* UIButton+ButtonHelpers.m in Sources */,
 				B24580B51AB5460B0090758E /* NSString+StringHelpers.m in Sources */,
 				B2E76A251AA6D0A3004B55BB /* TeamPointAnnotation.m in Sources */,
 				B25220331AA0412C00C3CE00 /* DemoUtil.m in Sources */,

@@ -22,5 +22,6 @@
 #import "MKPolyline+PolylineHelpers.h"
 #import "MKMapCamera+MapCameraHelpers.h"
 #import "UIView+ViewHelpers.h"
+#import "UIButton+ButtonHelpers.h"
 
 #endif

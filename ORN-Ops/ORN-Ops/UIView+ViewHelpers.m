@@ -66,4 +66,41 @@
 }
 
 
+- (void)animateDropWithHeight:(CGFloat)dropHeight
+				  andDuration:(NSTimeInterval)duration
+					 andDelay:(NSTimeInterval)delay {
+
+	// Remember end frame for annotation
+	CGRect endFrame = self.frame;
+	
+	// Move annotation out of view
+	self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y - dropHeight, self.frame.size.width, self.frame.size.height);
+	
+	// Animate drop, completing with squash effect
+	[UIView animateWithDuration:duration delay:delay options:UIViewAnimationOptionCurveLinear animations:^{
+		
+		self.frame = endFrame;
+		
+	} completion:^(BOOL finished) {
+		
+		if (!finished) return; // Exit block
+		
+		// Animate squash, completing with un-squash
+		[UIView animateWithDuration:0.05 animations:^{
+			
+			self.transform = CGAffineTransformMakeScale(1.0, 0.8);
+			
+		} completion:^(BOOL finished){
+			
+			if (!finished) return; // Exit block
+			
+			[UIView animateWithDuration:0.1 animations:^{
+				
+				self.transform = CGAffineTransformIdentity;
+			}];
+		}];
+	}];
+}
+
+
 @end

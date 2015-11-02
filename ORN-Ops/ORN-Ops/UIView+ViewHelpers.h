@@ -21,4 +21,8 @@
 - (void)makeNextTaggedViewFirstResponderWithCurrentTaggedView:(UIView*)taggedView
 												 andIsAddmode:(BOOL)isAddMode;
 
+- (void)animateDropWithHeight:(CGFloat)dropHeight
+				  andDuration:(NSTimeInterval)duration
+					 andDelay:(NSTimeInterval)delay;
+
 @end

@@ -77,7 +77,7 @@
 		self.layer.masksToBounds = NO;
 		
 		// Arrow on right side of text field
-		UIButton* arrowButton = [Util downArrowButton];
+		UIButton* arrowButton = [UIButton downArrowSystemButton];
 		[arrowButton addTarget:self action:@selector(arrowPressed:) forControlEvents:UIControlEventTouchUpInside];
 		self.rightView = arrowButton;
 		self.rightViewMode = UITextFieldViewModeAlways;

@@ -112,17 +112,6 @@
 + (void)postNotificationDataModelResetWithSender:(id)sender;
 
 #
-# pragma mark Views
-#
-
-+ (void)animateDropView:(UIView*)view
-		 withDropHeight:(CGFloat)dropHeight
-		   withDuration:(NSTimeInterval)duration
-			  withDelay:(NSTimeInterval)delay;
-
-+ (UIButton*)downArrowButton;
-
-#
 # pragma mark Maps
 #
 
