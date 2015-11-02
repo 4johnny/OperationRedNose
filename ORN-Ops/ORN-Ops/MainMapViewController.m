@@ -2084,6 +2084,8 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 - (void)addNotificationObservers {
 	
 	[Util addDataModelResetObserver:self withSelector:@selector(dataModelResetWithNotification:)];
+
+	[TeamAnnotationView addDragEndedObserver:self withSelector:@selector(annotationViewDragEndedWithNotification:)];
 	
 	[Ride addCreatedObserver:self withSelector:@selector(rideCreatedWithNotification:)];
 	[Ride addDeletedObserver:self withSelector:@selector(rideDeletedWithNotification:)];
@@ -2092,8 +2094,6 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	[Team addCreatedObserver:self withSelector:@selector(teamCreatedWithNotification:)];
 	[Team addDeletedObserver:self withSelector:@selector(teamDeletedWithNotification:)];
 	[Team addUpdatedObserver:self withSelector:@selector(teamUpdatedWithNotification:)];
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(annotationViewDragEndedWithNotification:) name:@"annotationViewDragEnded" object:nil];
 }
 
 

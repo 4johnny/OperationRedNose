@@ -13,7 +13,9 @@
 # pragma mark - Constants
 #
 
-#define FINGER_DIAMETER				20 // points
+#define FINGER_DIAMETER		20 // points
+
+#define ANNOTATION_DRAGGED_NOTIFICATION_NAME	@"annotationViewDragEnded"
 
 
 #
@@ -57,6 +59,23 @@
 	}
 	
 	return hitView;
+}
+
+
+#
+# pragma mark Notifications
+#
+
+
++ (void)addDragEndedObserver:(id)observer withSelector:(SEL)selector {
+	
+	[[NSNotificationCenter defaultCenter] addObserver:observer selector:selector name:ANNOTATION_DRAGGED_NOTIFICATION_NAME object:nil];
+}
+
+
+- (void)postNotificationDragEndedWithSender:(id)sender {
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:ANNOTATION_DRAGGED_NOTIFICATION_NAME object:sender userInfo:nil];
 }
 
 
@@ -126,14 +145,14 @@
 													  completion:^(BOOL finished) {
 														  
 														  self.dragState = MKAnnotationViewDragStateNone;
-														  [[NSNotificationCenter defaultCenter] postNotificationName:@"annotationViewDragEnded" object:self userInfo:nil];
+														  [self postNotificationDragEndedWithSender:self];
 													  }];
 								 }];
 			} else {
 				
 				self.transform = transform;
 				self.dragState = MKAnnotationViewDragStateNone;
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"annotationViewDragEnded" object:self userInfo:nil];
+				[self postNotificationDragEndedWithSender:self];
 			}
 			break;
 		}

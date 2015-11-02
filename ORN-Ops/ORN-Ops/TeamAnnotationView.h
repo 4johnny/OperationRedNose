@@ -14,6 +14,18 @@
 
 @interface TeamAnnotationView : MKAnnotationView
 
+#
+# pragma mark Properties
+#
+
 @property (weak, nonatomic) MKMapView* mapView;
+
+#
+# pragma mark Notifications
+#
+
++ (void)addDragEndedObserver:(id)observer withSelector:(SEL)selector;
+
+- (void)postNotificationDragEndedWithSender:(id)sender;
 
 @end
