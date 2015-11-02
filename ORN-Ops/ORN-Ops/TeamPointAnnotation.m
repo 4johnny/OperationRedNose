@@ -30,15 +30,14 @@
 		
 		self.team = team;
 		self.needsAnimatesDrop = needsAnimatesDrop;
-
-		self.coordinate = CLLocationCoordinate2DMake(_team.locationCurrentLatitude.doubleValue, _team.locationCurrentLongitude.doubleValue);
 		
+		self.coordinate = [_team getLocationCurrentCoordinate];
 		self.title = [_team getTitle];
 		self.subtitle = _team.locationCurrentAddress.length > 0
-		? _team.locationCurrentAddress :
-		(_team.locationCurrentLatitude && _team.locationCurrentLongitude
-		 ? [NSString stringWithFormat:@"(%.7f,%.7f)", _team.locationCurrentLatitude.doubleValue, _team.locationCurrentLongitude.doubleValue]
-		 : nil);
+		? _team.locationCurrentAddress
+		: (_team.locationCurrentLatitude && _team.locationCurrentLongitude
+		   ? [NSString stringWithFormat:@"(%.7f,%.7f)", _team.locationCurrentLatitude.doubleValue, _team.locationCurrentLongitude.doubleValue]
+		   : nil);
 	}
 	
 	return self;

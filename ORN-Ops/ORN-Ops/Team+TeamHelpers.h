@@ -108,10 +108,12 @@
 
 - (NSString*)getTitle;
 - (NSString*)getStatusText;
+
 - (Ride*)getFirstRideAssigned;
 - (Ride*)getLastRideAssigned;
 - (NSArray<Ride*>*)getSortedRidesAssigned;
 
+- (CLLocationCoordinate2D)getLocationCurrentCoordinate;
 - (MKMapItem*)mapItemForCurrentLocation;
 
 - (NSTimeInterval)assignedDuration;

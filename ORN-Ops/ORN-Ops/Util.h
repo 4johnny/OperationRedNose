@@ -115,10 +115,6 @@
 # pragma mark Maps
 #
 
-+ (MKPlacemark*)placemarkWithLatitude:(CLLocationDegrees)latitude
-						 andLongitude:(CLLocationDegrees)longitude
-				 andAddressDictionary:(NSDictionary<NSString*,NSString*>*)addressDictionary;
-
 + (MKDirectionsRequest*)directionsRequestWithDepartureDate:(NSDate*)departureDate
 										andSourcePlacemark:(MKPlacemark*)sourcePlaceMark
 								   andDestinationPlacemark:(MKPlacemark*)destinationPlacemark;

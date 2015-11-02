@@ -176,6 +176,10 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 - (NSString*)getPassengerName;
 - (NSDate*)getRouteDateTimeEnd;
 
+- (CLLocationCoordinate2D)getLocationStartCoordinate;
+- (CLLocationCoordinate2D)getLocationEndCoordinate;
+- (CLLocationCoordinate2D)getLocationPrepCoordinate;
+
 - (NSNumber*)latitudeWithRideLocationType:(RideLocationType)rideLocationType;
 - (NSNumber*)longitudeWithRideLocationType:(RideLocationType)rideLocationType;
 - (MKMapItem*)mapItemWithRideLocationType:(RideLocationType)rideLocationType;

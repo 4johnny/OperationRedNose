@@ -1488,7 +1488,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		[Util presentActionAlertWithViewController:self andTitle:title andMessage:message andAction:moveAction andCancelHandler:^(UIAlertAction* action) {
 			
 			// Move team annotation view back to its pre-drag location
-			CGPoint centerPoint = [self.mainMapView convertCoordinate:CLLocationCoordinate2DMake(team.locationCurrentLatitude.doubleValue, team.locationCurrentLongitude.doubleValue) toPointToView:self.mainMapView];
+			CGPoint centerPoint = [self.mainMapView convertCoordinate:[team getLocationCurrentCoordinate] toPointToView:self.mainMapView];
 			[annotationView animateMoveToCenterPoint:centerPoint andDuration:0.5 andDelay:0 andNeedsSquash:YES completion:^{
 				
 				[team postNotificationUpdatedWithSender:self andUpdatedLocation:YES];
@@ -1608,6 +1608,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	if (options & Configure_Delete) return NO;
 
 	// If no location, we are done
+	// NOTE: Best effort to find a location
 	NSNumber* locationLatitude = [ride latitudeWithRideLocationType:rideLocationType];
 	NSNumber* locationLongitude = [ride longitudeWithRideLocationType:rideLocationType];
 	if (!locationLatitude || !locationLongitude) return NO;
@@ -1911,9 +1912,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	if (options & Configure_Delete) return NO;
 
 	// If no location, we are done
-	NSNumber* locationLatitude = team.locationCurrentLatitude;
-	NSNumber* locationLongitude = team.locationCurrentLongitude;
-	if (!locationLatitude || !locationLongitude) return NO;
+	if (!team.locationCurrentLatitude || !team.locationCurrentLongitude) return NO;
 	
 	// Update existing annotation or create new one
 	teamPointAnnotation = [TeamPointAnnotation teamPointAnnotation:teamPointAnnotation withTeam:team andNeedsAnimatesDrop:NO];
@@ -1933,7 +1932,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	if (options & Configure_Center) {
 		
-		[self.mainMapView setCenterCoordinate:CLLocationCoordinate2DMake(locationLatitude.doubleValue, locationLongitude.doubleValue) animated:YES];
+		[self.mainMapView setCenterCoordinate:[team getLocationCurrentCoordinate] animated:YES];
 	}
 	
 	if ((options & Configure_Select) || wasTeamPointAnnotationSelected) {

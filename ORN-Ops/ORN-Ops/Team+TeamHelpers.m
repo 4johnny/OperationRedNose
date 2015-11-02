@@ -394,6 +394,13 @@
 }
 
 
+- (CLLocationCoordinate2D)getLocationCurrentCoordinate {
+	
+	return CLLocationCoordinate2DMake(self.locationCurrentLatitude.doubleValue,
+									  self.locationCurrentLongitude.doubleValue);
+}
+
+
 - (MKMapItem*)mapItemForCurrentLocation {
 
 	if (!self.locationCurrentLatitude || !self.locationCurrentLongitude) return nil;
@@ -407,9 +414,7 @@
 						andCountry:CANADA_COUNTRY_NAME
 					andCountryCode:CANADA_COUNTRY_CODE];
 	
-	MKPlacemark* placemark = [Util placemarkWithLatitude:self.locationCurrentLatitude.doubleValue
-											andLongitude:self.locationCurrentLongitude.doubleValue
-									andAddressDictionary:addressDictionary];
+	MKPlacemark* placemark = [[MKPlacemark alloc] initWithCoordinate:[self getLocationCurrentCoordinate] addressDictionary:addressDictionary];
 	
 	return [[MKMapItem alloc] initWithPlacemark:placemark];
 }

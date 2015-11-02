@@ -35,15 +35,13 @@
 				
 			case RideRouteType_Main:
 				
-				if (ride.locationStartLatitude &&
-					ride.locationStartLongitude &&
-					ride.locationEndLatitude &&
-					ride.locationEndLongitude) {
+				if (ride.locationStartLatitude && ride.locationStartLongitude &&
+					ride.locationEndLatitude && ride.locationEndLongitude) {
 					
 					CLLocationCoordinate2D locationCoordinates[2] =
 					{
-						CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue),
-						CLLocationCoordinate2DMake(ride.locationEndLatitude.doubleValue, ride.locationEndLongitude.doubleValue)
+						[ride getLocationStartCoordinate],
+						[ride getLocationEndCoordinate],
 					};
 					
 					polyline = [MKPolyline polylineWithCoordinates:locationCoordinates count:2];
@@ -52,15 +50,13 @@
 				
 			case RideRouteType_Prep:
 				
-				if (ride.locationPrepLatitude &&
-					ride.locationPrepLongitude &&
-					ride.locationStartLatitude &&
-					ride.locationStartLongitude) {
+				if (ride.locationPrepLatitude && ride.locationPrepLongitude &&
+					ride.locationStartLatitude && ride.locationStartLongitude) {
 					
 					CLLocationCoordinate2D locationCoordinates[2] =
 					{
-						CLLocationCoordinate2DMake(ride.locationPrepLatitude.doubleValue, ride.locationPrepLongitude.doubleValue),
-						CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue)
+						[ride getLocationPrepCoordinate],
+						[ride getLocationStartCoordinate],
 					};
 					
 					polyline = [MKPolyline polylineWithCoordinates:locationCoordinates count:2];
@@ -69,15 +65,13 @@
 				
 			case RideRouteType_Wait:
 				
-				if (ride.teamAssigned.locationCurrentLatitude &&
-					ride.teamAssigned.locationCurrentLongitude &&
-					ride.locationStartLatitude &&
-					ride.locationStartLongitude) {
+				if (ride.teamAssigned.locationCurrentLatitude && ride.teamAssigned.locationCurrentLongitude &&
+					ride.locationStartLatitude && ride.locationStartLongitude) {
 					
 					CLLocationCoordinate2D locationCoordinates[2] =
 					{
-						CLLocationCoordinate2DMake(ride.teamAssigned.locationCurrentLatitude.doubleValue, ride.teamAssigned.locationCurrentLongitude.doubleValue),
-						CLLocationCoordinate2DMake(ride.locationStartLatitude.doubleValue, ride.locationStartLongitude.doubleValue)
+						[ride.teamAssigned getLocationCurrentCoordinate],
+						[ride getLocationStartCoordinate],
 					};
 					
 					polyline = [MKPolyline polylineWithCoordinates:locationCoordinates count:2];

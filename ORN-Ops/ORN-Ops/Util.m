@@ -166,14 +166,6 @@
 #
 
 
-+ (MKPlacemark*)placemarkWithLatitude:(CLLocationDegrees)latitude
-						 andLongitude:(CLLocationDegrees)longitude
-				 andAddressDictionary:(NSDictionary<NSString*,NSString*>*)addressDictionary {
-
-	return [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(latitude, longitude) addressDictionary:addressDictionary];
-}
-
-
 + (MKDirectionsRequest*)directionsRequestWithDepartureDate:(NSDate*)departureDate
 										andSourcePlacemark:(MKPlacemark*)sourcePlaceMark
 								   andDestinationPlacemark:(MKPlacemark*)destinationPlacemark {

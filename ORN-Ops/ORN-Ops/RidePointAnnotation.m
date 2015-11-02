@@ -38,13 +38,13 @@
 		switch (_rideLocationType) {
 				
 			case RideLocationType_Start:
-				self.coordinate = CLLocationCoordinate2DMake(_ride.locationStartLatitude.doubleValue, _ride.locationStartLongitude.doubleValue);
+				self.coordinate = [_ride getLocationStartCoordinate];
 				titlePrefix = @"Start";
 				self.subtitle = _ride.locationStartAddress;
 				break;
 				
 			case RideLocationType_End:
-				self.coordinate = CLLocationCoordinate2DMake(_ride.locationEndLatitude.doubleValue, _ride.locationEndLongitude.doubleValue);
+				self.coordinate = [_ride getLocationEndCoordinate];
 				titlePrefix = @"End";
 				self.subtitle = _ride.locationEndAddress;
 				break;

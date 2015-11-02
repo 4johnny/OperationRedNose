@@ -485,10 +485,10 @@
 - (MKDirectionsRequest*)getMainDirectionsRequest {
 	
 	return [Ride directionsRequestWithStartDate:self.dateTimeStart
-							   andStartLatitude:self.locationStartLatitude
-							  andStartLongitude:self.locationStartLongitude
-								 andEndLatitude:self.locationEndLatitude
-								andEndLongitude:self.locationEndLongitude];
+							  andSourceLatitude:self.locationStartLatitude
+							 andSourceLongitude:self.locationStartLongitude
+						 andDestinationLatitude:self.locationEndLatitude
+						andDestinationLongitude:self.locationEndLongitude];
 }
 
 
@@ -496,10 +496,10 @@
 	
 	// NOTE: Ride start time good enough here
 	return [Ride directionsRequestWithStartDate:self.dateTimeStart
-							   andStartLatitude:self.locationPrepLatitude
-							  andStartLongitude:self.locationPrepLongitude
-								 andEndLatitude:self.locationStartLatitude
-								andEndLongitude:self.locationStartLongitude];
+							  andSourceLatitude:self.locationPrepLatitude
+							 andSourceLongitude:self.locationPrepLongitude
+						 andDestinationLatitude:self.locationStartLatitude
+						andDestinationLongitude:self.locationStartLongitude];
 }
 
 
@@ -538,8 +538,29 @@
 }
 
 
-- (NSNumber*)latitudeWithRideLocationType:(RideLocationType)rideLocationType {
+- (CLLocationCoordinate2D)getLocationStartCoordinate {
+	
+	return CLLocationCoordinate2DMake(self.locationStartLatitude.doubleValue,
+									  self.locationStartLongitude.doubleValue);
+}
 
+
+- (CLLocationCoordinate2D)getLocationEndCoordinate {
+	
+	return CLLocationCoordinate2DMake(self.locationEndLatitude.doubleValue,
+									  self.locationEndLongitude.doubleValue);
+}
+
+
+- (CLLocationCoordinate2D)getLocationPrepCoordinate {
+	
+	return CLLocationCoordinate2DMake(self.locationPrepLatitude.doubleValue,
+									  self.locationPrepLongitude.doubleValue);
+}
+
+
+- (NSNumber*)latitudeWithRideLocationType:(RideLocationType)rideLocationType {
+	
 	return rideLocationType == RideLocationType_End ? self.locationEndLatitude : self.locationStartLatitude;
 }
 
@@ -567,10 +588,8 @@
 								andCountry:CANADA_COUNTRY_NAME
 							andCountryCode:CANADA_COUNTRY_CODE];
 			
-			MKPlacemark* placemark = [Util placemarkWithLatitude:self.locationStartLatitude.doubleValue
-													andLongitude:self.locationStartLongitude.doubleValue
-											andAddressDictionary:addressDictionary];
-
+			MKPlacemark* placemark = [[MKPlacemark alloc] initWithCoordinate:[self getLocationStartCoordinate] addressDictionary:addressDictionary];
+			
 			return [[MKMapItem alloc] initWithPlacemark:placemark];
 		}
 			
@@ -587,9 +606,7 @@
 								andCountry:CANADA_COUNTRY_NAME
 							andCountryCode:CANADA_COUNTRY_CODE];
 			
-			MKPlacemark* placemark = [Util placemarkWithLatitude:self.locationEndLatitude.doubleValue
-													andLongitude:self.locationEndLongitude.doubleValue
-											andAddressDictionary:addressDictionary];
+			MKPlacemark* placemark = [[MKPlacemark alloc] initWithCoordinate:[self getLocationEndCoordinate] addressDictionary:addressDictionary];
 			
 			return [[MKMapItem alloc] initWithPlacemark:placemark];
 		}
@@ -774,20 +791,17 @@
 
 
 + (MKDirectionsRequest*)directionsRequestWithStartDate:(NSDate*)startDate
-									  andStartLatitude:(NSNumber*)startLatitude
-									 andStartLongitude:(NSNumber*)startLongitude
-										andEndLatitude:(NSNumber*)endLatitude
-									   andEndLongitude:(NSNumber*)endLongitude {
+									 andSourceLatitude:(NSNumber*)sourceLatitude
+									andSourceLongitude:(NSNumber*)sourceLongitude
+								andDestinationLatitude:(NSNumber*)destinationLatitude
+							   andDestinationLongitude:(NSNumber*)destinationLongitude {
 	
-	if (!startDate || !startLatitude || !startLongitude || !endLatitude || !endLongitude) return nil;
+	if (!startDate || !sourceLatitude || !sourceLongitude || !destinationLatitude || !destinationLongitude) return nil;
 	
 	// Create placemarks for ride start and end locations
-	MKPlacemark* startPlacemark = [Util placemarkWithLatitude:startLatitude.doubleValue
-												 andLongitude:startLongitude.doubleValue
-										 andAddressDictionary:nil];
-	MKPlacemark* endPlacemark = [Util placemarkWithLatitude:endLatitude.doubleValue
-											   andLongitude:endLongitude.doubleValue
-									   andAddressDictionary:nil];
+	MKPlacemark* startPlacemark = [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(sourceLatitude.doubleValue, sourceLongitude.doubleValue) addressDictionary:nil];
+	
+	MKPlacemark* endPlacemark = [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(destinationLatitude.doubleValue, destinationLongitude.doubleValue) addressDictionary:nil];
 	
 	// Create directions request for route by car for ride start time
 	return [Util directionsRequestWithDepartureDate:startDate
