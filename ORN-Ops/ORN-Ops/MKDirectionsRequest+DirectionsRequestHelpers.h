@@ -22,10 +22,10 @@
 								andSourcePlacemark:(MKPlacemark*)sourcePlaceMark
 						   andDestinationPlacemark:(MKPlacemark*)destinationPlacemark;
 	
-+ (instancetype)directionsRequestWithStartDate:(NSDate*)startDate
-							 andSourceLatitude:(NSNumber*)sourceLatitude
-							andSourceLongitude:(NSNumber*)sourceLongitude
-						andDestinationLatitude:(NSNumber*)destinationLatitude
-					   andDestinationLongitude:(NSNumber*)destinationLongitude;
++ (instancetype)directionsRequestWithDepartureDate:(NSDate*)departureDate
+								 andSourceLatitude:(NSNumber*)sourceLatitude
+								andSourceLongitude:(NSNumber*)sourceLongitude
+							andDestinationLatitude:(NSNumber*)destinationLatitude
+						   andDestinationLongitude:(NSNumber*)destinationLongitude;
 
 @end

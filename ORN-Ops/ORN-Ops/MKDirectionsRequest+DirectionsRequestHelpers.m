@@ -39,13 +39,13 @@
 }
 
 
-+ (instancetype)directionsRequestWithStartDate:(NSDate*)startDate
-							 andSourceLatitude:(NSNumber*)sourceLatitude
-							andSourceLongitude:(NSNumber*)sourceLongitude
-						andDestinationLatitude:(NSNumber*)destinationLatitude
-					   andDestinationLongitude:(NSNumber*)destinationLongitude {
++ (instancetype)directionsRequestWithDepartureDate:(NSDate*)departureDate
+								 andSourceLatitude:(NSNumber*)sourceLatitude
+								andSourceLongitude:(NSNumber*)sourceLongitude
+							andDestinationLatitude:(NSNumber*)destinationLatitude
+						   andDestinationLongitude:(NSNumber*)destinationLongitude {
 	
-	if (!startDate || !sourceLatitude || !sourceLongitude || !destinationLatitude || !destinationLongitude) return nil;
+	if (!departureDate || !sourceLatitude || !sourceLongitude || !destinationLatitude || !destinationLongitude) return nil;
 	
 	// Create placemarks for ride start and end locations
 	MKPlacemark* sourcePlacemark = [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(sourceLatitude.doubleValue, sourceLongitude.doubleValue) addressDictionary:nil];
@@ -53,7 +53,7 @@
 	MKPlacemark* destinationPlacemark = [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(destinationLatitude.doubleValue, destinationLongitude.doubleValue) addressDictionary:nil];
 	
 	// Create directions request for route by car for ride start time
-	return [MKDirectionsRequest directionsRequestWithDepartureDate:startDate
+	return [MKDirectionsRequest directionsRequestWithDepartureDate:departureDate
 												andSourcePlacemark:sourcePlacemark
 										   andDestinationPlacemark:destinationPlacemark];
 }

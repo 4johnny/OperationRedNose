@@ -484,22 +484,22 @@
 
 - (MKDirectionsRequest*)getMainDirectionsRequest {
 	
-	return [MKDirectionsRequest directionsRequestWithStartDate:self.dateTimeStart
-											 andSourceLatitude:self.locationStartLatitude
-											andSourceLongitude:self.locationStartLongitude
-										andDestinationLatitude:self.locationEndLatitude
-									   andDestinationLongitude:self.locationEndLongitude];
+	return [MKDirectionsRequest directionsRequestWithDepartureDate:self.dateTimeStart
+												 andSourceLatitude:self.locationStartLatitude
+												andSourceLongitude:self.locationStartLongitude
+											andDestinationLatitude:self.locationEndLatitude
+										   andDestinationLongitude:self.locationEndLongitude];
 }
 
 
 - (MKDirectionsRequest*)getPrepDirectionsRequest {
 	
 	// NOTE: Ride start time good enough here
-	return [MKDirectionsRequest directionsRequestWithStartDate:self.dateTimeStart
-											 andSourceLatitude:self.locationPrepLatitude
-											andSourceLongitude:self.locationPrepLongitude
-										andDestinationLatitude:self.locationStartLatitude
-									   andDestinationLongitude:self.locationStartLongitude];
+	return [MKDirectionsRequest directionsRequestWithDepartureDate:self.dateTimeStart
+												 andSourceLatitude:self.locationPrepLatitude
+												andSourceLongitude:self.locationPrepLongitude
+											andDestinationLatitude:self.locationStartLatitude
+										   andDestinationLongitude:self.locationStartLongitude];
 }
 
 
