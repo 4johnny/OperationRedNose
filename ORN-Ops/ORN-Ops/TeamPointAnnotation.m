@@ -70,4 +70,10 @@
 }
 
 
+//- (void)setCoordinate:(CLLocationCoordinate2D)coordinate {
+//
+//	[super setCoordinate:coordinate];
+//}
+
+
 @end

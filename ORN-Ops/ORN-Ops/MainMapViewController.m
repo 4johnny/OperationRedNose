@@ -15,6 +15,7 @@
 #import "Team+TeamHelpers.h"
 #import "RidePointAnnotation.h"
 #import "TeamPointAnnotation.h"
+#import "TeamAnnotationView.h"
 #import "RidePolyline.h"
 
 #import "DemoUtil.h"
@@ -663,77 +664,11 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 - (void)mapView:(MKMapView*)mapView annotationView:(MKAnnotationView*)view didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState {
 
-	NSAssert([view.annotation isKindOfClass:[TeamPointAnnotation class]], @"Annotation must be team point");
-	
 	if ([view.annotation isKindOfClass:[MKUserLocation class]]) return;
 	
 	if ([view.annotation isKindOfClass:[RidePointAnnotation class]]) return;
 		
-	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) {
-		
-		Team* team = ((TeamPointAnnotation*)view.annotation).team;
-		
-		switch (newState) {
-				
-			case MKAnnotationViewDragStateStarting:
-				
-				view.dragState = MKAnnotationViewDragStateDragging;
-				break;
-				
-			case MKAnnotationViewDragStateDragging:
-				
-				// Do nothing
-				break;
-				
-			case MKAnnotationViewDragStateEnding: {
-				
-				view.dragState = MKAnnotationViewDragStateNone;
-				
-				[self.mainMapView deselectAnnotation:view.annotation animated:NO];
-				
-				CLLocationCoordinate2D dropCoordinate = view.annotation.coordinate;
-				
-				UIAlertAction* moveAction = [UIAlertAction actionWithTitle:@"Move" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-					
-					[team updateCurrentLocationWithLatitude:dropCoordinate.latitude andLongitude:dropCoordinate.longitude andStreet:nil andCity:nil andState:nil andAddress:nil andTime:nil];
-					
-					[self.mainMapView selectAnnotation:view.annotation animated:NO];
-					[team persistCurrentLocationWithSender:self];
-					
-					NSString* addressString = [NSString stringWithFormat:@"%f,%f", dropCoordinate.latitude, dropCoordinate.longitude];
-					[team tryUpdateCurrentLocationWithAddressString:addressString
-														andGeocoder:self.geocoder
-														  andSender:self]; // async
-				}];
-				
-				NSString* title = @"Move team to location?";
-				NSString* message = [NSString stringWithFormat:@"Team: %@\nLocation: (%.7f,%.7f)", [team getTitle], dropCoordinate.latitude, dropCoordinate.longitude];
-				[Util presentActionAlertWithViewController:self andTitle:title andMessage:message andAction:moveAction andCancelHandler:^(UIAlertAction *action) {
-					
-					// Move team annotation view back to its pre-drag location
-					[self.mainMapView selectAnnotation:view.annotation animated:NO];
-					[team postNotificationUpdatedWithSender:self andUpdatedLocation:YES];
-				}];
-				
-				break;
-			}
-				
-			case MKAnnotationViewDragStateCanceling:
-				
-				view.dragState = MKAnnotationViewDragStateNone;
-				break;
-				
-			case MKAnnotationViewDragStateNone:
-				
-				// Do nothing
-				break;
-				
-			default:
-				NSAssert(NO, @"Should never get here");
-				break;
-				
-		} // switch
-	} // if
+	if ([view.annotation isKindOfClass:[TeamPointAnnotation class]]) return;
 }
 
 
@@ -942,7 +877,8 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	} else if ([identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ||
 			   [identifier isEqualToString:TEAM_NORMAL_ANNOTATION_ID]) {
 		
-		annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+		annotationView = [[TeamAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+		((TeamAnnotationView*)annotationView).mapView = self.mainMapView;
 		annotationView.image = [UIImage imageNamed:[identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ? @"ORN-Team-Mascot-Map-Annotation" : @"ORN-Team-Map-Annotation"];
 		annotationView.canShowCallout = YES;
 		annotationView.draggable = YES;
@@ -953,7 +889,8 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
 		UILabel* polylineAnnotationLabel = [MainMapViewController polylineAnnotationLabel];
 		[annotationView addSubview:polylineAnnotationLabel];
-		annotationView.centerOffset = CGPointMake(-polylineAnnotationLabel.bounds.size.width / 2.0, -polylineAnnotationLabel.bounds.size.height);
+		annotationView.centerOffset = CGPointMake(-polylineAnnotationLabel.bounds.size.width / 2.0,
+												  -polylineAnnotationLabel.bounds.size.height);
 	}
 
 	return annotationView;
@@ -1511,6 +1448,50 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	[self configureView];
 	
 	[self.navigationController popToRootViewControllerAnimated:NO];
+}
+
+
+- (void)annotationViewDragEndedWithNotification:(NSNotification*)notification {
+
+	NSAssert([notification.object isKindOfClass:[MKAnnotationView class]], @"Notification must be from map annotation view");
+	
+	MKAnnotationView* annotationView = notification.object;
+	id<MKAnnotation> annotation = annotationView.annotation;
+	
+	if ([annotation isKindOfClass:[MKUserLocation class]]) return;
+	
+	if ([annotation isKindOfClass:[RidePointAnnotation class]]) return;
+	
+	if ([annotation isKindOfClass:[TeamPointAnnotation class]]) {
+		
+		[self.mainMapView deselectAnnotation:annotation animated:NO];
+		
+		Team* team = ((TeamPointAnnotation*)annotation).team;
+		
+		CLLocationCoordinate2D dropCoordinate = annotation.coordinate;
+		
+		UIAlertAction* moveAction = [UIAlertAction actionWithTitle:@"Move" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+			
+			[team updateCurrentLocationWithLatitude:dropCoordinate.latitude andLongitude:dropCoordinate.longitude andStreet:nil andCity:nil andState:nil andAddress:nil andTime:nil];
+			
+			[team persistCurrentLocationWithSender:self];
+			[self.mainMapView selectAnnotation:annotation animated:NO];
+			
+			NSString* addressString = [NSString stringWithFormat:@"%f,%f", dropCoordinate.latitude, dropCoordinate.longitude];
+			[team tryUpdateCurrentLocationWithAddressString:addressString
+												andGeocoder:self.geocoder
+												  andSender:self]; // async
+		}];
+		
+		NSString* title = @"Move team to location?";
+		NSString* message = [NSString stringWithFormat:@"Team: %@\nLocation: (%.7f,%.7f)", [team getTitle], dropCoordinate.latitude, dropCoordinate.longitude];
+		[Util presentActionAlertWithViewController:self andTitle:title andMessage:message andAction:moveAction andCancelHandler:^(UIAlertAction* action) {
+			
+			// Move team annotation view back to its pre-drag location
+			[team postNotificationUpdatedWithSender:self andUpdatedLocation:YES];
+			[self.mainMapView selectAnnotation:annotation animated:NO];
+		}];
+	}
 }
 
 
@@ -2111,6 +2092,8 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	[Team addCreatedObserver:self withSelector:@selector(teamCreatedWithNotification:)];
 	[Team addDeletedObserver:self withSelector:@selector(teamDeletedWithNotification:)];
 	[Team addUpdatedObserver:self withSelector:@selector(teamUpdatedWithNotification:)];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(annotationViewDragEndedWithNotification:) name:@"annotationViewDragEnded" object:nil];
 }
 
 
