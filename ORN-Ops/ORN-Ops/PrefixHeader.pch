@@ -19,6 +19,7 @@
 #import "NSString+StringHelpers.h"
 #import "NSDate+DateHelpers.h"
 #import "CLPlacemark+PlacemarkHelpers.h"
+#import "MKDirectionsRequest+DirectionsRequestHelpers.h"
 #import "MKPolyline+PolylineHelpers.h"
 #import "MKMapCamera+MapCameraHelpers.h"
 #import "UIView+ViewHelpers.h"

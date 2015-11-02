@@ -484,22 +484,22 @@
 
 - (MKDirectionsRequest*)getMainDirectionsRequest {
 	
-	return [Ride directionsRequestWithStartDate:self.dateTimeStart
-							  andSourceLatitude:self.locationStartLatitude
-							 andSourceLongitude:self.locationStartLongitude
-						 andDestinationLatitude:self.locationEndLatitude
-						andDestinationLongitude:self.locationEndLongitude];
+	return [MKDirectionsRequest directionsRequestWithStartDate:self.dateTimeStart
+											 andSourceLatitude:self.locationStartLatitude
+											andSourceLongitude:self.locationStartLongitude
+										andDestinationLatitude:self.locationEndLatitude
+									   andDestinationLongitude:self.locationEndLongitude];
 }
 
 
 - (MKDirectionsRequest*)getPrepDirectionsRequest {
 	
 	// NOTE: Ride start time good enough here
-	return [Ride directionsRequestWithStartDate:self.dateTimeStart
-							  andSourceLatitude:self.locationPrepLatitude
-							 andSourceLongitude:self.locationPrepLongitude
-						 andDestinationLatitude:self.locationStartLatitude
-						andDestinationLongitude:self.locationStartLongitude];
+	return [MKDirectionsRequest directionsRequestWithStartDate:self.dateTimeStart
+											 andSourceLatitude:self.locationPrepLatitude
+											andSourceLongitude:self.locationPrepLongitude
+										andDestinationLatitude:self.locationStartLatitude
+									   andDestinationLongitude:self.locationStartLongitude];
 }
 
 
@@ -788,26 +788,6 @@
 //	
 //	return RideStatus_None;
 //}
-
-
-+ (MKDirectionsRequest*)directionsRequestWithStartDate:(NSDate*)startDate
-									 andSourceLatitude:(NSNumber*)sourceLatitude
-									andSourceLongitude:(NSNumber*)sourceLongitude
-								andDestinationLatitude:(NSNumber*)destinationLatitude
-							   andDestinationLongitude:(NSNumber*)destinationLongitude {
-	
-	if (!startDate || !sourceLatitude || !sourceLongitude || !destinationLatitude || !destinationLongitude) return nil;
-	
-	// Create placemarks for ride start and end locations
-	MKPlacemark* startPlacemark = [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(sourceLatitude.doubleValue, sourceLongitude.doubleValue) addressDictionary:nil];
-	
-	MKPlacemark* endPlacemark = [[MKPlacemark alloc] initWithCoordinate:CLLocationCoordinate2DMake(destinationLatitude.doubleValue, destinationLongitude.doubleValue) addressDictionary:nil];
-	
-	// Create directions request for route by car for ride start time
-	return [Util directionsRequestWithDepartureDate:startDate
-								 andSourcePlacemark:startPlacemark
-							andDestinationPlacemark:endPlacemark];
-}
 
 
 @end

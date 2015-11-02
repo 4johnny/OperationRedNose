@@ -112,14 +112,6 @@
 + (void)postNotificationDataModelResetWithSender:(id)sender;
 
 #
-# pragma mark Maps
-#
-
-+ (MKDirectionsRequest*)directionsRequestWithDepartureDate:(NSDate*)departureDate
-										andSourcePlacemark:(MKPlacemark*)sourcePlaceMark
-								   andDestinationPlacemark:(MKPlacemark*)destinationPlacemark;
-
-#
 # pragma mark <ORNDataModelSource>
 #
 

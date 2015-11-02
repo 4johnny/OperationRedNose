@@ -44,6 +44,7 @@
 		B2CA60D31AE39BB800CC2533 /* CLPlacemark+PlacemarkHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2CA60D21AE39BB800CC2533 /* CLPlacemark+PlacemarkHelpers.m */; };
 		B2E12A9C1ABEE74F00CB5202 /* UIView+ViewHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E12A9B1ABEE74F00CB5202 /* UIView+ViewHelpers.m */; };
 		B2E1AA6D1BE74178008347ED /* UIButton+ButtonHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E1AA6C1BE74178008347ED /* UIButton+ButtonHelpers.m */; };
+		B2E1AA701BE760DD008347ED /* MKDirectionsRequest+DirectionsRequestHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E1AA6F1BE760DD008347ED /* MKDirectionsRequest+DirectionsRequestHelpers.m */; };
 		B2E76A221AA64572004B55BB /* Team+TeamHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E76A211AA64572004B55BB /* Team+TeamHelpers.m */; };
 		B2E76A251AA6D0A3004B55BB /* TeamPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E76A241AA6D0A3004B55BB /* TeamPointAnnotation.m */; };
 		B2EB5B701ABEE9F800FB3B5D /* BaseTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = B2EB5B6F1ABEE9F800FB3B5D /* BaseTextView.m */; };
@@ -124,6 +125,8 @@
 		B2E12A9B1ABEE74F00CB5202 /* UIView+ViewHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ViewHelpers.m"; sourceTree = "<group>"; };
 		B2E1AA6B1BE74178008347ED /* UIButton+ButtonHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+ButtonHelpers.h"; sourceTree = "<group>"; };
 		B2E1AA6C1BE74178008347ED /* UIButton+ButtonHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+ButtonHelpers.m"; sourceTree = "<group>"; };
+		B2E1AA6E1BE760DD008347ED /* MKDirectionsRequest+DirectionsRequestHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKDirectionsRequest+DirectionsRequestHelpers.h"; sourceTree = "<group>"; };
+		B2E1AA6F1BE760DD008347ED /* MKDirectionsRequest+DirectionsRequestHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKDirectionsRequest+DirectionsRequestHelpers.m"; sourceTree = "<group>"; };
 		B2E76A201AA64572004B55BB /* Team+TeamHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Team+TeamHelpers.h"; sourceTree = "<group>"; };
 		B2E76A211AA64572004B55BB /* Team+TeamHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Team+TeamHelpers.m"; sourceTree = "<group>"; };
 		B2E76A231AA6D0A3004B55BB /* TeamPointAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeamPointAnnotation.h; sourceTree = "<group>"; };
@@ -319,6 +322,8 @@
 				B29CD76A1ABE9D3200B21579 /* NSDate+DateHelpers.m */,
 				B2CA60D11AE39BB800CC2533 /* CLPlacemark+PlacemarkHelpers.h */,
 				B2CA60D21AE39BB800CC2533 /* CLPlacemark+PlacemarkHelpers.m */,
+				B2E1AA6E1BE760DD008347ED /* MKDirectionsRequest+DirectionsRequestHelpers.h */,
+				B2E1AA6F1BE760DD008347ED /* MKDirectionsRequest+DirectionsRequestHelpers.m */,
 				B27CEDD51ACE852600512FA3 /* MKPolyline+PolylineHelpers.h */,
 				B27CEDD61ACE852600512FA3 /* MKPolyline+PolylineHelpers.m */,
 				B24DE0441BDE17A3004E7190 /* MKMapCamera+MapCameraHelpers.h */,
@@ -489,6 +494,7 @@
 				B28312291AAF322C00B7C1A9 /* RidePolyline.m in Sources */,
 				B2C756181AA1912B00B148D3 /* RideDetailTableViewController.m in Sources */,
 				B27CEDD71ACE852600512FA3 /* MKPolyline+PolylineHelpers.m in Sources */,
+				B2E1AA701BE760DD008347ED /* MKDirectionsRequest+DirectionsRequestHelpers.m in Sources */,
 				B24D4FD11A9D98E0008A0C7A /* ORN-Ops.xcdatamodeld in Sources */,
 				B2CA60D31AE39BB800CC2533 /* CLPlacemark+PlacemarkHelpers.m in Sources */,
 				B2C7561B1AA1A83100B148D3 /* TeamsTableViewController.m in Sources */,

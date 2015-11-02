@@ -162,28 +162,6 @@
 
 
 #
-# pragma mark Maps
-#
-
-
-+ (MKDirectionsRequest*)directionsRequestWithDepartureDate:(NSDate*)departureDate
-										andSourcePlacemark:(MKPlacemark*)sourcePlaceMark
-								   andDestinationPlacemark:(MKPlacemark*)destinationPlacemark {
-	
-	if (!departureDate || !sourcePlaceMark || !destinationPlacemark) return nil;
-	
-	MKDirectionsRequest* directionsRequest = [[MKDirectionsRequest alloc] init];
-	directionsRequest.departureDate = departureDate;
-	directionsRequest.source = [[MKMapItem alloc] initWithPlacemark:sourcePlaceMark];
-	directionsRequest.destination = [[MKMapItem alloc] initWithPlacemark:destinationPlacemark];
-	directionsRequest.transportType = MKDirectionsTransportTypeAutomobile;
-	directionsRequest.requestsAlternateRoutes = NO;
-	
-	return directionsRequest;
-}
-
-
-#
 # pragma mark <ORNDataModelSource>
 #
 
