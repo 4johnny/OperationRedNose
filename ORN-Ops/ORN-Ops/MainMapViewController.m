@@ -1451,64 +1451,6 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 }
 
 
-- (void)annotationViewDragEndedWithNotification:(NSNotification*)notification {
-
-	NSAssert([notification.object isKindOfClass:[MKAnnotationView class]], @"Notification must be from map annotation view");
-	
-	id<MKAnnotation> annotation = ((MKAnnotationView*)notification.object).annotation;
-	
-	if ([annotation isKindOfClass:[MKUserLocation class]]) return;
-	
-	if ([annotation isKindOfClass:[RidePointAnnotation class]]) return;
-	
-	if ([annotation isKindOfClass:[TeamPointAnnotation class]]) {
-		
-		[self handleTeamAnnotationViewDragEndedWithNotification:notification];
-	}
-}
-
-
-- (void)handleTeamAnnotationViewDragEndedWithNotification:(NSNotification*)notification {
-
-	NSAssert([notification.object isKindOfClass:[TeamAnnotationView class]], @"Notification must be from team annotation view");
-	
-	TeamAnnotationView* teamAnnotationView = notification.object;
-	TeamPointAnnotation* teamPointAnnotation = (TeamPointAnnotation*)teamAnnotationView.annotation;
-	Team* team = teamPointAnnotation.team;
-	
-	[self.mainMapView deselectAnnotation:teamPointAnnotation animated:NO];
-	
-	CLLocationCoordinate2D dropCoordinate = teamPointAnnotation.coordinate;
-	
-	UIAlertAction* moveAction = [UIAlertAction actionWithTitle:@"Move" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
-		
-		[team updateCurrentLocationWithLatitude:dropCoordinate.latitude andLongitude:dropCoordinate.longitude andStreet:nil andCity:nil andState:nil andAddress:nil andTime:nil];
-		
-		[team persistCurrentLocationWithSender:self];
-		[self.mainMapView selectAnnotation:teamPointAnnotation animated:YES];
-		
-		NSString* addressString = [NSString stringWithFormat:@"%f,%f", dropCoordinate.latitude, dropCoordinate.longitude];
-		[team tryUpdateCurrentLocationWithAddressString:addressString
-											andGeocoder:self.geocoder
-											  andSender:self]; // async
-	}];
-	
-	NSString* title = @"Move team to location?";
-	NSString* message = [NSString stringWithFormat:@"Team: %@\nLocation: (%.7f,%.7f)", [team getTitle], dropCoordinate.latitude, dropCoordinate.longitude];
-	[Util presentActionAlertWithViewController:self andTitle:title andMessage:message andAction:moveAction andCancelHandler:^(UIAlertAction* action) {
-		
-		// Move team annotation view back to its pre-drag location
-		CGPoint centerPoint = [self.mainMapView convertCoordinate:[team getLocationCurrentCoordinate] toPointToView:self.mainMapView];
-		[teamAnnotationView animateMoveToCenterPoint:centerPoint andDuration:0.5 andDelay:0 andNeedsSquash:YES completion:^{
-			
-			[team postNotificationUpdatedWithSender:self andUpdatedLocation:YES];
-			
-			[self.mainMapView selectAnnotation:teamPointAnnotation animated:YES];
-		}];
-	}];
-}
-
-
 #
 # pragma mark Ride Notification Handlers
 #
@@ -1839,6 +1781,47 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 #
 
 
+- (void)teamAnnotationViewDragEndedWithNotification:(NSNotification*)notification {
+	
+	NSAssert([notification.object isKindOfClass:[TeamAnnotationView class]], @"Notification must be from team annotation view");
+	
+	TeamAnnotationView* teamAnnotationView = notification.object;
+	TeamPointAnnotation* teamPointAnnotation = (TeamPointAnnotation*)teamAnnotationView.annotation;
+	Team* team = teamPointAnnotation.team;
+	
+	[self.mainMapView deselectAnnotation:teamPointAnnotation animated:NO];
+	
+	CLLocationCoordinate2D dropCoordinate = teamPointAnnotation.coordinate;
+	
+	UIAlertAction* moveAction = [UIAlertAction actionWithTitle:@"Move" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+		
+		[team updateCurrentLocationWithLatitude:dropCoordinate.latitude andLongitude:dropCoordinate.longitude andStreet:nil andCity:nil andState:nil andAddress:nil andTime:nil];
+		
+		[team persistCurrentLocationWithSender:self];
+		[self.mainMapView selectAnnotation:teamPointAnnotation animated:YES];
+		
+		NSString* addressString = [NSString stringWithFormat:@"%f,%f", dropCoordinate.latitude, dropCoordinate.longitude];
+		[team tryUpdateCurrentLocationWithAddressString:addressString
+											andGeocoder:self.geocoder
+											  andSender:self]; // async
+	}];
+	
+	NSString* title = @"Move team to location?";
+	NSString* message = [NSString stringWithFormat:@"Team: %@\nLocation: (%.7f,%.7f)", [team getTitle], dropCoordinate.latitude, dropCoordinate.longitude];
+	[Util presentActionAlertWithViewController:self andTitle:title andMessage:message andAction:moveAction andCancelHandler:^(UIAlertAction* action) {
+		
+		// Move team annotation view back to its pre-drag location
+		CGPoint centerPoint = [self.mainMapView convertCoordinate:[team getLocationCurrentCoordinate] toPointToView:self.mainMapView];
+		[teamAnnotationView animateMoveToCenterPoint:centerPoint andDuration:0.5 andDelay:0 andNeedsSquash:YES completion:^{
+			
+			[team postNotificationUpdatedWithSender:self andUpdatedLocation:YES];
+			
+			[self.mainMapView selectAnnotation:teamPointAnnotation animated:YES];
+		}];
+	}];
+}
+
+
 - (void)teamCreatedWithNotification:(NSNotification*)notification {
 	
 	[self configureTeamAnnotationsWithNotification:notification andOptions:Configure_None];
@@ -2098,12 +2081,12 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	[Util addDataModelResetObserver:self withSelector:@selector(dataModelResetWithNotification:)];
 
-	[TeamAnnotationView addDragEndedObserver:self withSelector:@selector(annotationViewDragEndedWithNotification:)];
-	
 	[Ride addCreatedObserver:self withSelector:@selector(rideCreatedWithNotification:)];
 	[Ride addDeletedObserver:self withSelector:@selector(rideDeletedWithNotification:)];
 	[Ride addUpdatedObserver:self withSelector:@selector(rideUpdatedWithNotification:)];
 
+	[TeamAnnotationView addDragEndedObserver:self withSelector:@selector(teamAnnotationViewDragEndedWithNotification:)];
+	
 	[Team addCreatedObserver:self withSelector:@selector(teamCreatedWithNotification:)];
 	[Team addDeletedObserver:self withSelector:@selector(teamDeletedWithNotification:)];
 	[Team addUpdatedObserver:self withSelector:@selector(teamUpdatedWithNotification:)];
