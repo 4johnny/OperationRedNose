@@ -297,7 +297,7 @@
 	
 	[geocoder geocodeAddressString:addressString inRegion:jurisdictionRegion completionHandler:^(NSArray<CLPlacemark*>* _Nullable placemarks, NSError* _Nullable error) {
 		
-		// NOTES: Completion block executes on main thread
+		// NOTE: Completion block executes on main thread
 		
 		// If there is a problem, log it; alert the user; and we are done.
 		if (error || placemarks.count < 1) {
@@ -307,8 +307,6 @@
 			} else if (placemarks.count < 1) {
 				NSLog(@"Geocode Error: No placemarks for address string: %@", addressString);
 			}
-			
-			//	[Util presentOKAlertWithTitle:@"Error" andMessage:[NSString stringWithFormat:@"Cannot geocode address: %@", addressString]];
 			
 			return;
 		}

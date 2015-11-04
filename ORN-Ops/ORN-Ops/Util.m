@@ -89,27 +89,10 @@
 #
 
 
-+ (void)presentActionAlertWithViewController:(UIViewController*)viewController
-									andTitle:(NSString*)title
-								  andMessage:(NSString*)message
-								   andAction:(UIAlertAction*)action
-							andCancelHandler:(void (^ __nullable)(UIAlertAction* action))cancelHandler {
-	
-	if (!viewController) return;
-	
-	UIAlertController* actionAlertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-	
-	[actionAlertController addAction:action];
-	[actionAlertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:cancelHandler]];
-
-	[viewController presentViewController:actionAlertController animated:YES completion:nil];
-}
-
-
 + (void)presentOKAlertWithViewController:(UIViewController*)viewController
 								andTitle:(NSString*)title
 							  andMessage:(NSString*)message {
-
+	
 	if (!viewController) return;
 	
 	UIAlertController* actionAlertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
@@ -120,21 +103,42 @@
 }
 
 
++ (UIAlertController*)presentActionAlertWithViewController:(UIViewController*)viewController
+												  andTitle:(NSString*)title
+												andMessage:(NSString*)message
+												 andAction:(UIAlertAction*)action
+										  andCancelHandler:(void (^ __nullable)(UIAlertAction* action))cancelHandler {
+	
+	if (!viewController) return nil;
+	
+	UIAlertController* actionAlertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+	
+	[actionAlertController addAction:action];
+	[actionAlertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:cancelHandler]];
+
+	[viewController presentViewController:actionAlertController animated:YES completion:nil];
+	
+	return actionAlertController;
+}
+
+
 + (void)presentDeleteAlertWithViewController:(UIViewController*)viewController
 							   andDataObject:(id<ORNDataObject>)dataObject
 							andCancelHandler:(void (^ __nullable)(UIAlertAction* action))cancelHandler {
 	
 	NSString* alertTitle = [NSString stringWithFormat:@"Delete %@: %@", [NSStringFromClass(dataObject.class) lowercaseString], [dataObject getTitle]];
+	
 	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction* _Nonnull action) {
 		
 		[dataObject delete];
 		[Util saveManagedObjectContext];
 	}];
-	[Util presentActionAlertWithViewController:viewController
+	
+	(void)[Util presentActionAlertWithViewController:viewController
 									  andTitle:alertTitle
-									andMessage:@"Cannot be undone! Are you sure?"
-									 andAction:deleteAction
-							  andCancelHandler:cancelHandler];
+										  andMessage:@"Cannot be undone! Are you sure?"
+										   andAction:deleteAction
+									andCancelHandler:cancelHandler];
 }
 
 

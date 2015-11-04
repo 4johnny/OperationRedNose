@@ -103,7 +103,9 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 @property (weak, nonatomic) id<MKAnnotation> rideTeamPanAssignmentAnchorAnnotation;
 @property (weak, nonatomic) id<MKAnnotation> previousSelectedAnnotation;
 
+@property (weak, nonatomic) UIAlertController* alertController;
 @property (weak, nonatomic) UIAlertController* actionSheetController;
+
 @property (weak, nonatomic) RideDetailTableViewController* rideDetailTableViewController;
 @property (weak, nonatomic) TeamDetailTableViewController* teamDetailTableViewController;
 
@@ -310,7 +312,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	}];
 	
 	NSString* message = [NSString stringWithFormat:@"Team: %@\nRide: %@", [team getTitle], [ride getTitle]];
-	[Util presentActionAlertWithViewController:self andTitle:@"Assign team to ride?" andMessage:message andAction:assignAlertAction andCancelHandler:nil];
+	(void)[Util presentActionAlertWithViewController:self andTitle:@"Assign team to ride?" andMessage:message andAction:assignAlertAction andCancelHandler:nil];
 }
 
 
@@ -1807,8 +1809,12 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	}];
 	
 	NSString* title = @"Move team to location?";
-	NSString* message = [NSString stringWithFormat:@"Team: %@\nLocation: (%.7f,%.7f)", [team getTitle], dropCoordinate.latitude, dropCoordinate.longitude];
-	[Util presentActionAlertWithViewController:self andTitle:title andMessage:message andAction:moveAction andCancelHandler:^(UIAlertAction* action) {
+	
+	NSString* messagePrefix = [NSString stringWithFormat:@"Team: %@\nLocation: ", [team getTitle]];
+	NSString* locationText = [NSString stringWithFormat:@"(%.7f,%.7f)", dropCoordinate.latitude, dropCoordinate.longitude];
+	NSString* message = [messagePrefix stringByAppendingString:locationText];
+	
+	self.alertController = [Util presentActionAlertWithViewController:self andTitle:title andMessage:message andAction:moveAction andCancelHandler:^(UIAlertAction* action) {
 		
 		// Move team annotation view back to its pre-drag location
 		CGPoint centerPoint = [self.mainMapView convertCoordinate:[team getLocationCurrentCoordinate] toPointToView:self.mainMapView];
@@ -1818,6 +1824,44 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			
 			[self.mainMapView selectAnnotation:teamPointAnnotation animated:YES];
 		}];
+	}];
+
+	CLLocation* dropLocation = [[CLLocation alloc] initWithLatitude:dropCoordinate.latitude longitude:dropCoordinate.longitude];
+	
+	[self tryUpdateMoveAlertControllerMessageWithLocation:dropLocation andGeocoder:self.geocoder andMessagePrefix:messagePrefix];
+}
+
+
+- (void)tryUpdateMoveAlertControllerMessageWithLocation:(CLLocation*)location andGeocoder:(CLGeocoder*)geocoder andMessagePrefix:(NSString*)messagePrefix {
+
+	if (!self.alertController || !location || !geocoder) return;
+	
+	[geocoder reverseGeocodeLocation:location completionHandler:^(NSArray<CLPlacemark*>* _Nullable placemarks, NSError* _Nullable error) {
+		
+		// NOTE: Completion block executes on main thread
+		
+		// If move alert controller already dismissed, we are done
+		if (!self.alertController) return;
+		
+		// If there is a problem, log it and we are done
+		if (error || placemarks.count < 1) {
+			
+			if (error) {
+				NSLog(@"Reverse geocode Error: %@ %@", error.localizedDescription, error.userInfo);
+			} else if (placemarks.count < 1) {
+				NSLog(@"Reverse geocode Error: No placemarks for location: %@", location);
+			}
+			
+			return;
+		}
+		
+		// Use first placemark as location
+		CLPlacemark* placemark = placemarks[0];
+		NSLog(@"Reverse geocode location: %@", placemark.location);
+		NSLog(@"Reverse geocode locality: %@", placemark.locality);
+		NSLog(@"Reverse geocode address: %@", placemark.addressDictionary);
+		
+		self.alertController.message = [messagePrefix stringByAppendingString:[placemark getAddressString]];
 	}];
 }
 
@@ -2009,7 +2053,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			[Util removePersistentStore];
 			[Util postNotificationDataModelResetWithSender:self];
 		}];
-		[Util presentActionAlertWithViewController:self andTitle:@"!!! Deletion Warning !!!" andMessage:@"About to delete all data, which cannot be undone! Are you absolutely sure?!" andAction:deleteAllAlertAction andCancelHandler:nil];
+		(void)[Util presentActionAlertWithViewController:self andTitle:@"!!! Deletion Warning !!!" andMessage:@"About to delete all data, which cannot be undone! Are you absolutely sure?!" andAction:deleteAllAlertAction andCancelHandler:nil];
 
 		isCommandHandled = YES;
 		

@@ -88,15 +88,15 @@
 # pragma mark Alert
 #
 
-+ (void)presentActionAlertWithViewController:(UIViewController*)viewController
-									andTitle:(NSString*)title
-								  andMessage:(NSString*)message
-								   andAction:(UIAlertAction*)action
-							andCancelHandler:(void (^)(UIAlertAction* action))cancelHandler;
-
 + (void)presentOKAlertWithViewController:(UIViewController*)viewController
 								andTitle:(NSString*)title
 							  andMessage:(NSString*)message;
+
++ (UIAlertController*)presentActionAlertWithViewController:(UIViewController*)viewController
+												  andTitle:(NSString*)title
+												andMessage:(NSString*)message
+												 andAction:(UIAlertAction*)action
+										  andCancelHandler:(void (^)(UIAlertAction* action))cancelHandler;
 
 + (void)presentDeleteAlertWithViewController:(UIViewController*)viewController
 							   andDataObject:(id<ORNDataObject>)dataObject
