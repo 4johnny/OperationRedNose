@@ -1455,8 +1455,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 	NSAssert([notification.object isKindOfClass:[MKAnnotationView class]], @"Notification must be from map annotation view");
 	
-	MKAnnotationView* annotationView = notification.object;
-	id<MKAnnotation> annotation = annotationView.annotation;
+	id<MKAnnotation> annotation = ((MKAnnotationView*)notification.object).annotation;
 	
 	if ([annotation isKindOfClass:[MKUserLocation class]]) return;
 	
@@ -1464,38 +1463,49 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	if ([annotation isKindOfClass:[TeamPointAnnotation class]]) {
 		
-		[self.mainMapView deselectAnnotation:annotation animated:NO];
-		
-		Team* team = ((TeamPointAnnotation*)annotation).team;
-		
-		CLLocationCoordinate2D dropCoordinate = annotation.coordinate;
-		
-		UIAlertAction* moveAction = [UIAlertAction actionWithTitle:@"Move" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
-			
-			[team updateCurrentLocationWithLatitude:dropCoordinate.latitude andLongitude:dropCoordinate.longitude andStreet:nil andCity:nil andState:nil andAddress:nil andTime:nil];
-			
-			[team persistCurrentLocationWithSender:self];
-			[self.mainMapView selectAnnotation:annotation animated:YES];
-			
-			NSString* addressString = [NSString stringWithFormat:@"%f,%f", dropCoordinate.latitude, dropCoordinate.longitude];
-			[team tryUpdateCurrentLocationWithAddressString:addressString
-												andGeocoder:self.geocoder
-												  andSender:self]; // async
-		}];
-		
-		NSString* title = @"Move team to location?";
-		NSString* message = [NSString stringWithFormat:@"Team: %@\nLocation: (%.7f,%.7f)", [team getTitle], dropCoordinate.latitude, dropCoordinate.longitude];
-		[Util presentActionAlertWithViewController:self andTitle:title andMessage:message andAction:moveAction andCancelHandler:^(UIAlertAction* action) {
-			
-			// Move team annotation view back to its pre-drag location
-			CGPoint centerPoint = [self.mainMapView convertCoordinate:[team getLocationCurrentCoordinate] toPointToView:self.mainMapView];
-			[annotationView animateMoveToCenterPoint:centerPoint andDuration:0.5 andDelay:0 andNeedsSquash:YES completion:^{
-				
-				[team postNotificationUpdatedWithSender:self andUpdatedLocation:YES];
-				[self.mainMapView selectAnnotation:annotation animated:YES];
-			}];
-		}];
+		[self handleTeamAnnotationViewDragEndedWithNotification:notification];
 	}
+}
+
+
+- (void)handleTeamAnnotationViewDragEndedWithNotification:(NSNotification*)notification {
+
+	NSAssert([notification.object isKindOfClass:[TeamAnnotationView class]], @"Notification must be from team annotation view");
+	
+	TeamAnnotationView* teamAnnotationView = notification.object;
+	TeamPointAnnotation* teamPointAnnotation = (TeamPointAnnotation*)teamAnnotationView.annotation;
+	Team* team = teamPointAnnotation.team;
+	
+	[self.mainMapView deselectAnnotation:teamPointAnnotation animated:NO];
+	
+	CLLocationCoordinate2D dropCoordinate = teamPointAnnotation.coordinate;
+	
+	UIAlertAction* moveAction = [UIAlertAction actionWithTitle:@"Move" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+		
+		[team updateCurrentLocationWithLatitude:dropCoordinate.latitude andLongitude:dropCoordinate.longitude andStreet:nil andCity:nil andState:nil andAddress:nil andTime:nil];
+		
+		[team persistCurrentLocationWithSender:self];
+		[self.mainMapView selectAnnotation:teamPointAnnotation animated:YES];
+		
+		NSString* addressString = [NSString stringWithFormat:@"%f,%f", dropCoordinate.latitude, dropCoordinate.longitude];
+		[team tryUpdateCurrentLocationWithAddressString:addressString
+											andGeocoder:self.geocoder
+											  andSender:self]; // async
+	}];
+	
+	NSString* title = @"Move team to location?";
+	NSString* message = [NSString stringWithFormat:@"Team: %@\nLocation: (%.7f,%.7f)", [team getTitle], dropCoordinate.latitude, dropCoordinate.longitude];
+	[Util presentActionAlertWithViewController:self andTitle:title andMessage:message andAction:moveAction andCancelHandler:^(UIAlertAction* action) {
+		
+		// Move team annotation view back to its pre-drag location
+		CGPoint centerPoint = [self.mainMapView convertCoordinate:[team getLocationCurrentCoordinate] toPointToView:self.mainMapView];
+		[teamAnnotationView animateMoveToCenterPoint:centerPoint andDuration:0.5 andDelay:0 andNeedsSquash:YES completion:^{
+			
+			[team postNotificationUpdatedWithSender:self andUpdatedLocation:YES];
+			
+			[self.mainMapView selectAnnotation:teamPointAnnotation animated:YES];
+		}];
+	}];
 }
 
 
