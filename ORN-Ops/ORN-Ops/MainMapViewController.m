@@ -1317,11 +1317,15 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		if (![sharedApplication canOpenURL:callURL]) {
 			
 			[Util presentOKAlertWithViewController:self andTitle:@"Call Alert" andMessage:@"Phone app not available"];
+			
 			return;
 		}
 	}
 	
-	[sharedApplication openURL:callURL];
+	if (![sharedApplication openURL:callURL]) {
+		
+		[Util presentOKAlertWithViewController:self andTitle:@"Call Alert" andMessage:@"Unable to place call"];
+	}
 }
 
 
