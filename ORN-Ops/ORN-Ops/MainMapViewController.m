@@ -1801,6 +1801,9 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	UIAlertAction* moveAction = [UIAlertAction actionWithTitle:@"Move" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
 		
+		Ride* firstRideAssigned = [team getFirstRideAssigned];
+		[firstRideAssigned clearPrepRoute];
+		
 		[team updateCurrentLocationWithLatitude:dropCoordinate.latitude andLongitude:dropCoordinate.longitude andStreet:nil andCity:nil andState:nil andAddress:nil andTime:nil];
 		
 		[team persistCurrentLocationWithSender:self];
@@ -1825,8 +1828,21 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		[teamAnnotationView animateMoveToCenterPoint:centerPoint andDuration:0.5 andDelay:0 andNeedsSquash:YES completion:^{
 			
 			[team postNotificationUpdatedWithSender:self andUpdatedLocation:YES];
-			
 			[self.mainMapView selectAnnotation:teamPointAnnotation animated:YES];
+			
+			NSString* addressString = team.locationCurrentAddress.length > 0
+			? team.locationCurrentAddress
+			: (team.locationCurrentLatitude && team.locationCurrentLongitude
+			   ? [NSString stringWithFormat:@"%f,%f", team.locationCurrentLatitude.doubleValue, team.locationCurrentLongitude.doubleValue]
+			   : nil);
+
+			NSAssert(addressString.length > 0, @"Address string must exist");
+			if (addressString.length > 0) {
+				
+				[team tryUpdateCurrentLocationWithAddressString:addressString
+													andGeocoder:self.geocoder
+													  andSender:self]; // async
+			}
 		}];
 	}];
 
