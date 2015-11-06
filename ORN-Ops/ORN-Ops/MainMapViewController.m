@@ -1176,6 +1176,16 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 }
 
 
+- (BOOL)canDisplayMapTypeFlyover {
+	
+	// NOTE: Map flyover introduced in iOS 9
+	
+	NSOperatingSystemVersion osVer = [NSProcessInfo processInfo].operatingSystemVersion;
+	
+	return (osVer.majorVersion >= 9);
+}
+
+
 - (IBAction)mapTypeChanged:(UISegmentedControl*)sender {
 	
 	switch (self.mapTypeSegmentedControl.selectedSegmentIndex) {
@@ -1187,26 +1197,40 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			break;
 			
 		case 1: { // Hybrid
-
-			double delayInSeconds = [self moveMapCameraVerticalWithAnimated:YES] ? 0.6 : 0;
 			
-			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+			if ([self canDisplayMapTypeFlyover]) {
 				
-				self.mainMapView.mapType = MKMapTypeHybrid;
-			});
+				self.mainMapView.mapType = MKMapTypeHybridFlyover;
+				
+			} else {
+
+				double delayInSeconds = [self moveMapCameraVerticalWithAnimated:YES] ? 0.6 : 0;
+				
+				dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+					
+					self.mainMapView.mapType = MKMapTypeHybridFlyover;
+				});
+			}
 			
 			break;
 		}
 			
 		case 2: { // Satellite
 			
-			double delayInSeconds = [self moveMapCameraVerticalWithAnimated:YES] ? 0.6  : 0;
+			if ([self canDisplayMapTypeFlyover]) {
+				
+				self.mainMapView.mapType = MKMapTypeSatelliteFlyover;
+				
+			} else {
+				
+				double delayInSeconds = [self moveMapCameraVerticalWithAnimated:YES] ? 0.6  : 0;
+				
+				dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+					
+					self.mainMapView.mapType = MKMapTypeSatellite;
+				});
+			}
 			
-			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-
-				self.mainMapView.mapType = MKMapTypeSatellite;
-			});
-						   
 			break;
 		}
 	}
