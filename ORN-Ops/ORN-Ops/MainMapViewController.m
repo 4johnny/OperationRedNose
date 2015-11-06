@@ -1799,6 +1799,12 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	CLLocationCoordinate2D dropCoordinate = teamPointAnnotation.coordinate;
 	
+	NSString* title = @"Move team to location?";
+	
+	NSString* messagePrefix = [NSString stringWithFormat:@"Team: %@\nLocation: ", [team getTitle]];
+	NSString* locationText = [NSString stringWithFormat:@"(%.7f,%.7f)", dropCoordinate.latitude, dropCoordinate.longitude];
+	NSString* message = [messagePrefix stringByAppendingString:locationText];
+	
 	UIAlertAction* moveAction = [UIAlertAction actionWithTitle:@"Move" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
 		
 		Ride* firstRideAssigned = [team getFirstRideAssigned];
@@ -1814,12 +1820,6 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 											andGeocoder:self.geocoder
 											  andSender:self]; // async
 	}];
-	
-	NSString* title = @"Move team to location?";
-	
-	NSString* messagePrefix = [NSString stringWithFormat:@"Team: %@\nLocation: ", [team getTitle]];
-	NSString* locationText = [NSString stringWithFormat:@"(%.7f,%.7f)", dropCoordinate.latitude, dropCoordinate.longitude];
-	NSString* message = [messagePrefix stringByAppendingString:locationText];
 	
 	self.alertController = [Util presentActionAlertWithViewController:self andTitle:title andMessage:message andAction:moveAction andCancelHandler:^(UIAlertAction* action) {
 		
