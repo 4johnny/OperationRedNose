@@ -101,6 +101,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 @property (nonatomic) UIColor* calloutAccessoryColorGreen;
 
 @property (weak, nonatomic) id<MKAnnotation> rideTeamPanAssignmentAnchorAnnotation;
+
 @property (weak, nonatomic) id<MKAnnotation> previousSelectedAnnotation;
 
 @property (weak, nonatomic) UIAlertController* alertController;
@@ -300,9 +301,22 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	}
 	if (!ride || !team || ride.teamAssigned == team) return;
 	
+	// Show temp line between proposed assignment annotations
+	
+	CLLocationCoordinate2D locationCoordinates[2] =
+	{
+		[ride getLocationStartCoordinate],
+		[team getLocationCurrentCoordinate],
+	};
+	
+	MKPolyline* tempRideTeamAssignPolyline = [MKPolyline polylineWithCoordinates:locationCoordinates count:2];
+	[self.mainMapView addOverlay:tempRideTeamAssignPolyline level:MKOverlayLevelAboveLabels];
+	
 	// Ask user if should assign ride and team
 	
 	UIAlertAction* assignAlertAction = [UIAlertAction actionWithTitle:@"Assign" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+		
+		[self.mainMapView removeOverlay:tempRideTeamAssignPolyline];
 		
 		// Assign team to ride, including route recalculations and notifications
 		[ride assignTeam:team withSender:self];
@@ -312,7 +326,10 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	}];
 	
 	NSString* message = [NSString stringWithFormat:@"Team: %@\nRide: %@", [team getTitle], [ride getTitle]];
-	(void)[Util presentActionAlertWithViewController:self andTitle:@"Assign team to ride?" andMessage:message andAction:assignAlertAction andCancelHandler:nil];
+	(void)[Util presentActionAlertWithViewController:self andTitle:@"Assign team to ride?" andMessage:message andAction:assignAlertAction andCancelHandler:^(UIAlertAction* action) {
+		
+		[self.mainMapView removeOverlay:tempRideTeamAssignPolyline];
+	}];
 }
 
 
@@ -592,6 +609,19 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 				renderer.strokeColor = [UIColor blueColor];
 				break;
 		}
+		
+		return renderer;
+	}
+	
+	if ([overlay isKindOfClass:[MKPolyline class]]) { // Ride-team pan assignment line
+	
+		MKPolylineRenderer* renderer = [[MKPolylineRenderer alloc] initWithOverlay:overlay];
+		renderer.alpha = 0.5;
+		renderer.lineWidth = 5.0;
+		
+		// Dotted line
+		renderer.lineDashPattern = @[ @3, @8 ]; // renderer.lineDashPhase = 6;
+		renderer.strokeColor = [UIColor orangeColor];
 		
 		return renderer;
 	}
