@@ -26,9 +26,18 @@
 #define RIDE_STATUS_STRING_NONE			@"None"
 #define RIDE_STATUS_STRING_NEW			@"New"
 #define RIDE_STATUS_STRING_CONFIRMED	@"Confirmed"
-#define RIDE_STATUS_STRING_PROGRESSING	@"Progressing"
+#define RIDE_STATUS_STRING_DISPATCHED	@"Dispatched"
+#define RIDE_STATUS_STRING_TRANSPORTING	@"Transporting"
 #define RIDE_STATUS_STRING_COMPLETED	@"Completed"
 #define RIDE_STATUS_STRING_CANCELLED	@"Cancelled"
+
+#define RIDE_STATUS_STRING_SHORT_NONE			@"None"
+#define RIDE_STATUS_STRING_SHORT_NEW			@"New"
+#define RIDE_STATUS_STRING_SHORT_CONFIRMED		@"Conf"
+#define RIDE_STATUS_STRING_SHORT_DISPATCHED		@"Disp"
+#define RIDE_STATUS_STRING_SHORT_TRANSPORTING	@"Tran"
+#define RIDE_STATUS_STRING_SHORT_COMPLETED		@"Comp"
+#define RIDE_STATUS_STRING_SHORT_CANCELLED		@"Canc"
 
 #
 # pragma mark - Enums
@@ -36,22 +45,23 @@
 
 typedef NS_ENUM(NSInteger, RideStatus) {
 	
-	RideStatus_None =			0,
+	RideStatus_None = 0,
 	
-	RideStatus_New =			1,
-	RideStatus_Confirmed =		2,
-	RideStatus_Progressing =	3,
-	RideStatus_Completed =		4,
+	RideStatus_New,
+	RideStatus_Confirmed,
+	RideStatus_Dispatched,
+	RideStatus_Transporting,
+	RideStatus_Completed,
 	
-	RideStatus_Cancelled =		9,
+	RideStatus_Cancelled,
 };
 
 typedef NS_ENUM(NSInteger, RideLocationType) {
 	
-	RideLocationType_None =		0,
+	RideLocationType_None = 0,
 	
-	RideLocationType_Start =	1,
-	RideLocationType_End = 		2,
+	RideLocationType_Start,
+	RideLocationType_End,
 };
 
 typedef NS_ENUM(NSInteger, RideRouteType) {
@@ -196,7 +206,7 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 						   andGeocoder:(CLGeocoder*)geocoder
 							 andSender:(id)sender;
 
-//+ (NSString*)stringFromStatus:(RideStatus)status;
-//+ (RideStatus)statusFromString:(NSString*)statusString;
++ (NSString*)rideStringFromStatus:(RideStatus)rideStatus;
++ (RideStatus)rideStatusFromString:(NSString*)rideStatusString;
 
 @end

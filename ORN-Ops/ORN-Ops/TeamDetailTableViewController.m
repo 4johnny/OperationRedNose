@@ -93,6 +93,8 @@
 		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStyleDone target:self action:@selector(savePressed:)];
 	}
 	
+	[self assignTagsForTabOrder];
+	
 	[self configureView];
 }
 
@@ -216,6 +218,33 @@
 #
 # pragma mark Helpers
 #
+
+
+- (void)assignTagsForTabOrder {
+
+	// Dispatch
+	self.isActiveSwitch.tag = 			0;
+	self.rideCountLabel.tag = 			1;
+	self.durationLabel.tag = 			2;
+	self.distanceLabel.tag = 			3;
+	self.donationsLabel.tag = 			4;
+	
+	// Team
+	self.nameTextField.tag = 			5;
+	self.membersTextField.tag = 		6;
+	self.emailAddressTextField.tag =	7;
+	self.phoneNumberTextField.tag = 	8;
+	self.isMascotSwitch.tag = 			9;
+	
+	// Location
+	self.timeDatePickerTextField.tag = 	10;
+	self.addressTextField.tag = 		11;
+	self.coordinatesLabel.tag = 		12;
+	self.isManualSwitch.tag = 			13;
+	
+	// Notes
+	self.notesTextView.tag = 			14;
+}
 
 
 - (void)configureView {

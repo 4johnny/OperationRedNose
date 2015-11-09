@@ -110,7 +110,11 @@
 		// Replace "save" button with "add"
 		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStyleDone target:self action:@selector(savePressed:)];
 	}
+	
+	[self assignTagsForTabOrder];
 
+	[self configureForiPhoneWithSize:self.view.frame.size];
+	
 	[self configureView];
 }
 
@@ -130,6 +134,18 @@
 	// Dispose of any resources that can be recreated.
 	
 	NSLog(@"Warning: Memory Low");
+}
+
+
+
+#
+# pragma mark <UIContentContainer>
+#
+
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+
+	[self configureForiPhoneWithSize:size];
 }
 
 
@@ -248,10 +264,17 @@
 }
 
 
+- (IBAction)statusValueChanged:(UISegmentedControl*)sender {
+	
+	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender andIsAddmode:self.isAddMode];
+}
+
+
 - (IBAction)passengerCountValueChanged:(UISegmentedControl*)sender {
 
 	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender andIsAddmode:self.isAddMode];
 }
+
 
 - (IBAction)transmissionValueChanged:(UISegmentedControl*)sender {
 	
@@ -270,13 +293,64 @@
 #
 
 
-- (void)configureView {
+- (void)assignTagsForTabOrder {
+
+	// Dispatch
+	self.statusSegmentedControl.tag =				0;
+	self.startTimeDatePickerTextField.tag =			1;
+	self.teamAssignedPickerTextField.tag =			2;
+	self.sourceTextField.tag =						3;
+	self.donationTextField.tag =					4;
 	
-	[self configureTeamAssignedPickerTextField];
+	// Passenger
+	self.firstNameTextField.tag =					5;
+	self.lastNameTextField.tag =					6;
+	self.phoneNumberTextField.tag =					7;
+	self.passengerCountSegmentedControl.tag =		8;
 	
-	if (!self.isAddMode) {
+	// Location
+	self.startAddressTextField.tag =				9;
+	self.endAddressTextField.tag =					10;
+	self.transferFromTextField.tag =				11;
+	self.transferToTextField.tag =					12;
+	
+	// Vehicle
+	self.vehicleDescriptionTextField.tag =			13;
+	self.vehicleTransmissionSegmentedControl.tag =	14;
+	self.seatBeltCountSegmentedControl.tag =		15;
+	
+	// Notes
+	self.notesTextView.tag =						16;
+}
+
+
+- (void)configureForiPhoneWithSize:(CGSize)size {
+	
+	if ([UIDevice currentDevice].userInterfaceIdiom != UIUserInterfaceIdiomPhone) return;
+
+	if (size.width < 667) {
 		
-		[self loadDataModelIntoView];
+		// Set font size for segmented controls
+		[self.statusSegmentedControl setTitleTextAttributes:@{ NSFontAttributeName : [UIFont systemFontOfSize:12.5] } forState:UIControlStateNormal];
+		
+		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_SHORT_NEW forSegmentAtIndex:0];
+		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_SHORT_CONFIRMED forSegmentAtIndex:1];
+		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_SHORT_DISPATCHED forSegmentAtIndex:2];
+		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_SHORT_TRANSPORTING forSegmentAtIndex:3];
+		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_SHORT_COMPLETED forSegmentAtIndex:4];
+		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_SHORT_CANCELLED forSegmentAtIndex:5];
+		
+	} else {
+		
+		// Set font size for segmented controls
+		[self.statusSegmentedControl setTitleTextAttributes:@{ NSFontAttributeName : [UIFont systemFontOfSize:13] } forState:UIControlStateNormal];
+		
+		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_NEW forSegmentAtIndex:0];
+		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_CONFIRMED forSegmentAtIndex:1];
+		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_DISPATCHED forSegmentAtIndex:2];
+		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_TRANSPORTING forSegmentAtIndex:3];
+		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_COMPLETED forSegmentAtIndex:4];
+		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_CANCELLED forSegmentAtIndex:5];
 	}
 }
 
@@ -299,6 +373,17 @@
 	
 	self.teamAssignedPickerTextField.titles = teamTitles;
 	self.teamAssignedPickerTextField.pickableStatuses = teamPickableStatuses;
+}
+
+
+- (void)configureView {
+	
+	[self configureTeamAssignedPickerTextField];
+	
+	if (!self.isAddMode) {
+		
+		[self loadDataModelIntoView];
+	}
 }
 
 

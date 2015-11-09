@@ -34,6 +34,7 @@
 #
 
 // Dispatch
+@property (weak, nonatomic) IBOutlet UISegmentedControl *statusSegmentedControl;
 @property (weak, nonatomic) IBOutlet DatePickerTextField* startTimeDatePickerTextField;
 @property (weak, nonatomic) IBOutlet PickerTextField* teamAssignedPickerTextField;
 @property (weak, nonatomic) IBOutlet UITextField* sourceTextField;

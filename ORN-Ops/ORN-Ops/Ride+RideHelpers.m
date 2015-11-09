@@ -745,45 +745,69 @@
 }
 
 
-//+ (NSString*)stringFromStatus:(RideStatus)status {
-//	
-//	switch (status) {
-//			
-//		case RideStatus_New:
-//			return RIDE_STATUS_STRING_NEW;
-//			
-//		case RideStatus_Confirmed:
-//			return RIDE_STATUS_STRING_CONFIRMED;
-//			
-//		case RideStatus_Progressing:
-//			return RIDE_STATUS_STRING_PROGRESSING;
-//			
-//		case RideStatus_Completed:
-//			return RIDE_STATUS_STRING_COMPLETED;
-//
-//		case RideStatus_Cancelled:
-//			return RIDE_STATUS_STRING_CANCELLED;
-//			
-//		default:
-//		case RideStatus_None:
-//			return RIDE_STATUS_STRING_NONE;
-//	}
-//}
-//
-//
-//+ (RideStatus)statusFromString:(NSString*)statusString {
-//	
-//	if (!statusString || statusString.length <= 0) return RideStatus_None;
-//	
-//	if ([statusString isEqualToString:RIDE_STATUS_STRING_NEW]) return RideStatus_New;
-//	if ([statusString isEqualToString:RIDE_STATUS_STRING_CONFIRMED]) return RideStatus_Confirmed;
-//	if ([statusString isEqualToString:RIDE_STATUS_STRING_PROGRESSING]) return RideStatus_Progressing;
-//	if ([statusString isEqualToString:RIDE_STATUS_STRING_COMPLETED]) return RideStatus_Completed;
-//	
-//	if ([statusString isEqualToString:RIDE_STATUS_STRING_CANCELLED]) return RideStatus_Cancelled;
-//	
-//	return RideStatus_None;
-//}
++ (NSString*)rideStringFromStatus:(RideStatus)rideStatus {
+	
+	switch (rideStatus) {
+			
+		case RideStatus_None:
+			return RIDE_STATUS_STRING_NONE;
+			
+		case RideStatus_New:
+			return RIDE_STATUS_STRING_NEW;
+			
+		case RideStatus_Confirmed:
+			return RIDE_STATUS_STRING_CONFIRMED;
+			
+		case RideStatus_Dispatched:
+			return RIDE_STATUS_STRING_DISPATCHED;
+			
+		case RideStatus_Transporting:
+			return RIDE_STATUS_STRING_TRANSPORTING;
+			
+		case RideStatus_Completed:
+			return RIDE_STATUS_STRING_COMPLETED;
+
+		case RideStatus_Cancelled:
+			return RIDE_STATUS_STRING_CANCELLED;
+			
+		default:
+			NSAssert(NO, @"Should never get here");
+			break;
+	}
+	
+	return nil;
+}
+
+
++ (RideStatus)rideStatusFromString:(NSString*)rideStatusString {
+	
+	NSAssert(rideStatusString.length > 0, @"Ride status string must exist");
+	if (rideStatusString.length <= 0)
+		return RideStatus_None;
+	
+	if ([rideStatusString isEqualToString:RIDE_STATUS_STRING_NONE])
+		return RideStatus_None;
+	
+	if ([rideStatusString isEqualToString:RIDE_STATUS_STRING_NEW])
+		return RideStatus_New;
+	
+	if ([rideStatusString isEqualToString:RIDE_STATUS_STRING_CONFIRMED])
+		return RideStatus_Confirmed;
+	
+	if ([rideStatusString isEqualToString:RIDE_STATUS_STRING_DISPATCHED])
+		return RideStatus_Dispatched;
+	
+	if ([rideStatusString isEqualToString:RIDE_STATUS_STRING_TRANSPORTING])
+		return RideStatus_Transporting;
+	
+	if ([rideStatusString isEqualToString:RIDE_STATUS_STRING_COMPLETED])
+		return RideStatus_Completed;
+	
+	if ([rideStatusString isEqualToString:RIDE_STATUS_STRING_CANCELLED])
+		return RideStatus_Cancelled;
+	
+	return RideStatus_None;
+}
 
 
 @end
