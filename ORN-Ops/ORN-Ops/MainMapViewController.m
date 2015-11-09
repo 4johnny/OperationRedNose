@@ -1177,12 +1177,16 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 
 - (BOOL)canDisplayMapTypeFlyover {
+
+	// NOTE: Satellite & hybrid flyover current have iOS bug where overlays not removed
+	// TODO: Enable satellite & hybrid flyover once iOS bug resolved
+	return NO;
 	
-	// NOTE: Map flyover introduced in iOS 9
-	
-	NSOperatingSystemVersion osVer = [NSProcessInfo processInfo].operatingSystemVersion;
-	
-	return (osVer.majorVersion >= 9);
+	//	// NOTE: Map flyover introduced in iOS 9
+	//
+	//	NSOperatingSystemVersion osVer = [NSProcessInfo processInfo].operatingSystemVersion;
+	//
+	//	return (osVer.majorVersion >= 9);
 }
 
 
@@ -1208,7 +1212,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 				
 				dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 					
-					self.mainMapView.mapType = MKMapTypeHybridFlyover;
+					self.mainMapView.mapType = MKMapTypeHybrid;
 				});
 			}
 			
