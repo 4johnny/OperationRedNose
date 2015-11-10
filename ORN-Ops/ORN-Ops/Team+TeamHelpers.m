@@ -357,6 +357,32 @@
 }
 
 
+- (CLLocationCoordinate2D)getLocationCurrentCoordinate {
+	
+	return CLLocationCoordinate2DMake(self.locationCurrentLatitude.doubleValue,
+									  self.locationCurrentLongitude.doubleValue);
+}
+
+
+- (MKMapItem*)mapItemForCurrentLocation {
+	
+	if (!self.locationCurrentLatitude || !self.locationCurrentLongitude) return nil;
+	
+	NSDictionary<NSString*,NSString*>* addressDictionary =
+	[CLPlacemark addressDictionary:nil
+						withStreet:self.locationCurrentStreet
+						   andCity:self.locationCurrentCity
+						  andState:self.locationCurrentState
+							andZIP:nil
+						andCountry:CANADA_COUNTRY_NAME
+					andCountryCode:CANADA_COUNTRY_CODE];
+	
+	MKPlacemark* placemark = [[MKPlacemark alloc] initWithCoordinate:[self getLocationCurrentCoordinate] addressDictionary:addressDictionary];
+	
+	return [[MKMapItem alloc] initWithPlacemark:placemark];
+}
+
+
 - (NSString*)getStatusText {
 
 	NSString* status = nil;
@@ -400,32 +426,6 @@
 	   ]];
 
 	return sortedActiveRidesAssigned;
-}
-
-
-- (CLLocationCoordinate2D)getLocationCurrentCoordinate {
-	
-	return CLLocationCoordinate2DMake(self.locationCurrentLatitude.doubleValue,
-									  self.locationCurrentLongitude.doubleValue);
-}
-
-
-- (MKMapItem*)mapItemForCurrentLocation {
-
-	if (!self.locationCurrentLatitude || !self.locationCurrentLongitude) return nil;
-	
-	NSDictionary<NSString*,NSString*>* addressDictionary =
-	[CLPlacemark addressDictionary:nil
-						withStreet:self.locationCurrentStreet
-						   andCity:self.locationCurrentCity
-						  andState:self.locationCurrentState
-							andZIP:nil
-						andCountry:CANADA_COUNTRY_NAME
-					andCountryCode:CANADA_COUNTRY_CODE];
-	
-	MKPlacemark* placemark = [[MKPlacemark alloc] initWithCoordinate:[self getLocationCurrentCoordinate] addressDictionary:addressDictionary];
-	
-	return [[MKMapItem alloc] initWithPlacemark:placemark];
 }
 
 

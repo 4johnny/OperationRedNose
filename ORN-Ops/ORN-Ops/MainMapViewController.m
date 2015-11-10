@@ -758,7 +758,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			
 		case RideLocationType_Start: {
 			
-			NSTimeInterval waitDuration = [ride durationWithRideRouteType:RideRouteType_Wait];
+			NSTimeInterval waitDuration = [ride getDurationWithRideRouteType:RideRouteType_Wait];
 			NSDate* dateTimeStart = ride.dateTimeStart;
 			if (waitDuration < 0 && !dateTimeStart) return nil;
 			
@@ -775,7 +775,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			
 		case RideLocationType_End: {
 			
-			NSTimeInterval waitDuration = [ride durationWithRideRouteType:RideRouteType_Wait];
+			NSTimeInterval waitDuration = [ride getDurationWithRideRouteType:RideRouteType_Wait];
 			NSNumber* routeMainDuration = ride.routeMainDuration;
 			NSDate* routeDateTimeEnd = ride.getRouteDateTimeEnd;
 			if ((waitDuration < 0 || !routeMainDuration) &&
@@ -879,8 +879,8 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	polylineAnnotationLabel.text =
 	[NSString stringWithFormat:polylineAnnotationFormat,
-	 [ride durationWithRideRouteType:rideRouteType] / (NSTimeInterval)SECONDS_PER_MINUTE,
-	 [ride distanceWithRideRouteType:rideRouteType] / (CLLocationDistance)METERS_PER_KILOMETER];
+	 [ride getDurationWithRideRouteType:rideRouteType] / (NSTimeInterval)SECONDS_PER_MINUTE,
+	 [ride getDistanceWithRideRouteType:rideRouteType] / (CLLocationDistance)METERS_PER_KILOMETER];
 
 	return ridePolylineAnnotationView;
 }

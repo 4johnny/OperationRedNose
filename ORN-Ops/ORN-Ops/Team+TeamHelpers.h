@@ -106,14 +106,14 @@
 										andSender:(id)sender;
 - (void)tryUpdateActiveAssignedRideRoutesWithSender:(id)sender;
 
+- (CLLocationCoordinate2D)getLocationCurrentCoordinate;
+- (MKMapItem*)mapItemForCurrentLocation;
+
 - (NSString*)getTitle;
 - (NSString*)getStatusText;
 
 - (NSSet<Ride*>*)getActiveRidesAssigned;
 - (NSArray<Ride*>*)getSortedActiveRidesAssigned;
-
-- (CLLocationCoordinate2D)getLocationCurrentCoordinate;
-- (MKMapItem*)mapItemForCurrentLocation;
 
 - (NSTimeInterval)getActiveDurationAssigned;
 - (CLLocationDistance)getActiveDistanceAssigned;

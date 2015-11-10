@@ -658,7 +658,7 @@
 }
 
 
-- (NSTimeInterval)durationWithRideRouteType:(RideRouteType)rideRouteType {
+- (NSTimeInterval)getDurationWithRideRouteType:(RideRouteType)rideRouteType {
 	
 	switch (rideRouteType) {
 			
@@ -690,7 +690,7 @@
 }
 
 
-- (CLLocationDistance)distanceWithRideRouteType:(RideRouteType)rideRouteType {
+- (CLLocationDistance)getDistanceWithRideRouteType:(RideRouteType)rideRouteType {
 
 	switch (rideRouteType) {
 			
@@ -723,7 +723,7 @@
 
 
 #
-# pragma mark Class Helpers
+# pragma mark Class Helper Methods
 #
 
 
