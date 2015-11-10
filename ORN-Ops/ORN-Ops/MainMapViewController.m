@@ -1623,8 +1623,8 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		}
 	}
 	
-	// If deleting, we are done
-	if (options & Configure_Delete) return NO;
+	// If deleting or not active, we are done
+	if ((options & Configure_Delete) || ![ride isStatusActive]) return NO;
 
 	// If no location, we are done
 	// NOTE: Best effort to find a location
@@ -1728,8 +1728,8 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		didRemoveRidePolylineAnnotationFromMapView = YES;
 	}
 	
-	// If deleting, we are done
-	if (options & Configure_Delete) return NO;
+	// If deleting or not active, we are done
+	if ((options & Configure_Delete) || ![ride isStatusActive]) return NO;
 	
 	// If ride or team assigned is not selected, we are done
 	switch (rideRouteType) {
@@ -1941,6 +1941,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 - (void)teamCreatedWithNotification:(NSNotification*)notification {
 	
 	[self configureTeamAnnotationsWithNotification:notification andOptions:Configure_None];
+	// NOTE: Overlays for teams are handled by assigned rides
 }
 
 
