@@ -1888,19 +1888,10 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			[team postNotificationUpdatedWithSender:self andUpdatedLocation:YES];
 			[self.mainMapView selectAnnotation:teamPointAnnotation animated:YES];
 			
-			NSString* addressString = team.locationCurrentAddress.length > 0
-			? team.locationCurrentAddress
-			: (team.locationCurrentLatitude && team.locationCurrentLongitude
-			   ? [NSString stringWithFormat:@"%f,%f", team.locationCurrentLatitude.doubleValue, team.locationCurrentLongitude.doubleValue]
-			   : nil);
-
-			NSAssert(addressString.length > 0, @"Address string must exist");
-			if (addressString.length > 0) {
-				
-				[team tryUpdateCurrentLocationWithAddressString:addressString
-													andGeocoder:self.geocoder
-													  andSender:self]; // async
-			}
+			NSString* addressString = [NSString stringWithFormat:@"%f,%f", team.locationCurrentLatitude.doubleValue, team.locationCurrentLongitude.doubleValue];
+			[team tryUpdateCurrentLocationWithAddressString:addressString
+												andGeocoder:self.geocoder
+												  andSender:self]; // async
 		}];
 	}];
 
