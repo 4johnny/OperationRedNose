@@ -263,7 +263,7 @@
 	
 	// Load dispatch fields
 	self.isActiveSwitch.on = self.team.isActive.boolValue;
-	self.rideCountLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)[self.team getActiveRidesAssigned].count];
+	self.rideCountLabel.text = [NSString stringWithFormat:@"%lu/%lu", (unsigned long)[self.team getActiveRidesAssigned].count, (unsigned long)self.team.ridesAssigned.count];
 	self.durationLabel.text = [NSString stringWithFormat:@"%.0f min", [self.team getDurationWithActiveRidesAssigned:nil] / (NSTimeInterval)SECONDS_PER_MINUTE];
 	self.distanceLabel.text = [NSString stringWithFormat:@"%.1f km", [self.team getDistanceWithActiveRidesAssigned:nil] / (CLLocationDistance)METERS_PER_KILOMETER];
 	self.donationsLabel.text =  [self.currencyNumberFormatter stringFromNumber:[self.team getDonationsAssigned]];
