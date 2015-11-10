@@ -33,19 +33,17 @@
 		_rideLocationType = rideLocationType;
 		_needsAnimatesDrop = needsAnimatesDrop;
 		
-		NSString* titlePrefix = nil;
+		NSString* titlePrefix = [ride getRideStatusTextShort];
 		
 		switch (_rideLocationType) {
 				
 			case RideLocationType_Start:
 				self.coordinate = [_ride getLocationStartCoordinate];
-				titlePrefix = @"Start";
 				self.subtitle = _ride.locationStartAddress;
 				break;
 				
 			case RideLocationType_End:
 				self.coordinate = [_ride getLocationEndCoordinate];
-				titlePrefix = @"End";
 				self.subtitle = _ride.locationEndAddress;
 				break;
 				

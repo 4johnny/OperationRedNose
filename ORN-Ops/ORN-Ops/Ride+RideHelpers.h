@@ -183,6 +183,8 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 - (void)clearPrepRoute;
 
 - (NSString*)getRideStatusText;
+- (NSString*)getRideStatusTextShort;
+
 - (NSString*)getPassengerName;
 - (NSDate*)getRouteDateTimeEnd;
 
