@@ -393,6 +393,8 @@
 	self.title = [@"Ride: " stringByAppendingString:[self.ride getTitle]];
 	
 	// Load dispatch fields
+	RideStatus rideStatus = self.ride.status.integerValue;
+	self.statusSegmentedControl.selectedSegmentIndex = rideStatus > RideStatus_None ? (rideStatus - 1) : RideStatus_None;
 	self.startTimeDatePickerTextField.date = self.ride.dateTimeStart;
 	self.teamAssignedPickerTextField.selectedRow = self.ride.teamAssigned ? [self.teamFetchedResultsController.fetchedObjects indexOfObject:self.ride.teamAssigned] + 1 : 0; // "None" at index 0
 	self.sourceTextField.text = self.ride.sourceName;
@@ -402,7 +404,7 @@
 	self.firstNameTextField.text = self.ride.passengerNameFirst;
 	self.lastNameTextField.text = self.ride.passengerNameLast;
 	self.phoneNumberTextField.text = self.ride.passengerPhoneNumber;
-	self.passengerCountSegmentedControl.selectedSegmentIndex = self.ride.passengerCount.longValue - 1;
+	self.passengerCountSegmentedControl.selectedSegmentIndex = self.ride.passengerCount.integerValue - 1;
 	
 	// Load location fields
 	self.startAddressTextField.text = self.ride.locationStartAddress;
@@ -426,6 +428,9 @@
 		
 		self.ride = [Ride rideWithManagedObjectContext:[Util managedObjectContext]];
 	}
+	
+	// Save dispatch field: ride status
+	self.ride.status = @(self.statusSegmentedControl.selectedSegmentIndex + 1);
 	
 	// Save dispatch field: start time - try async calculate route
 	if (![NSDate compareDate:self.ride.dateTimeStart toDate:self.startTimeDatePickerTextField.date]) {

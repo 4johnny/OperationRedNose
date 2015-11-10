@@ -52,7 +52,6 @@ typedef NS_ENUM(NSInteger, RideStatus) {
 	RideStatus_Dispatched,
 	RideStatus_Transporting,
 	RideStatus_Completed,
-	
 	RideStatus_Cancelled,
 };
 
