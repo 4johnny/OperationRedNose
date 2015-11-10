@@ -838,14 +838,15 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	// If team assigned to active rides, add total route duration and distance to label
 	
-	if ([team getActiveRidesAssigned].count <= 0) return nil;
+	NSSet<Ride*>* activeRidesAssigned = [team getActiveRidesAssigned];
+	if (activeRidesAssigned.count <= 0) return nil;
 	
 	NSString* leftCalloutAccessoryFormat = [NSString stringWithFormat:@"%@\n%@", MAP_ANNOTATION_DURATION_FORMAT, MAP_ANNOTATION_DISTANCE_FORMAT];
 	
 	[leftCalloutAccessoryButton setTitle:
 	 [NSString stringWithFormat:leftCalloutAccessoryFormat,
-	  [team getActiveDurationAssigned] / (NSTimeInterval)SECONDS_PER_MINUTE,
-	  [team getActiveDistanceAssigned] / (CLLocationDistance)METERS_PER_KILOMETER]
+	  [team getDurationWithActiveRidesAssigned:activeRidesAssigned] / (NSTimeInterval)SECONDS_PER_MINUTE,
+	  [team getDistanceWithActiveRidesAssigned:activeRidesAssigned] / (CLLocationDistance)METERS_PER_KILOMETER]
 								forState:UIControlStateNormal];
 	
 	leftCalloutAccessoryButton.backgroundColor = [UIColor blueColor];

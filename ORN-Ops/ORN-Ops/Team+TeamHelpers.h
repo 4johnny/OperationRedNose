@@ -115,8 +115,8 @@
 - (NSSet<Ride*>*)getActiveRidesAssigned;
 - (NSArray<Ride*>*)getSortedActiveRidesAssigned;
 
-- (NSTimeInterval)getActiveDurationAssigned;
-- (CLLocationDistance)getActiveDistanceAssigned;
+- (NSTimeInterval)getDurationWithActiveRidesAssigned:(NSSet<Ride*>*)activeRidesAssigned;
+- (CLLocationDistance)getDistanceWithActiveRidesAssigned:(NSSet<Ride*>*)activeRidesAssigned;
 
 - (NSDecimalNumber*)getDonationsAssigned;
 

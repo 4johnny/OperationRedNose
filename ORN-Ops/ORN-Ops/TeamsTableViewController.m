@@ -362,11 +362,13 @@
 	
 	Team* team = [self.teamsFetchedResultsController objectAtIndexPath:indexPath];
 	
+	NSSet<Ride*>* activeRidesAssigned = [team getActiveRidesAssigned];
+	
 	// Text
 	
 	NSString* status = [team getStatusText];
 	status = status.length > 0 ? [NSString stringWithFormat:@" (%@)", status] : @"";
-	cell.textLabel.text = [NSString stringWithFormat:@"%@%@ | Rides: %lu", [team getTitle], status, (unsigned long)[team getActiveRidesAssigned].count];
+	cell.textLabel.text = [NSString stringWithFormat:@"%@%@ | Rides: %lu", [team getTitle], status, (unsigned long)activeRidesAssigned.count];
 	
 	cell.textLabel.numberOfLines = 0;
 	cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -398,8 +400,8 @@
 	
 	// Route Detail
 	
-	NSString* durationString = [NSString stringWithFormat:@"%.0f", [team getActiveDurationAssigned] / (NSTimeInterval)SECONDS_PER_MINUTE];
-	NSString* distanceString = [NSString stringWithFormat:@"%.1f", [team getActiveDistanceAssigned] / (CLLocationDistance)METERS_PER_KILOMETER];
+	NSString* durationString = [NSString stringWithFormat:@"%.0f", [team getDurationWithActiveRidesAssigned:activeRidesAssigned] / (NSTimeInterval)SECONDS_PER_MINUTE];
+	NSString* distanceString = [NSString stringWithFormat:@"%.1f", [team getDistanceWithActiveRidesAssigned:activeRidesAssigned] / (CLLocationDistance)METERS_PER_KILOMETER];
 	NSString* routeDetail = [NSString stringWithFormat:@"%@ min | %@ km", durationString, distanceString];
 	
 	// Detail Text

@@ -429,11 +429,16 @@
 }
 
 
-- (NSTimeInterval)getActiveDurationAssigned {
+- (NSTimeInterval)getDurationWithActiveRidesAssigned:(NSSet<Ride*>*)activeRidesAssigned {
+	
+	if (activeRidesAssigned.count <= 0) {
+		
+		activeRidesAssigned = [self getActiveRidesAssigned];
+	}
 	
 	// Accumulate duration for all active rides assigned
 	NSTimeInterval duration = 0; // seconds
-	for (Ride* activeRideAssigned in [self getActiveRidesAssigned]) {
+	for (Ride* activeRideAssigned in activeRidesAssigned) {
 
 		duration += activeRideAssigned.routePrepDuration.doubleValue;
 		duration += activeRideAssigned.routeMainDuration.doubleValue;
@@ -443,11 +448,16 @@
 }
 
 
-- (CLLocationDistance)getActiveDistanceAssigned {
+- (CLLocationDistance)getDistanceWithActiveRidesAssigned:(NSSet<Ride*>*)activeRidesAssigned {
 
+	if (activeRidesAssigned.count <= 0) {
+		
+		activeRidesAssigned = [self getActiveRidesAssigned];
+	}
+	
 	// Accumulate distance for all active rides assigned
 	CLLocationDistance distance = 0; // meters
-	for (Ride* activeRideAssigned in [self getActiveRidesAssigned]) {
+	for (Ride* activeRideAssigned in activeRidesAssigned) {
 		
 		distance += activeRideAssigned.routePrepDistance.doubleValue;
 		distance += activeRideAssigned.routeMainDistance.doubleValue;
