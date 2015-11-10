@@ -44,6 +44,8 @@
 	
 	if (self) {
 
+		self.status = @(RideStatus_New);
+		
 		if (rideLocationType == RideLocationType_Start) {
 			self.dateTimeStart = dateTime;
 		}
@@ -514,6 +516,12 @@
 	self.routePrepDuration = nil;
 	self.routePrepDistance = nil;
 	self.routePrepPolyline = nil;
+}
+
+
+- (NSString*)getRideStatusText {
+	
+	return [Ride rideStringFromStatus:self.status.integerValue];
 }
 
 

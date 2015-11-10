@@ -393,8 +393,7 @@
 	self.title = [@"Ride: " stringByAppendingString:[self.ride getTitle]];
 	
 	// Load dispatch fields
-	RideStatus rideStatus = self.ride.status.integerValue;
-	self.statusSegmentedControl.selectedSegmentIndex = rideStatus > RideStatus_None ? (rideStatus - 1) : RideStatus_None;
+	self.statusSegmentedControl.selectedSegmentIndex = self.ride.status.integerValue - 1;
 	self.startTimeDatePickerTextField.date = self.ride.dateTimeStart;
 	self.teamAssignedPickerTextField.selectedRow = self.ride.teamAssigned ? [self.teamFetchedResultsController.fetchedObjects indexOfObject:self.ride.teamAssigned] + 1 : 0; // "None" at index 0
 	self.sourceTextField.text = self.ride.sourceName;

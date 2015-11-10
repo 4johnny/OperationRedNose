@@ -45,14 +45,14 @@
 
 typedef NS_ENUM(NSInteger, RideStatus) {
 	
-	RideStatus_None = 0,
+	RideStatus_None =			0,
 	
-	RideStatus_New,
-	RideStatus_Confirmed,
-	RideStatus_Dispatched,
-	RideStatus_Transporting,
-	RideStatus_Completed,
-	RideStatus_Cancelled,
+	RideStatus_New	=			1,
+	RideStatus_Confirmed =		2,
+	RideStatus_Dispatched =		3,
+	RideStatus_Transporting =	4,
+	RideStatus_Completed =		5,
+	RideStatus_Cancelled =		6,
 };
 
 typedef NS_ENUM(NSInteger, RideLocationType) {
@@ -182,6 +182,7 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 - (void)clearMainRoute;
 - (void)clearPrepRoute;
 
+- (NSString*)getRideStatusText;
 - (NSString*)getPassengerName;
 - (NSDate*)getRouteDateTimeEnd;
 
@@ -204,8 +205,5 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 + (void)tryCreateRideWithAddressString:(NSString*)addressString
 						   andGeocoder:(CLGeocoder*)geocoder
 							 andSender:(id)sender;
-
-+ (NSString*)rideStringFromStatus:(RideStatus)rideStatus;
-+ (RideStatus)rideStatusFromString:(NSString*)rideStatusString;
 
 @end
