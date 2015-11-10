@@ -253,13 +253,13 @@
 	
 	if (existingTeamAssigned) {
 		
-		[existingTeamAssigned tryUpdateAssignedRideRoutesWithSender:sender];
+		[existingTeamAssigned tryUpdateActiveAssignedRideRoutesWithSender:sender];
 		[existingTeamAssigned postNotificationUpdatedWithSender:sender andUpdatedRidesAssigned:YES];
 	}
 	
 	if (team) {
 		
-		[team tryUpdateAssignedRideRoutesWithSender:sender];
+		[team tryUpdateActiveAssignedRideRoutesWithSender:sender];
 		[team postNotificationUpdatedWithSender:sender andUpdatedRidesAssigned:YES];
 	}
 	
@@ -431,7 +431,7 @@
 		NSLog(@"Ride: %@", self);
 		
 		// Try to recalculate prep routes for team assigned, if any
-		[self.teamAssigned tryUpdateAssignedRideRoutesWithSender:sender]; // async
+		[self.teamAssigned tryUpdateActiveAssignedRideRoutesWithSender:sender]; // async
 	}];
 }
 
@@ -519,15 +519,23 @@
 }
 
 
-- (NSString*)getRideStatusText {
+- (BOOL)isStatusActive {
+
+	RideStatus rideStatus = self.status.integerValue;
 	
-	return [Ride rideStringFromStatus:self.status.integerValue withIsShort:NO];
+	return (rideStatus != RideStatus_Completed && rideStatus != RideStatus_Cancelled);
 }
 
 
-- (NSString*)getRideStatusTextShort {
+- (NSString*)getStatusText {
 	
-	return [Ride rideStringFromStatus:self.status.integerValue withIsShort:YES];
+	return [Ride stringFromStatus:self.status.integerValue withIsShort:NO];
+}
+
+
+- (NSString*)getStatusTextShort {
+	
+	return [Ride stringFromStatus:self.status.integerValue withIsShort:YES];
 }
 
 
@@ -664,11 +672,12 @@
 			
 			// Accumulate wait duration up to current ride, inclusive
 			NSTimeInterval duration = self.routePrepDuration.doubleValue; // seconds
-			for (Ride* rideAssigned in [self.teamAssigned getSortedRidesAssigned]) {
+			for (Ride* sortedActiveRideAssigned in [self.teamAssigned getSortedActiveRidesAssigned]) {
 				
-				if (rideAssigned == self) break;
+				if (sortedActiveRideAssigned == self) break;
 				
-				duration += rideAssigned.routePrepDuration.doubleValue + rideAssigned.routeMainDuration.doubleValue;
+				duration += sortedActiveRideAssigned.routePrepDuration.doubleValue;
+				duration += sortedActiveRideAssigned.routeMainDuration.doubleValue;
 			}
 			
 			return duration;
@@ -695,11 +704,12 @@
 			
 			// Accumulate wait distance up to current ride, inclusive
 			CLLocationDistance distance = self.routePrepDistance.doubleValue; // meters
-			for (Ride* rideAssigned in [self.teamAssigned getSortedRidesAssigned]) {
+			for (Ride* sortedActiveRideAssigned in [self.teamAssigned getSortedActiveRidesAssigned]) {
 				
-				if (rideAssigned == self) break;
+				if (sortedActiveRideAssigned == self) break;
 				
-				distance += rideAssigned.routePrepDistance.doubleValue + rideAssigned.routeMainDistance.doubleValue;
+				distance += sortedActiveRideAssigned.routePrepDistance.doubleValue;
+				distance += sortedActiveRideAssigned.routeMainDistance.doubleValue;
 			}
 			
 			return distance;
@@ -759,7 +769,7 @@
 }
 
 
-+ (NSString*)rideStringFromStatus:(RideStatus)rideStatus withIsShort:(BOOL)isShort {
++ (NSString*)stringFromStatus:(RideStatus)rideStatus withIsShort:(BOOL)isShort {
 	
 	switch (rideStatus) {
 			
@@ -793,7 +803,7 @@
 }
 
 
-//+ (RideStatus)rideStatusFromString:(NSString*)rideStatusString {
+//+ (RideStatus)statusFromString:(NSString*)rideStatusString {
 //	
 //	NSAssert(rideStatusString.length > 0, @"Ride status string must exist");
 //	if (rideStatusString.length <= 0)

@@ -366,7 +366,7 @@
 	
 	NSString* status = [team getStatusText];
 	status = status.length > 0 ? [NSString stringWithFormat:@" (%@)", status] : @"";
-	cell.textLabel.text = [NSString stringWithFormat:@"%@%@ | Rides: %lu", [team getTitle], status, (unsigned long)team.ridesAssigned.count];
+	cell.textLabel.text = [NSString stringWithFormat:@"%@%@ | Rides: %lu", [team getTitle], status, (unsigned long)[team getActiveRidesAssigned].count];
 	
 	cell.textLabel.numberOfLines = 0;
 	cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -383,23 +383,23 @@
 	
 	// End Detail
 	
-	Ride* lastRideAssigned = [team getLastRideAssigned];
+	Ride* lastSortedActiveRideAssigned = [team getSortedActiveRidesAssigned].lastObject;
 
-	NSDate* routeDateTimeEnd = [lastRideAssigned getRouteDateTimeEnd];
+	NSDate* routeDateTimeEnd = [lastSortedActiveRideAssigned getRouteDateTimeEnd];
 	NSString* endDateString = routeDateTimeEnd
 	? [self.cellDateFormatter stringFromDate:routeDateTimeEnd]
 	: TEAMS_CELL_FIELD_EMPTY;
 	
-	NSString* endAddress = lastRideAssigned.locationEndAddress.length > 0
-	? lastRideAssigned.locationEndAddress
+	NSString* endAddress = lastSortedActiveRideAssigned.locationEndAddress.length > 0
+	? lastSortedActiveRideAssigned.locationEndAddress
 	: TEAMS_CELL_FIELD_EMPTY;
 	
 	NSString* endDetail = [NSString stringWithFormat:@"End: %@ -> %@", endDateString, endAddress];
 	
 	// Route Detail
 	
-	NSString* durationString = [NSString stringWithFormat:@"%.0f", team.assignedDuration / (NSTimeInterval)SECONDS_PER_MINUTE];
-	NSString* distanceString = [NSString stringWithFormat:@"%.1f", team.assignedDistance / (CLLocationDistance)METERS_PER_KILOMETER];
+	NSString* durationString = [NSString stringWithFormat:@"%.0f", [team getActiveDurationAssigned] / (NSTimeInterval)SECONDS_PER_MINUTE];
+	NSString* distanceString = [NSString stringWithFormat:@"%.1f", [team getActiveDistanceAssigned] / (CLLocationDistance)METERS_PER_KILOMETER];
 	NSString* routeDetail = [NSString stringWithFormat:@"%@ min | %@ km", durationString, distanceString];
 	
 	// Detail Text

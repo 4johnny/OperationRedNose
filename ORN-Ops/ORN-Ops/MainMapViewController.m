@@ -516,9 +516,9 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		
 		Team* team = ((TeamPointAnnotation*)view.annotation).team;
 		
-		for (Ride* ride in team.ridesAssigned) {
+		for (Ride* rideAssigned in [team getActiveRidesAssigned]) {
 		
-			[ride postNotificationUpdatedWithSender:self];
+			[rideAssigned postNotificationUpdatedWithSender:self];
 		}
 		
 		NSLog(@"Teams[%lu] selected: %@", (unsigned long)[self.teamsFetchedResultsController.fetchedObjects indexOfObject:team], team);
@@ -552,14 +552,14 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		
 		Team* team = ((TeamPointAnnotation*)view.annotation).team;
 		
-		for (Ride* ride in team.ridesAssigned) {
+		for (Ride* activeRideAssigned in [team getActiveRidesAssigned]) {
 			
-			[ride postNotificationUpdatedWithSender:self];
+			[activeRideAssigned postNotificationUpdatedWithSender:self];
 		}
 	}
 
 	// Clear remembered selected annotation if no annotation selected anymore
-	if (self.mainMapView.selectedAnnotations.count == 0) {
+	if (self.mainMapView.selectedAnnotations.count <= 0) {
 		
 		self.previousSelectedAnnotation = nil;
 	}
@@ -836,16 +836,16 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	Team* team = teamPointAnnotation.team;
 	
-	// If team assigned to rides, add total route duration and distance to label
+	// If team assigned to active rides, add total route duration and distance to label
 	
-	if (!team.ridesAssigned || team.ridesAssigned.count == 0) return nil;
+	if ([team getActiveRidesAssigned].count <= 0) return nil;
 	
 	NSString* leftCalloutAccessoryFormat = [NSString stringWithFormat:@"%@\n%@", MAP_ANNOTATION_DURATION_FORMAT, MAP_ANNOTATION_DISTANCE_FORMAT];
 	
 	[leftCalloutAccessoryButton setTitle:
 	 [NSString stringWithFormat:leftCalloutAccessoryFormat,
-	  [team assignedDuration] / (NSTimeInterval)SECONDS_PER_MINUTE,
-	  [team assignedDistance] / (CLLocationDistance)METERS_PER_KILOMETER]
+	  [team getActiveDurationAssigned] / (NSTimeInterval)SECONDS_PER_MINUTE,
+	  [team getActiveDistanceAssigned] / (CLLocationDistance)METERS_PER_KILOMETER]
 								forState:UIControlStateNormal];
 	
 	leftCalloutAccessoryButton.backgroundColor = [UIColor blueColor];
@@ -1153,9 +1153,9 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	if ([selectedAnnotation conformsToProtocol:@protocol(TeamModelSource)]) {
 		
 		Team* team = ((id<TeamModelSource>)selectedAnnotation).team;
-		for (Ride* ride in team.ridesAssigned) {
+		for (Ride* activeRideAssigned in [team getActiveRidesAssigned]) {
 			
-			[ride postNotificationUpdatedWithSender:self];
+			[activeRideAssigned postNotificationUpdatedWithSender:self];
 		}
 		return;
 	}
@@ -1272,9 +1272,11 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	NSAssert(team, @"Team must exist");
 	if (!team) return;
 	
-	if (team.ridesAssigned.count <= 0) {
+	Ride* sortedActiveRideAssigned = [team getSortedActiveRidesAssigned].firstObject;
+	
+	if (!sortedActiveRideAssigned) {
 		
-		[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Alert" andMessage:@"Team has no rides assigned"];
+		[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Alert" andMessage:@"Team has no active rides assigned"];
 		return;
 	}
 	
@@ -1298,11 +1300,11 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	// Prefer Apple ID e-mail over phone number
 	messageComposeViewController.recipients =
 	@[
-	  team.emailAddress.length > 0 ? team.emailAddress : team.phoneNumber
+	  team.emailAddress.length > 0 ? team.emailAddress : team.phoneNumber,
 	  ];
 	
-	Ride* ride = [team getFirstRideAssigned];
-	NSAssert(ride, @"First ride assigned must exist");
+	Ride* ride = sortedActiveRideAssigned; // Shorter var for cleaner code below
+	NSAssert(ride, @"First sorted active ride assigned must exist");
 	
 	messageComposeViewController.body =
 	
@@ -1440,8 +1442,8 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		[mapItems addObject:mapItem];
 	}
 	
-	Ride* firstRideAssigned = [team getFirstRideAssigned];
-	mapItem = [firstRideAssigned mapItemWithRideLocationType:RideLocationType_Start];
+	Ride* firstSortedActiveRideAssigned = [team getSortedActiveRidesAssigned].firstObject;
+	mapItem = [firstSortedActiveRideAssigned mapItemWithRideLocationType:RideLocationType_Start];
 	if (mapItem) {
 		
 		[mapItems addObject:mapItem];
@@ -1752,7 +1754,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	}
 
 	// Update existing overlay with annotation or create new ones, if possible
-	// NOTE: Overlays must always be re-added in order to trigger its view update properly
+	// NOTE: Overlays must always be re-added in order to trigger their view update properly
 	MKPolyline* polyline = self.polylineMode == PolylineMode_Route ? [ride polylineWithRideRouteType:rideRouteType] : nil;
 	ridePolyline = [RidePolyline ridePolyline:ridePolyline
 								 withPolyline:polyline
@@ -1780,9 +1782,9 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 - (NSArray<RidePointAnnotation*>*)annotationsForRide:(Ride*)ride {
 	
-	return (NSArray<RidePointAnnotation*>*)[self.mainMapView.annotations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id _Nonnull evaluatedObject, NSDictionary<NSString*,id>* _Nullable bindings) {
+	return (NSArray<RidePointAnnotation*>*)[self.mainMapView.annotations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id<MKAnnotation> _Nonnull annotation, NSDictionary<NSString*,id>* _Nullable bindings) {
 		
-		return [evaluatedObject conformsToProtocol:@protocol(RideModelSource)] && ((id<RideModelSource>)evaluatedObject).ride == ride;
+		return [annotation conformsToProtocol:@protocol(RideModelSource)] && ((id<RideModelSource>)annotation).ride == ride;
 	}]];
 }
 
@@ -1817,9 +1819,9 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 - (NSArray<id<MKOverlay>>*)overlaysForRide:(Ride*)ride {
 	
-	return [self.mainMapView.overlays filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString*,id>* _Nullable bindings) {
+	return [self.mainMapView.overlays filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id<MKOverlay> _Nonnull overlay, NSDictionary<NSString*,id>* _Nullable bindings) {
 		
-		return [evaluatedObject conformsToProtocol:@protocol(RideModelSource)] && ((id<RideModelSource>)evaluatedObject).ride == ride;
+		return [overlay conformsToProtocol:@protocol(RideModelSource)] && ((id<RideModelSource>)overlay).ride == ride;
 	}]];
 }
 
@@ -1865,8 +1867,8 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	
 	UIAlertAction* moveAction = [UIAlertAction actionWithTitle:@"Move" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
 		
-		Ride* firstRideAssigned = [team getFirstRideAssigned];
-		[firstRideAssigned clearPrepRoute];
+		Ride* firstSortedActiveRideAssigned = [team getSortedActiveRidesAssigned].firstObject;
+		[firstSortedActiveRideAssigned clearPrepRoute];
 		
 		[team updateCurrentLocationWithLatitude:dropCoordinate.latitude andLongitude:dropCoordinate.longitude andStreet:nil andCity:nil andState:nil andAddress:nil andTime:nil];
 		
@@ -2052,9 +2054,9 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 - (NSArray<TeamPointAnnotation*>*)annotationsForTeam:(Team*)team {
 	
-	return (NSArray<TeamPointAnnotation*>*)[self.mainMapView.annotations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id _Nonnull evaluatedObject, NSDictionary<NSString*,id>* _Nullable bindings) {
+	return (NSArray<TeamPointAnnotation*>*)[self.mainMapView.annotations filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id<MKAnnotation> _Nonnull annotation, NSDictionary<NSString*,id>* _Nullable bindings) {
 		
-		return [evaluatedObject conformsToProtocol:@protocol(TeamModelSource)] && ((id<TeamModelSource>)evaluatedObject).team == team;
+		return [annotation conformsToProtocol:@protocol(TeamModelSource)] && ((id<TeamModelSource>)annotation).team == team;
 	}]];
 }
 

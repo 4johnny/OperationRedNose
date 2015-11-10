@@ -49,8 +49,8 @@
 
 - (NSString*)getTitle {
 	
-	if (self.name.length > 0 && self.members.length == 0) return self.name;
-	if (self.name.length == 0 && self.members.length > 0) return self.members;
+	if (self.name.length > 0 && self.members.length <= 0) return self.name;
+	if (self.name.length <= 0 && self.members.length > 0) return self.members;
 	if (self.name.length > 0 && self.members.length > 0) return [NSString stringWithFormat:@"%@: %@", self.name, self.members];
 	
 	return TEAM_TITLE_DEFAULT;
@@ -275,12 +275,12 @@
 	
 	[Util saveManagedObjectContext];
 	[self postNotificationUpdatedWithSender:sender andUpdatedLocation:YES];
-	Ride* firstRideAssigned = [self getFirstRideAssigned];
-	[firstRideAssigned postNotificationUpdatedWithSender:self];
+	Ride* firstSortedActiveRideAssigned = [self getSortedActiveRidesAssigned].firstObject;
+	[firstSortedActiveRideAssigned postNotificationUpdatedWithSender:self];
 	NSLog(@"Team: %@", self);
 	
 	// Try to recalculate prep route
-	[firstRideAssigned tryUpdatePrepRouteWithLatitude:self.locationCurrentLatitude andLongitude:self.locationCurrentLongitude andSender:self]; // async
+	[firstSortedActiveRideAssigned tryUpdatePrepRouteWithLatitude:self.locationCurrentLatitude andLongitude:self.locationCurrentLongitude andSender:self]; // async
 }
 
 
@@ -325,30 +325,32 @@
 
 
 /*
- Calculate route for team per assigned rides, asynchronously
+ Calculate route for team per active assigned rides, asynchronously
  */
-- (void)tryUpdateAssignedRideRoutesWithSender:(id)sender {
+- (void)tryUpdateActiveAssignedRideRoutesWithSender:(id)sender {
 	
 	NSNumber* sourceLatitude = self.locationCurrentLatitude; // Maybe nil
 	NSNumber* sourceLongitude = self.locationCurrentLongitude; // Maybe nil
 	
-	for (Ride* rideAssigned in [self getSortedRidesAssigned]) {
+	for (Ride* sortedActiveRideAssigned in [self getSortedActiveRidesAssigned]) {
 
-		[rideAssigned tryUpdatePrepRouteWithLatitude:sourceLatitude andLongitude:sourceLongitude andSender:sender]; // async
+		[sortedActiveRideAssigned tryUpdatePrepRouteWithLatitude:sourceLatitude andLongitude:sourceLongitude andSender:sender]; // async
 
 		// Best effort to determine source location for next prep route
 		
-		if (rideAssigned.locationEndLatitude && rideAssigned.locationEndLongitude) {
+		if (sortedActiveRideAssigned.locationEndLatitude &&
+			sortedActiveRideAssigned.locationEndLongitude) {
 			
-			sourceLatitude = rideAssigned.locationEndLatitude;
-			sourceLongitude = rideAssigned.locationEndLongitude;
+			sourceLatitude = sortedActiveRideAssigned.locationEndLatitude;
+			sourceLongitude = sortedActiveRideAssigned.locationEndLongitude;
 			continue;
 		}
 		
-		if (rideAssigned.locationStartLatitude && rideAssigned.locationStartLongitude) {
+		if (sortedActiveRideAssigned.locationStartLatitude &&
+			sortedActiveRideAssigned.locationStartLongitude) {
 			
-			sourceLatitude = rideAssigned.locationStartLatitude;
-			sourceLongitude = rideAssigned.locationStartLongitude;
+			sourceLatitude = sortedActiveRideAssigned.locationStartLatitude;
+			sourceLongitude = sortedActiveRideAssigned.locationStartLongitude;
 			continue;
 		}
 	}
@@ -370,25 +372,34 @@
 }
 
 
-- (Ride*)getFirstRideAssigned {
+- (NSSet<Ride*>*)getActiveRidesAssigned {
 	
-	return [self getSortedRidesAssigned].firstObject;
+	if (self.ridesAssigned.count <= 0) return self.ridesAssigned;
+	
+	NSSet<Ride*>* activeRidesAssigned = [self.ridesAssigned filteredSetUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(Ride* _Nonnull ride, NSDictionary<NSString*,id>* _Nullable bindings) {
+		
+		return [ride isStatusActive];
+	}]];
+	
+	return activeRidesAssigned;
 }
 
 
-- (Ride*)getLastRideAssigned {
+- (NSArray<Ride*>*)getSortedActiveRidesAssigned {
+
+	if (!self.ridesAssigned) return nil;
 	
-	return [self getSortedRidesAssigned].lastObject;
-}
+	NSSet<Ride*>* activeRidesAssigned = [self getActiveRidesAssigned];
+	if (activeRidesAssigned.count <= 0) return @[];
+	
+	NSArray<Ride*>* sortedActiveRidesAssigned =
+	[activeRidesAssigned sortedArrayUsingDescriptors:
+	 @[
+	   [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY1 ascending:RIDE_FETCH_SORT_ASC1],
+	   [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY2 ascending:RIDE_FETCH_SORT_ASC2],
+	   ]];
 
-
-- (NSArray<Ride*>*)getSortedRidesAssigned {
-
-	return [self.ridesAssigned sortedArrayUsingDescriptors:
-			@[
-			  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY1 ascending:RIDE_FETCH_SORT_ASC1],
-			  [NSSortDescriptor sortDescriptorWithKey:RIDE_FETCH_SORT_KEY2 ascending:RIDE_FETCH_SORT_ASC2],
-			  ]];
+	return sortedActiveRidesAssigned;
 }
 
 
@@ -418,35 +429,37 @@
 }
 
 
-- (NSTimeInterval)assignedDuration {
+- (NSTimeInterval)getActiveDurationAssigned {
 	
-	// Accumulate duration for all assigned rides
+	// Accumulate duration for all active rides assigned
 	NSTimeInterval duration = 0; // seconds
-	for (Ride* rideAssigned in self.ridesAssigned) {
+	for (Ride* activeRideAssigned in [self getActiveRidesAssigned]) {
 
-		duration += rideAssigned.routePrepDuration.doubleValue + rideAssigned.routeMainDuration.doubleValue;
+		duration += activeRideAssigned.routePrepDuration.doubleValue;
+		duration += activeRideAssigned.routeMainDuration.doubleValue;
 	}
 
 	return duration;
 }
 
 
-- (CLLocationDistance)assignedDistance {
+- (CLLocationDistance)getActiveDistanceAssigned {
 
-	// Accumulate distance for all assigned rides
+	// Accumulate distance for all active rides assigned
 	CLLocationDistance distance = 0; // meters
-	for (Ride* rideAssigned in self.ridesAssigned) {
+	for (Ride* activeRideAssigned in [self getActiveRidesAssigned]) {
 		
-		distance += rideAssigned.routePrepDistance.doubleValue + rideAssigned.routeMainDistance.doubleValue;
+		distance += activeRideAssigned.routePrepDistance.doubleValue;
+		distance += activeRideAssigned.routeMainDistance.doubleValue;
 	}
 	
 	return distance;
 }
 
 
-- (NSDecimalNumber*)assignedDonations {
+- (NSDecimalNumber*)getDonationsAssigned {
 	
-	// Accumulate donations for all assigned rides
+	// Accumulate donations for all rides assigned
 	NSDecimalNumber* donations = [NSDecimalNumber zero] ; // CAD$
 	for (Ride* rideAssigned in self.ridesAssigned) {
 		

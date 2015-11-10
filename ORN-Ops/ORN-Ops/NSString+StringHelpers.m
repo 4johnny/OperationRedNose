@@ -34,7 +34,7 @@
 + (BOOL)compareString:(NSString*)firstString toString:(NSString*)secondString {
 	
 	// NOTE: Treat nil & empty as same - checking length covers nil as well
-	return ((firstString.length == 0 && secondString.length == 0) || [firstString isEqualToString:secondString]);
+	return ((firstString.length <= 0 && secondString.length <= 0) || [firstString isEqualToString:secondString]);
 }
 
 

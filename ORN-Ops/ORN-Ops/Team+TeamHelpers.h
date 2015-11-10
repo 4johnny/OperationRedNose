@@ -104,20 +104,20 @@
 - (void)tryUpdateCurrentLocationWithAddressString:(NSString*)addressString
 									  andGeocoder:(CLGeocoder*)geocoder
 										andSender:(id)sender;
-- (void)tryUpdateAssignedRideRoutesWithSender:(id)sender;
+- (void)tryUpdateActiveAssignedRideRoutesWithSender:(id)sender;
 
 - (NSString*)getTitle;
 - (NSString*)getStatusText;
 
-- (Ride*)getFirstRideAssigned;
-- (Ride*)getLastRideAssigned;
-- (NSArray<Ride*>*)getSortedRidesAssigned;
+- (NSSet<Ride*>*)getActiveRidesAssigned;
+- (NSArray<Ride*>*)getSortedActiveRidesAssigned;
 
 - (CLLocationCoordinate2D)getLocationCurrentCoordinate;
 - (MKMapItem*)mapItemForCurrentLocation;
 
-- (NSTimeInterval)assignedDuration;
-- (CLLocationDistance)assignedDistance;
-- (NSDecimalNumber*)assignedDonations;
+- (NSTimeInterval)getActiveDurationAssigned;
+- (CLLocationDistance)getActiveDistanceAssigned;
+
+- (NSDecimalNumber*)getDonationsAssigned;
 
 @end

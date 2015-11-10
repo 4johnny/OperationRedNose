@@ -34,7 +34,7 @@
 	
 	// Decode coordinates from arrays - if none, we are done
 	NSArray<NSNumber*>* latitudes = [decoder decodeObjectForKey:POLYLINE_LATITUDES_CODING_KEY];
-	if (latitudes.count == 0) return [self init];
+	if (latitudes.count <= 0) return [self init];
 	NSArray<NSNumber*>* longitudes = [decoder decodeObjectForKey:POLYLINE_LONGITUDES_CODING_KEY];
 	NSUInteger pointCount = latitudes.count;
 	

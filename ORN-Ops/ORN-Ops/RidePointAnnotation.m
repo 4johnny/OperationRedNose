@@ -33,7 +33,7 @@
 		_rideLocationType = rideLocationType;
 		_needsAnimatesDrop = needsAnimatesDrop;
 		
-		NSString* titlePrefix = [ride getRideStatusTextShort];
+		NSString* titlePrefix = [ride getStatusTextShort];
 		
 		switch (_rideLocationType) {
 				
