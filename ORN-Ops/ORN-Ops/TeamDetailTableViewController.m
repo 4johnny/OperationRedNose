@@ -93,9 +93,9 @@
 		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStyleDone target:self action:@selector(savePressed:)];
 	}
 	
-	[self assignTagsForTabOrder];
+	[self configureTagsForTabOrder];
 	
-	[self configureView];
+	[self configureViewFromDataModel];
 }
 
 
@@ -220,7 +220,7 @@
 #
 
 
-- (void)assignTagsForTabOrder {
+- (void)configureTagsForTabOrder {
 
 	// Dispatch
 	self.isActiveSwitch.tag = 			0;
@@ -247,7 +247,7 @@
 }
 
 
-- (void)configureView {
+- (void)configureViewFromDataModel {
 	
 	if (!self.isAddMode) {
 		

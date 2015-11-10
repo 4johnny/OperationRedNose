@@ -111,11 +111,11 @@
 		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStyleDone target:self action:@selector(savePressed:)];
 	}
 	
-	[self assignTagsForTabOrder];
+	[self configureTagsForTabOrder];
 
-	[self configureForiPhoneWithSize:self.view.frame.size];
+	[self configureForPhoneWithSize:self.view.frame.size];
 	
-	[self configureView];
+	[self configureViewFromDataModel];
 }
 
 
@@ -145,7 +145,7 @@
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
 
-	[self configureForiPhoneWithSize:size];
+	[self configureForPhoneWithSize:size];
 }
 
 
@@ -293,7 +293,7 @@
 #
 
 
-- (void)assignTagsForTabOrder {
+- (void)configureTagsForTabOrder {
 
 	// Dispatch
 	self.statusSegmentedControl.tag =				0;
@@ -324,7 +324,7 @@
 }
 
 
-- (void)configureForiPhoneWithSize:(CGSize)size {
+- (void)configureForPhoneWithSize:(CGSize)size {
 	
 	if ([UIDevice currentDevice].userInterfaceIdiom != UIUserInterfaceIdiomPhone) return;
 
@@ -376,7 +376,7 @@
 }
 
 
-- (void)configureView {
+- (void)configureViewFromDataModel {
 	
 	[self configureTeamAssignedPickerTextField];
 	
