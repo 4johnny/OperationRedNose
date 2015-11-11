@@ -554,6 +554,25 @@
 }
 
 
+- (BOOL)isStatusPreDispatch {
+	
+	switch (self.status.integerValue) {
+			
+		case RideStatus_None:
+		case RideStatus_New:
+		case RideStatus_Confirmed:
+			return YES;
+			
+		default:
+		case RideStatus_Dispatched:
+		case RideStatus_Transporting:
+		case RideStatus_Completed:
+		case RideStatus_Cancelled:
+			return NO;
+	}
+}
+
+
 - (NSString*)getStatusText {
 	
 	return [Ride stringFromStatus:self.status.integerValue withIsShort:NO];

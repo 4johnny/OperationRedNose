@@ -14,6 +14,12 @@
 # pragma mark - Constants
 #
 
+#ifdef DEBUG
+
+#define DEMO_MODE
+
+#endif
+
 #define CG_SIZE_MAX		CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
 
 #define SECONDS_PER_MINUTE		60

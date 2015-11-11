@@ -184,6 +184,8 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 - (void)clearPrepRoute;
 
 - (BOOL)isStatusActive;
+- (BOOL)isStatusPreDispatch;
+
 - (NSString*)getStatusText;
 - (NSString*)getStatusTextShort;
 

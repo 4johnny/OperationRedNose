@@ -93,11 +93,20 @@
 								andTitle:(NSString*)title
 							  andMessage:(NSString*)message {
 	
+	[Util presentOKAlertWithViewController:viewController andTitle:title andMessage:message andHandler:nil];
+}
+
+
++ (void)presentOKAlertWithViewController:(UIViewController*)viewController
+								andTitle:(NSString*)title
+							  andMessage:(NSString*)message
+						andHandler:(void (^ __nullable)(UIAlertAction* action))handler {
+	
 	if (!viewController) return;
 	
 	UIAlertController* actionAlertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
 	
-	[actionAlertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+	[actionAlertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:handler]];
 	
 	[viewController presentViewController:actionAlertController animated:YES completion:nil];
 }

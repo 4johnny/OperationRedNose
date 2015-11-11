@@ -92,6 +92,11 @@
 								andTitle:(NSString*)title
 							  andMessage:(NSString*)message;
 
++ (void)presentOKAlertWithViewController:(UIViewController*)viewController
+								andTitle:(NSString*)title
+							  andMessage:(NSString*)message
+							  andHandler:(void (^)(UIAlertAction* action))handler;
+
 + (UIAlertController*)presentActionAlertWithViewController:(UIViewController*)viewController
 												  andTitle:(NSString*)title
 												andMessage:(NSString*)message

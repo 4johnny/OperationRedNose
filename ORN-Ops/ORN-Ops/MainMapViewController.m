@@ -1100,20 +1100,35 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			case MessageComposeResultSent:
 				
 				NSLog(@"Team dispatch message was sent");
-				//	[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Info" andMessage:@"Team dispatch message was sent"];
 				
+				[self handleDispatchMessageSent];
 				break;
 				
-			case MessageComposeResultCancelled:
+			case MessageComposeResultCancelled: {
 				
+				NSLog(@"Team dispatch message was cancelled");
+				
+#ifdef DEMO_MODE
+				[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Warning" andMessage:@"Team dispatch message was cancelled" andHandler:^(UIAlertAction* action) {
+					
+					UIAlertAction* proceedAlertAction = [UIAlertAction actionWithTitle:@"Proceed" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action) {
+						
+						[self handleDispatchMessageSent];
+					}];
+					
+					(void)[Util presentActionAlertWithViewController:self andTitle:@"DEMO MODE" andMessage:@"Proceed as if dispatch message was sent?" andAction:proceedAlertAction andCancelHandler:nil];
+				}];
+#else
 				[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Warning" andMessage:@"Team dispatch message was cancelled"];
-				
+#endif
 				break;
-				
+			}
+			
 			case MessageComposeResultFailed:
 				
-				[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Error" andMessage:@"Team dispatch message failed to send"];
+				NSLog(@"Team dispatch message failed");
 				
+				[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Error" andMessage:@"Team dispatch message failed to send"];
 				break;
 				
 			default:
@@ -1121,6 +1136,40 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 				break;
 		}
 	}];
+}
+
+
+- (void)handleDispatchMessageSent {
+	
+	BOOL statusUpdated = [self updateStatusForFirstAssignedRide];
+	
+	NSString* message = [NSString stringWithFormat:@"Team dispatch message was sent.%@", statusUpdated ? @"\nUpdated ride status." : @""];
+	[Util presentOKAlertWithViewController:self andTitle:@"Dispatch Info" andMessage:message];
+}
+
+
+- (BOOL)updateStatusForFirstAssignedRide {
+
+	// Update status of first sorted active ride assigned to selected team
+	
+	id<MKAnnotation> selectedAnnotation = self.mainMapView.selectedAnnotations.firstObject;
+	NSAssert([selectedAnnotation conformsToProtocol:@protocol(TeamModelSource)], @"Annotation must be team");
+	if (![selectedAnnotation conformsToProtocol:@protocol(TeamModelSource)]) return NO;
+	
+	Team* team = ((id<TeamModelSource>)selectedAnnotation).team;
+	NSAssert(team, @"Team must exist");
+	
+	Ride* firstSortedActiveRideAssigned = [team getSortedActiveRidesAssigned].firstObject;
+	NSAssert(firstSortedActiveRideAssigned, @"First sorted active ride assigned must exist");
+	
+	if (![firstSortedActiveRideAssigned isStatusPreDispatch]) return NO;
+	
+	firstSortedActiveRideAssigned.status = @(RideStatus_Dispatched);
+	
+	[Util saveManagedObjectContext];
+	[firstSortedActiveRideAssigned postNotificationUpdatedWithSender:self];
+	
+	return YES;
 }
 
 
