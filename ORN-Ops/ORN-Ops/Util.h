@@ -28,6 +28,13 @@
 #define MAP_SPAN_LOCATION_DELTA_LOCALE			2.0 // degrees
 
 #
+# pragma mark Dispatch Constants
+#
+
+#define ARRIVAL_MARGIN_DURATION	60 // seconds
+#define ARRIVAL_MARGIN_DISTANCE	100 // meters
+
+#
 # pragma mark Date-Time Constants
 #
 

@@ -465,7 +465,7 @@
 			NSLog(@"Directions Error: %@ %@", error.localizedDescription, error.userInfo);
 			return;
 		}
-		
+
 		// Use first directions route as prep
 		// NOTE: Should be exactly 1, since we did not request alternate routes
 		// NOTE: Round up to nearest minute
@@ -477,6 +477,17 @@
 		NSLog(@"Prep Distance: %.0f m -> %.2f km", route.distance, route.distance / (CLLocationDistance)METERS_PER_KILOMETER);
 		NSLog(@"Prep Polyline: %@", route.polyline);
 
+		// If prep route is close enough to ride start or end, adjust status automatically
+		if (isFirst && (self.routePrepDuration.doubleValue < ARRIVAL_MARGIN_DURATION ||
+						self.routePrepDistance.doubleValue < ARRIVAL_MARGIN_DISTANCE)) {
+				
+			NSLog(@"Changing ride status due to arrival margin");
+			
+			NSAssert([self isStatusActive], @"Status must be active"); // For current usage of this method
+			self.status = @(self.status.integerValue != RideStatus_Transporting ? RideStatus_Transporting : RideStatus_Completed);
+			[self.teamAssigned tryUpdateActiveAssignedRideRoutesWithSender:self];
+		}
+		
 		// Persist to store and notify
 		[Util saveManagedObjectContext];
 		[self postNotificationUpdatedWithSender:sender];
