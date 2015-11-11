@@ -6,6 +6,9 @@
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+
 #import "AppDelegate.h"
 #import "MainTabBarController.h"
 
@@ -48,6 +51,8 @@
 - (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions {
 	// Override point for customization after application launch.
 
+	[Fabric with:@[[Crashlytics class]]];
+	
 	return YES;
 }
 
