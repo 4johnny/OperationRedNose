@@ -275,12 +275,14 @@
 	
 	[Util saveManagedObjectContext];
 	[self postNotificationUpdatedWithSender:sender andUpdatedLocation:YES];
-	Ride* firstSortedActiveRideAssigned = [self getSortedActiveRidesAssigned].firstObject;
+	
+	Ride* firstSortedActiveRideAssigned = [self getSortedActiveRidesAssigned].firstObject; // Maybe nil
 	[firstSortedActiveRideAssigned postNotificationUpdatedWithSender:self];
+	
 	NSLog(@"Team: %@", self);
 	
 	// Try to recalculate prep route
-	[firstSortedActiveRideAssigned tryUpdatePrepRouteWithLatitude:self.locationCurrentLatitude andLongitude:self.locationCurrentLongitude andSender:self]; // async
+	[firstSortedActiveRideAssigned tryUpdatePrepRouteWithLatitude:self.locationCurrentLatitude andLongitude:self.locationCurrentLongitude andIsFirst:YES andSender:self]; // async
 }
 
 
@@ -332,9 +334,13 @@
 	NSNumber* sourceLatitude = self.locationCurrentLatitude; // Maybe nil
 	NSNumber* sourceLongitude = self.locationCurrentLongitude; // Maybe nil
 	
+	BOOL isFirst = YES;
 	for (Ride* sortedActiveRideAssigned in [self getSortedActiveRidesAssigned]) {
 
-		[sortedActiveRideAssigned tryUpdatePrepRouteWithLatitude:sourceLatitude andLongitude:sourceLongitude andSender:sender]; // async
+		[sortedActiveRideAssigned tryUpdatePrepRouteWithLatitude:sourceLatitude andLongitude:sourceLongitude andIsFirst:isFirst andSender:sender]; // async
+		if (isFirst) {
+			isFirst = NO;
+		}
 
 		// Best effort to determine source location for next prep route
 		

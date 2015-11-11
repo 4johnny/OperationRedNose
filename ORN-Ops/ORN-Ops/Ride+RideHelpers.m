@@ -432,6 +432,7 @@
 		
 		// Try to recalculate prep routes for team assigned, if any
 		[self.teamAssigned tryUpdateActiveAssignedRideRoutesWithSender:sender]; // async
+		
 	}];
 }
 
@@ -441,14 +442,17 @@
  */
 - (void)tryUpdatePrepRouteWithLatitude:(NSNumber*)latitude
 						  andLongitude:(NSNumber*)longitude
+							andIsFirst:(BOOL)isFirst
 							 andSender:(id)sender {
+	
+	NSAssert([self isStatusActive], @"Status must be active"); // For current usage of this method
 	
 	// Capture prep location
 	self.locationPrepLatitude = latitude;
 	self.locationPrepLongitude = longitude;
 	
 	// If cannot get prep directions request, we are done
-	MKDirectionsRequest* directionsRequest = [self getPrepDirectionsRequest];
+	MKDirectionsRequest* directionsRequest = [self getPrepDirectionsRequestWithIsFirst:isFirst];
 	if (!directionsRequest) return;
 	
 	// Update prep route duration, distance, and polyline with directions
@@ -478,12 +482,14 @@
 		[self postNotificationUpdatedWithSender:sender];
 		[self.teamAssigned postNotificationUpdatedWithSender:sender];
 		NSLog(@"Ride: %@", self);
+		
 	}];
 }
 
 
 - (MKDirectionsRequest*)getMainDirectionsRequest {
 	
+	// NOTE: Ride start time good enough here for now
 	return [MKDirectionsRequest directionsRequestWithDepartureDate:self.dateTimeStart
 												 andSourceLatitude:self.locationStartLatitude
 												andSourceLongitude:self.locationStartLongitude
@@ -492,14 +498,25 @@
 }
 
 
-- (MKDirectionsRequest*)getPrepDirectionsRequest {
+- (MKDirectionsRequest*)getPrepDirectionsRequestWithIsFirst:(BOOL)isFirst {
 	
-	// NOTE: Ride start time good enough here
+	NSAssert([self isStatusActive], @"Status must be active"); // For current usage of this method
+	
+	NSNumber* destinationLatitude = self.locationStartLatitude;
+	NSNumber* destinationLongitude = self.locationStartLongitude;
+	if (isFirst &&
+		self.status.integerValue == RideStatus_Transporting) {
+		
+		destinationLatitude = self.locationEndLatitude;
+		destinationLongitude = self.locationEndLongitude;
+	}
+	
+	// NOTE: Ride start time good enough here for now
 	return [MKDirectionsRequest directionsRequestWithDepartureDate:self.dateTimeStart
 												 andSourceLatitude:self.locationPrepLatitude
 												andSourceLongitude:self.locationPrepLongitude
-											andDestinationLatitude:self.locationStartLatitude
-										   andDestinationLongitude:self.locationStartLongitude];
+											andDestinationLatitude:destinationLatitude
+										   andDestinationLongitude:destinationLongitude];
 }
 
 
@@ -521,9 +538,20 @@
 
 - (BOOL)isStatusActive {
 
-	RideStatus rideStatus = self.status.integerValue;
-	
-	return (rideStatus != RideStatus_Completed && rideStatus != RideStatus_Cancelled);
+	switch (self.status.integerValue) {
+			
+		case RideStatus_None:
+		case RideStatus_New:
+		case RideStatus_Confirmed:
+		case RideStatus_Dispatched:
+		case RideStatus_Transporting:
+			return YES;
+
+		default:
+		case RideStatus_Completed:
+		case RideStatus_Cancelled:
+			return NO;
+	}
 }
 
 

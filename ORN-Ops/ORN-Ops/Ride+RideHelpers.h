@@ -177,6 +177,7 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 - (void)tryUpdateMainRouteWithSender:(id)sender;
 - (void)tryUpdatePrepRouteWithLatitude:(NSNumber*)latitude
 						  andLongitude:(NSNumber*)longitude
+							andIsFirst:(BOOL)isFirst
 							 andSender:(id)sender;
 
 - (void)clearMainRoute;
