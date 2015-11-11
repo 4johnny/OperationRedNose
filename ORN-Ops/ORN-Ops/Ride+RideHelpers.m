@@ -504,8 +504,7 @@
 	
 	NSNumber* destinationLatitude = self.locationStartLatitude;
 	NSNumber* destinationLongitude = self.locationStartLongitude;
-	if (isFirst &&
-		self.status.integerValue == RideStatus_Transporting) {
+	if (isFirst && self.status.integerValue == RideStatus_Transporting) {
 		
 		destinationLatitude = self.locationEndLatitude;
 		destinationLongitude = self.locationEndLongitude;
@@ -700,12 +699,24 @@
 			
 			// Accumulate wait duration up to current ride, inclusive
 			NSTimeInterval duration = self.routePrepDuration.doubleValue; // seconds
+			BOOL isFirst = YES;
 			for (Ride* sortedActiveRideAssigned in [self.teamAssigned getSortedActiveRidesAssigned]) {
+				
+				NSAssert([sortedActiveRideAssigned isStatusActive], @"Status must be active");
 				
 				if (sortedActiveRideAssigned == self) break;
 				
 				duration += sortedActiveRideAssigned.routePrepDuration.doubleValue;
-				duration += sortedActiveRideAssigned.routeMainDuration.doubleValue;
+				
+				// Skip main route for first ride if transporting
+				if (!isFirst || sortedActiveRideAssigned.status.integerValue != RideStatus_Transporting) {
+					
+					duration += sortedActiveRideAssigned.routeMainDuration.doubleValue;
+				}
+				
+				if (isFirst) {
+					isFirst = NO;
+				}
 			}
 			
 			return duration;
@@ -732,12 +743,22 @@
 			
 			// Accumulate wait distance up to current ride, inclusive
 			CLLocationDistance distance = self.routePrepDistance.doubleValue; // meters
+			BOOL isFirst = YES;
 			for (Ride* sortedActiveRideAssigned in [self.teamAssigned getSortedActiveRidesAssigned]) {
 				
 				if (sortedActiveRideAssigned == self) break;
 				
 				distance += sortedActiveRideAssigned.routePrepDistance.doubleValue;
-				distance += sortedActiveRideAssigned.routeMainDistance.doubleValue;
+				
+				// Skip main route for first ride if transporting
+				if (!isFirst || sortedActiveRideAssigned.status.integerValue != RideStatus_Transporting) {
+					
+					distance += sortedActiveRideAssigned.routeMainDistance.doubleValue;
+				}
+				
+				if (isFirst) {
+					isFirst = NO;
+				}
 			}
 			
 			return distance;
