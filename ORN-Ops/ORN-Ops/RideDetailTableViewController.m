@@ -429,7 +429,19 @@
 	}
 	
 	// Save dispatch field: ride status
-	self.ride.status = @(self.statusSegmentedControl.selectedSegmentIndex + 1);
+	RideStatus existingStatus = self.ride.status.integerValue;
+	RideStatus newStatus = self.statusSegmentedControl.selectedSegmentIndex + 1;
+	if (existingStatus != newStatus) {
+		
+		BOOL isExistingStatusActive = [self.ride isStatusActive];
+		self.ride.status = @(newStatus);
+		BOOL isNewStatusActive = [self.ride isStatusActive];
+		
+		if (isExistingStatusActive != isNewStatusActive) {
+			
+			[self.ride.teamAssigned tryUpdateActiveAssignedRideRoutesWithSender:self];
+		}
+	}
 	
 	// Save dispatch field: start time - try async calculate route
 	if (![NSDate compareDate:self.ride.dateTimeStart toDate:self.startTimeDatePickerTextField.date]) {

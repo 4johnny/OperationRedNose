@@ -1611,9 +1611,10 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	BOOL wasRidePointAnnotationInMapView = (ridePointAnnotation != nil);
 	BOOL wasRidePointAnnotationSelected = (wasRidePointAnnotationInMapView && ridePointAnnotation == self.mainMapView.selectedAnnotations.firstObject);
 	
-	// Remove existing annotation if location updated
+	// Remove existing annotation if location updated or ride not active
+	BOOL isRideActive = [ride isStatusActive];
 	BOOL didRemoveRidePointAnnotationFromMapView = NO;
-	if (isLocationUpdated) {
+	if (isLocationUpdated || !isRideActive) {
 		
 		if (wasRidePointAnnotationInMapView) {
 			
@@ -1624,7 +1625,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	}
 	
 	// If deleting or not active, we are done
-	if ((options & Configure_Delete) || ![ride isStatusActive]) return NO;
+	if ((options & Configure_Delete) || !isRideActive) return NO;
 
 	// If no location, we are done
 	// NOTE: Best effort to find a location
@@ -1676,7 +1677,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	BOOL isRideSelected = [self isSelectedAnnotationForRide:ride];
 	BOOL isTeamAssignedSelected = [self isSelectedAnnotationForTeam:ride.teamAssigned];
 	
-	BOOL mainOverlayPresent =
+	BOOL isMainOverlayPresent =
 	[self configureViewWithRide:ride
 			   andRideRouteType:RideRouteType_Main
 			  usingRideOverlays:rideOverlays
@@ -1684,7 +1685,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	  andIsTeamAssignedSelected:isTeamAssignedSelected
 					 andOptions:options];
 	
-	BOOL prepOverlayPresent =
+	BOOL isPrepOverlayPresent =
 	[self configureViewWithRide:ride
 			   andRideRouteType:RideRouteType_Prep
 			  usingRideOverlays:rideOverlays
@@ -1692,7 +1693,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	  andIsTeamAssignedSelected:isTeamAssignedSelected
 					 andOptions:options];
 	
-	BOOL waitOverlayPresent =
+	BOOL isWaitOverlayPresent =
 	[self configureViewWithRide:ride
 			   andRideRouteType:RideRouteType_Wait
 			  usingRideOverlays:rideOverlays
@@ -1700,7 +1701,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	  andIsTeamAssignedSelected:isTeamAssignedSelected
 					 andOptions:options];
 
-	return mainOverlayPresent || prepOverlayPresent || waitOverlayPresent;
+	return isMainOverlayPresent || isPrepOverlayPresent || isWaitOverlayPresent;
 }
 
 
@@ -1715,17 +1716,19 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	andIsTeamAssignedSelected:(BOOL)isTeamAssignedSelected
 				   andOptions:(ConfigureOptions)options {
 
+	// NOTE: Must remove & re-add overlay, in order to trigger its view update properly
+	
 	RidePolyline* ridePolyline = [MainMapViewController getRidePolylineFromRideOverlays:rideOverlays andRideRouteType:rideRouteType];
 	BOOL wasRidePolylineInMapView = (ridePolyline != nil);
 	
-	// Remove existing overlay with annotation, if necessary
-	BOOL didRemoveRidePolylineAnnotationFromMapView = NO;
+	// Remove existing overlay with annotation, if present
+	BOOL didRemoveRidePolylineOverlayFromMapView = NO;
 	if (wasRidePolylineInMapView) {
 		
 		[self.mainMapView removeOverlay:ridePolyline];
 		[self.mainMapView removeAnnotation:ridePolyline];
 		
-		didRemoveRidePolylineAnnotationFromMapView = YES;
+		didRemoveRidePolylineOverlayFromMapView = YES;
 	}
 	
 	// If deleting or not active, we are done
@@ -1755,7 +1758,6 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	}
 
 	// Update existing overlay with annotation or create new ones, if possible
-	// NOTE: Overlays must always be re-added in order to trigger their view update properly
 	MKPolyline* polyline = self.polylineMode == PolylineMode_Route ? [ride polylineWithRideRouteType:rideRouteType] : nil;
 	ridePolyline = [RidePolyline ridePolyline:ridePolyline
 								 withPolyline:polyline
@@ -1763,7 +1765,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 							 andRideRouteType:rideRouteType];
 	if (!ridePolyline) return NO;
 	[self.mainMapView addOverlay:ridePolyline level:MKOverlayLevelAboveLabels];
-	if (wasRidePolylineInMapView && !didRemoveRidePolylineAnnotationFromMapView) {
+	if (wasRidePolylineInMapView && !didRemoveRidePolylineOverlayFromMapView) {
 		
 		MKAnnotationView* ridePolylineAnnotationView = (MKAnnotationView*)[self.mainMapView viewForAnnotation:ridePolyline];
 		if (ridePolylineAnnotationView) {
