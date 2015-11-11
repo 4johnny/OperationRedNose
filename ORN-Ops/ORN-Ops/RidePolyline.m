@@ -50,31 +50,69 @@
 				
 			case RideRouteType_Prep:
 				
-				if (ride.locationPrepLatitude && ride.locationPrepLongitude &&
-					ride.locationStartLatitude && ride.locationStartLongitude) {
+				// If first ride is Transporting, create polyline to ride end, o/w to ride start
+				if (ride.status.integerValue == RideStatus_Transporting &&
+					ride == [ride.teamAssigned getSortedActiveRidesAssigned].firstObject) {
+
+					if (ride.locationPrepLatitude && ride.locationPrepLongitude &&
+						ride.locationEndLatitude && ride.locationEndLongitude) {
+						
+						CLLocationCoordinate2D locationCoordinates[2] =
+						{
+							[ride getLocationPrepCoordinate],
+							[ride getLocationEndCoordinate],
+						};
+						
+						polyline = [MKPolyline polylineWithCoordinates:locationCoordinates count:2];
+					}
 					
-					CLLocationCoordinate2D locationCoordinates[2] =
-					{
-						[ride getLocationPrepCoordinate],
-						[ride getLocationStartCoordinate],
-					};
-					
-					polyline = [MKPolyline polylineWithCoordinates:locationCoordinates count:2];
+				} else {
+				
+					if (ride.locationPrepLatitude && ride.locationPrepLongitude &&
+						ride.locationStartLatitude && ride.locationStartLongitude) {
+						
+						CLLocationCoordinate2D locationCoordinates[2] =
+						{
+							[ride getLocationPrepCoordinate],
+							[ride getLocationStartCoordinate],
+						};
+						
+						polyline = [MKPolyline polylineWithCoordinates:locationCoordinates count:2];
+					}
 				}
 				break;
 				
 			case RideRouteType_Wait:
 				
-				if (ride.teamAssigned.locationCurrentLatitude && ride.teamAssigned.locationCurrentLongitude &&
-					ride.locationStartLatitude && ride.locationStartLongitude) {
+				// If first ride is Transporting, create polyline to ride end, o/w to ride start
+				if (ride.status.integerValue == RideStatus_Transporting &&
+					ride == [ride.teamAssigned getSortedActiveRidesAssigned].firstObject) {
 					
-					CLLocationCoordinate2D locationCoordinates[2] =
-					{
-						[ride.teamAssigned getLocationCurrentCoordinate],
-						[ride getLocationStartCoordinate],
-					};
+					if (ride.teamAssigned.locationCurrentLatitude && ride.teamAssigned.locationCurrentLongitude &&
+						ride.locationEndLatitude && ride.locationEndLongitude) {
+						
+						CLLocationCoordinate2D locationCoordinates[2] =
+						{
+							[ride.teamAssigned getLocationCurrentCoordinate],
+							[ride getLocationEndCoordinate],
+						};
+						
+						polyline = [MKPolyline polylineWithCoordinates:locationCoordinates count:2];
+					}
 					
-					polyline = [MKPolyline polylineWithCoordinates:locationCoordinates count:2];
+				} else {
+					
+					if (ride.teamAssigned.locationCurrentLatitude && ride.teamAssigned.locationCurrentLongitude &&
+						ride.locationStartLatitude && ride.locationStartLongitude) {
+						
+						CLLocationCoordinate2D locationCoordinates[2] =
+						{
+							[ride.teamAssigned getLocationCurrentCoordinate],
+							[ride getLocationStartCoordinate],
+						};
+						
+						polyline = [MKPolyline polylineWithCoordinates:locationCoordinates count:2];
+					}
 				}
 				break;
 				
