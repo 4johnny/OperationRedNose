@@ -362,13 +362,13 @@
 	
 	Team* team = [self.teamsFetchedResultsController objectAtIndexPath:indexPath];
 	
-	NSSet<Ride*>* activeRidesAssigned = [team getActiveRidesAssigned];
+	NSArray<Ride*>* sortedActiveRidesAssigned = [team getSortedActiveRidesAssigned];
 	
 	// Text
 	
 	NSString* status = [team getStatusText];
 	status = status.length > 0 ? [NSString stringWithFormat:@" (%@)", status] : @"";
-	cell.textLabel.text = [NSString stringWithFormat:@"%@%@ | Rides: %lu/%lu", [team getTitle], status, (unsigned long)activeRidesAssigned.count, (unsigned long)team.ridesAssigned.count];
+	cell.textLabel.text = [NSString stringWithFormat:@"%@%@ | Rides: %lu/%lu", [team getTitle], status, (unsigned long)sortedActiveRidesAssigned.count, (unsigned long)team.ridesAssigned.count];
 	
 	cell.textLabel.numberOfLines = 0;
 	cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -385,7 +385,7 @@
 	
 	// End Detail
 	
-	Ride* lastSortedActiveRideAssigned = [team getSortedActiveRidesAssigned].lastObject;
+	Ride* lastSortedActiveRideAssigned = sortedActiveRidesAssigned.lastObject;
 
 	NSDate* routeDateTimeEnd = [lastSortedActiveRideAssigned getRouteDateTimeEnd];
 	NSString* endDateString = routeDateTimeEnd
@@ -400,8 +400,8 @@
 	
 	// Route Detail
 	
-	NSString* durationString = [NSString stringWithFormat:@"%.0f", [team getDurationWithActiveRidesAssigned:activeRidesAssigned] / (NSTimeInterval)SECONDS_PER_MINUTE];
-	NSString* distanceString = [NSString stringWithFormat:@"%.1f", [team getDistanceWithActiveRidesAssigned:activeRidesAssigned] / (CLLocationDistance)METERS_PER_KILOMETER];
+	NSString* durationString = [NSString stringWithFormat:@"%.0f", [team getDurationWithSortedActiveRidesAssigned:sortedActiveRidesAssigned] / (NSTimeInterval)SECONDS_PER_MINUTE];
+	NSString* distanceString = [NSString stringWithFormat:@"%.1f", [team getDistanceWithSortedActiveRidesAssigned:sortedActiveRidesAssigned] / (CLLocationDistance)METERS_PER_KILOMETER];
 	NSString* routeDetail = [NSString stringWithFormat:@"%@ min | %@ km", durationString, distanceString];
 	
 	// Detail Text

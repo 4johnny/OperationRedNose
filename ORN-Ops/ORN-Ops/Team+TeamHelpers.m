@@ -435,38 +435,62 @@
 }
 
 
-- (NSTimeInterval)getDurationWithActiveRidesAssigned:(NSSet<Ride*>*)activeRidesAssigned {
+- (NSTimeInterval)getDurationWithSortedActiveRidesAssigned:(NSArray<Ride*>*)sortedActiveRidesAssigned {
 	
-	if (activeRidesAssigned.count <= 0) {
+	// NOTE: Accept assigned rides as parm to avoid recalculating repeatedly
+	
+	if (sortedActiveRidesAssigned.count <= 0) {
 		
-		activeRidesAssigned = [self getActiveRidesAssigned];
+		sortedActiveRidesAssigned = [self getSortedActiveRidesAssigned];
 	}
 	
 	// Accumulate duration for all active rides assigned
 	NSTimeInterval duration = 0; // seconds
-	for (Ride* activeRideAssigned in activeRidesAssigned) {
+	BOOL isFirst = YES;
+	for (Ride* sortedActiveRideAssigned in sortedActiveRidesAssigned) {
 
-		duration += activeRideAssigned.routePrepDuration.doubleValue;
-		duration += activeRideAssigned.routeMainDuration.doubleValue;
+		duration += sortedActiveRideAssigned.routePrepDuration.doubleValue;
+		
+		// Skip main route for first ride if transporting
+		if (!isFirst || sortedActiveRideAssigned.status.integerValue != RideStatus_Transporting) {
+			
+			duration += sortedActiveRideAssigned.routeMainDuration.doubleValue;
+		}
+		
+		if (isFirst) {
+			isFirst = NO;
+		}
 	}
 
 	return duration;
 }
 
 
-- (CLLocationDistance)getDistanceWithActiveRidesAssigned:(NSSet<Ride*>*)activeRidesAssigned {
+- (CLLocationDistance)getDistanceWithSortedActiveRidesAssigned:(NSArray<Ride*>*)sortedActiveRidesAssigned {
 
-	if (activeRidesAssigned.count <= 0) {
+	// NOTE: Accept assigned rides as parm to avoid recalculating repeatedly
+	
+	if (sortedActiveRidesAssigned.count <= 0) {
 		
-		activeRidesAssigned = [self getActiveRidesAssigned];
+		sortedActiveRidesAssigned = [self getSortedActiveRidesAssigned];
 	}
 	
 	// Accumulate distance for all active rides assigned
 	CLLocationDistance distance = 0; // meters
-	for (Ride* activeRideAssigned in activeRidesAssigned) {
+	BOOL isFirst = YES;
+	for (Ride* sortedActiveRideAssigned in sortedActiveRidesAssigned) {
 		
-		distance += activeRideAssigned.routePrepDistance.doubleValue;
-		distance += activeRideAssigned.routeMainDistance.doubleValue;
+		distance += sortedActiveRideAssigned.routePrepDistance.doubleValue;
+		
+		// Skip main route for first ride if transporting
+		if (!isFirst || sortedActiveRideAssigned.status.integerValue != RideStatus_Transporting) {
+			
+			distance += sortedActiveRideAssigned.routeMainDistance.doubleValue;
+		}
+		
+		if (isFirst) {
+			isFirst = NO;
+		}
 	}
 	
 	return distance;
