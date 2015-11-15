@@ -567,20 +567,13 @@
 
 - (BOOL)isStatusPreDispatch {
 	
-	switch (self.status.integerValue) {
-			
-		case RideStatus_None:
-		case RideStatus_New:
-		case RideStatus_Confirmed:
-			return YES;
-			
-		default:
-		case RideStatus_Dispatched:
-		case RideStatus_Transporting:
-		case RideStatus_Completed:
-		case RideStatus_Cancelled:
-			return NO;
-	}
+	return (self.status.integerValue < RideStatus_Dispatched);
+}
+
+
+- (BOOL)isStatusPreTransport {
+	
+	return (self.status.integerValue < RideStatus_Transporting);
 }
 
 

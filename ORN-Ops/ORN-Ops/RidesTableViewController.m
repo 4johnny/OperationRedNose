@@ -357,7 +357,10 @@
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(nullable NSIndexPath*)indexPath {
 	
 	Ride* ride = [self.ridesFetchedResultsController objectAtIndexPath:indexPath];
-
+	
+	NSTimeInterval waitDuration = [ride getDurationWithRideRouteType:RideRouteType_Wait];
+	CLLocationDistance waitDistance = [ride getDurationWithRideRouteType:RideRouteType_Wait];
+	
 	// Text
 	
 	NSString* teamAssignedTitle = ride.teamAssigned
@@ -368,9 +371,18 @@
 	cell.textLabel.numberOfLines = 0;
 	cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	
-	// Start Detail
+	// Wait Detail (Optional)
 	
-	NSTimeInterval waitDuration = [ride getDurationWithRideRouteType:RideRouteType_Wait];
+	NSString* waitDetail = @"";
+	if (ride.teamAssigned && [ride isStatusPreTransport]) {
+
+		NSString* waitDurationString = [NSString stringWithFormat:@"%.0f", waitDuration / (NSTimeInterval)SECONDS_PER_MINUTE];
+		NSString* waitDistanceString = [NSString stringWithFormat:@"%.1f", waitDistance / (CLLocationDistance)METERS_PER_KILOMETER];
+		
+		waitDetail = [NSString stringWithFormat:@"%@ min | %@ km\n", waitDurationString, waitDistanceString];
+	}
+	
+	// Start Detail
 	
 	NSString* assignedDateTimeStartString = waitDuration >= 0 ? [self.cellDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:waitDuration]] : RIDES_CELL_FIELD_EMPTY;
 	
@@ -382,6 +394,18 @@
 	: RIDES_CELL_FIELD_EMPTY;
 	
 	NSString* startDetail = [NSString stringWithFormat:@"%@(%@)> %@", assignedDateTimeStartString, dateTimeStartString, startAddress];
+	
+	// Route Detail
+	
+	NSString* durationString = ride.routeMainDuration
+	? [NSString stringWithFormat:@"%.0f", ride.routeMainDuration.doubleValue / (NSTimeInterval)SECONDS_PER_MINUTE]
+	: RIDES_CELL_FIELD_EMPTY;
+	
+	NSString* distanceString = ride.routeMainDistance
+	? [NSString stringWithFormat:@"%.1f", ride.routeMainDistance.doubleValue / (CLLocationDistance)METERS_PER_KILOMETER]
+	: RIDES_CELL_FIELD_EMPTY;
+	
+	NSString* routeDetail = [NSString stringWithFormat:@"%@ min | %@ km", durationString, distanceString];
 	
 	// End Detail
 	
@@ -397,25 +421,13 @@
 	
 	NSString* endDetail = [NSString stringWithFormat:@"%@(%@)> %@", assignedRouteDateTimeEndString, routeDateTimeEndString, endAddress];
 	
-	// Route Detail
-	
-	NSString* durationString = ride.routeMainDuration
-	? [NSString stringWithFormat:@"%.0f", ride.routeMainDuration.doubleValue / (NSTimeInterval)SECONDS_PER_MINUTE]
-	: RIDES_CELL_FIELD_EMPTY;
-	
-	NSString* distanceString = ride.routeMainDistance
-	? [NSString stringWithFormat:@"%.1f", ride.routeMainDistance.doubleValue / (CLLocationDistance)METERS_PER_KILOMETER]
-	: RIDES_CELL_FIELD_EMPTY;
-	
-	NSString* routeDetail = [NSString stringWithFormat:@"%@ min | %@ km", durationString, distanceString];
-	
-	// Notes Detail
+	// Notes Detail (Optional)
 	
 	NSString* notesDetail = ride.notes.length > 0 ? [@"\n" stringByAppendingString:ride.notes] : @"";
 	
 	// Detail Text
 	
-	cell.detailTextLabel.text = [NSString stringWithFormat:@"%@\n%@\n%@%@", startDetail, endDetail, routeDetail, notesDetail];
+	cell.detailTextLabel.text = [NSString stringWithFormat:@"%@%@\n%@\n%@%@", waitDetail, startDetail, routeDetail, endDetail, notesDetail];
 	cell.detailTextLabel.numberOfLines = 0;
 	cell.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
 }
