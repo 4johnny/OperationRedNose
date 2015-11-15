@@ -381,7 +381,7 @@
 	? team.locationCurrentAddress
 	: TEAMS_CELL_FIELD_EMPTY;
 	
-	NSString* startDetail = [NSString stringWithFormat:@"Loc: %@ -> %@", startDateString, startAddress];
+	NSString* startDetail = [NSString stringWithFormat:@"%@> %@", startDateString, startAddress];
 	
 	// End Detail
 	
@@ -396,7 +396,7 @@
 	? lastSortedActiveRideAssigned.locationEndAddress
 	: TEAMS_CELL_FIELD_EMPTY;
 	
-	NSString* endDetail = [NSString stringWithFormat:@"End: %@ -> %@", endDateString, endAddress];
+	NSString* endDetail = [NSString stringWithFormat:@"%@> %@", endDateString, endAddress];
 	
 	// Route Detail
 	
@@ -404,9 +404,13 @@
 	NSString* distanceString = [NSString stringWithFormat:@"%.1f", [team getDistanceWithSortedActiveRidesAssigned:sortedActiveRidesAssigned] / (CLLocationDistance)METERS_PER_KILOMETER];
 	NSString* routeDetail = [NSString stringWithFormat:@"%@ min | %@ km", durationString, distanceString];
 	
+	// Notes Detail
+	
+	NSString* notesDetail = team.notes.length > 0 ? [@"\n" stringByAppendingString:team.notes] : @"";
+	
 	// Detail Text
 	
-	cell.detailTextLabel.text = [NSString stringWithFormat:@"%@\n%@\n%@", startDetail, endDetail, routeDetail];
+	cell.detailTextLabel.text = [NSString stringWithFormat:@"%@\n%@\n%@%@", startDetail, endDetail, routeDetail, notesDetail];
 	cell.detailTextLabel.numberOfLines = 0;
 	cell.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
 }

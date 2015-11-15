@@ -364,11 +364,7 @@
 	? [ride.teamAssigned getTitle]
 	: RIDES_CELL_FIELD_EMPTY;
 	
-	NSString* sourceTitle = ride.sourceName.length > 0
-	? ride.sourceName
-	: RIDES_CELL_FIELD_EMPTY;
-	
-	cell.textLabel.text = [NSString stringWithFormat:@"%@ (%@) | %@ | Team: %@ | Source: %@", [ride getTitle], ride.passengerCount, [ride getStatusText], teamAssignedTitle, sourceTitle];
+	cell.textLabel.text = [NSString stringWithFormat:@"%@ (%@) | %@ | Team: %@", [ride getTitle], ride.passengerCount, [ride getStatusText], teamAssignedTitle];
 	cell.textLabel.numberOfLines = 0;
 	cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	
@@ -382,7 +378,7 @@
 	? ride.locationStartAddress
 	: RIDES_CELL_FIELD_EMPTY;
 	
-	NSString* startDetail = [NSString stringWithFormat:@"Start: %@ -> %@", startDateString, startAddress];
+	NSString* startDetail = [NSString stringWithFormat:@"%@> %@", startDateString, startAddress];
 	
 	// End Detail
 	
@@ -395,7 +391,7 @@
 	? ride.locationEndAddress
 	: RIDES_CELL_FIELD_EMPTY;
 	
-	NSString* endDetail = [NSString stringWithFormat:@"End: %@ -> %@", endDateString, endAddress];
+	NSString* endDetail = [NSString stringWithFormat:@"%@> %@", endDateString, endAddress];
 	
 	// Route Detail
 	
@@ -409,9 +405,13 @@
 	
 	NSString* routeDetail = [NSString stringWithFormat:@"%@ min | %@ km", durationString, distanceString];
 	
+	// Notes Detail
+	
+	NSString* notesDetail = ride.notes.length > 0 ? [@"\n" stringByAppendingString:ride.notes] : @"";
+	
 	// Detail Text
 	
-	cell.detailTextLabel.text = [NSString stringWithFormat:@"%@\n%@\n%@", startDetail, endDetail, routeDetail];
+	cell.detailTextLabel.text = [NSString stringWithFormat:@"%@\n%@\n%@%@", startDetail, endDetail, routeDetail, notesDetail];
 	cell.detailTextLabel.numberOfLines = 0;
 	cell.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
 }
