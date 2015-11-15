@@ -760,9 +760,21 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			
 			NSTimeInterval waitDuration = [ride getDurationWithRideRouteType:RideRouteType_Wait];
 			NSDate* dateTimeStart = ride.dateTimeStart;
-			if (waitDuration < 0 && !dateTimeStart) return nil;
 			
-			NSString* assignedDateTimeStartString = waitDuration >= 0 ? [self.annotationDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:waitDuration]] : MAP_ANNOTATION_FIELD_EMPTY;
+			NSString* assignedDateTimeStartString;
+			if ([ride isStatusTransporting]) {
+				
+				NSNumber* routeMainDuration = ride.routeMainDuration;
+				if (!routeMainDuration && !dateTimeStart) return nil;
+				
+				assignedDateTimeStartString = routeMainDuration ? [self.annotationDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:(waitDuration - routeMainDuration.doubleValue)]] : MAP_ANNOTATION_FIELD_EMPTY;
+				
+			} else {
+				
+				if (waitDuration < 0 && !dateTimeStart) return nil;
+				
+				assignedDateTimeStartString = waitDuration >= 0 ? [self.annotationDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:waitDuration]] : MAP_ANNOTATION_FIELD_EMPTY;
+			}
 			
 			NSString* dateTimeStartString = dateTimeStart ? [self.annotationDateFormatter stringFromDate:dateTimeStart] : MAP_ANNOTATION_FIELD_EMPTY;
 			
@@ -775,15 +787,14 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			
 		case RideLocationType_End: {
 			
-			NSString* assignedRouteDateTimeEndString;
-			
 			NSTimeInterval waitDuration = [ride getDurationWithRideRouteType:RideRouteType_Wait];
-			
 			NSDate* routeDateTimeEnd = [ride getRouteDateTimeEnd];
+			
+			NSString* assignedRouteDateTimeEndString;
 			if ([ride isStatusTransporting]) {
 				
 				NSNumber* routePrepDuration = ride.routePrepDuration;
-				if (!routeDateTimeEnd) return nil;
+				if (!routePrepDuration && !routeDateTimeEnd) return nil;
 				
 				assignedRouteDateTimeEndString = waitDuration >= 0 && routePrepDuration ? [self.annotationDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:waitDuration]] : MAP_ANNOTATION_FIELD_EMPTY;
 				
