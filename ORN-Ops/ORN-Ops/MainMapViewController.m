@@ -780,7 +780,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			NSTimeInterval waitDuration = [ride getDurationWithRideRouteType:RideRouteType_Wait];
 			
 			NSDate* routeDateTimeEnd = [ride getRouteDateTimeEnd];
-			if (ride.status.integerValue == RideStatus_Transporting) {
+			if ([ride isStatusTransporting]) {
 				
 				NSNumber* routePrepDuration = ride.routePrepDuration;
 				if (!routeDateTimeEnd) return nil;

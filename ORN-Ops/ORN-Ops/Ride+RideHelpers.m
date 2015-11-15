@@ -515,7 +515,7 @@
 	
 	NSNumber* destinationLatitude = self.locationStartLatitude;
 	NSNumber* destinationLongitude = self.locationStartLongitude;
-	if (isFirst && self.status.integerValue == RideStatus_Transporting) {
+	if (isFirst && [self isStatusTransporting]) {
 		
 		destinationLatitude = self.locationEndLatitude;
 		destinationLongitude = self.locationEndLongitude;
@@ -574,6 +574,12 @@
 - (BOOL)isStatusPreTransport {
 	
 	return (self.status.integerValue < RideStatus_Transporting);
+}
+
+
+- (BOOL)isStatusTransporting {
+	
+	return (self.status.integerValue == RideStatus_Transporting);
 }
 
 

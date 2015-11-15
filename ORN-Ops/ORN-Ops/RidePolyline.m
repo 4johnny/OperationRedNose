@@ -51,7 +51,7 @@
 			case RideRouteType_Prep:
 				
 				// If first ride is Transporting, create polyline to ride end, o/w to ride start
-				if (ride.status.integerValue == RideStatus_Transporting &&
+				if ([ride isStatusTransporting] &&
 					ride == [ride.teamAssigned getSortedActiveRidesAssigned].firstObject) {
 
 					if (ride.locationPrepLatitude && ride.locationPrepLongitude &&
@@ -85,7 +85,7 @@
 			case RideRouteType_Wait:
 				
 				// If first ride is Transporting, create polyline to ride end, o/w to ride start
-				if (ride.status.integerValue == RideStatus_Transporting &&
+				if ([ride isStatusTransporting] &&
 					ride == [ride.teamAssigned getSortedActiveRidesAssigned].firstObject) {
 					
 					if (ride.teamAssigned.locationCurrentLatitude && ride.teamAssigned.locationCurrentLongitude &&

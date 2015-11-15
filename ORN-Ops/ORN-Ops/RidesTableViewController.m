@@ -406,7 +406,7 @@
 	: RIDES_CELL_FIELD_EMPTY;
 	
 	NSString* routeDetail;
-	if (ride.teamAssigned && ride.status.integerValue == RideStatus_Transporting) {
+	if ([ride isStatusTransporting]) {
 		
 		NSString* transportDurationString = ride.routePrepDuration
 		? [NSString stringWithFormat:@"%.0f", ride.routePrepDuration.doubleValue / (NSTimeInterval)SECONDS_PER_MINUTE]
@@ -426,7 +426,7 @@
 	// End Detail
 	
 	NSString* assignedRouteDateTimeEndString;
-	if (ride.status.integerValue == RideStatus_Transporting) {
+	if ([ride isStatusTransporting]) {
 
 		assignedRouteDateTimeEndString = [self.cellDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:waitDuration]];
 		
