@@ -405,12 +405,36 @@
 	? [NSString stringWithFormat:@"%.1f", ride.routeMainDistance.doubleValue / (CLLocationDistance)METERS_PER_KILOMETER]
 	: RIDES_CELL_FIELD_EMPTY;
 	
-	NSString* routeDetail = [NSString stringWithFormat:@"%@ min | %@ km", durationString, distanceString];
+	NSString* routeDetail;
+	if (ride.teamAssigned && ride.status.integerValue == RideStatus_Transporting) {
+		
+		NSString* transportDurationString = ride.routePrepDuration
+		? [NSString stringWithFormat:@"%.0f", ride.routePrepDuration.doubleValue / (NSTimeInterval)SECONDS_PER_MINUTE]
+		: RIDES_CELL_FIELD_EMPTY;
+		
+		NSString* transportDistanceString = ride.routePrepDistance
+		? [NSString stringWithFormat:@"%.1f", ride.routePrepDistance.doubleValue / (CLLocationDistance)METERS_PER_KILOMETER]
+		: RIDES_CELL_FIELD_EMPTY;
+		
+		routeDetail = [NSString stringWithFormat:@"%@ min | %@ km (%@ min | %@ km)", transportDurationString, transportDistanceString, durationString, distanceString];
+		
+	} else {
+		
+		routeDetail = [NSString stringWithFormat:@"%@ min | %@ km", durationString, distanceString];
+	}
 	
 	// End Detail
 	
-	NSNumber* routeMainDuration = ride.routeMainDuration;
-	NSString* assignedRouteDateTimeEndString = waitDuration >= 0 && routeMainDuration ? [self.cellDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:(waitDuration + routeMainDuration.doubleValue)]] : RIDES_CELL_FIELD_EMPTY;
+	NSString* assignedRouteDateTimeEndString;
+	if (ride.status.integerValue == RideStatus_Transporting) {
+
+		assignedRouteDateTimeEndString = [self.cellDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:waitDuration]];
+		
+	} else {
+		
+		NSNumber* routeMainDuration = ride.routeMainDuration;
+		assignedRouteDateTimeEndString = waitDuration >= 0 && routeMainDuration ? [self.cellDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:(waitDuration + routeMainDuration.doubleValue)]] : RIDES_CELL_FIELD_EMPTY;
+	}
 	
 	NSDate* routeDateTimeEnd = [ride getRouteDateTimeEnd];
 	NSString* routeDateTimeEndString = routeDateTimeEnd ? [self.cellDateFormatter stringFromDate:routeDateTimeEnd] : RIDES_CELL_FIELD_EMPTY;

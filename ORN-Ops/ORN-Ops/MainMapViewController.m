@@ -775,13 +775,26 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			
 		case RideLocationType_End: {
 			
-			NSTimeInterval waitDuration = [ride getDurationWithRideRouteType:RideRouteType_Wait];
-			NSNumber* routeMainDuration = ride.routeMainDuration;
-			NSDate* routeDateTimeEnd = [ride getRouteDateTimeEnd];
-			if ((waitDuration < 0 || !routeMainDuration) &&
-				!routeDateTimeEnd) return nil;
+			NSString* assignedRouteDateTimeEndString;
 			
-			NSString* assignedRouteDateTimeEndString = waitDuration >= 0 && routeMainDuration ? [self.annotationDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:(waitDuration + routeMainDuration.doubleValue)]] : MAP_ANNOTATION_FIELD_EMPTY;
+			NSTimeInterval waitDuration = [ride getDurationWithRideRouteType:RideRouteType_Wait];
+			
+			NSDate* routeDateTimeEnd = [ride getRouteDateTimeEnd];
+			if (ride.status.integerValue == RideStatus_Transporting) {
+				
+				NSNumber* routePrepDuration = ride.routePrepDuration;
+				if (!routeDateTimeEnd) return nil;
+				
+				assignedRouteDateTimeEndString = waitDuration >= 0 && routePrepDuration ? [self.annotationDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:waitDuration]] : MAP_ANNOTATION_FIELD_EMPTY;
+				
+			} else {
+				
+				NSNumber* routeMainDuration = ride.routeMainDuration;
+				if ((waitDuration < 0 || !routeMainDuration) &&
+					!routeDateTimeEnd) return nil;
+				
+				assignedRouteDateTimeEndString = waitDuration >= 0 && routeMainDuration ? [self.annotationDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:(waitDuration + routeMainDuration.doubleValue)]] : MAP_ANNOTATION_FIELD_EMPTY;
+			}
 			
 			NSString* routeDateTimeEndString = routeDateTimeEnd ? [self.annotationDateFormatter stringFromDate:routeDateTimeEnd] : MAP_ANNOTATION_FIELD_EMPTY;
 			
