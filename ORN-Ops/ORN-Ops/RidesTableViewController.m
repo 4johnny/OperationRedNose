@@ -370,28 +370,32 @@
 	
 	// Start Detail
 	
-	NSString* startDateString = ride.dateTimeStart
-	? [self.cellDateFormatter stringFromDate:ride.dateTimeStart]
-	: RIDES_CELL_FIELD_EMPTY;
+	NSTimeInterval waitDuration = [ride getDurationWithRideRouteType:RideRouteType_Wait];
+	
+	NSString* assignedDateTimeStartString = waitDuration >= 0 ? [self.cellDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:waitDuration]] : RIDES_CELL_FIELD_EMPTY;
+	
+	NSDate* dateTimeStart = ride.dateTimeStart;
+	NSString* dateTimeStartString = dateTimeStart ? [self.cellDateFormatter stringFromDate:dateTimeStart] : RIDES_CELL_FIELD_EMPTY;
 	
 	NSString* startAddress = ride.locationStartAddress.length > 0
 	? ride.locationStartAddress
 	: RIDES_CELL_FIELD_EMPTY;
 	
-	NSString* startDetail = [NSString stringWithFormat:@"%@> %@", startDateString, startAddress];
+	NSString* startDetail = [NSString stringWithFormat:@"%@(%@)> %@", assignedDateTimeStartString, dateTimeStartString, startAddress];
 	
 	// End Detail
 	
+	NSNumber* routeMainDuration = ride.routeMainDuration;
+	NSString* assignedRouteDateTimeEndString = waitDuration >= 0 && routeMainDuration ? [self.cellDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:(waitDuration + routeMainDuration.doubleValue)]] : RIDES_CELL_FIELD_EMPTY;
+	
 	NSDate* routeDateTimeEnd = [ride getRouteDateTimeEnd];
-	NSString* endDateString = routeDateTimeEnd
-	? [self.cellDateFormatter stringFromDate:routeDateTimeEnd]
-	: RIDES_CELL_FIELD_EMPTY;
+	NSString* routeDateTimeEndString = routeDateTimeEnd ? [self.cellDateFormatter stringFromDate:routeDateTimeEnd] : RIDES_CELL_FIELD_EMPTY;
 	
 	NSString* endAddress = ride.locationEndAddress.length > 0
 	? ride.locationEndAddress
 	: RIDES_CELL_FIELD_EMPTY;
 	
-	NSString* endDetail = [NSString stringWithFormat:@"%@> %@", endDateString, endAddress];
+	NSString* endDetail = [NSString stringWithFormat:@"%@(%@)> %@", assignedRouteDateTimeEndString, routeDateTimeEndString, endAddress];
 	
 	// Route Detail
 	
