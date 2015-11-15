@@ -384,7 +384,20 @@
 	
 	// Start Detail
 	
-	NSString* assignedDateTimeStartString = waitDuration >= 0 ? [self.cellDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:waitDuration]] : RIDES_CELL_FIELD_EMPTY;
+	NSString* assignedDateTimeStartString;
+
+	if ([ride isStatusTransporting]) {
+		
+		assignedDateTimeStartString = ride.routeMainDuration
+		? [self.cellDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:(waitDuration - ride.routeMainDuration.doubleValue)]]
+		: RIDES_CELL_FIELD_EMPTY;
+		
+	} else {
+		
+		assignedDateTimeStartString = waitDuration >= 0
+		? [self.cellDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:waitDuration]]
+		: RIDES_CELL_FIELD_EMPTY;
+	}
 	
 	NSDate* dateTimeStart = ride.dateTimeStart;
 	NSString* dateTimeStartString = dateTimeStart ? [self.cellDateFormatter stringFromDate:dateTimeStart] : RIDES_CELL_FIELD_EMPTY;
