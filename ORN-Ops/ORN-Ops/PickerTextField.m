@@ -153,20 +153,21 @@
 		[self setSelectedRow:row withAnimated:YES];
 	}
 	
-	if ([self.externalDelegate respondsToSelector:@selector(pickerView:didSelectRow:inComponent:)]) {
-	
-		[self.externalDelegate pickerView:pickerView didSelectRow:row inComponent:component];
-	}
+	[super pickerView:pickerView didSelectRow:row inComponent:component];
 }
 
 
 - (NSString*)pickerView:(UIPickerView*)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+
+	//	(void)[super pickerView:pickerView titleForRow:row forComponent:component];
 	
 	return self.titles[row];
 }
 
 
 - (NSAttributedString*)pickerView:(UIPickerView*)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component {
+	
+	//	(void)[super pickerView:pickerView attributedTitleForRow:row forComponent:component];
 	
 	NSAssert(self.titles.count == self.pickableStatuses.count, @"Must have pickable status for each title");
 	NSAssert(0 <= row && row < self.titles.count, @"Row must be in range of titles");
@@ -191,12 +192,16 @@
 
 - (CGFloat)pickerView:(UIPickerView*)pickerView rowHeightForComponent:(NSInteger)component {
 	
+	//	(void)[super pickerView:pickerView rowHeightForComponent:component];
+	
 	return TITLE_FONT_SIZE + ROW_HEIGHT_BUFFER;
 }
 
 
 - (UIView*)pickerView:(UIPickerView*)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(nullable UIView*)view {
 
+	//	(void)[super pickerView:pickerView viewForRow:row forComponent:component reusingView:view];
+	
 	UILabel* label = (UILabel*)view;
 	if (!label) {
 

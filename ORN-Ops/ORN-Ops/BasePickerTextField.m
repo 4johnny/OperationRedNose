@@ -203,6 +203,20 @@
 
 
 #
+# pragma mark <UIPickerViewDelegate>
+#
+
+
+- (void)pickerView:(UIPickerView*)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+	
+	if ([self.externalDelegate respondsToSelector:@selector(pickerView:didSelectRow:inComponent:)]) {
+		
+		[self.externalDelegate pickerView:pickerView didSelectRow:row inComponent:component];
+	}
+}
+
+
+#
 # pragma mark Action Handlers
 #
 
