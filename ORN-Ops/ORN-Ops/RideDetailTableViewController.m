@@ -226,10 +226,23 @@
 	
 	if (pickerView == self.teamAssignedPickerTextField.pickerView) {
 		
-		// If team picker set to None, change status to New
-		if (row == 0) {
+		if (row == 0) { // None
 			
+			// Change status to New
 			self.statusSegmentedControl.selectedSegmentIndex = 0;
+			
+		} else {
+			
+			if (row == self.teamAssignedPickerTextField.initialSelectedRow && [self.ride isDispatched]) {
+				
+				// Bump status up to Dispatched
+				self.statusSegmentedControl.selectedSegmentIndex = 2;
+				
+			} else {
+				
+				// Change status to Assigned
+				self.statusSegmentedControl.selectedSegmentIndex = 1;
+			}
 		}
 	}
 }
