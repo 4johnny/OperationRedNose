@@ -552,7 +552,7 @@
 			
 		case RideStatus_None:
 		case RideStatus_New:
-		case RideStatus_Confirmed:
+		case RideStatus_Assigned:
 		case RideStatus_Dispatched:
 		case RideStatus_Transporting:
 			return YES;
@@ -857,8 +857,8 @@
 		case RideStatus_New:
 			return isShort ? RIDE_STATUS_STRING_SHORT_NEW : RIDE_STATUS_STRING_NEW;
 			
-		case RideStatus_Confirmed:
-			return isShort ? RIDE_STATUS_STRING_SHORT_CONFIRMED : RIDE_STATUS_STRING_CONFIRMED;
+		case RideStatus_Assigned:
+			return isShort ? RIDE_STATUS_STRING_SHORT_ASSIGNED : RIDE_STATUS_STRING_ASSIGNED;
 			
 		case RideStatus_Dispatched:
 			return isShort ? RIDE_STATUS_STRING_SHORT_DISPATCHED : RIDE_STATUS_STRING_DISPATCHED;
@@ -893,8 +893,8 @@
 //	if ([rideStatusString isEqualToString:RIDE_STATUS_STRING_NEW])
 //		return RideStatus_New;
 //	
-//	if ([rideStatusString isEqualToString:RIDE_STATUS_STRING_CONFIRMED])
-//		return RideStatus_Confirmed;
+//	if ([rideStatusString isEqualToString:RIDE_STATUS_STRING_ASSIGNED])
+//		return RideStatus_Assigned;
 //	
 //	if ([rideStatusString isEqualToString:RIDE_STATUS_STRING_DISPATCHED])
 //		return RideStatus_Dispatched;

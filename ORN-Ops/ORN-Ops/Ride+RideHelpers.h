@@ -25,7 +25,7 @@
 
 #define RIDE_STATUS_STRING_NONE			@"None"
 #define RIDE_STATUS_STRING_NEW			@"New"
-#define RIDE_STATUS_STRING_CONFIRMED	@"Confirmed"
+#define RIDE_STATUS_STRING_ASSIGNED		@"Assigned"
 #define RIDE_STATUS_STRING_DISPATCHED	@"Dispatched"
 #define RIDE_STATUS_STRING_TRANSPORTING	@"Transporting"
 #define RIDE_STATUS_STRING_COMPLETED	@"Completed"
@@ -33,11 +33,11 @@
 
 #define RIDE_STATUS_STRING_SHORT_NONE			@"None"
 #define RIDE_STATUS_STRING_SHORT_NEW			@"New"
-#define RIDE_STATUS_STRING_SHORT_CONFIRMED		@"Conf"
-#define RIDE_STATUS_STRING_SHORT_DISPATCHED		@"Disp"
-#define RIDE_STATUS_STRING_SHORT_TRANSPORTING	@"Tran"
-#define RIDE_STATUS_STRING_SHORT_COMPLETED		@"Comp"
-#define RIDE_STATUS_STRING_SHORT_CANCELLED		@"Canc"
+#define RIDE_STATUS_STRING_SHORT_ASSIGNED		@"Asgn"
+#define RIDE_STATUS_STRING_SHORT_DISPATCHED		@"Dspt"
+#define RIDE_STATUS_STRING_SHORT_TRANSPORTING	@"Trns"
+#define RIDE_STATUS_STRING_SHORT_COMPLETED		@"Cmpl"
+#define RIDE_STATUS_STRING_SHORT_CANCELLED		@"Cncl"
 
 #
 # pragma mark - Enums
@@ -48,7 +48,7 @@ typedef NS_ENUM(NSInteger, RideStatus) {
 	RideStatus_None =			0,
 	
 	RideStatus_New	=			1,
-	RideStatus_Confirmed =		2,
+	RideStatus_Assigned =		2,
 	RideStatus_Dispatched =		3,
 	RideStatus_Transporting =	4,
 	RideStatus_Completed =		5,

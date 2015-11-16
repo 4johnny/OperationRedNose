@@ -352,7 +352,7 @@
 		[self.statusSegmentedControl setTitleTextAttributes:@{ NSFontAttributeName : [UIFont systemFontOfSize:12.5] } forState:UIControlStateNormal];
 		
 		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_SHORT_NEW forSegmentAtIndex:0];
-		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_SHORT_CONFIRMED forSegmentAtIndex:1];
+		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_SHORT_ASSIGNED forSegmentAtIndex:1];
 		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_SHORT_DISPATCHED forSegmentAtIndex:2];
 		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_SHORT_TRANSPORTING forSegmentAtIndex:3];
 		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_SHORT_COMPLETED forSegmentAtIndex:4];
@@ -364,7 +364,7 @@
 		[self.statusSegmentedControl setTitleTextAttributes:@{ NSFontAttributeName : [UIFont systemFontOfSize:13] } forState:UIControlStateNormal];
 		
 		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_NEW forSegmentAtIndex:0];
-		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_CONFIRMED forSegmentAtIndex:1];
+		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_ASSIGNED forSegmentAtIndex:1];
 		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_DISPATCHED forSegmentAtIndex:2];
 		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_TRANSPORTING forSegmentAtIndex:3];
 		[self.statusSegmentedControl setTitle:RIDE_STATUS_STRING_COMPLETED forSegmentAtIndex:4];
