@@ -233,10 +233,10 @@
 			
 		} else {
 			
-			if (row == self.teamAssignedPickerTextField.initialSelectedRow && [self.ride isDispatched]) {
+			if (row == self.teamAssignedPickerTextField.initialSelectedRow && ![self.ride isPreDispatch]) {
 				
-				// Bump status up to Dispatched
-				self.statusSegmentedControl.selectedSegmentIndex = 2;
+				// Reset status to data model
+				self.statusSegmentedControl.selectedSegmentIndex = self.ride.status.integerValue - 1;
 				
 			} else {
 				
