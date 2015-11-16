@@ -14,7 +14,7 @@
 # pragma mark - Constants
 #
 
-#define DONATION_TEXT_LENGTH_MAX	8 // NOTE: Arbitrary limit to ensure number fits in NSDecimal
+#define DONATION_TEXT_LENGTH_MAX	8 // NOTE: Arbitrary limit to ensure number fits in NSDecimalNumber
 #define DONATION_TEXT_DECIMAL_COUNT	2
 
 #
@@ -214,6 +214,24 @@
 	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:textField andIsAddmode:self.isAddMode];
 	
 	return NO; // Do not perform default text-field behaviour
+}
+
+
+#
+# pragma mark <UIPickerViewDelegate>
+#
+
+
+- (void)pickerView:(UIPickerView*)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+	
+	if (pickerView == self.teamAssignedPickerTextField.pickerView) {
+		
+		// If team picker set to None, change status to New
+		if (row == 0) {
+			
+			self.statusSegmentedControl.selectedSegmentIndex = 0;
+		}
+	}
 }
 
 

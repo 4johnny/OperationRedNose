@@ -29,7 +29,7 @@
 
 @interface BasePickerTextField ()
 
-@property (weak, nonatomic) id<UITextFieldDelegate> externalDelegate; // NOTE: Original delegate wired internally
+@property (weak, nonatomic) id<UITextFieldDelegate, UIPickerViewDelegate> externalDelegate; // NOTE: Original delegate wired internally
 
 @end
 
@@ -47,13 +47,13 @@
 #
 
 
-- (id<UITextFieldDelegate>)delegate {
+- (id<UITextFieldDelegate, UIPickerViewDelegate>)delegate {
 
 	return self.externalDelegate;
 }
 
 
-- (void)setDelegate:(id<UITextFieldDelegate>)delegate {
+- (void)setDelegate:(id<UITextFieldDelegate, UIPickerViewDelegate>)delegate {
 
 	self.externalDelegate = delegate;
 }

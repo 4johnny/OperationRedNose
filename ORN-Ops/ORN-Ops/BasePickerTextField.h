@@ -14,4 +14,6 @@
 
 @interface BasePickerTextField : UITextField <UITextFieldDelegate>
 
+@property (nullable, nonatomic, weak) id<UITextFieldDelegate, UIPickerViewDelegate> delegate;
+
 @end

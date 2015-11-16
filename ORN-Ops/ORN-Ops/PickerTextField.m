@@ -22,7 +22,7 @@
 
 @interface PickerTextField ()
 
-@property (readonly, nonatomic) UIPickerView* pickerView; // decorated picker view
+@property (weak, nonatomic) id<UITextFieldDelegate, UIPickerViewDelegate> externalDelegate; // NOTE: Original delegate wired internally; inherited from parent class
 
 @property (nonatomic) NSInteger initialSelectedRow;
 
@@ -151,7 +151,13 @@
 		
 	} else {
 
-		[self setSelectedRow:self.initialSelectedRow withAnimated:YES];
+		row = self.initialSelectedRow;
+		[self setSelectedRow:row withAnimated:YES];
+	}
+	
+	if ([self.externalDelegate respondsToSelector:@selector(pickerView:didSelectRow:inComponent:)]) {
+	
+		[self.externalDelegate pickerView:pickerView didSelectRow:row inComponent:component];
 	}
 }
 

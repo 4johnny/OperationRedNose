@@ -21,7 +21,7 @@
 # pragma mark - Interface
 #
 
-@interface RideDetailTableViewController : UITableViewController <RideModelSource, UITableViewDelegate, UITextFieldDelegate, NSFetchedResultsControllerDelegate>
+@interface RideDetailTableViewController : UITableViewController <RideModelSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDelegate, NSFetchedResultsControllerDelegate>
 
 #
 # pragma mark Data Model Properties

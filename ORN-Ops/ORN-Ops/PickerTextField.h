@@ -19,6 +19,8 @@
 # pragma mark Properties
 #
 
+@property (readonly, nonatomic) UIPickerView* pickerView; // decorated picker view
+
 @property (nonatomic) NSArray<NSString*>* titles;
 @property (nonatomic) NSArray<NSNumber*>* pickableStatuses;
 @property (nonatomic) NSInteger selectedRow;
