@@ -762,7 +762,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			NSDate* dateTimeStart = ride.dateTimeStart;
 			
 			NSString* assignedDateTimeStartString;
-			if ([ride isStatusTransporting]) {
+			if ([ride isTransporting]) {
 				
 				NSNumber* routeMainDuration = ride.routeMainDuration;
 				if (!routeMainDuration && !dateTimeStart) return nil;
@@ -791,7 +791,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			NSDate* routeDateTimeEnd = [ride getRouteDateTimeEnd];
 			
 			NSString* assignedRouteDateTimeEndString;
-			if ([ride isStatusTransporting]) {
+			if ([ride isTransporting]) {
 				
 				NSNumber* routePrepDuration = ride.routePrepDuration;
 				if (!routePrepDuration && !routeDateTimeEnd) return nil;
@@ -1186,7 +1186,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	Ride* firstSortedActiveRideAssigned = [team getSortedActiveRidesAssigned].firstObject;
 	NSAssert(firstSortedActiveRideAssigned, @"First sorted active ride assigned must exist");
 	
-	if (![firstSortedActiveRideAssigned isStatusPreDispatch]) return NO;
+	if (![firstSortedActiveRideAssigned isPreDispatch]) return NO;
 	
 	firstSortedActiveRideAssigned.status = @(RideStatus_Dispatched);
 	
@@ -1685,7 +1685,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	BOOL wasRidePointAnnotationSelected = (wasRidePointAnnotationInMapView && ridePointAnnotation == self.mainMapView.selectedAnnotations.firstObject);
 	
 	// Remove existing annotation if location updated or ride not active
-	BOOL isRideActive = [ride isStatusActive];
+	BOOL isRideActive = [ride isActive];
 	BOOL didRemoveRidePointAnnotationFromMapView = NO;
 	if (isLocationUpdated || !isRideActive) {
 		
@@ -1805,7 +1805,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	}
 	
 	// If deleting or not active, we are done
-	if ((options & Configure_Delete) || ![ride isStatusActive]) return NO;
+	if ((options & Configure_Delete) || ![ride isActive]) return NO;
 	
 	// If ride or team assigned is not selected, we are done
 	switch (rideRouteType) {

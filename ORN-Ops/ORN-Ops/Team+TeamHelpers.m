@@ -410,7 +410,7 @@
 	
 	NSSet<Ride*>* activeRidesAssigned = [self.ridesAssigned filteredSetUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(Ride* _Nonnull ride, NSDictionary<NSString*,id>* _Nullable bindings) {
 		
-		return [ride isStatusActive];
+		return [ride isActive];
 	}]];
 	
 	return activeRidesAssigned;

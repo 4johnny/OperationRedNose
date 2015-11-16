@@ -445,7 +445,7 @@
 							andIsFirst:(BOOL)isFirst
 							 andSender:(id)sender {
 	
-	NSAssert([self isStatusActive], @"Status must be active"); // For current usage of this method
+	NSAssert([self isActive], @"Status must be active"); // For current usage of this method
 	
 	// Capture prep location
 	self.locationPrepLatitude = latitude;
@@ -483,7 +483,7 @@
 				
 			NSLog(@"Changing ride status due to arrival margin");
 			
-			NSAssert([self isStatusActive], @"Status must be active"); // For current usage of this method
+			NSAssert([self isActive], @"Status must be active"); // For current usage of this method
 			self.status = @(self.status.integerValue != RideStatus_Transporting ? RideStatus_Transporting : RideStatus_Completed);
 			[self.teamAssigned tryUpdateActiveAssignedRideRoutesWithSender:self];
 		}
@@ -511,11 +511,11 @@
 
 - (MKDirectionsRequest*)getPrepDirectionsRequestWithIsFirst:(BOOL)isFirst {
 	
-	NSAssert([self isStatusActive], @"Status must be active"); // For current usage of this method
+	NSAssert([self isActive], @"Status must be active"); // For current usage of this method
 	
 	NSNumber* destinationLatitude = self.locationStartLatitude;
 	NSNumber* destinationLongitude = self.locationStartLongitude;
-	if (isFirst && [self isStatusTransporting]) {
+	if (isFirst && [self isTransporting]) {
 		
 		destinationLatitude = self.locationEndLatitude;
 		destinationLongitude = self.locationEndLongitude;
@@ -546,40 +546,33 @@
 }
 
 
-- (BOOL)isStatusActive {
-
-	switch (self.status.integerValue) {
-			
-		case RideStatus_None:
-		case RideStatus_New:
-		case RideStatus_Assigned:
-		case RideStatus_Dispatched:
-		case RideStatus_Transporting:
-			return YES;
-
-		default:
-		case RideStatus_Completed:
-		case RideStatus_Cancelled:
-			return NO;
-	}
-}
-
-
-- (BOOL)isStatusPreDispatch {
+- (BOOL)isPreDispatch {
 	
 	return (self.status.integerValue < RideStatus_Dispatched);
 }
 
 
-- (BOOL)isStatusPreTransport {
+- (BOOL)isDispatched {
+	
+	return (self.status.integerValue == RideStatus_Dispatched);
+}
+
+
+- (BOOL)isPreTransport {
 	
 	return (self.status.integerValue < RideStatus_Transporting);
 }
 
 
-- (BOOL)isStatusTransporting {
+- (BOOL)isTransporting {
 	
 	return (self.status.integerValue == RideStatus_Transporting);
+}
+
+
+- (BOOL)isActive {
+	
+	return (self.status.integerValue < RideStatus_Completed);
 }
 
 
@@ -731,7 +724,7 @@
 			BOOL isFirst = YES;
 			for (Ride* sortedActiveRideAssigned in [self.teamAssigned getSortedActiveRidesAssigned]) {
 				
-				NSAssert([sortedActiveRideAssigned isStatusActive], @"Status must be active");
+				NSAssert([sortedActiveRideAssigned isActive], @"Status must be active");
 				
 				if (sortedActiveRideAssigned == self) break;
 				

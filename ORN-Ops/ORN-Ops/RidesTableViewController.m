@@ -374,7 +374,7 @@
 	// Wait Detail (Optional)
 	
 	NSString* waitDetail = @"";
-	if (ride.teamAssigned && [ride isStatusPreTransport]) {
+	if (ride.teamAssigned && [ride isPreTransport]) {
 
 		NSString* waitDurationString = [NSString stringWithFormat:@"%.0f", waitDuration / (NSTimeInterval)SECONDS_PER_MINUTE];
 		NSString* waitDistanceString = [NSString stringWithFormat:@"%.1f", waitDistance / (CLLocationDistance)METERS_PER_KILOMETER];
@@ -386,7 +386,7 @@
 	
 	NSString* assignedDateTimeStartString;
 
-	if ([ride isStatusTransporting]) {
+	if ([ride isTransporting]) {
 		
 		assignedDateTimeStartString = ride.routeMainDuration
 		? [self.cellDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:(waitDuration - ride.routeMainDuration.doubleValue)]]
@@ -419,7 +419,7 @@
 	: RIDES_CELL_FIELD_EMPTY;
 	
 	NSString* routeDetail;
-	if ([ride isStatusTransporting]) {
+	if ([ride isTransporting]) {
 		
 		NSString* transportDurationString = ride.routePrepDuration
 		? [NSString stringWithFormat:@"%.0f", ride.routePrepDuration.doubleValue / (NSTimeInterval)SECONDS_PER_MINUTE]
@@ -439,7 +439,7 @@
 	// End Detail
 	
 	NSString* assignedRouteDateTimeEndString;
-	if ([ride isStatusTransporting]) {
+	if ([ride isTransporting]) {
 
 		assignedRouteDateTimeEndString = [self.cellDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:waitDuration]];
 		
