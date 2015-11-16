@@ -22,8 +22,6 @@
 
 @interface PickerTextField ()
 
-@property (weak, nonatomic) id<UITextFieldDelegate, UIPickerViewDelegate> externalDelegate; // NOTE: Original delegate wired internally; inherited from parent class
-
 @property (nonatomic) CGFloat maxTitleLabelWidth;
 
 @end
