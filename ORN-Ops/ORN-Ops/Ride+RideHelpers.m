@@ -484,7 +484,7 @@
 			NSLog(@"Changing ride status due to arrival margin");
 			
 			NSAssert([self isActive], @"Status must be active"); // For current usage of this method
-			self.status = @(self.status.integerValue != RideStatus_Transporting ? RideStatus_Transporting : RideStatus_Completed);
+			self.status = @(![self isTransporting] ? RideStatus_Transporting : RideStatus_Completed);
 			[self.teamAssigned tryUpdateActiveAssignedRideRoutesWithSender:self];
 		}
 		
@@ -731,7 +731,7 @@
 				duration += sortedActiveRideAssigned.routePrepDuration.doubleValue;
 				
 				// Skip main route for first ride if transporting
-				if (!isFirst || sortedActiveRideAssigned.status.integerValue != RideStatus_Transporting) {
+				if (!isFirst || ![sortedActiveRideAssigned isTransporting]) {
 					
 					duration += sortedActiveRideAssigned.routeMainDuration.doubleValue;
 				}
@@ -773,7 +773,7 @@
 				distance += sortedActiveRideAssigned.routePrepDistance.doubleValue;
 				
 				// Skip main route for first ride if transporting
-				if (!isFirst || sortedActiveRideAssigned.status.integerValue != RideStatus_Transporting) {
+				if (!isFirst || ![sortedActiveRideAssigned isTransporting]) {
 					
 					distance += sortedActiveRideAssigned.routeMainDistance.doubleValue;
 				}

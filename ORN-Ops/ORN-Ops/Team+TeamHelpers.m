@@ -452,7 +452,7 @@
 		duration += sortedActiveRideAssigned.routePrepDuration.doubleValue;
 		
 		// Skip main route for first ride if transporting
-		if (!isFirst || sortedActiveRideAssigned.status.integerValue != RideStatus_Transporting) {
+		if (!isFirst || ![sortedActiveRideAssigned isTransporting]) {
 			
 			duration += sortedActiveRideAssigned.routeMainDuration.doubleValue;
 		}
@@ -483,7 +483,7 @@
 		distance += sortedActiveRideAssigned.routePrepDistance.doubleValue;
 		
 		// Skip main route for first ride if transporting
-		if (!isFirst || sortedActiveRideAssigned.status.integerValue != RideStatus_Transporting) {
+		if (!isFirst || ![sortedActiveRideAssigned isTransporting]) {
 			
 			distance += sortedActiveRideAssigned.routeMainDistance.doubleValue;
 		}
