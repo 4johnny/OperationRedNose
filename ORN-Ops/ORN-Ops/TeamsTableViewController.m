@@ -375,7 +375,9 @@
 	
 	// Start Detail
 	
-	NSString* startDateString = [self.cellDateFormatter stringFromDate:[NSDate date]];
+	NSString* startDateString = team.locationCurrentTime
+	? [self.cellDateFormatter stringFromDate:team.locationCurrentTime]
+	: TEAMS_CELL_FIELD_EMPTY;
 	
 	NSString* startAddress = team.locationCurrentAddress.length > 0
 	? team.locationCurrentAddress
@@ -383,26 +385,34 @@
 	
 	NSString* startDetail = [NSString stringWithFormat:@"%@> %@", startDateString, startAddress];
 	
-	// End Detail
-	
-	Ride* lastSortedActiveRideAssigned = sortedActiveRidesAssigned.lastObject;
-
-	NSDate* routeDateTimeEnd = [lastSortedActiveRideAssigned getRouteDateTimeEnd];
-	NSString* endDateString = routeDateTimeEnd
-	? [self.cellDateFormatter stringFromDate:routeDateTimeEnd]
-	: TEAMS_CELL_FIELD_EMPTY;
-	
-	NSString* endAddress = lastSortedActiveRideAssigned.locationEndAddress.length > 0
-	? lastSortedActiveRideAssigned.locationEndAddress
-	: TEAMS_CELL_FIELD_EMPTY;
-	
-	NSString* endDetail = [NSString stringWithFormat:@"%@> %@", endDateString, endAddress];
-	
 	// Route Detail
 	
 	NSString* durationString = [NSString stringWithFormat:@"%.0f", [team getDurationWithSortedActiveRidesAssigned:sortedActiveRidesAssigned] / (NSTimeInterval)SECONDS_PER_MINUTE];
 	NSString* distanceString = [NSString stringWithFormat:@"%.1f", [team getDistanceWithSortedActiveRidesAssigned:sortedActiveRidesAssigned] / (CLLocationDistance)METERS_PER_KILOMETER];
 	NSString* routeDetail = [NSString stringWithFormat:@"%@ min | %@ km", durationString, distanceString];
+	
+	// End Detail
+	
+	Ride* lastRide = sortedActiveRidesAssigned.lastObject;
+
+	NSTimeInterval lastRideWaitDuration = [lastRide getDurationWithRideRouteType:RideRouteType_Wait];
+	
+	NSString* assignedRouteDateTimeEndString;
+	if ([lastRide isTransporting]) {
+		
+		assignedRouteDateTimeEndString = [self.cellDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:lastRideWaitDuration]];
+		
+	} else {
+		
+		NSNumber* lastRideRouteMainDuration = lastRide.routeMainDuration;
+		assignedRouteDateTimeEndString = lastRideWaitDuration >= 0 && lastRideRouteMainDuration ? [self.cellDateFormatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:(lastRideWaitDuration + lastRideRouteMainDuration.doubleValue)]] : TEAMS_CELL_FIELD_EMPTY;
+	}
+	
+	NSString* endAddress = lastRide.locationEndAddress.length > 0
+	? lastRide.locationEndAddress
+	: TEAMS_CELL_FIELD_EMPTY;
+	
+	NSString* endDetail = [NSString stringWithFormat:@"%@> %@", assignedRouteDateTimeEndString, endAddress];
 	
 	// Notes Detail
 	
@@ -410,7 +420,7 @@
 	
 	// Detail Text
 	
-	cell.detailTextLabel.text = [NSString stringWithFormat:@"%@\n%@\n%@%@", startDetail, endDetail, routeDetail, notesDetail];
+	cell.detailTextLabel.text = [NSString stringWithFormat:@"%@\n%@\n%@%@", startDetail, routeDetail, endDetail, notesDetail];
 	cell.detailTextLabel.numberOfLines = 0;
 	cell.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
 }

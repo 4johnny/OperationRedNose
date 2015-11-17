@@ -385,7 +385,6 @@
 	// Start Detail
 	
 	NSString* assignedDateTimeStartString;
-
 	if ([ride isTransporting]) {
 		
 		assignedDateTimeStartString = ride.routeMainDuration
