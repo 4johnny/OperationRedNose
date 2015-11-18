@@ -391,15 +391,19 @@
 
 - (NSString*)getStatusText {
 
-	NSString* status = nil;
+	NSMutableString* status = [NSMutableString string];
 	
 	if (!self.isActive.boolValue) {
-		status = @"Inactive";
+		[status appendString:@"Inactive"];
 	}
 	if (self.isMascot.boolValue) {
-		status = [NSString stringWithFormat:@"%@Mascot", status ? @", " : @""];
+		
+		if (status.length > 0) {
+			[status appendString:@","];
+		}
+		[status appendString:@"Mascot"];
 	}
-	
+
 	return status;
 }
 
