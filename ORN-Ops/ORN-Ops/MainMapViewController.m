@@ -728,10 +728,10 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	ridePointAnnotation.needsAnimatesDrop = NO;
 	
 	// Set pin color based on status
-	// NOTE: By convention, color for route start is green, and end is red.  If no team assigned, start is purple.
+	// NOTE: By convention, color for route start is green, and end is red.  If no team dispatched, start is purple.
 	ridePinAnnotationView.pinColor = ridePointAnnotation.rideLocationType == RideLocationType_End
 	? MKPinAnnotationColorRed
-	: (ride.teamAssigned ? MKPinAnnotationColorGreen : MKPinAnnotationColorPurple);
+	: ([ride isPreDispatch] ? MKPinAnnotationColorPurple : MKPinAnnotationColorGreen);
 	
 	// Add/update/remove left callout accessory
 	// NOTE: Do not set for update, to avoid re-animation
@@ -780,7 +780,8 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			
 			[leftCalloutAccessoryButton setTitle:[NSString stringWithFormat:@"%@\n(%@)", assignedDateTimeStartString, dateTimeStartString] forState:UIControlStateNormal];
 			
-			leftCalloutAccessoryButton.backgroundColor = ride.teamAssigned ? self.calloutAccessoryColorGreen : [UIColor purpleColor];
+			// NOTE: Color consistent with pin
+			leftCalloutAccessoryButton.backgroundColor = [ride isPreDispatch] ? [UIColor purpleColor] : self.calloutAccessoryColorGreen;
 			
 			break;
 		}
