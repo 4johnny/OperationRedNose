@@ -210,7 +210,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 	if (_calloutAccessoryColorGreen) return _calloutAccessoryColorGreen;
 	
-	_calloutAccessoryColorGreen = HSB(120.0, 1.0, 0.8);
+	_calloutAccessoryColorGreen = HSB(120.0, 1.0, 0.7);
 	
 	return _calloutAccessoryColorGreen;
 }
