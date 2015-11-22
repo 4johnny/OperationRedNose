@@ -67,6 +67,14 @@
 }
 
 
+- (BOOL)isOlderThanMinutes:(NSInteger)minutes {
+
+	NSTimeInterval minutesSinceNow = [self timeIntervalSinceNow] / (NSTimeInterval)SECONDS_PER_MINUTE;
+	
+	return (minutesSinceNow <= -minutes);
+}
+
+
 #
 # pragma mark Class Methods
 #

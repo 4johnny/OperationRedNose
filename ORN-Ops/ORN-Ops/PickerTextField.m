@@ -22,6 +22,8 @@
 
 @interface PickerTextField ()
 
+@property (weak, nonatomic) id<UITextFieldDelegate, UIPickerViewDelegate> externalDelegate; // NOTE: Original delegate wired internally
+
 @property (nonatomic) CGFloat maxTitleLabelWidth;
 
 @end
@@ -151,7 +153,10 @@
 		[self setSelectedRow:row withAnimated:YES];
 	}
 	
-	[super pickerView:pickerView didSelectRow:row inComponent:component];
+	if ([self.externalDelegate respondsToSelector:@selector(pickerView:didSelectRow:inComponent:)]) {
+		
+		[self.externalDelegate pickerView:pickerView didSelectRow:row inComponent:component];
+	}
 }
 
 

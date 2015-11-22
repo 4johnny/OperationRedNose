@@ -132,4 +132,10 @@
 + (void)deleteAllObjectsWithEntityName:(NSString*)entityName;
 + (void)removePersistentStore;
 
+#
+# pragma mark Data Model
+#
+
++ (BOOL)isStaleDate:(NSDate*)date;
+
 @end

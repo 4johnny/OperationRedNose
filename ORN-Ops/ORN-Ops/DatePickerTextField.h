@@ -17,10 +17,23 @@
 #define DATE_PICKER_DATETIME_FORMAT		@"EEE MMM dd HH:mm"
 
 #
+# pragma mark - Protocol
+#
+
+@protocol DatePickerTextFieldDelegate <NSObject>
+
+@optional
+- (IBAction)dateChanged:(UIDatePicker*)sender;
+
+@end
+
+#
 # pragma mark - Interface
 #
 
 @interface DatePickerTextField : BasePickerTextField
+
+@property (readonly, nonatomic) UIDatePicker* datePicker; // decorated date picker
 
 @property (nonatomic) NSDate* date;
 

@@ -29,6 +29,7 @@
 # pragma mark Initializers
 #
 
+
 //+ (void)initialize {
 //	
 //}
@@ -204,6 +205,19 @@
 
 	id<ORNDataModelSource> dataModelSource = (id<ORNDataModelSource>)[UIApplication sharedApplication].delegate;
 	[dataModelSource removePersistentStore];
+}
+
+
+#
+# pragma mark Data Model
+#
+
+
++ (BOOL)isStaleDate:(NSDate*)date {
+
+	if (!date) return YES;
+	
+	return [date isOlderThanMinutes:TIME_MINUTE_INTERVAL];
 }
 
 

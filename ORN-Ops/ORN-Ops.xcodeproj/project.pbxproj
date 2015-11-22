@@ -22,6 +22,7 @@
 		B26709A91BE60E89006F3905 /* TeamAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = B26709A81BE60E89006F3905 /* TeamAnnotationView.m */; };
 		B27533451A9DA91700B3110C /* MainTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = B27533441A9DA91700B3110C /* MainTabBarController.m */; };
 		B2761C8E1BAFFA0D0022402E /* NSNumber+NumberHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2761C8D1BAFFA0D0022402E /* NSNumber+NumberHelpers.m */; };
+		B279E7EA1C013E910093E848 /* UIFont+FontHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B279E7E91C013E910093E848 /* UIFont+FontHelpers.m */; };
 		B27B4A751A9AB1FB009277E4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A741A9AB1FB009277E4 /* main.m */; };
 		B27B4A781A9AB1FB009277E4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B27B4A771A9AB1FB009277E4 /* AppDelegate.m */; };
 		B27B4A811A9AB1FB009277E4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B27B4A7F1A9AB1FB009277E4 /* Main.storyboard */; };
@@ -81,6 +82,8 @@
 		B2761C8B1BAFD0FD0022402E /* Macros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Macros.h; sourceTree = "<group>"; };
 		B2761C8C1BAFFA0D0022402E /* NSNumber+NumberHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNumber+NumberHelpers.h"; sourceTree = "<group>"; };
 		B2761C8D1BAFFA0D0022402E /* NSNumber+NumberHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNumber+NumberHelpers.m"; sourceTree = "<group>"; };
+		B279E7E81C013E910093E848 /* UIFont+FontHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+FontHelpers.h"; sourceTree = "<group>"; };
+		B279E7E91C013E910093E848 /* UIFont+FontHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+FontHelpers.m"; sourceTree = "<group>"; };
 		B27B4A6F1A9AB1FB009277E4 /* ORN-Ops.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ORN-Ops.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B27B4A731A9AB1FB009277E4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B27B4A741A9AB1FB009277E4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -302,7 +305,7 @@
 				B241B1DB1ABD35CA0075C99E /* Controls */,
 				B25220371AA044B000C3CE00 /* Map Helpers */,
 				B25220341AA0415400C3CE00 /* Demo */,
-				B29CD76C1ABE9D6600B21579 /* Categories */,
+				B29CD76C1ABE9D6600B21579 /* iOS Categories */,
 				B27B4A761A9AB1FB009277E4 /* AppDelegate.h */,
 				B27B4A771A9AB1FB009277E4 /* AppDelegate.m */,
 				B2761C8B1BAFD0FD0022402E /* Macros.h */,
@@ -317,7 +320,7 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		B29CD76C1ABE9D6600B21579 /* Categories */ = {
+		B29CD76C1ABE9D6600B21579 /* iOS Categories */ = {
 			isa = PBXGroup;
 			children = (
 				B2761C8C1BAFFA0D0022402E /* NSNumber+NumberHelpers.h */,
@@ -336,12 +339,14 @@
 				B27CEDD61ACE852600512FA3 /* MKPolyline+PolylineHelpers.m */,
 				B24DE0441BDE17A3004E7190 /* MKMapCamera+MapCameraHelpers.h */,
 				B24DE0451BDE17A3004E7190 /* MKMapCamera+MapCameraHelpers.m */,
+				B279E7E81C013E910093E848 /* UIFont+FontHelpers.h */,
+				B279E7E91C013E910093E848 /* UIFont+FontHelpers.m */,
 				B2E12A9A1ABEE74F00CB5202 /* UIView+ViewHelpers.h */,
 				B2E12A9B1ABEE74F00CB5202 /* UIView+ViewHelpers.m */,
 				B2E1AA6B1BE74178008347ED /* UIButton+ButtonHelpers.h */,
 				B2E1AA6C1BE74178008347ED /* UIButton+ButtonHelpers.m */,
 			);
-			name = Categories;
+			name = "iOS Categories";
 			sourceTree = "<group>";
 		};
 		B29CD76D1ABE9D9C00B21579 /* Categories */ = {
@@ -493,6 +498,7 @@
 				B26709A91BE60E89006F3905 /* TeamAnnotationView.m in Sources */,
 				B2907B841A9F1903008A0301 /* RidePointAnnotation.m in Sources */,
 				B241B1E11ABD65330075C99E /* BasePickerTextField.m in Sources */,
+				B279E7EA1C013E910093E848 /* UIFont+FontHelpers.m in Sources */,
 				B2C7561E1AA1A97900B148D3 /* TeamDetailTableViewController.m in Sources */,
 				B24DE0461BDE17A3004E7190 /* MKMapCamera+MapCameraHelpers.m in Sources */,
 				B2E1AA6D1BE74178008347ED /* UIButton+ButtonHelpers.m in Sources */,

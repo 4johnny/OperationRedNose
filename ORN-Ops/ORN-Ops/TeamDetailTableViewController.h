@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+
 #import "Team+TeamHelpers.h"
 #import "DatePickerTextField.h"
 
@@ -20,7 +21,7 @@
 # pragma mark - Interface
 #
 
-@interface TeamDetailTableViewController : UITableViewController <TeamModelSource, UITableViewDelegate>
+@interface TeamDetailTableViewController : UITableViewController <TeamModelSource, UITableViewDelegate, UITextFieldDelegate, DatePickerTextFieldDelegate>
 
 #
 # pragma mark Data Model Properties

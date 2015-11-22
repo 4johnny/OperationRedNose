@@ -14,6 +14,6 @@
 
 @interface NSNumber (NumberHelpers)
 
-- (NSString*)boolStringValue;
+- (NSString*)boolValueString;
 
 @end

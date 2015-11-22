@@ -15,7 +15,7 @@
 
 @interface DatePickerTextField ()
 
-@property (readonly, nonatomic) UIDatePicker* datePicker; // decorated date picker
+@property (nonatomic, weak) id<UITextFieldDelegate, DatePickerTextFieldDelegate> externalDelegate;
 
 @property (nonatomic) NSDateFormatter* dateFormatter;
 
@@ -144,6 +144,11 @@
 	// NOTE: Wired manually in initializer
 
 	self.text = [self.dateFormatter stringFromDate:self.datePicker.date];
+	
+	if ([self.externalDelegate respondsToSelector:@selector(dateChanged:)]) {
+		
+		[self.externalDelegate dateChanged:sender];
+	}
 }
 
 

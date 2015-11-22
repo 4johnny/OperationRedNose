@@ -12,8 +12,8 @@
 # pragma mark - Interface
 #
 
-@interface BasePickerTextField : UITextField <UITextFieldDelegate, UIPickerViewDelegate>
+@interface BasePickerTextField : UITextField <UITextFieldDelegate>
 
-@property (nullable, nonatomic, weak) id<UITextFieldDelegate, UIPickerViewDelegate> delegate;
+@property (nullable, nonatomic, weak) id<UITextFieldDelegate> delegate;
 
 @end

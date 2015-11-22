@@ -17,7 +17,7 @@
 @implementation NSNumber (NumberHelpers)
 
 
-- (NSString*)boolStringValue {
+- (NSString*)boolValueString {
 
 	return self.boolValue ? @"Yes" : @"No";
 }

@@ -162,6 +162,20 @@
 
 
 #
+# pragma mark <DatePickerTextFieldDelegate>
+#
+
+
+- (void)dateChanged:(UIDatePicker*)sender {
+	
+	if (sender == self.timeDatePickerTextField.datePicker) {
+		
+		[self configureLocationWithDate:self.timeDatePickerTextField.date];
+	}
+}
+
+
+#
 # pragma mark Action Handlers
 #
 
@@ -252,6 +266,44 @@
 	if (!self.isAddMode) {
 		
 		[self loadDataModelIntoView];
+	}
+	
+	[self configureLocationWithDate:self.team.locationCurrentTime];
+}
+
+
+- (void)configureLocationWithDate:(NSDate*)locationCurrentTime {
+
+	// If location data stale, highlight with red italics
+	if ([Util isStaleDate:locationCurrentTime]) {
+		
+		UIColor* colorStale = [UIColor redColor];
+		
+		// Location Time
+		self.timeDatePickerTextField.font = [UIFont boldSystemFontOfSize:self.timeDatePickerTextField.font.pointSize];
+		self.timeDatePickerTextField.textColor = colorStale;
+		
+		// Location Address
+		self.addressTextField.font = [UIFont boldSystemFontOfSize:self.addressTextField.font.pointSize];
+		self.addressTextField.textColor = colorStale;
+		
+		// Location Coordinates
+		self.coordinatesLabel.font = [UIFont boldSystemFontOfSize:self.coordinatesLabel.font.pointSize];
+		self.coordinatesLabel.textColor = colorStale;
+		
+	} else {
+		
+		// Location Time
+		self.timeDatePickerTextField.font = [UIFont systemFontOfSize:self.timeDatePickerTextField.font.pointSize];
+		self.timeDatePickerTextField.textColor = nil;
+		
+		// Location Address
+		self.addressTextField.font = [UIFont systemFontOfSize:self.addressTextField.font.pointSize];
+		self.addressTextField.textColor = nil;
+		
+		// Location Coordinates
+		self.coordinatesLabel.font = [UIFont systemFontOfSize:self.coordinatesLabel.font.pointSize];
+		self.coordinatesLabel.textColor = nil;
 	}
 }
 

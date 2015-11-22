@@ -24,7 +24,9 @@
 # pragma mark Methods
 #
 
-- (NSDate*)roundToMinuteInterval:(NSInteger)minuteInterval;
+- (instancetype)roundToMinuteInterval:(NSInteger)minuteInterval;
+
+- (BOOL)isOlderThanMinutes:(NSInteger)minutes;
 
 #
 # pragma mark Class Methods

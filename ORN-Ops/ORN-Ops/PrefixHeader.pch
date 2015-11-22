@@ -22,6 +22,7 @@
 #import "MKDirectionsRequest+DirectionsRequestHelpers.h"
 #import "MKPolyline+PolylineHelpers.h"
 #import "MKMapCamera+MapCameraHelpers.h"
+#import "UIFont+FontHelpers.h"
 #import "UIView+ViewHelpers.h"
 #import "UIButton+ButtonHelpers.h"
 
