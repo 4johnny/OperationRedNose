@@ -1053,7 +1053,7 @@
                                                     <animations/>
                                                     <segments>
                                                         <segment title="New"/>
-                                                        <segment title="Confirmed"/>
+                                                        <segment title="Assigned"/>
                                                         <segment title="Dispatched"/>
                                                         <segment title="Transporting"/>
                                                         <segment title="Completed"/>
