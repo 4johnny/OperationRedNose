@@ -2,8 +2,8 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "ORN-Sleigh.png",
-      "scale" : "1x"
+      "scale" : "1x",
+      "filename" : "ORN-Sleigh.png"
     },
     {
       "idiom" : "universal",

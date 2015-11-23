@@ -7,6 +7,7 @@
 //
 
 #import "TeamAnnotationView.h"
+#import "TeamPointAnnotation.h"
 
 
 #
@@ -14,6 +15,8 @@
 #
 
 #define FINGER_DIAMETER		20 // points
+
+#define ANNOTATION_SCALE	0.66
 
 #define ANNOTATION_DRAGGED_NOTIFICATION_NAME	@"annotationViewDragEnded"
 
@@ -36,6 +39,51 @@
 
 
 @implementation TeamAnnotationView
+
+
+#
+# pragma mark Initializers
+#
+
+
+- (instancetype)initWithAnnotation:(id<MKAnnotation>)annotation reuseIdentifier:(NSString*)reuseIdentifier andMapView:(MKMapView*)mapView {
+	
+	self = [super initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
+	
+	if (self) {
+		
+		self.mapView = mapView;
+
+		if ([reuseIdentifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID]) {
+			
+			self.image = [UIImage imageNamed:@"ORN-Team-Mascot-Map-Annotation"];
+			
+		} else {
+			
+			self.image = [UIImage imageNamed:@"ORN-Team-Map-Annotation"];
+			self.bounds = CGRectMake(0, 0,
+									 (self.bounds.size.width * ANNOTATION_SCALE),
+									 (self.bounds.size.height * ANNOTATION_SCALE));
+		}
+
+		UILabel* teamIDLabel = [[UILabel alloc] initWithFrame:self.bounds];
+		teamIDLabel.textAlignment = NSTextAlignmentCenter;
+		teamIDLabel.textColor = [UIColor whiteColor];
+		teamIDLabel.font = [UIFont systemFontOfSize:12 weight:UIFontWeightHeavy];
+		[self addSubview:teamIDLabel];
+		self.teamIDLabel = teamIDLabel;
+		
+		self.draggable = YES;
+	}
+	
+	return self;
+}
+
+
+- (instancetype)initWithAnnotation:(id<MKAnnotation>)annotation reuseIdentifier:(NSString*)reuseIdentifier {
+
+	return [self initWithAnnotation:annotation reuseIdentifier:reuseIdentifier andMapView:nil];
+}
 
 
 #

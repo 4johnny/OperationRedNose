@@ -9,6 +9,13 @@
 #import "BasePolyline.h"
 #import "Ride+RideHelpers.h"
 
+
+#
+# pragma mark - Constants
+#
+
+#define RIDE_POLYLINE_ANNOTATION_ID	@"ridePolylineAnnotation"
+
 #
 # pragma mark - Interface
 #

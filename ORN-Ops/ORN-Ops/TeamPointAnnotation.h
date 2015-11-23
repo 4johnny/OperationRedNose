@@ -9,6 +9,14 @@
 #import <MapKit/MapKit.h>
 #import "Team+TeamHelpers.h"
 
+
+#
+# pragma mark - Constants
+#
+
+#define TEAM_NORMAL_ANNOTATION_ID	@"teamNormalAnnotation"
+#define TEAM_MASCOT_ANNOTATION_ID	@"teamMascotAnnotation"
+
 #
 # pragma mark - Interface
 #

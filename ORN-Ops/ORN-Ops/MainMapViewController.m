@@ -29,13 +29,6 @@
 # pragma mark Map Constants
 #
 
-#define RIDE_START_ANNOTATION_ID	@"rideStartAnnotation"
-#define RIDE_END_ANNOTATION_ID		@"rideEndAnnotation"
-#define RIDE_POLYLINE_ANNOTATION_ID	@"ridePolylineAnnotation"
-
-#define TEAM_NORMAL_ANNOTATION_ID	@"teamNormalAnnotation"
-#define TEAM_MASCOT_ANNOTATION_ID	@"teamMascotAnnotation"
-
 #define MAP_ANNOTATION_DATETIME_FORMAT	@"HH:mm"
 #define MAP_ANNOTATION_DURATION_FORMAT	@"%.0f min"
 #define MAP_ANNOTATION_DISTANCE_FORMAT	@"%.1f km"
@@ -714,7 +707,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 - (MKAnnotationView*)mapView:(MKMapView*)mapView viewForRidePointAnnotation:(RidePointAnnotation*)ridePointAnnotation {
 	
-	MKPinAnnotationView* ridePinAnnotationView = (MKPinAnnotationView*)[self dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:ridePointAnnotation andIdentifier:ridePointAnnotation.rideLocationType == RideLocationType_End ? RIDE_END_ANNOTATION_ID : RIDE_START_ANNOTATION_ID];
+	MKPinAnnotationView* ridePinAnnotationView = (MKPinAnnotationView*)[self dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:ridePointAnnotation andIdentifier:(ridePointAnnotation.rideLocationType == RideLocationType_End ? RIDE_END_ANNOTATION_ID : RIDE_START_ANNOTATION_ID)];
 	
 	[self configureRidePinAnnotationView:ridePinAnnotationView withRidePointAnnotation:ridePointAnnotation];
 	
@@ -831,20 +824,22 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 - (MKAnnotationView*)mapView:(MKMapView*)mapView viewForTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
 	
-	MKAnnotationView* teamAnnotationView = (MKAnnotationView*)[self dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:teamPointAnnotation andIdentifier:teamPointAnnotation.team.isMascot.boolValue ? TEAM_MASCOT_ANNOTATION_ID : TEAM_NORMAL_ANNOTATION_ID];
+	TeamAnnotationView* teamAnnotationView = (TeamAnnotationView*)[self dequeueReusableAnnotationViewWithMapView:mapView andAnnotation:teamPointAnnotation andIdentifier:(teamPointAnnotation.team.isMascot.boolValue ? TEAM_MASCOT_ANNOTATION_ID : TEAM_NORMAL_ANNOTATION_ID)];
 	
-	[self configureTeamAnnotationView:teamAnnotationView withTeamPointAnnotation:teamPointAnnotation];
+	(void)[self configureTeamAnnotationView:teamAnnotationView withTeamPointAnnotation:teamPointAnnotation];
 	
 	return teamAnnotationView;
 }
 
 
-- (MKAnnotationView*)configureTeamAnnotationView:(MKAnnotationView*)teamAnnotationView withTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
-	
-	// Team* team = teamPointAnnotation.team;
+- (TeamAnnotationView*)configureTeamAnnotationView:(TeamAnnotationView*)teamAnnotationView withTeamPointAnnotation:(TeamPointAnnotation*)teamPointAnnotation {
 	
 	// NOTE: Animation of team annotation is done manually in "mapView:didAddAnnotationViews:"
 	
+	Team* team = teamPointAnnotation.team;
+	
+	teamAnnotationView.teamIDLabel.text = !team.isMascot.boolValue ? team.teamID.stringValue : nil;
+
 	// Add/update/remove left callout accessory
 	// NOTE: Do not set for update, to avoid re-animation
 	if (!teamAnnotationView.leftCalloutAccessoryView) {
@@ -937,14 +932,11 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		
 	} else if ([identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ||
 			   [identifier isEqualToString:TEAM_NORMAL_ANNOTATION_ID]) {
-		
-		annotationView = [[TeamAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
-		((TeamAnnotationView*)annotationView).mapView = self.mainMapView;
-		annotationView.image = [UIImage imageNamed:[identifier isEqualToString:TEAM_MASCOT_ANNOTATION_ID] ? @"ORN-Team-Mascot-Map-Annotation" : @"ORN-Team-Map-Annotation"];
-		annotationView.canShowCallout = YES;
-		annotationView.draggable = YES;
-		annotationView.rightCalloutAccessoryView = [self rightCalloutAccessoryButton];
 
+		annotationView = [[TeamAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier andMapView:self.mainMapView];
+		annotationView.canShowCallout = YES;
+		annotationView.rightCalloutAccessoryView = [self rightCalloutAccessoryButton];
+		
 	} else if ([identifier isEqualToString:RIDE_POLYLINE_ANNOTATION_ID]) {
 		
 		annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
@@ -2107,7 +2099,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	teamPointAnnotation = [TeamPointAnnotation teamPointAnnotation:teamPointAnnotation withTeam:team andNeedsAnimatesDrop:NO];
 	if (wasTeamPointAnnotationInMapView && !didRemoveAnnotationFromMapView) {
 
-		MKAnnotationView* teamAnnotationView = [self.mainMapView viewForAnnotation:teamPointAnnotation];
+		TeamAnnotationView* teamAnnotationView = (TeamAnnotationView*)[self.mainMapView viewForAnnotation:teamPointAnnotation];
 		if (teamAnnotationView) {
 			
 			[self configureTeamAnnotationView:teamAnnotationView withTeamPointAnnotation:teamPointAnnotation];

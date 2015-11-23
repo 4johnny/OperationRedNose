@@ -9,6 +9,14 @@
 #import <MapKit/MapKit.h>
 #import "Ride+RideHelpers.h"
 
+
+#
+# pragma mark - Constants
+#
+
+#define RIDE_START_ANNOTATION_ID	@"rideStartAnnotation"
+#define RIDE_END_ANNOTATION_ID		@"rideEndAnnotation"
+
 #
 # pragma mark - Interface
 #
