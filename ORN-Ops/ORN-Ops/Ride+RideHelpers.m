@@ -349,6 +349,7 @@
  */
 - (void)tryUpdateLocationWithAddressString:(NSString*)addressString
 					   andRideLocationType:(RideLocationType)rideLocationType
+		andNeedsUpdateTeamAssignedLocation:(BOOL)needsUpdateTeamAssignedLocation
 							   andGeocoder:(CLGeocoder*)geocoder
 								 andSender:(id)sender {
 	
@@ -393,10 +394,19 @@
 }
 
 
+- (void)tryUpdateMainRouteWithSender:(id)sender {
+
+	[self tryUpdateMainRouteWithNeedsUpdateTeamAssignedLocation:NO andRideLocationType:RideLocationType_None andGeocoder:nil andSender:sender];
+}
+
+
 /*
  Calculate ride main route, asynchronously
  */
-- (void)tryUpdateMainRouteWithSender:(id)sender {
+- (void)tryUpdateMainRouteWithNeedsUpdateTeamAssignedLocation:(BOOL)needsUpdateTeamAssignedLocation
+										  andRideLocationType:(RideLocationType)rideLocationType
+												  andGeocoder:(CLGeocoder*)geocoder
+													andSender:(id)sender {
 
 	// If cannot get main directions request, we are done
 	MKDirectionsRequest* directionsRequest = [self getMainDirectionsRequest];
@@ -432,6 +442,12 @@
 		
 		// Try to recalculate prep routes for team assigned, if any
 		[self.teamAssigned tryUpdateActiveAssignedRideRoutesWithSender:sender]; // async
+		
+		// Try to update team assigned location, if needed
+		if (needsUpdateTeamAssignedLocation) {
+			
+			[self tryUpdateTeamAssignedLocationWithRideLocationType:rideLocationType andGeocoder:geocoder andSender:sender];
+		}
 		
 	}];
 }
@@ -495,6 +511,71 @@
 		NSLog(@"Ride: %@", self);
 		
 	}];
+}
+
+
+- (void)tryUpdateTeamAssignedLocationWithRideLocationType:(RideLocationType)rideLocationType
+											  andGeocoder:(CLGeocoder*)geocoder
+												andSender:(id)sender {
+	
+	NSAssert(rideLocationType != RideLocationType_None, @"Ride location type must exist");
+	
+	NSString* addressString = nil;
+	MKPolyline* polyline = [self polylineWithRideRouteType:RideRouteType_Main]; // Maybe nil
+
+	switch (rideLocationType) {
+		
+		case RideLocationType_Start:
+			
+			if (self.status.integerValue == RideStatus_Transporting) {
+				
+				if (polyline.pointCount > 0) {
+					
+					CLLocationCoordinate2D firstCoordinate = [polyline getFirstCoordinate];
+					addressString = [NSString stringWithFormat:@"%f,%f", firstCoordinate.latitude, firstCoordinate.longitude];
+					
+				} else if (self.locationStartLatitude && self.locationStartLongitude) {
+					
+					addressString = [NSString stringWithFormat:@"%f,%f", self.locationStartLatitude.doubleValue, self.locationStartLongitude.doubleValue];
+					
+				} else {
+					
+					addressString = self.locationStartAddress; // Maybe nil
+				}
+			}
+			
+			break;
+			
+		case RideLocationType_End:
+			
+			if (polyline.pointCount > 0) {
+				
+				CLLocationCoordinate2D lastCoordinate = [polyline getLastCoordinate];
+				addressString = [NSString stringWithFormat:@"%f,%f", lastCoordinate.latitude, lastCoordinate.longitude];
+				
+			} else if (self.locationEndLatitude && self.locationEndLongitude) {
+				
+				addressString = [NSString stringWithFormat:@"%f,%f", self.locationEndLatitude.doubleValue, self.locationEndLongitude.doubleValue];
+				
+			} else {
+				
+				addressString = self.locationEndAddress; // Maybe nil
+			}
+			
+			break;
+			
+		default:
+		case RideLocationType_None:
+			NSAssert(NO, @"Should never get here");
+			break;
+	}
+	
+	if (addressString.length <= 0) return;
+		
+	Ride* firstSortedActiveRideAssigned = [self.teamAssigned getSortedActiveRidesAssigned].firstObject; // Maybe nil
+	[firstSortedActiveRideAssigned clearPrepRoute];
+	
+	[self.teamAssigned tryUpdateCurrentLocationWithAddressString:addressString andGeocoder:geocoder andSender:sender]; // async
 }
 
 

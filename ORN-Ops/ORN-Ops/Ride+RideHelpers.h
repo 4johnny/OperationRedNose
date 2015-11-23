@@ -171,14 +171,25 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 
 - (void)tryUpdateLocationWithAddressString:(NSString*)addressString
 					   andRideLocationType:(RideLocationType)rideLocationType
+		andNeedsUpdateTeamAssignedLocation:(BOOL)needsUpdateTeamAssignedLocation
 							   andGeocoder:(CLGeocoder*)geocoder
 								 andSender:(id)sender;
 
 - (void)tryUpdateMainRouteWithSender:(id)sender;
+
+- (void)tryUpdateMainRouteWithNeedsUpdateTeamAssignedLocation:(BOOL)needsUpdateTeamAssignedLocation
+										  andRideLocationType:(RideLocationType)rideLocationType
+												  andGeocoder:(CLGeocoder*)geocoder
+													andSender:(id)sender;
+
 - (void)tryUpdatePrepRouteWithLatitude:(NSNumber*)latitude
 						  andLongitude:(NSNumber*)longitude
 							andIsFirst:(BOOL)isFirst
 							 andSender:(id)sender;
+
+- (void)tryUpdateTeamAssignedLocationWithRideLocationType:(RideLocationType)rideLocationType
+											  andGeocoder:(CLGeocoder*)geocoder
+												andSender:(id)sender;
 
 - (void)clearMainRoute;
 - (void)clearPrepRoute;

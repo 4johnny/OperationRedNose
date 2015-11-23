@@ -74,4 +74,30 @@
 }
 
 
+- (CLLocationCoordinate2D)getCoordinateAtIndex:(NSUInteger)index {
+
+	// Grab coordinate - if none, we are done
+	NSUInteger pointCount = self.pointCount;
+	if (pointCount <= 0 || index >= pointCount)
+		return (CLLocationCoordinate2D){NSNotFound, NSNotFound};
+	
+	CLLocationCoordinate2D coordinates[1];
+	[self getCoordinates:coordinates range:(NSRange){index, 1}];
+	
+	return coordinates[0];
+}
+
+
+- (CLLocationCoordinate2D)getFirstCoordinate {
+
+	return [self getCoordinateAtIndex:0];
+}
+
+
+- (CLLocationCoordinate2D)getLastCoordinate {
+	
+	return [self getCoordinateAtIndex:(self.pointCount - 1)];
+}
+
+
 @end

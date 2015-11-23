@@ -459,13 +459,22 @@
 		self.ride = [Ride rideWithManagedObjectContext:[Util managedObjectContext]];
 	}
 	
+	Ride* firstSortedActiveRideAssigned = [self.ride.teamAssigned getSortedActiveRidesAssigned].firstObject; // Maybe nil
+	
 	// Save dispatch field: ride status
-	RideStatus existingStatus = self.ride.status.integerValue;
+	BOOL needsUpdateTeamAssignedLocation = NO;
 	RideStatus newStatus = self.statusSegmentedControl.selectedSegmentIndex + 1;
-	if (existingStatus != newStatus) {
+	BOOL updatedStatus = (self.ride.status.integerValue != newStatus);
+	if (updatedStatus) {
 		
 		self.ride.status = @(newStatus);
-		[self.ride.teamAssigned tryUpdateActiveAssignedRideRoutesWithSender:self];
+
+		if (self.ride == firstSortedActiveRideAssigned) {
+			
+			[self.ride.teamAssigned tryUpdateActiveAssignedRideRoutesWithSender:self];
+			
+			needsUpdateTeamAssignedLocation = YES;
+		}
 	}
 	
 	// Save dispatch field: start time - try async calculate route
@@ -499,16 +508,26 @@
 	// Save location fields - try async geocode
 	
 	BOOL updatedLocationStart = NO;
-	NSString* viewAddressString = [self.startAddressTextField.text trimAll];
-	if (![NSString compareString:self.ride.locationStartAddress toString:viewAddressString]) {
+	NSString* newLocationStartAddress = [self.startAddressTextField.text trimAll];
+	if ([NSString compareString:self.ride.locationStartAddress toString:newLocationStartAddress]) {
 		
+		if (needsUpdateTeamAssignedLocation) {
+
+			[self.ride tryUpdateTeamAssignedLocationWithRideLocationType:RideLocationType_Start
+															 andGeocoder:self.geocoder
+															   andSender:self];
+		}
+		
+	} else {
+	
 		[self.ride clearPrepRoute];
 		[self.ride clearMainRoute];
 		
-		if (viewAddressString.length > 0) {
+		if (newLocationStartAddress.length > 0) {
 			
-			[self.ride tryUpdateLocationWithAddressString:viewAddressString
+			[self.ride tryUpdateLocationWithAddressString:newLocationStartAddress
 									  andRideLocationType:RideLocationType_Start
+					   andNeedsUpdateTeamAssignedLocation:needsUpdateTeamAssignedLocation
 											  andGeocoder:self.geocoder
 												andSender:self]; // async
 			
@@ -520,15 +539,25 @@
 	}
 	
 	BOOL updatedLocationEnd = NO;
-	viewAddressString = [self.endAddressTextField.text trimAll];
-	if (![NSString compareString:self.ride.locationEndAddress toString:viewAddressString]) {
+	NSString* newLocationEndAddress = [self.endAddressTextField.text trimAll];
+	if ([NSString compareString:self.ride.locationEndAddress toString:newLocationEndAddress]) {
 		
+		if (needsUpdateTeamAssignedLocation) {
+			
+			[self.ride tryUpdateTeamAssignedLocationWithRideLocationType:RideLocationType_End
+															 andGeocoder:self.geocoder
+															   andSender:self];
+		}
+		
+	} else {
+	
 		[self.ride clearMainRoute];
 		
-		if (viewAddressString.length > 0) {
+		if (newLocationEndAddress.length > 0) {
 			
-			[self.ride tryUpdateLocationWithAddressString:viewAddressString
+			[self.ride tryUpdateLocationWithAddressString:newLocationEndAddress
 									  andRideLocationType:RideLocationType_End
+					   andNeedsUpdateTeamAssignedLocation:needsUpdateTeamAssignedLocation
 											  andGeocoder:self.geocoder
 												andSender:self]; // async
 			

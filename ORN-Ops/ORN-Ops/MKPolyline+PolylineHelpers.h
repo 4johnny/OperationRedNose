@@ -14,4 +14,8 @@
 
 @interface MKPolyline (PolylineHelpers) <NSCoding>
 
+- (CLLocationCoordinate2D)getCoordinateAtIndex:(NSUInteger)index;
+- (CLLocationCoordinate2D)getFirstCoordinate;
+- (CLLocationCoordinate2D)getLastCoordinate;
+
 @end

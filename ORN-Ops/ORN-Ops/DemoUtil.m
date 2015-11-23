@@ -570,17 +570,17 @@
 	
 	// Assign specific teams to specific rides
 	
-	[rides[0] assignTeam:teams[2] withSender:self]; // Team with two rides
-	[rides[1] assignTeam:teams[2] withSender:self]; // Team with two rides
-	[rides[2] assignTeam:teams[3] withSender:self];
-	[rides[3] assignTeam:teams[4] withSender:self];
-	[rides[4] assignTeam:teams[5] withSender:self];
-	[rides[5] assignTeam:teams[6] withSender:self]; // Team with two rides
-	[rides[6] assignTeam:teams[6] withSender:self]; // Team with two rides
-	[rides[7] assignTeam:teams[7] withSender:self];
-	[rides[8] assignTeam:teams[0] withSender:self];
-	[rides[9] assignTeam:teams[8] withSender:self];
-	[rides[10] assignTeam:teams[10] withSender:self];
+	[rides[0] assignTeam:teams[0] withSender:self]; // Team with two rides
+	[rides[1] assignTeam:teams[0] withSender:self]; // Team with two rides
+	[rides[2] assignTeam:teams[1] withSender:self];
+	[rides[3] assignTeam:teams[2] withSender:self];
+	[rides[4] assignTeam:teams[3] withSender:self];
+	[rides[5] assignTeam:teams[4] withSender:self]; // Team with two rides
+	[rides[6] assignTeam:teams[4] withSender:self]; // Team with two rides
+	[rides[7] assignTeam:teams[5] withSender:self];
+	[rides[8] assignTeam:teams[10] withSender:self];
+	[rides[9] assignTeam:teams[6] withSender:self];
+	[rides[10] assignTeam:teams[8] withSender:self];
 }
 
 
