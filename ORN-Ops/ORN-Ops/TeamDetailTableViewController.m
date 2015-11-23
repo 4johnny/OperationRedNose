@@ -270,9 +270,8 @@
 	} else {
 	
 		[self loadDataModelIntoView];
+		[self configureLocationWithDate:self.team.locationCurrentTime];
 	}
-	
-	[self configureLocationWithDate:self.team.locationCurrentTime];
 }
 
 
