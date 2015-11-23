@@ -348,6 +348,9 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	[super viewDidLoad];
 	// Do any additional setup after loading the view.
 	
+	self.mainMapView.showsScale = YES;
+	self.mainMapView.showsTraffic = YES;
+	
 	// Configure avatar in navigation item
 	// NOTE: Must be done in code - otherwise we just get a template
 	self.avatarBarButtonItem.image = [[UIImage imageNamed:@"ORN-Bar-Button-Item"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
