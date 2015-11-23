@@ -202,7 +202,7 @@
                     <navigationItem key="navigationItem" title="Rides" id="GgT-Jp-8lm">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="FEm-Y4-KAZ">
                             <connections>
-                                <segue destination="ton-Jb-tNu" kind="presentation" identifier="showRideAddSegue" modalPresentationStyle="overFullScreen" modalTransitionStyle="coverVertical" id="qzc-9o-wjq"/>
+                                <segue destination="ton-Jb-tNu" kind="presentation" identifier="showRideAddSegue" id="qzc-9o-wjq"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -262,7 +262,7 @@
                     <navigationItem key="navigationItem" title="Teams" id="lRU-wE-c3o">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="Gd6-34-HHs">
                             <connections>
-                                <segue destination="p4Y-Zn-vgq" kind="presentation" id="mnv-ae-8CM"/>
+                                <segue destination="p4Y-Zn-vgq" kind="presentation" identifier="showTeamAddSegue" id="mnv-ae-8CM"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -496,8 +496,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="38"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Va-2y-OaD">
-                                                    <rect key="frame" x="8" y="8.5" width="112" height="21"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Team ID:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Va-2y-OaD">
+                                                    <rect key="frame" x="8" y="8" width="112" height="21"/>
                                                     <animations/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="21" id="eL2-6q-1do"/>
@@ -506,22 +506,19 @@
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="EKg-KQ-Mdy">
-                                                    <rect key="frame" x="128" y="4" width="464" height="30"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B0f-mw-U6X">
+                                                    <rect key="frame" x="128" y="9.5" width="8" height="20.5"/>
                                                     <animations/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" returnKeyType="next"/>
-                                                    <connections>
-                                                        <outlet property="delegate" destination="XpS-Zq-vPa" id="Llk-La-cze"/>
-                                                    </connections>
-                                                </textField>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <animations/>
                                             <constraints>
-                                                <constraint firstItem="EKg-KQ-Mdy" firstAttribute="leading" secondItem="3Va-2y-OaD" secondAttribute="trailing" constant="8" id="Abv-cI-H5h"/>
-                                                <constraint firstItem="EKg-KQ-Mdy" firstAttribute="centerY" secondItem="KaJ-d6-AOD" secondAttribute="centerY" id="K1E-a5-SNm"/>
+                                                <constraint firstItem="B0f-mw-U6X" firstAttribute="centerY" secondItem="KaJ-d6-AOD" secondAttribute="centerY" id="I0A-Cp-7mC"/>
                                                 <constraint firstItem="3Va-2y-OaD" firstAttribute="leading" secondItem="KaJ-d6-AOD" secondAttribute="leading" constant="8" id="VWS-OT-bRm"/>
-                                                <constraint firstAttribute="trailing" secondItem="EKg-KQ-Mdy" secondAttribute="trailing" constant="8" id="hwQ-I0-wAg"/>
+                                                <constraint firstItem="B0f-mw-U6X" firstAttribute="leading" secondItem="3Va-2y-OaD" secondAttribute="trailing" constant="8" id="WBo-vt-YqD"/>
                                                 <constraint firstItem="3Va-2y-OaD" firstAttribute="centerY" secondItem="KaJ-d6-AOD" secondAttribute="centerY" id="xrR-gz-ptt"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -937,10 +934,10 @@
                         <outlet property="isManualSwitch" destination="hLk-96-GjM" id="mbY-vL-5mV"/>
                         <outlet property="isMascotSwitch" destination="yhx-uA-eOK" id="kF2-cW-HXy"/>
                         <outlet property="membersTextField" destination="gMc-TT-oKi" id="IBv-wc-xKB"/>
-                        <outlet property="nameTextField" destination="EKg-KQ-Mdy" id="iV6-6R-f8p"/>
                         <outlet property="notesTextView" destination="uD4-vl-Wxa" id="fLu-9g-pou"/>
                         <outlet property="phoneNumberTextField" destination="Dmq-py-kkq" id="Kfb-1K-0AZ"/>
                         <outlet property="rideCountLabel" destination="fKb-S6-kGZ" id="zMQ-Pu-Yss"/>
+                        <outlet property="teamIDLabel" destination="B0f-mw-U6X" id="XfY-05-kwH"/>
                         <outlet property="timeDatePickerTextField" destination="Bqu-O8-kUG" id="Rus-Ra-kXN"/>
                     </connections>
                 </tableViewController>
@@ -984,7 +981,7 @@
         <!--Ride Add Navigation Controller-->
         <scene sceneID="WCh-v3-klU">
             <objects>
-                <navigationController storyboardIdentifier="rideAddNavigationController" title="Ride Add Navigation Controller" id="ton-Jb-tNu" customClass="BaseNavigationController" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="rideAddNavigationController" title="Ride Add Navigation Controller" id="ton-Jb-tNu" customClass="RideAddNavigationController" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="QRJ-qn-V1g">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -1013,7 +1010,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="rideDetailTableViewController" title="Ride Detail View Controller" id="EOY-Bm-UjH" customClass="RideDetailTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="static" style="grouped" separatorStyle="none" allowsSelection="NO" rowHeight="38" sectionHeaderHeight="32" sectionFooterHeight="1" id="kqh-Zd-G9W">
-                        <rect key="frame" x="0.0" y="64" width="600" height="487"/>
+                        <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <animations/>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
@@ -1870,7 +1867,7 @@
         <!--Team Add Navigation Controller-->
         <scene sceneID="shU-3z-IVB">
             <objects>
-                <navigationController storyboardIdentifier="teamAddNavigationController" title="Team Add Navigation Controller" id="p4Y-Zn-vgq" customClass="BaseNavigationController" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="teamAddNavigationController" title="Team Add Navigation Controller" id="p4Y-Zn-vgq" customClass="TeamAddNavigationController" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="m2l-AU-3XP">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -1903,6 +1900,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="ITb-aY-p1t"/>
-        <segue reference="mox-mc-g7Y"/>
+        <segue reference="RWa-Ts-C4u"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -49,9 +49,13 @@
 
 - (NSString*)getTitle {
 	
-	if (self.name.length > 0 && self.members.length <= 0) return self.name;
-	if (self.name.length <= 0 && self.members.length > 0) return self.members;
-	if (self.name.length > 0 && self.members.length > 0) return [NSString stringWithFormat:@"%@: %@", self.name, self.members];
+	NSAssert(self.teamID, @"Team ID must exist");
+	
+	NSString* teamIDText = self.teamID.stringValue;
+	
+	if (teamIDText.length > 0 && self.members.length <= 0) return teamIDText;
+	if (teamIDText.length <= 0 && self.members.length > 0) return self.members;
+	if (teamIDText.length > 0 && self.members.length > 0) return [NSString stringWithFormat:@"%@: %@", self.teamID, self.members];
 	
 	return TEAM_TITLE_DEFAULT;
 }

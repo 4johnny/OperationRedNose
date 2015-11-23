@@ -17,7 +17,7 @@
 #define TEAM_TITLE_NONE		@"-None-"
 
 // NOTE: Sort keys indexed in data model
-#define TEAM_FETCH_SORT_KEY1		@"name"
+#define TEAM_FETCH_SORT_KEY1		@"teamID"
 #define TEAM_FETCH_SORT_ASC1		YES
 #define TEAM_FETCH_SORT_KEY2		@"members"
 #define TEAM_FETCH_SORT_ASC2		YES

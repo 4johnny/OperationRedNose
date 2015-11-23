@@ -104,7 +104,7 @@
 	if (self.isAddMode) {
 		
 		// Show keyboard on first entry field
-		[self.nameTextField becomeFirstResponder];
+		[self.membersTextField becomeFirstResponder];
 	}
 }
 
@@ -244,7 +244,7 @@
 	self.donationsLabel.tag = 			4;
 	
 	// Team
-	self.nameTextField.tag = 			5;
+	self.teamIDLabel.tag = 				5;
 	self.membersTextField.tag = 		6;
 	self.emailAddressTextField.tag =	7;
 	self.phoneNumberTextField.tag = 	8;
@@ -263,8 +263,12 @@
 
 - (void)configureViewFromDataModel {
 	
-	if (!self.isAddMode) {
+	if (self.isAddMode) {
 		
+		self.teamIDLabel.text = [self nextTeamID];
+		
+	} else {
+	
 		[self loadDataModelIntoView];
 	}
 	
@@ -323,7 +327,7 @@
 	self.donationsLabel.text =  [self.currencyNumberFormatter stringFromNumber:[self.team getDonationsAssigned]];
 	
 	// Load team fields
-	self.nameTextField.text = self.team.name;
+	self.teamIDLabel.text = self.team.teamID.stringValue;
 	self.membersTextField.text = self.team.members;
 	self.emailAddressTextField.text = self.team.emailAddress;
 	self.phoneNumberTextField.text = self.team.phoneNumber;
@@ -351,8 +355,11 @@
 	self.team.isActive = @(self.isActiveSwitch.on);
 	
 	// Save team fields
-	
-	self.team.name = [self.nameTextField.text trimAll];
+
+	if (self.isAddMode) {
+		
+		self.team.teamID = @(self.teamIDLabel.text.integerValue);
+	}
 	self.team.members = [self.membersTextField.text trimAll];
 	self.team.emailAddress = [self.emailAddressTextField.text trimAll];
 	self.team.phoneNumber = [self.phoneNumberTextField.text trimAll];

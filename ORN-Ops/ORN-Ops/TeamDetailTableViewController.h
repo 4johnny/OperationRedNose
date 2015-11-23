@@ -28,6 +28,7 @@
 #
 
 @property (weak, nonatomic) Team* team;
+@property (nonatomic) NSString* nextTeamID; // for add-mode
 
 #
 # pragma mark UI Outlets
@@ -41,7 +42,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *donationsLabel;
 
 // Team
-@property (weak, nonatomic) IBOutlet UITextField *nameTextField;
+@property (weak, nonatomic) IBOutlet UILabel *teamIDLabel;
 @property (weak, nonatomic) IBOutlet UITextField *membersTextField;
 @property (weak, nonatomic) IBOutlet UITextField *emailAddressTextField;
 @property (weak, nonatomic) IBOutlet UITextField *phoneNumberTextField;

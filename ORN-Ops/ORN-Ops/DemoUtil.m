@@ -361,7 +361,7 @@
 	Team* team;
 	
 	team = [Team teamWithManagedObjectContext:moc];
-	team.name = @"1";
+	team.teamID = @(1);
 	team.members = @"Selma, Akbar, George";
 	team.isMascot = @NO;
 	team.isActive = @YES;
@@ -376,7 +376,7 @@
 	[team postNotificationCreatedWithSender:self];
 	
 	team = [Team teamWithManagedObjectContext:moc];
-	team.name = @"2";
+	team.teamID = @(2);
 	team.members = @"Matthew, Bethanie, Kelila";
 	team.isMascot = @NO;
 	team.isActive = @YES;
@@ -397,7 +397,7 @@
 	Team* team;
 	
 	team = [Team teamWithManagedObjectContext:moc];
-	team.name = @"3";
+	team.teamID = @(3);
 	team.members = @"Cornel, Lucas, Kaylynn";
 	team.isMascot = @NO;
 	team.isActive = @YES;
@@ -411,7 +411,7 @@
 	[team postNotificationCreatedWithSender:self];
 	
 	team = [Team teamWithManagedObjectContext:moc];
-	team.name = @"4";
+	team.teamID = @(4);
 	team.members = @"Serena, Hector, Maciej";
 	team.isMascot = @NO;
 	team.isActive = @YES;
@@ -432,7 +432,7 @@
 	Team* team;
 	
 	team = [Team teamWithManagedObjectContext:moc];
-	team.name = @"5";
+	team.teamID = @(5);
 	team.members = @"Lea, Mark, Terese";
 	team.isMascot = @NO;
 	team.isActive = @YES;
@@ -446,7 +446,7 @@
 	[team postNotificationCreatedWithSender:self];
 	
 	team = [Team teamWithManagedObjectContext:moc];
-	team.name = @"6";
+	team.teamID = @(6);
 	team.members = @"Greg, Désiré, Romana";
 	team.isMascot = @NO;
 	team.isActive = @YES;
@@ -476,7 +476,7 @@
  
 	// NOTE: Team is mascot
 	team = [Team teamWithManagedObjectContext:moc];
-	team.name = @"7";
+	team.teamID = @(7);
 	team.members = @"Abe, Jarek, Larisa";
 	team.isMascot = @YES;
 	team.isActive = @YES;
@@ -490,7 +490,7 @@
 	[team postNotificationCreatedWithSender:self];
 	
 	team = [Team teamWithManagedObjectContext:moc];
-	team.name = @"8";
+	team.teamID = @(8);
 	team.members = @"Vera, Leonard, Ashley";
 	team.isMascot = @NO;
 	team.isActive = @YES;
@@ -512,7 +512,7 @@
 	
 	// NOTE: Team missing members
 	team = [Team teamWithManagedObjectContext:moc];
-	team.name = @"9";
+	team.teamID = @(9);
 	team.isMascot = @NO;
 	team.isActive = @YES;
 	[team updateCurrentLocationWithLatitude:49.253409
@@ -524,8 +524,8 @@
 									andTime:nil];
 	[team postNotificationCreatedWithSender:self];
 	
-	// NOTE: Team missing name
 	team = [Team teamWithManagedObjectContext:moc];
+	team.teamID = @(10);
 	team.members = @"Martin, Jolene, Anatoly";
 	team.isMascot = @NO;
 	team.isActive = @YES;
@@ -545,8 +545,9 @@
 	NSManagedObjectContext* moc = [Util managedObjectContext];
 	Team* team;
 	
-	// NOTE: Team missing name and members
+	// NOTE: Team missing members
 	team = [Team teamWithManagedObjectContext:moc];
+	team.teamID = @(11);
 	team.isMascot = @NO;
 	team.isActive = @YES;
 	[team updateCurrentLocationWithLatitude:49.298383

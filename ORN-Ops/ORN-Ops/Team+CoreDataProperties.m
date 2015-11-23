@@ -2,7 +2,7 @@
 //  Team+CoreDataProperties.m
 //  ORN-Ops
 //
-//  Created by Johnny on 2015-10-27.
+//  Created by Johnny on 2015-11-22.
 //  Copyright © 2015 Empath Solutions. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -25,9 +25,9 @@
 @dynamic locationCurrentStreet;
 @dynamic locationCurrentTime;
 @dynamic members;
-@dynamic name;
 @dynamic notes;
 @dynamic phoneNumber;
+@dynamic teamID;
 @dynamic ridesAssigned;
 
 @end

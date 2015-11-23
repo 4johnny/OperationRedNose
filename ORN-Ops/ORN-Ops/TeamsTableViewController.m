@@ -7,7 +7,9 @@
 //
 
 #import "TeamsTableViewController.h"
+#import "TeamAddNavigationController.h"
 #import "TeamDetailTableViewController.h"
+
 #import "Team+TeamHelpers.h"
 #import "Ride+RideHelpers.h"
 
@@ -21,7 +23,7 @@
 #define TEAMS_CELL_FIELD_EMPTY		@"?"
 
 #define SHOW_TEAM_DETAIL_SEQUE	@"showTeamDetailSegue"
-//#define SHOW_TEAM_ADD_SEQUE	@"showTeamAddSegue"
+#define SHOW_TEAM_ADD_SEQUE		@"showTeamAddSegue"
 
 
 #
@@ -127,13 +129,18 @@
 		
 		// Remove "cancel" button
 		self.teamDetailTableViewController.navigationItem.leftBarButtonItem = nil;
+		
+	} else if ([segue.identifier isEqualToString:SHOW_TEAM_ADD_SEQUE]) {
+		
+		// NOTE: Empty "team" field means "Add Mode"
+
+		// Inject next available team ID
+		TeamAddNavigationController* teamAddNavigationController = (TeamAddNavigationController*)segue.destinationViewController;
+		
+		TeamDetailTableViewController* teamDetailViewController = (TeamDetailTableViewController*)teamAddNavigationController.topViewController;
+		
+		teamDetailViewController.nextTeamID = [self nextTeamID];
 	}
-	
-	//	if ([segue.identifier isEqualToString:SHOW_TEAM_ADD_SEQUE]) {
-	//		// NOTE: Empty "team" field means "Add Mode"
-	//
-	//		// Do nothing
-	//	}
 }
 
 
@@ -355,6 +362,14 @@
 	[Ride addCreatedObserver:self withSelector:@selector(rideCreatedWithNotification:)];
 	[Ride addDeletedObserver:self withSelector:@selector(rideDeletedWithNotification:)];
 	[Ride addUpdatedObserver:self withSelector:@selector(rideUpdatedWithNotification:)];
+}
+
+
+- (NSString*)nextTeamID {
+
+	Team* lastTeam = self.teamsFetchedResultsController.fetchedObjects.lastObject;
+	
+	return lastTeam ? @(lastTeam.teamID.integerValue + 1).stringValue : @"1";
 }
 
 

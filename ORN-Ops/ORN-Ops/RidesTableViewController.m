@@ -7,7 +7,9 @@
 //
 
 #import "RidesTableViewController.h"
+#import "RideAddNavigationController.h"
 #import "RideDetailTableViewController.h"
+
 #import "Ride+RideHelpers.h"
 #import "Team+TeamHelpers.h"
 
@@ -21,7 +23,7 @@
 #define RIDES_CELL_FIELD_EMPTY		@"?"
 
 #define SHOW_RIDE_DETAIL_SEQUE	@"showRideDetailSegue"
-//#define SHOW_RIDE_ADD_SEQUE		@"showRideAddSegue"
+#define SHOW_RIDE_ADD_SEQUE		@"showRideAddSegue"
 
 
 #
@@ -127,13 +129,13 @@
 		
 		// Remove "cancel" button
 		self.rideDetailTableViewController.navigationItem.leftBarButtonItem = nil;
+		
+	} else if ([segue.identifier isEqualToString:SHOW_RIDE_ADD_SEQUE]) {
+		
+		// NOTE: Empty "ride" field means "Add Mode"
+		
+		// Do nothing
 	}
-	
-	//	if ([segue.identifier isEqualToString:SHOW_RIDE_ADD_SEQUE]) {
-	//		// NOTE: Empty "ride" field means "Add Mode"
-	//
-	//		// Do nothing
-	//	}
 }
 
 
