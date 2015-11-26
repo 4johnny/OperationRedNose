@@ -548,18 +548,21 @@
 			
 		case RideLocationType_End:
 			
-			if (polyline.pointCount > 0) {
+			if (self.status.integerValue == RideStatus_Completed) {
 				
-				CLLocationCoordinate2D lastCoordinate = [polyline getLastCoordinate];
-				addressString = [NSString stringWithFormat:@"%f,%f", lastCoordinate.latitude, lastCoordinate.longitude];
-				
-			} else if (self.locationEndLatitude && self.locationEndLongitude) {
-				
-				addressString = [NSString stringWithFormat:@"%f,%f", self.locationEndLatitude.doubleValue, self.locationEndLongitude.doubleValue];
-				
-			} else {
-				
-				addressString = self.locationEndAddress; // Maybe nil
+				if (polyline.pointCount > 0) {
+					
+					CLLocationCoordinate2D lastCoordinate = [polyline getLastCoordinate];
+					addressString = [NSString stringWithFormat:@"%f,%f", lastCoordinate.latitude, lastCoordinate.longitude];
+					
+				} else if (self.locationEndLatitude && self.locationEndLongitude) {
+					
+					addressString = [NSString stringWithFormat:@"%f,%f", self.locationEndLatitude.doubleValue, self.locationEndLongitude.doubleValue];
+					
+				} else {
+					
+					addressString = self.locationEndAddress; // Maybe nil
+				}
 			}
 			
 			break;
