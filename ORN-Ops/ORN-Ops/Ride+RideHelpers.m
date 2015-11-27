@@ -493,15 +493,29 @@
 		NSLog(@"Prep Distance: %.0f m -> %.2f km", route.distance, route.distance / (CLLocationDistance)METERS_PER_KILOMETER);
 		NSLog(@"Prep Polyline: %@", route.polyline);
 
-		// If prep route is close enough to ride start or end, adjust status automatically
+		// If prep route is close enough to ride start or end, adjust status automatically, as needed
 		if (isFirst && (self.routePrepDuration.doubleValue < ARRIVAL_MARGIN_DURATION ||
 						self.routePrepDistance.doubleValue < ARRIVAL_MARGIN_DISTANCE)) {
 				
-			NSLog(@"Changing ride status due to arrival margin");
+			NSLog(@"First ride prep within arrival margin");
 			
-			NSAssert([self isActive], @"Status must be active"); // For current usage of this method
-			self.status = @(![self isTransporting] ? RideStatus_Transporting : RideStatus_Completed);
-			[self.teamAssigned tryUpdateActiveAssignedRideRoutesWithSender:self];
+			BOOL updatedStatus = NO;
+			if ([self isDispatched]) {
+				
+				self.status = @(RideStatus_Transporting);
+				updatedStatus = YES;
+				NSLog(@"Changing ride status from dispatched to transporting");
+				
+			} else if ([self isTransporting]) {
+				
+				self.status = @(RideStatus_Completed);
+				updatedStatus = YES;
+				NSLog(@"Changing ride status from transporting to completed");
+			}
+			if (updatedStatus) {
+				
+				[self.teamAssigned tryUpdateActiveAssignedRideRoutesWithSender:self];
+			}
 		}
 		
 		// Persist to store and notify
