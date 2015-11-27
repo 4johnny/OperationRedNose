@@ -341,8 +341,15 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 	[super viewDidLoad];
 	// Do any additional setup after loading the view.
 	
-	self.mainMapView.showsScale = YES;
-	self.mainMapView.showsTraffic = YES;
+	if ([self.mainMapView respondsToSelector:@selector(showsScale)]) { // iOS 9
+		
+		self.mainMapView.showsScale = YES;
+	}
+	
+	if ([self.mainMapView respondsToSelector:@selector(showsTraffic)]) { // iOS 9
+		
+		self.mainMapView.showsTraffic = YES;
+	}
 	
 	// Configure avatar in navigation item
 	// NOTE: Must be done in code - otherwise we just get a template
