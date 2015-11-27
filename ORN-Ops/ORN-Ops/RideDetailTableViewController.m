@@ -459,21 +459,27 @@
 		self.ride = [Ride rideWithManagedObjectContext:[Util managedObjectContext]];
 	}
 	
-	Ride* firstSortedActiveRideAssigned = [self.ride.teamAssigned getSortedActiveRidesAssigned].firstObject; // Maybe nil
-	
 	// Save dispatch field: ride status
 	BOOL needsUpdateTeamAssignedLocation = NO;
 	RideStatus newStatus = self.statusSegmentedControl.selectedSegmentIndex + 1;
 	BOOL updatedStatus = (self.ride.status.integerValue != newStatus);
 	if (updatedStatus) {
 		
+		if (self.ride == [self.ride.teamAssigned getSortedActiveRidesAssigned].firstObject) {
+		
+			needsUpdateTeamAssignedLocation = YES;
+		}
+		
 		self.ride.status = @(newStatus);
 
-		if (self.ride == firstSortedActiveRideAssigned) {
-			
-			[self.ride.teamAssigned tryUpdateActiveAssignedRideRoutesWithSender:self];
+		if (self.ride == [self.ride.teamAssigned getSortedActiveRidesAssigned].firstObject) {
 			
 			needsUpdateTeamAssignedLocation = YES;
+		}
+		
+		if (needsUpdateTeamAssignedLocation) {
+			
+			[self.ride.teamAssigned tryUpdateActiveAssignedRideRoutesWithSender:self];
 		}
 	}
 	
