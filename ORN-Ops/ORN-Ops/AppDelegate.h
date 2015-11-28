@@ -18,10 +18,20 @@
 @interface AppDelegate : UIResponder <UIApplicationDelegate, ORNDataModelSource>
 
 #
+# pragma mark Initializers
+#
+
++ (AppDelegate*)sharedAppDelegate;
+
+#
 # pragma mark Properties
 #
 
 @property (strong, nonatomic) UIWindow* window;
+
+// TODO: Persist Telegram auth token to keychain instead of user defaults
+@property (strong, nonatomic) NSString* telegramBotAuthToken; // Persisted to user defaults (for now)
+@property (strong, nonatomic) NSNumber* telegramBotOffset; // Persisted to user defaults
 
 #
 # pragma mark Core Data Properties
@@ -36,6 +46,9 @@
 #
 
 + (NSURL*)applicationDocumentsDirectoryURL;
+
+- (void)startTelegramBotPoll;
+- (void)stopTelegramBotPoll;
 
 @end
 

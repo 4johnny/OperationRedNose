@@ -17,17 +17,37 @@
 @implementation NSString (StringHelpers)
 
 
+- (NSArray<NSString*>*)componentsTrimAll {
+
+	NSArray<NSString*>* stringComponents = [self componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	
+	return [stringComponents filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self <> ''"]];
+}
+
+
+- (NSArray<NSString*>*)componentsTrimAllNewline {
+	
+	NSArray<NSString*>* stringComponents = [self componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+	
+	return [stringComponents filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self <> ''"]];
+}
+
+
 - (NSString*)trim {
 	
 	return [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
 
+- (NSString*)trimAllNewline {
+	
+	return [[self componentsTrimAllNewline] componentsJoinedByString:@" "];
+}
+
+
 - (NSString*)trimAll {
 	
-	NSArray<NSString*>* stringComponents = [self componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-	stringComponents = [stringComponents filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self <> ''"]];
-	return [stringComponents componentsJoinedByString:@" "];
+	return [[self componentsTrimAll] componentsJoinedByString:@" "];
 }
 
 

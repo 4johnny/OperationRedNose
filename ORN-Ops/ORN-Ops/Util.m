@@ -70,6 +70,51 @@
 
 
 #
+# pragma mark Converters
+#
+
+
++ (NSString*)stringFromDictionary:(NSDictionary*)dictionary {
+	
+	if (!dictionary) return nil;
+	if (dictionary.count <= 0) return @"";
+	
+	NSError* error;
+	NSData* jsonData = [NSJSONSerialization dataWithJSONObject:dictionary options:kNilOptions error:&error];
+	
+	return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+}
+
+
++ (NSMutableDictionary*)dictionaryFromString:(NSString*)string {
+	
+	if (!string) return nil;
+	//	string = [string trimAllNewline];
+	if (string.length <= 0) return [NSMutableDictionary dictionary];
+	
+	NSError* error;
+	NSData* data = [string dataUsingEncoding:NSUTF8StringEncoding];
+	if (!data) return nil;
+	
+	return [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+}
+
+
++ (NSMutableDictionary*)dictionaryFromObject:(NSObject*)object {
+	
+	// Best effort to convert to dictionary
+	
+	if (!object) return nil;
+	
+	if ([object isKindOfClass:[NSDictionary class]]) return [object mutableCopy];
+	
+	if ([object isKindOfClass:[NSString class]]) return [Util dictionaryFromString:(NSString*)object];
+	
+	return nil;
+}
+
+
+#
 # pragma mark Responder
 #
 

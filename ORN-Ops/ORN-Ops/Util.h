@@ -86,6 +86,14 @@
 @property (nonatomic) NSCharacterSet* monetaryCharacterSetInverted;
 
 #
+# pragma mark Converters
+#
+
++ (NSString*)stringFromDictionary:(NSDictionary*)dictionary;
++ (NSMutableDictionary*)dictionaryFromString:(NSString*)string;
++ (NSMutableDictionary*)dictionaryFromObject:(NSObject*)object;
+
+#
 # pragma mark Responder
 #
 

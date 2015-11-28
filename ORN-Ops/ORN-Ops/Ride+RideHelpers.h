@@ -113,6 +113,11 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 								andPlacemark:(CLPlacemark*)placemark
 						 andRideLocationType:(RideLocationType)rideLocationType;
 
+- (instancetype)initWithAttributes:(NSDictionary<NSString*,id>*)attributes
+		   andManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
+					   andGeocoder:(CLGeocoder*)geocoder
+						 andSender:(id)sender;
+
 - (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
 
 + (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
@@ -120,6 +125,11 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 								andPlacemark:(CLPlacemark*)placemark
 						 andRideLocationType:(RideLocationType)rideLocationType;
 
++ (instancetype)rideWithAttributes:(NSDictionary<NSString*,id>*)attributes
+		   andManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
+					   andGeocoder:(CLGeocoder*)geocoder
+						 andSender:(id)sender;
+	
 + (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
 
 #

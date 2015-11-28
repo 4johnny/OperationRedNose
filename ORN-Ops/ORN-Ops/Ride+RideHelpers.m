@@ -35,6 +35,7 @@
 # pragma mark Initializers
 #
 
+
 - (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
 								 andDateTime:(NSDate*)dateTime
 								andPlacemark:(CLPlacemark*)placemark
@@ -60,6 +61,84 @@
 }
 
 
+- (instancetype)initWithAttributes:(NSDictionary<NSString*,id>*)attributes
+		   andManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
+					   andGeocoder:(CLGeocoder*)geocoder
+						 andSender:(id)sender {
+	
+	self = [super initWithEntity:[NSEntityDescription entityForName:RIDE_ENTITY_NAME inManagedObjectContext:managedObjectContext] insertIntoManagedObjectContext:managedObjectContext];
+	
+	if (self) {
+		
+		// Dispatch
+		
+		self.status = @(RideStatus_New);
+		
+		//	NSDate* newDateTimeStart = ... attributes[@"dateTimeStart"]; // Need to parse from a standard
+		if (!self.dateTimeStart) {
+			self.dateTimeStart = [NSDate date];
+		}
+		
+		self.sourceName = attributes[@"sourceName"];
+		
+		// Passenger
+		
+		self.passengerNameFirst = attributes[@"passengerNameFirst"];
+		self.passengerNameLast = attributes[@"passengerNameLast"];
+		self.passengerPhoneNumber = attributes[@"passengerPhoneNumber"];
+		
+		self.passengerCount = attributes[@"passengerCount"];
+		if (self.passengerCount.integerValue < 1) {
+			self.passengerCount = @(1);
+		}
+		
+		// Location
+		// NOTE: Set addresses only if geocode valid - async
+		
+		NSString* newLocationStartAddress = attributes[@"locationStartAddress"];
+		if (newLocationStartAddress.length > 0) {
+			
+			[self tryUpdateLocationWithAddressString:newLocationStartAddress
+									andRideLocationType:RideLocationType_Start
+					 andNeedsUpdateTeamAssignedLocation:NO
+											andGeocoder:geocoder
+											  andSender:sender]; // async
+		}
+		
+		NSString* newLocationEndAddress = attributes[@"locationEndAddress"];
+		if (newLocationEndAddress.length > 0) {
+			
+			[self tryUpdateLocationWithAddressString:newLocationEndAddress
+								 andRideLocationType:RideLocationType_End
+				  andNeedsUpdateTeamAssignedLocation:NO
+										 andGeocoder:geocoder
+										   andSender:sender]; // async
+		}
+		
+		self.locationTransferFrom = attributes[@"locationTransferFrom"];
+		self.locationTransferTo = attributes[@"locationTransferTo"];
+		
+		// Vehicle
+		
+		self.vehicleDescription = attributes[@"vehicleDescription"];
+		
+		NSString* newVehicleTransmissionText = attributes[@"vehicleTransmission"];
+		self.vehicleTransmission = @([newVehicleTransmissionText isEqualToString:@"manual"] ? VehicleTransmission_Manual : VehicleTransmission_Automatic);
+		
+		self.vehicleSeatBeltCount = attributes[@"vehicleSeatBeltCount"];
+		if (self.vehicleSeatBeltCount.integerValue < 0) {
+			self.vehicleSeatBeltCount = @(0);
+		}
+		
+		// Notes
+		
+		self.notes = attributes[@"notes"];
+	}
+	
+	return self;
+}
+
+
 - (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
 	return [self initWithManagedObjectContext:managedObjectContext andDateTime:nil andPlacemark:nil andRideLocationType:RideLocationType_None];
@@ -75,6 +154,18 @@
 										  andDateTime:dateTime
 										 andPlacemark:placemark
 								  andRideLocationType:rideLocationType];
+}
+
+
++ (instancetype)rideWithAttributes:(NSDictionary<NSString*,id>*)attributes
+		   andManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
+					   andGeocoder:(CLGeocoder*)geocoder
+						 andSender:(id)sender {
+	
+	return [[Ride alloc] initWithAttributes:attributes
+					andManagedObjectContext:managedObjectContext
+								andGeocoder:geocoder
+								  andSender:sender];
 }
 
 

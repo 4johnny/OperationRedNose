@@ -25,6 +25,8 @@
 #define SECONDS_PER_MINUTE		60
 #define METERS_PER_KILOMETER	1000
 
+#define HTTP_RESPONSE_STATUS_OK		200
+
 #
 # pragma mark Color Macros
 #

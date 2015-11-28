@@ -12,6 +12,9 @@
 #import "AppDelegate.h"
 #import "MainTabBarController.h"
 
+#import "Ride+RideHelpers.h"
+#import "Team+TeamHelpers.h"
+
 
 #
 # pragma mark - Constants
@@ -20,6 +23,24 @@
 #define CORE_DATA_STORE_SQL_FILE_NAME	@"ORN-Ops.sqlite"
 #define CORE_DATA_MODEL_RESOURCE_NAME	@"ORN-Ops"
 
+#define LONG_POLL_TIMEOUT	300 // seconds
+
+#
+# pragma mark - Remote Command Constants
+#
+
+#define TELEGRAM_GET_ME_URL_FORMAT				@"https://api.telegram.org/bot%@/getMe"
+#define TELEGRAM_GET_UPDATES_BASIC_URL_FORMAT	@"https://api.telegram.org/bot%@/getUpdates?timeout=%d"
+#define TELEGRAM_GET_UPDATES_FULL_URL_FORMAT	@"https://api.telegram.org/bot%@/getUpdates?timeout=%d&offset=%@"
+
+#define REMOTE_COMMAND_ENTITY_KEY			@"entity"
+
+#define REMOTE_COMMAND_ACTION_KEY			@"action"
+#define REMOTE_COMMAND_ACTION_CREATE_VAL	@"create"
+//#define REMOTE_COMMAND_ACTION_UPDATE_VAL	@"update"
+
+#define REMOTE_COMMAND_ATTRIBUTES_KEY		@"attributes"
+
 #
 # pragma mark - Interface
 #
@@ -27,6 +48,13 @@
 
 @interface AppDelegate ()
 
+#
+# pragma mark Properties
+#
+
+@property (nonatomic) CLGeocoder* geocoder;
+
+@property (strong, nonatomic) NSURLSessionDataTask* telegramDataTask;
 
 #
 # pragma mark Core Data Properties
@@ -46,6 +74,55 @@
 
 
 @implementation AppDelegate
+
+
+#
+# pragma mark Properties
+#
+
+
+- (CLGeocoder*)geocoder {
+	
+	if (_geocoder) return _geocoder;
+	
+	_geocoder = [[CLGeocoder alloc] init];
+	
+	return _geocoder;
+}
+
+
+// TODO: Persist Telegram auth token to keychain instead of user defaults
+- (NSString*)telegramBotAuthToken {
+	
+	return [[NSUserDefaults standardUserDefaults] valueForKey:@"telegramBotAuthToken"];
+}
+
+
+- (void)setTelegramBotAuthToken:(NSString*)telegramBotAuthToken {
+	
+	NSLog(@"Saving Telegram bot auth token to user defaults: %@", telegramBotAuthToken);
+	
+	[[NSUserDefaults standardUserDefaults] setValue:telegramBotAuthToken forKey:@"telegramBotAuthToken"];
+}
+
+
+- (NSNumber*)telegramBotOffset {
+
+	return [[NSUserDefaults standardUserDefaults] valueForKey:@"telegramBotOffset"];
+}
+
+
+- (void)setTelegramBotOffset:(NSNumber*)telegramBotOffset {
+	
+	NSLog(@"Saving Telegram bot offset to user defaults: %@", telegramBotOffset);
+	
+	[[NSUserDefaults standardUserDefaults] setValue:telegramBotOffset forKey:@"telegramBotOffset"];
+}
+
+
+#
+# pragma mark <UIApplicationDelegate>
+#
 
 
 - (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions {
@@ -87,6 +164,17 @@
 	
 	// Saves changes in the application's managed object context before the application terminates.
 	[self saveManagedObjectContext];
+}
+
+
+#
+# pragma mark Initializers
+#
+
+
++ (AppDelegate*)sharedAppDelegate {
+	
+	return (AppDelegate*)[UIApplication sharedApplication].delegate;
 }
 
 
@@ -236,6 +324,153 @@
 	error = [NSError errorWithDomain:ORN_ERROR_DOMAIN_ORNOPSAPP code:ORN_ERROR_CODE_DATA_MODEL_PERSISTENT_STORE_REMOVE userInfo:dict];
 	
 	return error;
+}
+
+
+#
+# pragma mark Remote Command Methods
+#
+
+
+- (BOOL)handleRemoteCommand:(NSDictionary<NSString*,id>*)remoteCommand {
+	
+	if (remoteCommand.count <= 0) return NO;
+	
+	NSString* remoteCommandAction = remoteCommand[REMOTE_COMMAND_ACTION_KEY];
+	NSString* remoteCommandEntity = remoteCommand[REMOTE_COMMAND_ENTITY_KEY];
+	NSDictionary<NSString*,id>* attributes = remoteCommand[REMOTE_COMMAND_ATTRIBUTES_KEY];
+	
+	if ([RIDE_ENTITY_NAME.lowercaseString isEqualToString:remoteCommandEntity]) {
+		
+		if ([REMOTE_COMMAND_ACTION_CREATE_VAL isEqualToString:remoteCommandAction]) {
+			
+			Ride* newRide = [Ride rideWithAttributes:attributes andManagedObjectContext:self.managedObjectContext andGeocoder:self.geocoder andSender:self];
+
+			[self saveManagedObjectContext];
+			[newRide postNotificationCreatedWithSender:self];
+			
+		} // else if (REMOTE_COMMAND_ACTION_ isEqualToString:remoteCommandAction]) { ... }
+		
+	} else if ([TEAM_ENTITY_NAME.lowercaseString isEqualToString:remoteCommandEntity]) {
+
+		// Do nothing (for now)
+	}
+	
+	return YES;
+}
+
+
+- (void)launchPollTelegramURLDataTask {
+	
+	if (self.telegramBotAuthToken.length <= 0) return;
+	
+	NSString* telegramOpsBotUrlString = self.telegramBotOffset
+	? [NSString stringWithFormat:TELEGRAM_GET_UPDATES_FULL_URL_FORMAT, self.telegramBotAuthToken, LONG_POLL_TIMEOUT, self.telegramBotOffset]
+	: [NSString stringWithFormat:TELEGRAM_GET_UPDATES_BASIC_URL_FORMAT, self.telegramBotAuthToken, LONG_POLL_TIMEOUT];
+	//	NSString* telegramOpsBotUrlString = [NSString stringWithFormat:TELEGRAM_GET_ME_URL_FORMAT, self.telegramBotAuthToken];
+	NSLog(@"URL request for Telegram bot: %@", telegramOpsBotUrlString);
+	
+	// TODO: Use a request object to set long poll
+	NSURL* telegramOpsBotUrl = [NSURL URLWithString:telegramOpsBotUrlString];
+	
+	self.telegramDataTask = [[NSURLSession sharedSession] dataTaskWithURL:telegramOpsBotUrl completionHandler:^(NSData* _Nullable data, NSURLResponse* _Nullable response, NSError* _Nullable error) {
+		
+		//	NSLog(@"URL response for Telegram bot update running on thread: %@", [NSThread currentThread]);
+		
+		dispatch_async(dispatch_get_main_queue(), ^{
+			
+			@try {
+				
+				//	NSLog(@"Processing response for Telegram bot update on thread: %@", [NSThread currentThread]);
+				
+				if (!data) {
+					NSLog(@"URL Client Connection Error - %@ %@", error.localizedDescription, error.userInfo[NSURLErrorFailingURLStringErrorKey]);
+					return;
+				}
+				
+				NSHTTPURLResponse* httpUrlResponse = (NSHTTPURLResponse*)response;
+				if (httpUrlResponse.statusCode != HTTP_RESPONSE_STATUS_OK) {
+					
+					NSLog(@"URL Server Connection Error - %d %@", (int)httpUrlResponse.statusCode, [NSHTTPURLResponse localizedStringForStatusCode:httpUrlResponse.statusCode]);
+					return;
+				}
+				
+				// We have data - convert it to JSON dictionary
+				NSError* error = nil;
+				NSDictionary* responseJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+				if (!responseJSONDictionary) {
+					NSLog(@"JSON Deserialization Error - %@ %@", error.localizedDescription, error.userInfo);
+					return;
+				}
+				NSLog(@"Backend URL-response JSON for Telegram bot update: %@", responseJSONDictionary);
+				
+				// We have JSON dictionary - grab Telegram update
+				
+				BOOL telegramResponseOK = ((NSNumber*)responseJSONDictionary[@"ok"]).boolValue;
+				if (!telegramResponseOK) {
+					NSLog(@"Telegram response failed");
+					return;
+				}
+				
+				// Grab messages
+				NSArray<NSDictionary<NSString*,id>*>* messageResults = responseJSONDictionary[@"result"];
+				if (messageResults.count <= 0) {
+					NSLog(@"No Telegram bot messages");
+					return;
+				}
+				NSNumber* lastMessageUpdateID = nil;
+				for (NSDictionary<NSString*,id>* messageResult in messageResults) {
+					
+					// Grab ID and remote command from message, if possible
+					lastMessageUpdateID = messageResult[@"update_id"];
+					NSString* messageText = messageResult[@"message"][@"text"];
+					NSDictionary<NSString*,id>* remoteCommand = [Util dictionaryFromString:messageText];
+					NSLog(@"Message update ID: %@; remoteCommand: %@", lastMessageUpdateID, remoteCommand);
+					
+					if (!remoteCommand) continue;
+					
+					(void)[self handleRemoteCommand:remoteCommand];
+				}
+				
+				// Bump up offset for next poll
+				if (lastMessageUpdateID) {
+					self.telegramBotOffset = @(lastMessageUpdateID.integerValue + 1);
+				}
+				
+			} @finally {
+				
+				// Launch next poll
+				[self launchPollTelegramURLDataTask];
+			}
+		});
+	}];
+	
+	[self.telegramDataTask resume];
+}
+
+
+- (void)cancelPollTelegramURLDataTask {
+	
+	[self.telegramDataTask cancel];
+	self.telegramDataTask = nil;
+}
+
+
+- (void)startTelegramBotPoll {
+	
+	if (self.telegramBotAuthToken.length <= 0) return;
+	
+	NSLog(@"Starting poll for bot");
+	
+	[self launchPollTelegramURLDataTask];
+}
+
+
+- (void)stopTelegramBotPoll {
+	
+	NSLog(@"Stopping poll for bot");
+	
+	[self cancelPollTelegramURLDataTask];
 }
 
 

@@ -14,8 +14,11 @@
 
 @interface NSString (StringHelpers)
 
+- (NSArray<NSString*>*)componentsTrimAll;
+- (NSArray<NSString*>*)componentsTrimAllNewline;
 - (NSString*)trim;
 - (NSString*)trimAll;
+- (NSString*)trimAllNewline;
 
 + (NSString*)longestStringInStrings:(NSArray<NSString*>*)strings;
 + (BOOL)compareString:(NSString*)firstString toString:(NSString*)secondString;

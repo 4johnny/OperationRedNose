@@ -41,13 +41,18 @@
 #
 
 #define ENABLE_COMMANDS	// WARNING: Demo commands change *real* data model!!!
-#define COMMAND_HELP			@"ornhelp"
-#define COMMAND_SHOW_ALL		@"ornshowall"
-#define COMMAND_DELETE_ALL		@"orndeleteall"
-#define COMMAND_DEMO			@"orndemo"
-#define COMMAND_DEMO_RIDES		@"orndemorides"
-#define COMMAND_DEMO_TEAMS		@"orndemoteams"
-#define COMMAND_DEMO_ASSIGN		@"orndemoassign"
+
+#define COMMAND_HELP				@"ornhelp"
+#define COMMAND_SHOW_ALL			@"ornshowall"
+#define COMMAND_DELETE_ALL			@"orndeleteall"
+
+#define COMMAND_DEMO				@"orndemo"
+#define COMMAND_DEMO_RIDES			@"orndemorides"
+#define COMMAND_DEMO_TEAMS			@"orndemoteams"
+#define COMMAND_DEMO_ASSIGN			@"orndemoassign"
+
+// Hidden commands
+#define COMMAND_BOT					@"ornbot" // Telegram ID is first parameter
 
 
 #
@@ -2170,18 +2175,24 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
  */
 - (BOOL)handleCommandString:(NSString*)commandString {
 	
-	commandString = [commandString lowercaseString];
+	NSArray<NSString*>* commandComponents = [commandString.lowercaseString componentsTrimAll];
+
+	if (commandComponents.count <= 0) return NO;
+	
+	NSString* commandAction = commandComponents[0];
 	
 	BOOL isCommandHandled = NO;
 	
-	if ([COMMAND_HELP isEqualToString:commandString]) {
+	if ([COMMAND_HELP isEqualToString:commandAction]) {
 		
 		NSString* message =
 		[NSString stringWithFormat:
 		 @"%@\n%@\n%@\n%@\n%@\n%@\n%@",
+		 
 		 COMMAND_HELP,
 		 COMMAND_SHOW_ALL,
 		 COMMAND_DELETE_ALL,
+		 
 		 COMMAND_DEMO,
 		 COMMAND_DEMO_RIDES,
 		 COMMAND_DEMO_TEAMS,
@@ -2191,13 +2202,13 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		
 		isCommandHandled = YES;
 		
-	} else if ([COMMAND_SHOW_ALL isEqualToString:commandString]) {
+	} else if ([COMMAND_SHOW_ALL isEqualToString:commandAction]) {
 		
 		[self showAllAnnotations];
 		
 		isCommandHandled = YES;
 		
-	} else if ([COMMAND_DELETE_ALL isEqualToString:commandString]) {
+	} else if ([COMMAND_DELETE_ALL isEqualToString:commandAction]) {
 		
 		UIAlertAction* deleteAllAlertAction = [UIAlertAction actionWithTitle:@"Delete All" style:UIAlertActionStyleDestructive handler:^(UIAlertAction* _Nonnull action) {
 			
@@ -2208,7 +2219,26 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 
 		isCommandHandled = YES;
 		
-	} else if ([COMMAND_DEMO isEqualToString:commandString]) {
+	} else if ([COMMAND_BOT isEqualToString:commandAction]) {
+		
+		AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+		
+		if (commandComponents.count > 1) {
+
+			// Grab Telegram bot auth token, and start polling
+			appDelegate.telegramBotAuthToken = commandComponents[1];
+			[appDelegate startTelegramBotPoll];
+			
+		} else {
+			
+			// No Telegram ID, so stop polling
+			[appDelegate stopTelegramBotPoll];
+			appDelegate.telegramBotAuthToken = nil;
+		}
+		
+		isCommandHandled = YES;
+		
+	} else if ([COMMAND_DEMO isEqualToString:commandAction]) {
 		
 		// Load all demo content
 		
@@ -2231,7 +2261,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		
 		isCommandHandled = YES;
 		
-	} else if ([COMMAND_DEMO_RIDES isEqualToString:commandString]) {
+	} else if ([COMMAND_DEMO_RIDES isEqualToString:commandAction]) {
 		
 		// Load all demo rides
 		[self configureJurisdictionRegionView];
@@ -2240,7 +2270,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		
 		isCommandHandled = YES;
 		
-	} else if ([COMMAND_DEMO_TEAMS isEqualToString:commandString]) {
+	} else if ([COMMAND_DEMO_TEAMS isEqualToString:commandAction]) {
 		
 		// Load all demo teams
 		[self configureJurisdictionRegionView];
@@ -2249,7 +2279,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 		
 		isCommandHandled = YES;
 		
-	} else if ([COMMAND_DEMO_ASSIGN isEqualToString:commandString]) {
+	} else if ([COMMAND_DEMO_ASSIGN isEqualToString:commandAction]) {
 		
 		// Assign teams to rides
 		[self configureJurisdictionRegionView];
