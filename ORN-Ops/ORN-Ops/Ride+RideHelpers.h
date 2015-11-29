@@ -115,7 +115,8 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 
 - (instancetype)initWithAttributes:(NSDictionary<NSString*,id>*)attributes
 		   andManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
-					   andGeocoder:(CLGeocoder*)geocoder
+					  andGeocoder1:(CLGeocoder*)geocoder1
+					  andGeocoder2:(CLGeocoder*)geocoder2
 						 andSender:(id)sender;
 
 - (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
@@ -127,7 +128,8 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 
 + (instancetype)rideWithAttributes:(NSDictionary<NSString*,id>*)attributes
 		   andManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
-					   andGeocoder:(CLGeocoder*)geocoder
+					  andGeocoder1:(CLGeocoder*)geocoder1
+					  andGeocoder2:(CLGeocoder*)geocoder2
 						 andSender:(id)sender;
 	
 + (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;

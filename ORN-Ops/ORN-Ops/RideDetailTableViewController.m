@@ -31,7 +31,9 @@
 
 @property (strong, nonatomic) NSFetchedResultsController* teamFetchedResultsController;
 
-@property (nonatomic) CLGeocoder* geocoder;
+@property (nonatomic) CLGeocoder* geocoder1;
+@property (nonatomic) CLGeocoder* geocoder2;
+@property (nonatomic) CLGeocoder* geocoder3;
 
 @end
 
@@ -73,13 +75,33 @@
 }
 
 
-- (CLGeocoder*)geocoder {
+- (CLGeocoder*)geocoder1 {
 	
-	if (_geocoder) return _geocoder;
+	if (_geocoder1) return _geocoder1;
 	
-	_geocoder = [[CLGeocoder alloc] init];
+	_geocoder1 = [[CLGeocoder alloc] init];
 	
-	return _geocoder;
+	return _geocoder1;
+}
+
+
+- (CLGeocoder*)geocoder2 {
+	
+	if (_geocoder2) return _geocoder2;
+	
+	_geocoder2 = [[CLGeocoder alloc] init];
+	
+	return _geocoder2;
+}
+
+
+- (CLGeocoder*)geocoder3 {
+	
+	if (_geocoder3) return _geocoder3;
+	
+	_geocoder3 = [[CLGeocoder alloc] init];
+	
+	return _geocoder3;
 }
 
 
@@ -520,7 +542,7 @@
 		if (needsUpdateTeamAssignedLocation) {
 
 			[self.ride tryUpdateTeamAssignedLocationWithRideLocationType:RideLocationType_Start
-															 andGeocoder:self.geocoder
+															 andGeocoder:self.geocoder1
 															   andSender:self];
 		}
 		
@@ -534,7 +556,7 @@
 			[self.ride tryUpdateLocationWithAddressString:newLocationStartAddress
 									  andRideLocationType:RideLocationType_Start
 					   andNeedsUpdateTeamAssignedLocation:needsUpdateTeamAssignedLocation
-											  andGeocoder:self.geocoder
+											  andGeocoder:self.geocoder2
 												andSender:self]; // async
 			
 		} else {
@@ -551,7 +573,7 @@
 		if (needsUpdateTeamAssignedLocation) {
 			
 			[self.ride tryUpdateTeamAssignedLocationWithRideLocationType:RideLocationType_End
-															 andGeocoder:self.geocoder
+															 andGeocoder:self.geocoder3
 															   andSender:self];
 		}
 		
@@ -564,7 +586,7 @@
 			[self.ride tryUpdateLocationWithAddressString:newLocationEndAddress
 									  andRideLocationType:RideLocationType_End
 					   andNeedsUpdateTeamAssignedLocation:needsUpdateTeamAssignedLocation
-											  andGeocoder:self.geocoder
+											  andGeocoder:self.geocoder3
 												andSender:self]; // async
 			
 		} else {

@@ -2175,11 +2175,11 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
  */
 - (BOOL)handleCommandString:(NSString*)commandString {
 	
-	NSArray<NSString*>* commandComponents = [commandString.lowercaseString componentsTrimAll];
+	NSArray<NSString*>* commandComponents = [commandString componentsTrimAll];
 
 	if (commandComponents.count <= 0) return NO;
 	
-	NSString* commandAction = commandComponents[0];
+	NSString* commandAction = commandComponents[0].lowercaseString;
 	
 	BOOL isCommandHandled = NO;
 	

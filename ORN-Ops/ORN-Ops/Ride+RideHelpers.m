@@ -63,7 +63,8 @@
 
 - (instancetype)initWithAttributes:(NSDictionary<NSString*,id>*)attributes
 		   andManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
-					   andGeocoder:(CLGeocoder*)geocoder
+					  andGeocoder1:(CLGeocoder*)geocoder1
+					  andGeocoder2:(CLGeocoder*)geocoder2
 						 andSender:(id)sender {
 	
 	self = [super initWithEntity:[NSEntityDescription entityForName:RIDE_ENTITY_NAME inManagedObjectContext:managedObjectContext] insertIntoManagedObjectContext:managedObjectContext];
@@ -101,7 +102,7 @@
 			[self tryUpdateLocationWithAddressString:newLocationStartAddress
 									andRideLocationType:RideLocationType_Start
 					 andNeedsUpdateTeamAssignedLocation:NO
-											andGeocoder:geocoder
+											andGeocoder:geocoder1
 											  andSender:sender]; // async
 		}
 		
@@ -111,7 +112,7 @@
 			[self tryUpdateLocationWithAddressString:newLocationEndAddress
 								 andRideLocationType:RideLocationType_End
 				  andNeedsUpdateTeamAssignedLocation:NO
-										 andGeocoder:geocoder
+										 andGeocoder:geocoder2
 										   andSender:sender]; // async
 		}
 		
@@ -123,7 +124,7 @@
 		self.vehicleDescription = attributes[@"vehicleDescription"];
 		
 		NSString* newVehicleTransmissionText = attributes[@"vehicleTransmission"];
-		self.vehicleTransmission = @([newVehicleTransmissionText isEqualToString:@"manual"] ? VehicleTransmission_Manual : VehicleTransmission_Automatic);
+		self.vehicleTransmission = @([newVehicleTransmissionText.lowercaseString isEqualToString:@"manual"] ? VehicleTransmission_Manual : VehicleTransmission_Automatic);
 		
 		self.vehicleSeatBeltCount = attributes[@"vehicleSeatBeltCount"];
 		if (self.vehicleSeatBeltCount.integerValue < 0) {
@@ -159,12 +160,14 @@
 
 + (instancetype)rideWithAttributes:(NSDictionary<NSString*,id>*)attributes
 		   andManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
-					   andGeocoder:(CLGeocoder*)geocoder
+					  andGeocoder1:(CLGeocoder*)geocoder1
+					  andGeocoder2:(CLGeocoder*)geocoder2
 						 andSender:(id)sender {
 	
 	return [[Ride alloc] initWithAttributes:attributes
 					andManagedObjectContext:managedObjectContext
-								andGeocoder:geocoder
+							   andGeocoder1:geocoder1
+							   andGeocoder2:geocoder2
 								  andSender:sender];
 }
 

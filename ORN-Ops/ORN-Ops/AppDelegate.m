@@ -29,9 +29,8 @@
 # pragma mark - Remote Command Constants
 #
 
-#define TELEGRAM_GET_ME_URL_FORMAT				@"https://api.telegram.org/bot%@/getMe"
-#define TELEGRAM_GET_UPDATES_BASIC_URL_FORMAT	@"https://api.telegram.org/bot%@/getUpdates?timeout=%d"
-#define TELEGRAM_GET_UPDATES_FULL_URL_FORMAT	@"https://api.telegram.org/bot%@/getUpdates?timeout=%d&offset=%@"
+#define TELEGRAM_GET_ME_URL_FORMAT			@"https://api.telegram.org/bot%@/getMe"
+#define TELEGRAM_GET_UPDATES_URL_FORMAT		@"https://api.telegram.org/bot%@/getUpdates"
 
 #define REMOTE_COMMAND_ENTITY_KEY			@"entity"
 
@@ -52,7 +51,8 @@
 # pragma mark Properties
 #
 
-@property (nonatomic) CLGeocoder* geocoder;
+@property (nonatomic) CLGeocoder* geocoder1;
+@property (nonatomic) CLGeocoder* geocoder2;
 
 @property (strong, nonatomic) NSURLSessionDataTask* telegramDataTask;
 
@@ -81,13 +81,23 @@
 #
 
 
-- (CLGeocoder*)geocoder {
+- (CLGeocoder*)geocoder1 {
 	
-	if (_geocoder) return _geocoder;
+	if (_geocoder1) return _geocoder1;
 	
-	_geocoder = [[CLGeocoder alloc] init];
+	_geocoder1 = [[CLGeocoder alloc] init];
 	
-	return _geocoder;
+	return _geocoder1;
+}
+
+
+- (CLGeocoder*)geocoder2 {
+	
+	if (_geocoder2) return _geocoder2;
+	
+	_geocoder2 = [[CLGeocoder alloc] init];
+	
+	return _geocoder2;
 }
 
 
@@ -129,6 +139,11 @@
 	// Override point for customization after application launch.
 
 	[Fabric with:@[[Crashlytics class]]];
+	
+	if (self.telegramBotAuthToken.length > 0) {
+		
+		[self launchPollTelegramURLDataTaskWithAuthToken:self.telegramBotAuthToken];
+	}
 	
 	return YES;
 }
@@ -344,7 +359,7 @@
 		
 		if ([REMOTE_COMMAND_ACTION_CREATE_VAL isEqualToString:remoteCommandAction]) {
 			
-			Ride* newRide = [Ride rideWithAttributes:attributes andManagedObjectContext:self.managedObjectContext andGeocoder:self.geocoder andSender:self];
+			Ride* newRide = [Ride rideWithAttributes:attributes andManagedObjectContext:self.managedObjectContext andGeocoder1:self.geocoder1 andGeocoder2:self.geocoder2 andSender:self];
 
 			[self saveManagedObjectContext];
 			[newRide postNotificationCreatedWithSender:self];
@@ -360,20 +375,54 @@
 }
 
 
-- (void)launchPollTelegramURLDataTask {
++ (NSMutableURLRequest*)telegramBotUpdateURLRequestWithOffset:(NSNumber*)offset
+												 andAuthToken:(NSString*)authToken {
+
+	// NOTE: Offset maybe nil
+	NSAssert(authToken.length > 0, @"Telegram bot auth token must exist");
+	if (authToken.length <= 0) return nil;
 	
-	if (self.telegramBotAuthToken.length <= 0) return;
+	NSString* telegramBotUpdateUrlString = [NSString stringWithFormat:TELEGRAM_GET_UPDATES_URL_FORMAT, authToken];
+	NSURL* telegramBotUpdateURL = [NSURL URLWithString:telegramBotUpdateUrlString];
+	//	NSLog(@"URL for Telegram bot update: %@", telegramBotUpdateURL);
+
+	NSMutableURLRequest* urlRequest = [NSMutableURLRequest requestWithURL:telegramBotUpdateURL];
+	urlRequest.HTTPMethod = @"POST";
+	urlRequest.timeoutInterval = LONG_POLL_TIMEOUT; // seconds
+	[urlRequest addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
 	
-	NSString* telegramOpsBotUrlString = self.telegramBotOffset
-	? [NSString stringWithFormat:TELEGRAM_GET_UPDATES_FULL_URL_FORMAT, self.telegramBotAuthToken, LONG_POLL_TIMEOUT, self.telegramBotOffset]
-	: [NSString stringWithFormat:TELEGRAM_GET_UPDATES_BASIC_URL_FORMAT, self.telegramBotAuthToken, LONG_POLL_TIMEOUT];
-	//	NSString* telegramOpsBotUrlString = [NSString stringWithFormat:TELEGRAM_GET_ME_URL_FORMAT, self.telegramBotAuthToken];
-	NSLog(@"URL request for Telegram bot: %@", telegramOpsBotUrlString);
+	NSMutableDictionary* httpBodyJSONDictionary =
+	[@{
+	   @"timeout" :	@(LONG_POLL_TIMEOUT),
+	   } mutableCopy];
 	
-	// TODO: Use a request object to set long poll
-	NSURL* telegramOpsBotUrl = [NSURL URLWithString:telegramOpsBotUrlString];
+	if (offset) {
+		httpBodyJSONDictionary[@"offset"] = offset;
+	}
+	NSLog(@"Backend URL-request JSON for Telegram bot update: %@", httpBodyJSONDictionary);
 	
-	self.telegramDataTask = [[NSURLSession sharedSession] dataTaskWithURL:telegramOpsBotUrl completionHandler:^(NSData* _Nullable data, NSURLResponse* _Nullable response, NSError* _Nullable error) {
+	NSError* error = nil;
+	urlRequest.HTTPBody = [NSJSONSerialization dataWithJSONObject:httpBodyJSONDictionary options:kNilOptions error:&error];
+	if (error) {
+		NSLog(@"JSON Serialization Error - %@ %@", error.localizedDescription, error.userInfo);
+		return nil;
+	}
+	
+	NSLog(@"URL request for Telegram bot update: %@", urlRequest);
+	
+	return urlRequest;
+}
+
+
+- (void)launchPollTelegramURLDataTaskWithAuthToken:(NSString*)authToken {
+	
+	if (authToken.length <= 0) return;
+	
+	NSURLRequest* telegramBotUpdateURLRequest = [AppDelegate telegramBotUpdateURLRequestWithOffset:self.telegramBotOffset andAuthToken:self.telegramBotAuthToken];
+	NSAssert(telegramBotUpdateURLRequest, @"Telegram bot URL request must exist");
+	if (!telegramBotUpdateURLRequest) return;
+	
+	self.telegramDataTask = [[NSURLSession sharedSession] dataTaskWithRequest:telegramBotUpdateURLRequest completionHandler:^(NSData* _Nullable data, NSURLResponse* _Nullable response, NSError* _Nullable error) {
 		
 		//	NSLog(@"URL response for Telegram bot update running on thread: %@", [NSThread currentThread]);
 		
@@ -440,7 +489,7 @@
 			} @finally {
 				
 				// Launch next poll
-				[self launchPollTelegramURLDataTask];
+				[self launchPollTelegramURLDataTaskWithAuthToken:authToken];
 			}
 		});
 	}];
@@ -451,8 +500,17 @@
 
 - (void)cancelPollTelegramURLDataTask {
 	
-	[self.telegramDataTask cancel];
-	self.telegramDataTask = nil;
+	// NOTE: Cancelling twice clears Telegram auth token
+	
+	if (self.telegramDataTask) {
+		
+		[self.telegramDataTask cancel];
+		self.telegramDataTask = nil;
+		
+	} else {
+		
+		self.telegramBotAuthToken = nil;
+	}
 }
 
 
@@ -462,7 +520,7 @@
 	
 	NSLog(@"Starting poll for bot");
 	
-	[self launchPollTelegramURLDataTask];
+	[self launchPollTelegramURLDataTaskWithAuthToken:self.telegramBotAuthToken];
 }
 
 
