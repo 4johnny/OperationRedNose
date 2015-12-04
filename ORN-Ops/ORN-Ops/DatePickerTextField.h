@@ -33,6 +33,10 @@
 
 @interface DatePickerTextField : BasePickerTextField
 
+#
+# pragma mark Properties
+#
+
 @property (readonly, nonatomic) UIDatePicker* datePicker; // decorated date picker
 
 @property (nonatomic) NSDate* date;
@@ -43,5 +47,11 @@
 @property (nonatomic) NSLocale* locale;
 
 @property (nonatomic) NSString* dateFormat;
+
+#
+# pragma mark Methods
+#
+
+- (void)constrain;
 
 @end

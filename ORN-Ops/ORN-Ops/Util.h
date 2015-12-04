@@ -38,7 +38,7 @@
 # pragma mark Date-Time Constants
 #
 
-#define TIME_MINUTE_INTERVAL	15
+#define TIME_MINUTE_INTERVAL	5
 
 #
 # pragma mark Jurisdication Constants

@@ -11,6 +11,13 @@
 
 
 #
+# pragma mark - Constants
+#
+
+#define PHONE_TEXT_LENGTH_MAX	10
+
+
+#
 # pragma mark - Interface
 #
 
@@ -142,8 +149,12 @@
 	if (textField == self.phoneNumberTextField) {
 		
 		// Reject non-phone number chars
-		
 		if ([string rangeOfCharacterFromSet:[NSCharacterSet phoneNumberCharacterSetInverted]].location != NSNotFound) return NO;
+		
+		// Reject resulting string exceeding max length
+		NSMutableString* newString = [textField.text mutableCopy];
+		[newString replaceCharactersInRange:range withString:string];
+		if (newString.length > PHONE_TEXT_LENGTH_MAX) return NO;
 	}
 	
 	return YES;

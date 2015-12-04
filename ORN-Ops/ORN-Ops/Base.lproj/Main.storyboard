@@ -611,7 +611,7 @@
                                                     <rect key="frame" x="128" y="4" width="464" height="30"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits" keyboardType="phonePad"/>
+                                                    <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                                     <connections>
                                                         <outlet property="delegate" destination="XpS-Zq-vPa" id="xoM-Uf-ZK9"/>
                                                     </connections>
@@ -1010,7 +1010,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="rideDetailTableViewController" title="Ride Detail View Controller" id="EOY-Bm-UjH" customClass="RideDetailTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="static" style="grouped" separatorStyle="none" allowsSelection="NO" rowHeight="38" sectionHeaderHeight="32" sectionFooterHeight="1" id="kqh-Zd-G9W">
-                        <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                        <rect key="frame" x="0.0" y="64" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <animations/>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
@@ -1345,7 +1345,7 @@
                                                     <rect key="frame" x="128" y="4" width="464" height="30"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="phonePad"/>
+                                                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="numberPad"/>
                                                     <connections>
                                                         <outlet property="delegate" destination="EOY-Bm-UjH" id="4ig-oh-5wq"/>
                                                     </connections>
@@ -1900,6 +1900,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="ITb-aY-p1t"/>
-        <segue reference="RWa-Ts-C4u"/>
+        <segue reference="mox-mc-g7Y"/>
     </inferredMetricsTieBreakers>
 </document>

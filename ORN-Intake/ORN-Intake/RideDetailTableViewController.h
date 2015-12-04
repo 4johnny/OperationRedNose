@@ -23,7 +23,7 @@
 # pragma mark - Interface
 #
 
-@interface RideDetailTableViewController : UITableViewController <UITableViewDelegate, UITextFieldDelegate>
+@interface RideDetailTableViewController : UITableViewController <UITableViewDelegate, UITextFieldDelegate, UITextViewDelegate>
 
 #
 # pragma mark UI Outlets

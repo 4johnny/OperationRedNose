@@ -243,7 +243,7 @@
                                                     <rect key="frame" x="128" y="4" width="464" height="30"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="phonePad"/>
+                                                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="numberPad"/>
                                                     <connections>
                                                         <outlet property="delegate" destination="yb8-Fz-eb3" id="PUp-H8-fBF"/>
                                                     </connections>
@@ -668,6 +668,9 @@
                                                             <color key="value" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         </userDefinedRuntimeAttribute>
                                                     </userDefinedRuntimeAttributes>
+                                                    <connections>
+                                                        <outlet property="delegate" destination="yb8-Fz-eb3" id="BK3-aI-hwz"/>
+                                                    </connections>
                                                 </textView>
                                             </subviews>
                                             <animations/>

@@ -14,6 +14,8 @@
 # pragma mark - Constants
 #
 
+#define PHONE_TEXT_LENGTH_MAX	10
+
 #define DONATION_TEXT_LENGTH_MAX	8 // NOTE: Arbitrary limit to ensure number fits in NSDecimalNumber
 #define DONATION_TEXT_DECIMAL_COUNT	2
 
@@ -196,8 +198,12 @@
 	if (textField == self.phoneNumberTextField) {
 	
 		// Reject non-phone number chars
-		
 		if ([string rangeOfCharacterFromSet:[NSCharacterSet phoneNumberCharacterSetInverted]].location != NSNotFound) return NO;
+		
+		// Reject resulting string exceeding max length
+		NSMutableString* newString = [textField.text mutableCopy];
+		[newString replaceCharactersInRange:range withString:string];
+		if (newString.length > PHONE_TEXT_LENGTH_MAX) return NO;
 		
 	} else if (textField == self.donationTextField) {
 		

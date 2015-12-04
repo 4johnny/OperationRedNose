@@ -12,10 +12,19 @@
 
 
 #
+# pragma mark - Constants
+#
+
+#define PHONE_TEXT_LENGTH_MAX	10
+
+
+#
 # pragma mark - Interface
 #
 
 @interface RideDetailTableViewController ()
+
+@property (weak, nonatomic) UIResponder* mostRecentResponder;
 
 @end
 
@@ -54,8 +63,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
 
-	// Show keyboard on first non-dispatch entry field
-	[self.firstNameTextField becomeFirstResponder];
+	[[self initialResponder] becomeFirstResponder];
 }
 
 
@@ -92,12 +100,52 @@
 	if (textField == self.phoneNumberTextField) {
 	
 		// Reject non-phone number chars
-		
 		if ([string rangeOfCharacterFromSet:[NSCharacterSet phoneNumberCharacterSetInverted]].location != NSNotFound) return NO;
 		
+		// Reject resulting string exceeding max length
+		NSMutableString* newString = [textField.text mutableCopy];
+		[newString replaceCharactersInRange:range withString:string];
+		if (newString.length > PHONE_TEXT_LENGTH_MAX) return NO;
 	}
 	
 	return YES;
+}
+
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+	
+	self.mostRecentResponder = textField;
+	
+	return YES;
+}
+
+
+- (BOOL)textFieldShouldEndEditing:(UITextField*)textField {
+	
+	if (self.mostRecentResponder == textField) {
+		self.mostRecentResponder = nil;
+	}
+	
+	return YES;
+}
+
+
+#
+# pragma mark <UITextViewDelegate>
+#
+
+
+- (void)textViewDidBeginEditing:(UITextView*)textView {
+
+	self.mostRecentResponder = textView;
+}
+
+
+- (void)textViewDidEndEditing:(UITextView*)textView {
+	
+	if (self.mostRecentResponder == textView) {
+		self.mostRecentResponder = nil;
+	}
 }
 
 
@@ -125,25 +173,36 @@
 
 - (IBAction)clearPressed:(UIBarButtonItem*)sender {
 	
+	UIResponder* mostRecentResponder = self.mostRecentResponder;
+	
 	[self.view endEditing:YES];
+	
+	UIAlertAction* clearAction = [UIAlertAction actionWithTitle:@"Clear" style:UIAlertActionStyleDestructive handler:^(UIAlertAction* _Nonnull action) {
+		
+		[self clearFields];
+		self.mostRecentResponder = nil;
+		[[self initialResponder] becomeFirstResponder];
+	}];
+	
+	[Util presentActionAlertWithViewController:self
+									  andTitle:@"Clear Form"
+									andMessage:@"Cannot be undone! Are you sure?"
+									 andAction:clearAction
+									andCancelHandler:^(UIAlertAction* action) {
+										[mostRecentResponder becomeFirstResponder]; // Maybe nil
+									}];
 }
 
 
 - (IBAction)submitPressed:(UIBarButtonItem*)sender {
 	
 	[self.view endEditing:YES];
-	
-	//	[self submitDataFromView];
-}
-
-
-- (IBAction)statusValueChanged:(UISegmentedControl*)sender {
-	
-	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender andIsAddmode:YES];
 }
 
 
 - (IBAction)passengerCountValueChanged:(UISegmentedControl*)sender {
+	
+	self.mostRecentResponder = nil;
 
 	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender andIsAddmode:YES];
 }
@@ -151,11 +210,15 @@
 
 - (IBAction)transmissionValueChanged:(UISegmentedControl*)sender {
 	
+	self.mostRecentResponder = nil;
+	
 	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender andIsAddmode:YES];
 }
 
 
 - (IBAction)seatBeltCountValueChanged:(UISegmentedControl*)sender {
+	
+	self.mostRecentResponder = nil;
 	
 	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender andIsAddmode:YES];
 }
@@ -191,6 +254,42 @@
 	
 	// Notes
 	self.notesTextView.tag =						13;
+}
+
+
+- (UIResponder*)initialResponder {
+
+	return self.firstNameTextField;
+}
+
+
+- (void)clearFields {
+
+	// Clear all fields *except* for source, for user convenience
+
+	// Dispatch
+	//	self.sourceTextField.text = nil;
+	[self.idealTimeDatePickerTextField constrain];
+	
+	// Passenger
+	self.firstNameTextField.text = nil;
+	self.lastNameTextField.text = nil;
+	self.phoneNumberTextField.text = nil;
+	self.passengerCountSegmentedControl.selectedSegmentIndex = 0;
+	
+	// Location
+	self.startAddressTextField.text = nil;
+	self.endAddressTextField.text = nil;
+	self.transferFromTextField.text = nil;
+	self.transferToTextField.text = nil;
+	
+	// Vehicle
+	self.vehicleDescriptionTextField.text = nil;
+	self.vehicleTransmissionSegmentedControl.selectedSegmentIndex = 0;
+	self.seatBeltCountSegmentedControl.selectedSegmentIndex = 0;
+	
+	// Notes
+	self.notesTextView.text = nil;
 }
 
 

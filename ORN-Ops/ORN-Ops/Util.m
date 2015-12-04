@@ -42,7 +42,7 @@
 		
 		// Data validation char sets
 		
-		_phoneNumberCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789-()+*#,;"];
+		_phoneNumberCharacterSet = [NSCharacterSet decimalDigitCharacterSet]; // [NSCharacterSet characterSetWithCharactersInString:@"0123456789-()+*#,;"];
 		_phoneNumberCharacterSetInverted = _phoneNumberCharacterSet.invertedSet;
 		
 		_monetaryCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789."];
@@ -190,7 +190,7 @@
 	}];
 	
 	(void)[Util presentActionAlertWithViewController:viewController
-									  andTitle:alertTitle
+											andTitle:alertTitle
 										  andMessage:@"Cannot be undone! Are you sure?"
 										   andAction:deleteAction
 									andCancelHandler:cancelHandler];
