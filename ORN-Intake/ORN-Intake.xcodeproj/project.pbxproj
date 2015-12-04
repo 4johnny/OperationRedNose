@@ -9,13 +9,24 @@
 /* Begin PBXBuildFile section */
 		B27C875F1C115A4300675C04 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B27C875E1C115A4300675C04 /* main.m */; };
 		B27C87621C115A4300675C04 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B27C87611C115A4300675C04 /* AppDelegate.m */; };
-		B27C87651C115A4300675C04 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B27C87641C115A4300675C04 /* ViewController.m */; };
 		B27C87681C115A4300675C04 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B27C87661C115A4300675C04 /* Main.storyboard */; };
 		B27C876B1C115A4300675C04 /* ORN_Intake.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B27C87691C115A4300675C04 /* ORN_Intake.xcdatamodeld */; };
 		B27C876D1C115A4300675C04 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B27C876C1C115A4300675C04 /* Assets.xcassets */; };
 		B27C87951C11613500675C04 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B27C87931C11613500675C04 /* LaunchScreen.xib */; };
 		B27C879B1C11642B00675C04 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B27C87991C11642B00675C04 /* Fabric.framework */; };
 		B27C879C1C11642B00675C04 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B27C879A1C11642B00675C04 /* Crashlytics.framework */; };
+		B2E2FC611C117ACD00E63E6E /* BaseNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E2FC601C117ACD00E63E6E /* BaseNavigationController.m */; };
+		B2E2FC641C117B2600E63E6E /* MainNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E2FC631C117B2600E63E6E /* MainNavigationController.m */; };
+		B2E2FC671C117D7500E63E6E /* RideDetailTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E2FC661C117D7500E63E6E /* RideDetailTableViewController.m */; };
+		B2E2FC771C11836300E63E6E /* BasePickerTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E2FC721C11836300E63E6E /* BasePickerTextField.m */; };
+		B2E2FC781C11836300E63E6E /* DatePickerTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E2FC741C11836300E63E6E /* DatePickerTextField.m */; };
+		B2E2FC791C11836300E63E6E /* PickerTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E2FC761C11836300E63E6E /* PickerTextField.m */; };
+		B2E2FC7C1C1186E400E63E6E /* UIView+ViewHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E2FC7B1C1186E400E63E6E /* UIView+ViewHelpers.m */; };
+		B2E2FC801C1187CF00E63E6E /* UIButton+ButtonHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E2FC7F1C1187CF00E63E6E /* UIButton+ButtonHelpers.m */; };
+		B2E2FC831C11885B00E63E6E /* NSCharacterSet+CharacterSetHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E2FC821C11885B00E63E6E /* NSCharacterSet+CharacterSetHelpers.m */; };
+		B2E2FC871C1189F600E63E6E /* NSString+StringHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E2FC861C1189F600E63E6E /* NSString+StringHelpers.m */; };
+		B2E2FC8A1C118C0900E63E6E /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E2FC891C118C0900E63E6E /* Util.m */; };
+		B2E2FC8D1C118D0D00E63E6E /* NSDate+DateHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E2FC8C1C118D0D00E63E6E /* NSDate+DateHelpers.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,8 +34,6 @@
 		B27C875E1C115A4300675C04 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		B27C87601C115A4300675C04 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B27C87611C115A4300675C04 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		B27C87631C115A4300675C04 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		B27C87641C115A4300675C04 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		B27C87671C115A4300675C04 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B27C876A1C115A4300675C04 /* ORN_Intake.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ORN_Intake.xcdatamodel; sourceTree = "<group>"; };
 		B27C876C1C115A4300675C04 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -33,6 +42,31 @@
 		B27C87961C11626400675C04 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		B27C87991C11642B00675C04 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		B27C879A1C11642B00675C04 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		B2E2FC5F1C117ACD00E63E6E /* BaseNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseNavigationController.h; path = "../../ORN-Ops/ORN-Ops/BaseNavigationController.h"; sourceTree = "<group>"; };
+		B2E2FC601C117ACD00E63E6E /* BaseNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BaseNavigationController.m; path = "../../ORN-Ops/ORN-Ops/BaseNavigationController.m"; sourceTree = "<group>"; };
+		B2E2FC621C117B2600E63E6E /* MainNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainNavigationController.h; sourceTree = "<group>"; };
+		B2E2FC631C117B2600E63E6E /* MainNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainNavigationController.m; sourceTree = "<group>"; };
+		B2E2FC651C117D7500E63E6E /* RideDetailTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RideDetailTableViewController.h; sourceTree = "<group>"; };
+		B2E2FC661C117D7500E63E6E /* RideDetailTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RideDetailTableViewController.m; sourceTree = "<group>"; };
+		B2E2FC711C11836300E63E6E /* BasePickerTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BasePickerTextField.h; path = "../../ORN-Ops/ORN-Ops/BasePickerTextField.h"; sourceTree = "<group>"; };
+		B2E2FC721C11836300E63E6E /* BasePickerTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BasePickerTextField.m; path = "../../ORN-Ops/ORN-Ops/BasePickerTextField.m"; sourceTree = "<group>"; };
+		B2E2FC731C11836300E63E6E /* DatePickerTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DatePickerTextField.h; path = "../../ORN-Ops/ORN-Ops/DatePickerTextField.h"; sourceTree = "<group>"; };
+		B2E2FC741C11836300E63E6E /* DatePickerTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DatePickerTextField.m; path = "../../ORN-Ops/ORN-Ops/DatePickerTextField.m"; sourceTree = "<group>"; };
+		B2E2FC751C11836300E63E6E /* PickerTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PickerTextField.h; path = "../../ORN-Ops/ORN-Ops/PickerTextField.h"; sourceTree = "<group>"; };
+		B2E2FC761C11836300E63E6E /* PickerTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PickerTextField.m; path = "../../ORN-Ops/ORN-Ops/PickerTextField.m"; sourceTree = "<group>"; };
+		B2E2FC7A1C1186E400E63E6E /* UIView+ViewHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+ViewHelpers.h"; path = "../../ORN-Ops/ORN-Ops/UIView+ViewHelpers.h"; sourceTree = "<group>"; };
+		B2E2FC7B1C1186E400E63E6E /* UIView+ViewHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+ViewHelpers.m"; path = "../../ORN-Ops/ORN-Ops/UIView+ViewHelpers.m"; sourceTree = "<group>"; };
+		B2E2FC7E1C1187CF00E63E6E /* UIButton+ButtonHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIButton+ButtonHelpers.h"; path = "../../ORN-Ops/ORN-Ops/UIButton+ButtonHelpers.h"; sourceTree = "<group>"; };
+		B2E2FC7F1C1187CF00E63E6E /* UIButton+ButtonHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIButton+ButtonHelpers.m"; path = "../../ORN-Ops/ORN-Ops/UIButton+ButtonHelpers.m"; sourceTree = "<group>"; };
+		B2E2FC811C11885B00E63E6E /* NSCharacterSet+CharacterSetHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSCharacterSet+CharacterSetHelpers.h"; path = "../../ORN-Ops/ORN-Ops/NSCharacterSet+CharacterSetHelpers.h"; sourceTree = "<group>"; };
+		B2E2FC821C11885B00E63E6E /* NSCharacterSet+CharacterSetHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSCharacterSet+CharacterSetHelpers.m"; path = "../../ORN-Ops/ORN-Ops/NSCharacterSet+CharacterSetHelpers.m"; sourceTree = "<group>"; };
+		B2E2FC841C1188E500E63E6E /* Macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Macros.h; path = "../../ORN-Ops/ORN-Ops/Macros.h"; sourceTree = "<group>"; };
+		B2E2FC851C1189F600E63E6E /* NSString+StringHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+StringHelpers.h"; path = "../../ORN-Ops/ORN-Ops/NSString+StringHelpers.h"; sourceTree = "<group>"; };
+		B2E2FC861C1189F600E63E6E /* NSString+StringHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+StringHelpers.m"; path = "../../ORN-Ops/ORN-Ops/NSString+StringHelpers.m"; sourceTree = "<group>"; };
+		B2E2FC881C118C0900E63E6E /* Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Util.h; path = "../../ORN-Ops/ORN-Ops/Util.h"; sourceTree = "<group>"; };
+		B2E2FC891C118C0900E63E6E /* Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Util.m; path = "../../ORN-Ops/ORN-Ops/Util.m"; sourceTree = "<group>"; };
+		B2E2FC8B1C118D0D00E63E6E /* NSDate+DateHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+DateHelpers.h"; path = "../../ORN-Ops/ORN-Ops/NSDate+DateHelpers.h"; sourceTree = "<group>"; };
+		B2E2FC8C1C118D0D00E63E6E /* NSDate+DateHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDate+DateHelpers.m"; path = "../../ORN-Ops/ORN-Ops/NSDate+DateHelpers.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,8 +103,10 @@
 			isa = PBXGroup;
 			children = (
 				B27C87661C115A4300675C04 /* Main.storyboard */,
-				B27C87631C115A4300675C04 /* ViewController.h */,
-				B27C87641C115A4300675C04 /* ViewController.m */,
+				B2E2FC621C117B2600E63E6E /* MainNavigationController.h */,
+				B2E2FC631C117B2600E63E6E /* MainNavigationController.m */,
+				B2E2FC651C117D7500E63E6E /* RideDetailTableViewController.h */,
+				B2E2FC661C117D7500E63E6E /* RideDetailTableViewController.m */,
 				B27C87601C115A4300675C04 /* AppDelegate.h */,
 				B27C87611C115A4300675C04 /* AppDelegate.m */,
 				B27C875D1C115A4300675C04 /* Supporting Files */,
@@ -81,6 +117,7 @@
 		B27C875D1C115A4300675C04 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				B2E2FC5E1C117AAF00E63E6E /* External Class Refs */,
 				B27C87691C115A4300675C04 /* ORN_Intake.xcdatamodeld */,
 				B27C87961C11626400675C04 /* PrefixHeader.pch */,
 				B27C876C1C115A4300675C04 /* Assets.xcassets */,
@@ -98,6 +135,34 @@
 				B27C879A1C11642B00675C04 /* Crashlytics.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B2E2FC5E1C117AAF00E63E6E /* External Class Refs */ = {
+			isa = PBXGroup;
+			children = (
+				B2E2FC841C1188E500E63E6E /* Macros.h */,
+				B2E2FC881C118C0900E63E6E /* Util.h */,
+				B2E2FC891C118C0900E63E6E /* Util.m */,
+				B2E2FC811C11885B00E63E6E /* NSCharacterSet+CharacterSetHelpers.h */,
+				B2E2FC821C11885B00E63E6E /* NSCharacterSet+CharacterSetHelpers.m */,
+				B2E2FC851C1189F600E63E6E /* NSString+StringHelpers.h */,
+				B2E2FC861C1189F600E63E6E /* NSString+StringHelpers.m */,
+				B2E2FC8B1C118D0D00E63E6E /* NSDate+DateHelpers.h */,
+				B2E2FC8C1C118D0D00E63E6E /* NSDate+DateHelpers.m */,
+				B2E2FC7A1C1186E400E63E6E /* UIView+ViewHelpers.h */,
+				B2E2FC7B1C1186E400E63E6E /* UIView+ViewHelpers.m */,
+				B2E2FC7E1C1187CF00E63E6E /* UIButton+ButtonHelpers.h */,
+				B2E2FC7F1C1187CF00E63E6E /* UIButton+ButtonHelpers.m */,
+				B2E2FC711C11836300E63E6E /* BasePickerTextField.h */,
+				B2E2FC721C11836300E63E6E /* BasePickerTextField.m */,
+				B2E2FC751C11836300E63E6E /* PickerTextField.h */,
+				B2E2FC761C11836300E63E6E /* PickerTextField.m */,
+				B2E2FC731C11836300E63E6E /* DatePickerTextField.h */,
+				B2E2FC741C11836300E63E6E /* DatePickerTextField.m */,
+				B2E2FC5F1C117ACD00E63E6E /* BaseNavigationController.h */,
+				B2E2FC601C117ACD00E63E6E /* BaseNavigationController.m */,
+			);
+			name = "External Class Refs";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -188,10 +253,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B27C87651C115A4300675C04 /* ViewController.m in Sources */,
 				B27C876B1C115A4300675C04 /* ORN_Intake.xcdatamodeld in Sources */,
+				B2E2FC641C117B2600E63E6E /* MainNavigationController.m in Sources */,
+				B2E2FC801C1187CF00E63E6E /* UIButton+ButtonHelpers.m in Sources */,
+				B2E2FC671C117D7500E63E6E /* RideDetailTableViewController.m in Sources */,
+				B2E2FC771C11836300E63E6E /* BasePickerTextField.m in Sources */,
+				B2E2FC8A1C118C0900E63E6E /* Util.m in Sources */,
+				B2E2FC791C11836300E63E6E /* PickerTextField.m in Sources */,
+				B2E2FC7C1C1186E400E63E6E /* UIView+ViewHelpers.m in Sources */,
 				B27C87621C115A4300675C04 /* AppDelegate.m in Sources */,
+				B2E2FC831C11885B00E63E6E /* NSCharacterSet+CharacterSetHelpers.m in Sources */,
+				B2E2FC871C1189F600E63E6E /* NSString+StringHelpers.m in Sources */,
+				B2E2FC781C11836300E63E6E /* DatePickerTextField.m in Sources */,
+				B2E2FC8D1C118D0D00E63E6E /* NSDate+DateHelpers.m in Sources */,
 				B27C875F1C115A4300675C04 /* main.m in Sources */,
+				B2E2FC611C117ACD00E63E6E /* BaseNavigationController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,6 +319,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/ORN-Intake/PrefixHeader.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -285,6 +362,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/ORN-Intake/PrefixHeader.pch";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -350,6 +428,7 @@
 				B27C878C1C115A4300675C04 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

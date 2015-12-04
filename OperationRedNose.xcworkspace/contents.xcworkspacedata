@@ -2,9 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:ORN-Intake/ORN-Intake.xcodeproj">
+      location = "group:ORN-Ops/ORN-Ops.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:ORN-Ops/ORN-Ops.xcodeproj">
+      location = "group:ORN-Intake/ORN-Intake.xcodeproj">
    </FileRef>
 </Workspace>
