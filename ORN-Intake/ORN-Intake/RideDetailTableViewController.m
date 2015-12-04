@@ -24,7 +24,7 @@
 
 @interface RideDetailTableViewController ()
 
-@property (weak, nonatomic) UIResponder* mostRecentResponder;
+@property (weak, nonatomic) UIResponder* currentResponder;
 
 @end
 
@@ -114,7 +114,7 @@
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
 	
-	self.mostRecentResponder = textField;
+	self.currentResponder = textField;
 	
 	return YES;
 }
@@ -122,8 +122,8 @@
 
 - (BOOL)textFieldShouldEndEditing:(UITextField*)textField {
 	
-	if (self.mostRecentResponder == textField) {
-		self.mostRecentResponder = nil;
+	if (self.currentResponder == textField) {
+		self.currentResponder = nil;
 	}
 	
 	return YES;
@@ -137,14 +137,14 @@
 
 - (void)textViewDidBeginEditing:(UITextView*)textView {
 
-	self.mostRecentResponder = textView;
+	self.currentResponder = textView;
 }
 
 
 - (void)textViewDidEndEditing:(UITextView*)textView {
 	
-	if (self.mostRecentResponder == textView) {
-		self.mostRecentResponder = nil;
+	if (self.currentResponder == textView) {
+		self.currentResponder = nil;
 	}
 }
 
@@ -173,15 +173,12 @@
 
 - (IBAction)clearPressed:(UIBarButtonItem*)sender {
 	
-	UIResponder* mostRecentResponder = self.mostRecentResponder;
-	
+	UIResponder* currentResponder = self.currentResponder; // Maybe nil
 	[self.view endEditing:YES];
 	
 	UIAlertAction* clearAction = [UIAlertAction actionWithTitle:@"Clear" style:UIAlertActionStyleDestructive handler:^(UIAlertAction* _Nonnull action) {
 		
 		[self clearFields];
-		self.mostRecentResponder = nil;
-		[[self initialResponder] becomeFirstResponder];
 	}];
 	
 	[Util presentActionAlertWithViewController:self
@@ -189,20 +186,34 @@
 									andMessage:@"Cannot be undone! Are you sure?"
 									 andAction:clearAction
 									andCancelHandler:^(UIAlertAction* action) {
-										[mostRecentResponder becomeFirstResponder]; // Maybe nil
+										[currentResponder becomeFirstResponder];
 									}];
 }
 
 
 - (IBAction)submitPressed:(UIBarButtonItem*)sender {
 	
+	UIResponder* currentResponder = self.currentResponder; // Maybe nil
 	[self.view endEditing:YES];
+
+	UIAlertAction* submitAction = [UIAlertAction actionWithTitle:@"Submit" style:UIAlertActionStyleDestructive handler:^(UIAlertAction* _Nonnull action) {
+		
+		[self submitFieldsWithCurrentResponder:currentResponder];
+	}];
+	
+	[Util presentActionAlertWithViewController:self
+									  andTitle:@"Submit Form"
+									andMessage:@"Cannot be undone! Are you sure?"
+									 andAction:submitAction
+									andCancelHandler:^(UIAlertAction* action) {
+										[currentResponder becomeFirstResponder];
+									}];
 }
 
 
 - (IBAction)passengerCountValueChanged:(UISegmentedControl*)sender {
 	
-	self.mostRecentResponder = nil;
+	self.currentResponder = nil;
 
 	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender andIsAddmode:YES];
 }
@@ -210,7 +221,7 @@
 
 - (IBAction)transmissionValueChanged:(UISegmentedControl*)sender {
 	
-	self.mostRecentResponder = nil;
+	self.currentResponder = nil;
 	
 	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender andIsAddmode:YES];
 }
@@ -218,7 +229,7 @@
 
 - (IBAction)seatBeltCountValueChanged:(UISegmentedControl*)sender {
 	
-	self.mostRecentResponder = nil;
+	self.currentResponder = nil;
 	
 	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender andIsAddmode:YES];
 }
@@ -290,6 +301,32 @@
 	
 	// Notes
 	self.notesTextView.text = nil;
+
+	// Reset responder state
+	self.currentResponder = nil;
+	[[self initialResponder] becomeFirstResponder];
+}
+
+
+- (void)submitFieldsWithCurrentResponder:(UIResponder*)currentResponder {
+
+	// TODO: Implement submitting fields to Telegram bot
+	
+	BOOL isSubmitSuccessful = NO;
+	if (!isSubmitSuccessful) {
+	
+		[Util presentOKAlertWithViewController:self andTitle:@"Submit Form" andMessage:@"Unable to submit form at this time.\nTry again later." andHandler:^(UIAlertAction* action) {
+			
+			[currentResponder becomeFirstResponder];
+		}];
+		
+		return;
+	}
+
+	[Util presentOKAlertWithViewController:self andTitle:@"Submit Form" andMessage:@"Submitted form successfully.\nProvide paper form to dispatcher." andHandler:^(UIAlertAction* action) {
+		
+		[self clearFields];
+	}];
 }
 
 
