@@ -19,19 +19,19 @@
                         <constraint firstAttribute="width" constant="300" id="YPZ-RO-wrS"/>
                     </constraints>
                 </imageView>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Operations App" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="kId-c2-rCX">
-                    <rect key="frame" x="90" y="265" width="300" height="50"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Intake App" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="kId-c2-rCX">
+                    <rect key="frame" x="148" y="268.5" width="184" height="43"/>
                     <animations/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="50" id="4OX-3e-2a6"/>
-                        <constraint firstAttribute="width" constant="300" id="IN0-L1-OE3"/>
+                        <constraint firstAttribute="height" constant="43" id="4OX-3e-2a6"/>
+                        <constraint firstAttribute="width" constant="184" id="IN0-L1-OE3"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="36"/>
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="8ie-xW-0ye">
-                    <rect key="frame" x="97.5" y="419" width="285.5" height="41"/>
+                    <rect key="frame" x="97" y="419" width="285.5" height="41"/>
                     <animations/>
                     <string key="text">Copyright (c) 2015 Empath Solutions.
 All rights reserved.</string>

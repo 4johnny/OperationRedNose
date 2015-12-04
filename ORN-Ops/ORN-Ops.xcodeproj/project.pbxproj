@@ -300,6 +300,8 @@
 				B25220301A9F391D00C3CE00 /* Data Model */,
 				B25220361AA0444200C3CE00 /* Controllers */,
 				B27B4A721A9AB1FB009277E4 /* Supporting Files */,
+				B27B4A761A9AB1FB009277E4 /* AppDelegate.h */,
+				B27B4A771A9AB1FB009277E4 /* AppDelegate.m */,
 			);
 			path = "ORN-Ops";
 			sourceTree = "<group>";
@@ -312,14 +314,12 @@
 				B25220371AA044B000C3CE00 /* Map Helpers */,
 				B25220341AA0415400C3CE00 /* Demo */,
 				B29CD76C1ABE9D6600B21579 /* iOS Categories */,
-				B27B4A761A9AB1FB009277E4 /* AppDelegate.h */,
-				B27B4A771A9AB1FB009277E4 /* AppDelegate.m */,
 				B2761C8B1BAFD0FD0022402E /* Macros.h */,
 				B2C756231AA1BA8B00B148D3 /* Util.h */,
 				B2C756241AA1BA8B00B148D3 /* Util.m */,
 				B2C756261AA1BBD000B148D3 /* PrefixHeader.pch */,
-				B27B4A841A9AB1FB009277E4 /* LaunchScreen.xib */,
 				B27B4A821A9AB1FB009277E4 /* Images.xcassets */,
+				B27B4A841A9AB1FB009277E4 /* LaunchScreen.xib */,
 				B27B4A731A9AB1FB009277E4 /* Info.plist */,
 				B27B4A741A9AB1FB009277E4 /* main.m */,
 			);
