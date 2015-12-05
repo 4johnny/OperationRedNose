@@ -9,17 +9,43 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 
+
+#
+# pragma mark - Interface
+#
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
-@property (strong, nonatomic) UIWindow *window;
+#
+# pragma mark Initializers
+#
 
-@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-@property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
-@property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
++ (AppDelegate*)sharedAppDelegate;
+
+#
+# pragma mark Properties
+#
+
+@property (strong, nonatomic) UIWindow* window;
+
+// TODO: Persist Telegram auth token to keychain instead of user defaults
+@property (strong, nonatomic) NSString* telegramBotAuthToken; // Persisted to user defaults (for now)
+
+#
+# pragma mark Core Data Properties
+#
+
+@property (readonly, strong, nonatomic) NSManagedObjectContext* managedObjectContext;
+@property (readonly, strong, nonatomic) NSManagedObjectModel* managedObjectModel;
+@property (readonly, strong, nonatomic) NSPersistentStoreCoordinator* persistentStoreCoordinator;
 
 - (void)saveContext;
-- (NSURL *)applicationDocumentsDirectory;
 
+#
+# pragma mark Helper Methods
+#
+
+- (NSURL*)applicationDocumentsDirectory;
 
 @end
 

@@ -19,6 +19,42 @@
 @implementation AppDelegate
 
 
+#
+# pragma mark Initializers
+#
+
+
++ (AppDelegate*)sharedAppDelegate {
+	
+	return (AppDelegate*)[UIApplication sharedApplication].delegate;
+}
+
+
+#
+# pragma mark Property Accessors
+#
+
+
+// TODO: Persist Telegram auth token to keychain instead of user defaults
+- (NSString*)telegramBotAuthToken {
+	
+	return [[NSUserDefaults standardUserDefaults] valueForKey:@"telegramBotAuthToken"];
+}
+
+
+- (void)setTelegramBotAuthToken:(NSString*)telegramBotAuthToken {
+	
+	NSLog(@"Saving Telegram bot auth token to user defaults: %@", telegramBotAuthToken);
+	
+	[[NSUserDefaults standardUserDefaults] setValue:telegramBotAuthToken forKey:@"telegramBotAuthToken"];
+}
+
+
+#
+# pragma mark <UIApplicationDelegate>
+#
+
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	// Override point for customization after application launch.
 
@@ -51,16 +87,20 @@
 	[self saveContext];
 }
 
+
 #pragma mark - Core Data stack
+
 
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 
-- (NSURL *)applicationDocumentsDirectory {
+
+- (NSURL*)applicationDocumentsDirectory {
     // The directory the application uses to store the Core Data store file. This code uses a directory named "-johnny.ORN_Intake" in the application's documents directory.
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
+
 
 - (NSManagedObjectModel *)managedObjectModel {
     // The managed object model for the application. It is a fatal error for the application not to be able to find and load its model.
@@ -71,6 +111,7 @@
     _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     return _managedObjectModel;
 }
+
 
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
     // The persistent store coordinator for the application. This implementation creates and returns a coordinator, having added the store for the application to it.
@@ -116,7 +157,9 @@
     return _managedObjectContext;
 }
 
+
 #pragma mark - Core Data Saving support
+
 
 - (void)saveContext {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
@@ -130,5 +173,6 @@
         }
     }
 }
+
 
 @end

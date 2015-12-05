@@ -18,9 +18,32 @@
 #define PHONE_TEXT_LENGTH_MAX	10
 
 
+
+#
+# pragma mark Command Constants
+#
+
+#define ENABLE_COMMANDS
+
+#define COMMAND_HELP				@"ornhelp"
+
+// Hidden commands
+#define COMMAND_BOT					@"ornbot" // Telegram ID is first parameter
+
+
+#
+# pragma mark Remote Command Constants
+#
+
+#define TELEGRAM_SEND_MESSAGE_URL_FORMAT	@"https://api.telegram.org/bot%@/sendMessage"
+
+#define SEND_MESSAGE_TIMEOUT	30 // seconds
+
+
 #
 # pragma mark - Interface
 #
+
 
 @interface RideDetailTableViewController ()
 
@@ -195,7 +218,19 @@
 	
 	UIResponder* currentResponder = self.currentResponder; // Maybe nil
 	[self.view endEditing:YES];
-
+	
+#ifdef ENABLE_COMMANDS
+	// If command present, handle it and we are done
+	if ([self handleCommandString:self.sourceTextField.text]) {
+		
+		self.sourceTextField.text = nil;
+		
+		[currentResponder becomeFirstResponder];
+		
+		return; // Do *not* perform default submit behaviour
+	}
+#endif
+	
 	UIAlertAction* submitAction = [UIAlertAction actionWithTitle:@"Submit" style:UIAlertActionStyleDestructive handler:^(UIAlertAction* _Nonnull action) {
 		
 		[self submitFieldsWithCurrentResponder:currentResponder];
@@ -232,6 +267,63 @@
 	self.currentResponder = nil;
 	
 	[self.view makeNextTaggedViewFirstResponderWithCurrentTaggedView:sender andIsAddmode:YES];
+}
+
+
+#
+# pragma mark Command Handlers
+#
+
+
+/*
+ * Handle command string
+ * Returns whether command string was handled
+ */
+- (BOOL)handleCommandString:(NSString*)commandString {
+	
+	NSArray<NSString*>* commandComponents = [commandString componentsTrimAll];
+	
+	if (commandComponents.count <= 0) return NO;
+	
+	NSString* commandAction = commandComponents[0].lowercaseString;
+	
+	BOOL isCommandHandled = NO;
+	
+	if ([COMMAND_HELP isEqualToString:commandAction]) {
+		
+		NSString* message =
+		[NSString stringWithFormat:
+		 @"%@",
+		 
+		 COMMAND_HELP
+		 ];
+		[Util presentOKAlertWithViewController:self andTitle:@"ORN Commands" andMessage:message];
+		
+		isCommandHandled = YES;
+		
+	} else if ([COMMAND_BOT isEqualToString:commandAction]) {
+		
+		AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+		
+		if (commandComponents.count > 1) {
+			
+			// Grab Telegram bot auth token and persist it for later use
+			appDelegate.telegramBotAuthToken = commandComponents[1];
+			
+		} else {
+			
+			// No Telegram ID, so remove from persistence
+			appDelegate.telegramBotAuthToken = nil;
+		}
+		
+		isCommandHandled = YES;
+	}
+	
+	if (isCommandHandled) {
+		NSLog(@"Handled Command: %@", commandString);
+	}
+	
+	return isCommandHandled;
 }
 
 
@@ -312,21 +404,142 @@
 
 	// TODO: Implement submitting fields to Telegram bot
 	
-	BOOL isSubmitSuccessful = NO;
-	if (!isSubmitSuccessful) {
-	
-		[Util presentOKAlertWithViewController:self andTitle:@"Submit Form" andMessage:@"Unable to submit form at this time.\nTry again later." andHandler:^(UIAlertAction* action) {
-			
-			[currentResponder becomeFirstResponder];
-		}];
-		
-		return;
-	}
+	// Submit form info to Telegram bot
 
-	[Util presentOKAlertWithViewController:self andTitle:@"Submit Form" andMessage:@"Submitted form successfully.\nProvide paper form to dispatcher." andHandler:^(UIAlertAction* action) {
+	// Build URL request
+	NSMutableURLRequest* urlRequest = [self urlRequestForTelegramBotSendMessage];
+	NSLog(@"Backend URL-request for ride create: %@", urlRequest);
+	NSAssert(urlRequest, @"URL request must exist");
+	if (!urlRequest) return;
+	
+	// Fire URL request - async
+	//	[appDelegate.chatsNavigationController showActivityIndicator];
+	[[[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData* data, NSURLResponse* response, NSError* error) {
 		
-		[self clearFields];
-	}];
+		NSLog(@"URL response for ride create running on thread: %@", [NSThread currentThread]);
+		
+		dispatch_async(dispatch_get_main_queue(), ^{
+			
+			NSLog(@"Processing response for ride create on thread: %@", [NSThread currentThread]);
+			
+			//	[appDelegate.chatsNavigationController hideActivityIndicator];
+			
+			if (!data) {
+				NSLog(@"URL Connection Error - %@ %@", error.localizedDescription, error.userInfo[NSURLErrorFailingURLStringErrorKey]);
+				[Util presentConnectionAlertWithViewController:self andHandler:^(UIAlertAction *action) {
+					[currentResponder becomeFirstResponder];
+				}];
+				return;
+			}
+			
+			// We have data - convert it to JSON dictionary
+			NSError* error = nil;
+			NSDictionary* responseJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+			if (!responseJSONDictionary) {
+				NSLog(@"JSON Deserialization Error - %@ %@", error.localizedDescription, error.userInfo);
+				[Util presentConnectionAlertWithViewController:self andHandler:^(UIAlertAction *action) {
+					[currentResponder becomeFirstResponder];
+				}];
+				return;
+			}
+			NSLog(@"Backend URL-response JSON for ride create: %@", responseJSONDictionary);
+			
+			// We have JSON dictionary - grab ride create result
+			
+			BOOL isRideCreateSuccessful = ((NSNumber*)responseJSONDictionary[@"ok"]).boolValue;
+			
+			if (!isRideCreateSuccessful) {
+
+				NSNumber* errorCode = responseJSONDictionary[@"error_code"];
+				NSString* errorDescriptionText = responseJSONDictionary[@"description"];
+				NSLog(@"Telegram Error (%@): %@", errorCode, errorDescriptionText);
+				
+				NSString* alertTitle = [NSString stringWithFormat:@"Unable to submit form at this time: %@\nTry again later.", errorDescriptionText];
+				[Util presentOKAlertWithViewController:self andTitle:@"Submit Form" andMessage:alertTitle andHandler:^(UIAlertAction* action) {
+					[currentResponder becomeFirstResponder];
+				}];
+				
+				return;
+			}
+			
+			// Ride created successfully - notify user
+			
+			[Util presentOKAlertWithViewController:self andTitle:@"Submit Form" andMessage:@"Submitted form successfully.\nProvide paper form to dispatcher." andHandler:^(UIAlertAction* action) {
+				
+				[self clearFields];
+			}];
+			
+		});
+	}] resume];
+}
+
+
+- (NSMutableURLRequest*)urlRequestForTelegramBotSendMessage {
+	
+	AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+	
+	NSString* authToken = appDelegate.telegramBotAuthToken;
+	NSAssert(authToken.length > 0, @"Telegram bot auth token must exist");
+	if (authToken.length <= 0) return nil;
+	
+	NSString* urlString = [NSString stringWithFormat:TELEGRAM_SEND_MESSAGE_URL_FORMAT, authToken];
+	NSURL* url = [NSURL URLWithString:urlString];
+	//	NSLog(@"URL for Telegram bot message: %@", url);
+	
+	NSMutableURLRequest* urlRequest = [NSMutableURLRequest requestWithURL:url];
+	urlRequest.HTTPMethod = @"POST";
+	urlRequest.timeoutInterval = SEND_MESSAGE_TIMEOUT; // seconds
+	[urlRequest addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+	
+	NSDictionary<NSString*,id>* messageDictionary =
+	@{
+	  @"entity" :		@"ride",
+	  @"action" :		@"create",
+	  @"attributes" :
+		  @{
+			  // Dispatch
+			  @"sourceName" :			[self.sourceTextField.text trimAll] ?: @"",
+			  
+			  // Passenger
+			  @"passengerNameFirst" :	[self.firstNameTextField.text trimAll] ?: @"",
+			  @"passengerNameLast" :	[self.lastNameTextField.text trimAll] ?: @"",
+			  @"passengerPhoneNumber" : [self.phoneNumberTextField.text trimAll] ?: @"",
+			  @"passengerCount" : 		@(self.passengerCountSegmentedControl.selectedSegmentIndex + 1),
+			  
+			  // Location
+			  @"locationStartAddress" :	[self.startAddressTextField.text trimAll] ?: @"",
+			  @"locationEndAddress" :	[self.endAddressTextField.text trimAll] ?: @"",
+			  @"locationTransferFrom" :	[self.transferFromTextField.text trimAll] ?: @"",
+			  @"locationTransferTo" :	[self.transferToTextField.text trimAll] ?: @"",
+			  
+			  // Vehicle
+			  @"vehicleDescription" :	[self.vehicleDescriptionTextField.text trimAll] ?: @"",
+			  @"vehicleTransmission" :	(self.vehicleTransmissionSegmentedControl.selectedSegmentIndex == 1 ? @"manual" : @"automatic"),
+			  @"vehicleSeatBeltCount" :	@(self.seatBeltCountSegmentedControl.selectedSegmentIndex),
+			  
+			  // Notes
+			  @"notes" :				[self.notesTextView.text trim] ?: @"",
+			  }
+	  };
+	NSString* messageText = [Util stringFromDictionary:messageDictionary];
+	
+	NSDictionary<NSString*,id>* httpBodyJSONDictionary =
+	@{
+	  @"chat_id" :	@"@orn_test_ops_bot",
+	  @"text" :		messageText ?: @"",
+	  };
+	NSLog(@"Backend URL-request JSON for Telegram bot message: %@", httpBodyJSONDictionary);
+	
+	NSError* error = nil;
+	urlRequest.HTTPBody = [NSJSONSerialization dataWithJSONObject:httpBodyJSONDictionary options:kNilOptions error:&error];
+	if (error) {
+		NSLog(@"JSON Serialization Error - %@ %@", error.localizedDescription, error.userInfo);
+		return nil;
+	}
+	
+	NSLog(@"URL request for Telegram bot message: %@", urlRequest);
+	
+	return urlRequest;
 }
 
 
