@@ -118,6 +118,9 @@
 												 andAction:(UIAlertAction*)action
 										  andCancelHandler:(void (^)(UIAlertAction* action))cancelHandler;
 
++ (void)presentConnectionAlertWithViewController:(UIViewController*)viewController
+									  andHandler:(void(^)(UIAlertAction* action))handler;
+
 + (void)presentDeleteAlertWithViewController:(UIViewController*)viewController
 							   andDataObject:(id<ORNDataObject>)dataObject
 							andCancelHandler:(void (^)(UIAlertAction* action))cancelHandler;
