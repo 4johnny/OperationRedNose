@@ -77,7 +77,18 @@
 
 
 #
-# pragma mark Properties
+# pragma mark Initializers
+#
+
+
++ (AppDelegate*)sharedAppDelegate {
+	
+	return (AppDelegate*)[UIApplication sharedApplication].delegate;
+}
+
+
+#
+# pragma mark Property Accessors
 #
 
 
@@ -179,17 +190,6 @@
 	
 	// Saves changes in the application's managed object context before the application terminates.
 	[self saveManagedObjectContext];
-}
-
-
-#
-# pragma mark Initializers
-#
-
-
-+ (AppDelegate*)sharedAppDelegate {
-	
-	return (AppDelegate*)[UIApplication sharedApplication].delegate;
 }
 
 
@@ -375,23 +375,23 @@
 }
 
 
-+ (NSMutableURLRequest*)telegramBotUpdateURLRequestWithOffset:(NSNumber*)offset
-												 andAuthToken:(NSString*)authToken {
++ (NSMutableURLRequest*)urlRequestForTelegramBotUpdateWithOffset:(NSNumber*)offset
+													andAuthToken:(NSString*)authToken {
 
 	// NOTE: Offset maybe nil
 	NSAssert(authToken.length > 0, @"Telegram bot auth token must exist");
 	if (authToken.length <= 0) return nil;
 	
-	NSString* telegramBotUpdateUrlString = [NSString stringWithFormat:TELEGRAM_GET_UPDATES_URL_FORMAT, authToken];
-	NSURL* telegramBotUpdateURL = [NSURL URLWithString:telegramBotUpdateUrlString];
+	NSString* urlString = [NSString stringWithFormat:TELEGRAM_GET_UPDATES_URL_FORMAT, authToken];
+	NSURL* url = [NSURL URLWithString:urlString];
 	//	NSLog(@"URL for Telegram bot update: %@", telegramBotUpdateURL);
 
-	NSMutableURLRequest* urlRequest = [NSMutableURLRequest requestWithURL:telegramBotUpdateURL];
+	NSMutableURLRequest* urlRequest = [NSMutableURLRequest requestWithURL:url];
 	urlRequest.HTTPMethod = @"POST";
 	urlRequest.timeoutInterval = LONG_POLL_TIMEOUT; // seconds
 	[urlRequest addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
 	
-	NSMutableDictionary* httpBodyJSONDictionary =
+	NSMutableDictionary<NSString*,id>* httpBodyJSONDictionary =
 	[@{
 	   @"timeout" :	@(LONG_POLL_TIMEOUT),
 	   } mutableCopy];
@@ -418,11 +418,11 @@
 	
 	if (authToken.length <= 0) return;
 	
-	NSURLRequest* telegramBotUpdateURLRequest = [AppDelegate telegramBotUpdateURLRequestWithOffset:self.telegramBotOffset andAuthToken:self.telegramBotAuthToken];
-	NSAssert(telegramBotUpdateURLRequest, @"Telegram bot URL request must exist");
-	if (!telegramBotUpdateURLRequest) return;
+	NSURLRequest* urlRequest = [AppDelegate urlRequestForTelegramBotUpdateWithOffset:self.telegramBotOffset andAuthToken:self.telegramBotAuthToken];
+	NSAssert(urlRequest, @"URL request for Telegram bot update must exist");
+	if (!urlRequest) return;
 	
-	self.telegramDataTask = [[NSURLSession sharedSession] dataTaskWithRequest:telegramBotUpdateURLRequest completionHandler:^(NSData* _Nullable data, NSURLResponse* _Nullable response, NSError* _Nullable error) {
+	self.telegramDataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData* _Nullable data, NSURLResponse* _Nullable response, NSError* _Nullable error) {
 		
 		//	NSLog(@"URL response for Telegram bot update running on thread: %@", [NSThread currentThread]);
 		

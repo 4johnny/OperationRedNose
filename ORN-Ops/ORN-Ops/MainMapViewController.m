@@ -40,12 +40,13 @@
 # pragma mark Command Constants
 #
 
-#define ENABLE_COMMANDS	// WARNING: Demo commands change *real* data model!!!
+#define ENABLE_COMMANDS
 
 #define COMMAND_HELP				@"ornhelp"
 #define COMMAND_SHOW_ALL			@"ornshowall"
 #define COMMAND_DELETE_ALL			@"orndeleteall"
 
+// WARNING: Demo commands change *real* data model!!!
 #define COMMAND_DEMO				@"orndemo"
 #define COMMAND_DEMO_RIDES			@"orndemorides"
 #define COMMAND_DEMO_TEAMS			@"orndemoteams"
