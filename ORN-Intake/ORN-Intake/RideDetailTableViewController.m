@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
+// NOTE: Uses Telegram Bot: https://core.telegram.org/bots/api
 // NOTE: Keep in sync with ORN-Ops
 
 #import "RideDetailTableViewController.h"
@@ -18,24 +19,24 @@
 #define PHONE_TEXT_LENGTH_MAX	10
 
 
-
 #
 # pragma mark Command Constants
 #
 
 #define ENABLE_COMMANDS
 
-#define COMMAND_HELP				@"ornhelp"
+#define COMMAND_HELP	@"ornhelp"
 
 // Hidden commands
-#define COMMAND_BOT					@"ornbot" // Telegram ID is first parameter
+#define COMMAND_BOT		@"ornbot" // Telegram bot auth token is first parameter
 
 
 #
 # pragma mark Remote Command Constants
 #
 
-#define TELEGRAM_SEND_MESSAGE_URL_FORMAT	@"https://api.telegram.org/bot%@/sendMessage"
+#define URL_TELEGRAM_GET_ME_FORMAT			@"https://api.telegram.org/bot%@/getMe"
+#define URL_TELEGRAM_SEND_MESSAGE_FORMAT	@"https://api.telegram.org/bot%@/sendMessage"
 
 #define SEND_MESSAGE_TIMEOUT	30 // seconds
 
@@ -231,9 +232,22 @@
 	}
 #endif
 	
+	// Ensure Telegram bot is loaded
+	AppDelegate* appDelegate =[AppDelegate sharedAppDelegate];
+	if (appDelegate.telegramBotAuthToken.length <= 0 ||
+		appDelegate.telegramBotUserID.integerValue <= 0) {
+		
+		NSString* alertMessage = [NSString stringWithFormat:@"Cannot submit form at this time.\nAsk your admin to load the bot."];
+		[Util presentOKAlertWithViewController:self andTitle:@"Submit Form" andMessage:alertMessage andHandler:^(UIAlertAction* action) {
+			[currentResponder becomeFirstResponder];
+		}];
+		
+		return;
+	}
+	
 	UIAlertAction* submitAction = [UIAlertAction actionWithTitle:@"Submit" style:UIAlertActionStyleDestructive handler:^(UIAlertAction* _Nonnull action) {
 		
-		[self submitFieldsWithCurrentResponder:currentResponder];
+		[self trySubmitFieldsWithCurrentResponder:currentResponder];
 	}];
 	
 	[Util presentActionAlertWithViewController:self
@@ -307,13 +321,25 @@
 		
 		if (commandComponents.count > 1) {
 			
-			// Grab Telegram bot auth token and persist it for later use
+			// Persist Telegram bot auth token and load user ID
 			appDelegate.telegramBotAuthToken = commandComponents[1];
+			[self tryGetTelegramBotUserID];
 			
 		} else {
 			
-			// No Telegram ID, so remove from persistence
-			appDelegate.telegramBotAuthToken = nil;
+			// No Telegram bot auth token - remove from persistence
+			if (appDelegate.telegramBotUserID) {
+				
+				NSString* alertMessage = [NSString stringWithFormat:@"Unloaded bot: %@ (%@)", @"", appDelegate.telegramBotUserID];
+				[Util presentOKAlertWithViewController:self andTitle:@"ORN Bot" andMessage:alertMessage andHandler:nil];
+				
+				appDelegate.telegramBotAuthToken = nil;
+				appDelegate.telegramBotUserID = nil;
+				
+			} else {
+				
+				[Util presentOKAlertWithViewController:self andTitle:@"ORN Bot" andMessage:@"No bot to unload" andHandler:nil];
+			}
 		}
 		
 		isCommandHandled = YES;
@@ -400,15 +426,144 @@
 }
 
 
-- (void)submitFieldsWithCurrentResponder:(UIResponder*)currentResponder {
+- (void)tryGetTelegramBotUserID {
 
-	// TODO: Implement submitting fields to Telegram bot
+	AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+
+	// Ensure Telegram bot auth token is set
+	NSString* telegramBotAuthToken = appDelegate.telegramBotAuthToken;
+	NSAssert(telegramBotAuthToken.length > 0, @"Telegram bot auth token must exist");
+	if (telegramBotAuthToken.length <= 0) return;
 	
+	// Query Telegram bot for its user ID
+	
+	// Build URL request
+	NSMutableURLRequest* urlRequest = [self urlRequestForTelegramBotGetMe];
+	NSLog(@"URL-request for Telegram bot user ID: %@", urlRequest);
+	NSAssert(urlRequest, @"URL request must exist");
+	if (!urlRequest) return;
+	
+	// Fire URL request - async
+	//	[appDelegate showActivityIndicator];
+	[[[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData* data, NSURLResponse* response, NSError* error) {
+		
+		NSLog(@"URL response for Telegram bot user ID running on thread: %@", [NSThread currentThread]);
+		
+		dispatch_async(dispatch_get_main_queue(), ^{
+			
+			NSLog(@"Processing response for Telegram bot user ID on thread: %@", [NSThread currentThread]);
+			
+			//	[appDelegate hideActivityIndicator];
+			
+			if (!data) {
+				NSLog(@"URL Connection Error - %@ %@", error.localizedDescription, error.userInfo[NSURLErrorFailingURLStringErrorKey]);
+				[Util presentConnectionAlertWithViewController:self andHandler:nil];
+				return;
+			}
+			
+			// We have data - convert it to JSON dictionary
+			NSError* error = nil;
+			NSDictionary* responseJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+			if (!responseJSONDictionary) {
+				NSLog(@"JSON Deserialization Error - %@ %@", error.localizedDescription, error.userInfo);
+				[Util presentConnectionAlertWithViewController:self andHandler:nil];
+				return;
+			}
+			NSLog(@"URL-response JSON for Telegram bot user ID: %@", responseJSONDictionary);
+			
+			// We have JSON dictionary - grab Telegram bot user ID
+			
+			BOOL isTelegramMethodSuccessful = ((NSNumber*)responseJSONDictionary[@"ok"]).boolValue;
+			if (!isTelegramMethodSuccessful) {
+				
+				NSString* errorDescriptionText = responseJSONDictionary[@"description"];
+				NSNumber* errorCode = responseJSONDictionary[@"error_code"];
+				NSLog(@"Telegram Error: %@ (%@)", errorDescriptionText, errorCode);
+				
+				NSString* alertMessage = [NSString stringWithFormat:@"Error loading bot: %@ (%@)", errorDescriptionText, errorCode];
+				[Util presentOKAlertWithViewController:self andTitle:@"ORN Bot" andMessage:alertMessage andHandler:nil];
+				
+				return;
+			}
+			
+			// Grab Telegram bot user
+			NSDictionary<NSString*,id>* telegramBotUser = responseJSONDictionary[@"result"];
+			NSNumber* telegramBotUserID = telegramBotUser[@"id"];
+			NSString* telegramBotUserName = telegramBotUser[@"username"];
+			NSAssert([telegramBotUser isKindOfClass:[NSDictionary class]], @"Telegram bot user must be dictionary");
+			NSAssert(telegramBotUser.count > 0, @"Telegram bot user must exist");
+			NSAssert([telegramBotUserID isKindOfClass:[NSNumber class]], @"Telegram bot user ID must be integer");
+			NSAssert([telegramBotUserName isKindOfClass:[NSString class]], @"Telegram bot username must be string");
+			if (![telegramBotUser isKindOfClass:[NSDictionary class]] ||
+				telegramBotUser.count <= 0 ||
+				![telegramBotUserID isKindOfClass:[NSNumber class]] ||
+				  ![telegramBotUserName isKindOfClass:[NSString class]]) {
+				
+				NSString* alertMessage = [NSString stringWithFormat:@"Error loading bot: Invalid user identifiers"];
+				[Util presentOKAlertWithViewController:self andTitle:@"ORN Bot" andMessage:alertMessage andHandler:nil];
+				
+				return;
+			}
+			
+			// Persist Telegram bot user ID, and notify user
+			AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+			appDelegate.telegramBotUserID = telegramBotUserID;
+			NSString* alertMessage = [NSString stringWithFormat:@"Loaded bot: %@ (%@)", telegramBotUserName, telegramBotUserID];
+			[Util presentOKAlertWithViewController:self andTitle:@"ORN Bot" andMessage:alertMessage andHandler:^(UIAlertAction* action) {
+				
+//				[self clearFields];
+			}];
+			
+		});
+	}] resume];
+}
+
+
+- (void)trySubmitFieldsWithCurrentResponder:(UIResponder*)currentResponder {
+
+	// Ensure Telegram bot is loaded
+	AppDelegate* appDelegate =[AppDelegate sharedAppDelegate];
+	NSAssert(appDelegate.telegramBotAuthToken.length > 0, @"Telegram bot auth token must exist");
+	NSAssert(appDelegate.telegramBotUserID.integerValue > 0, @"Telegram bot user ID must exist");
+	if (appDelegate.telegramBotAuthToken.length <= 0 ||
+		appDelegate.telegramBotUserID.integerValue <= 0) return;
+
 	// Submit form info to Telegram bot
+	
+	NSDictionary<NSString*,id>* messageDictionary =
+	@{
+	  @"entity" :		@"ride",
+	  @"action" :		@"create",
+	  @"attributes" :
+		  @{
+			  // Dispatch
+			  @"sourceName" :			[self.sourceTextField.text trimAll] ?: @"",
+			  
+			  // Passenger
+			  @"passengerNameFirst" :	[self.firstNameTextField.text trimAll] ?: @"",
+			  @"passengerNameLast" :	[self.lastNameTextField.text trimAll] ?: @"",
+			  @"passengerPhoneNumber" : [self.phoneNumberTextField.text trimAll] ?: @"",
+			  @"passengerCount" : 		@(self.passengerCountSegmentedControl.selectedSegmentIndex + 1),
+			  
+			  // Location
+			  @"locationStartAddress" :	[self.startAddressTextField.text trimAll] ?: @"",
+			  @"locationEndAddress" :	[self.endAddressTextField.text trimAll] ?: @"",
+			  @"locationTransferFrom" :	[self.transferFromTextField.text trimAll] ?: @"",
+			  @"locationTransferTo" :	[self.transferToTextField.text trimAll] ?: @"",
+			  
+			  // Vehicle
+			  @"vehicleDescription" :	[self.vehicleDescriptionTextField.text trimAll] ?: @"",
+			  @"vehicleTransmission" :	(self.vehicleTransmissionSegmentedControl.selectedSegmentIndex == 1 ? @"manual" : @"automatic"),
+			  @"vehicleSeatBeltCount" :	@(self.seatBeltCountSegmentedControl.selectedSegmentIndex),
+			  
+			  // Notes
+			  @"notes" :				[self.notesTextView.text trim] ?: @"",
+			  }
+	  };
 
 	// Build URL request
-	NSMutableURLRequest* urlRequest = [self urlRequestForTelegramBotSendMessage];
-	NSLog(@"Backend URL-request for ride create: %@", urlRequest);
+	NSMutableURLRequest* urlRequest = [self urlRequestForTelegramBotMessage:[Util stringFromDictionary:messageDictionary]];
+	NSLog(@"URL-request for ride create: %@", urlRequest);
 	NSAssert(urlRequest, @"URL request must exist");
 	if (!urlRequest) return;
 	
@@ -442,20 +597,19 @@
 				}];
 				return;
 			}
-			NSLog(@"Backend URL-response JSON for ride create: %@", responseJSONDictionary);
+			NSLog(@"URL-response JSON for ride create: %@", responseJSONDictionary);
 			
 			// We have JSON dictionary - grab ride create result
 			
-			BOOL isRideCreateSuccessful = ((NSNumber*)responseJSONDictionary[@"ok"]).boolValue;
-			
-			if (!isRideCreateSuccessful) {
+			BOOL isTelegramMethodSuccessful = ((NSNumber*)responseJSONDictionary[@"ok"]).boolValue;
+			if (!isTelegramMethodSuccessful) {
 
-				NSNumber* errorCode = responseJSONDictionary[@"error_code"];
 				NSString* errorDescriptionText = responseJSONDictionary[@"description"];
-				NSLog(@"Telegram Error (%@): %@", errorCode, errorDescriptionText);
+				NSNumber* errorCode = responseJSONDictionary[@"error_code"];
+				NSLog(@"Telegram Error: %@ (%@)", errorDescriptionText, errorCode);
 				
-				NSString* alertTitle = [NSString stringWithFormat:@"Unable to submit form at this time: %@\nTry again later.", errorDescriptionText];
-				[Util presentOKAlertWithViewController:self andTitle:@"Submit Form" andMessage:alertTitle andHandler:^(UIAlertAction* action) {
+				NSString* alertMessage = [NSString stringWithFormat:@"Cannot submit form at this time.\nTry again later.\n%@ (%@)", errorDescriptionText, errorCode];
+				[Util presentOKAlertWithViewController:self andTitle:@"Submit Form" andMessage:alertMessage andHandler:^(UIAlertAction* action) {
 					[currentResponder becomeFirstResponder];
 				}];
 				
@@ -464,7 +618,7 @@
 			
 			// Ride created successfully - notify user
 			
-			[Util presentOKAlertWithViewController:self andTitle:@"Submit Form" andMessage:@"Submitted form successfully.\nProvide paper form to dispatcher." andHandler:^(UIAlertAction* action) {
+			[Util presentOKAlertWithViewController:self andTitle:@"Submit Form" andMessage:@"Submitted form successfully.\nProvide paper form to your dispatcher." andHandler:^(UIAlertAction* action) {
 				
 				[self clearFields];
 			}];
@@ -474,15 +628,41 @@
 }
 
 
-- (NSMutableURLRequest*)urlRequestForTelegramBotSendMessage {
+- (NSMutableURLRequest*)urlRequestForTelegramBotGetMe {
 	
 	AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
 	
-	NSString* authToken = appDelegate.telegramBotAuthToken;
-	NSAssert(authToken.length > 0, @"Telegram bot auth token must exist");
-	if (authToken.length <= 0) return nil;
+	NSString* telegramBotAuthToken = appDelegate.telegramBotAuthToken;
+	NSAssert(telegramBotAuthToken.length > 0, @"Telegram bot auth token must exist");
+	if (telegramBotAuthToken.length <= 0) return nil;
 	
-	NSString* urlString = [NSString stringWithFormat:TELEGRAM_SEND_MESSAGE_URL_FORMAT, authToken];
+	NSString* urlString = [NSString stringWithFormat:URL_TELEGRAM_GET_ME_FORMAT, telegramBotAuthToken];
+	NSURL* url = [NSURL URLWithString:urlString];
+	//	NSLog(@"URL for Telegram bot message: %@", url);
+	
+	NSMutableURLRequest* urlRequest = [NSMutableURLRequest requestWithURL:url];
+	urlRequest.HTTPMethod = @"GET";
+	urlRequest.timeoutInterval = SEND_MESSAGE_TIMEOUT; // seconds
+	
+	NSLog(@"URL request for Telegram bot user ID: %@", urlRequest);
+	
+	return urlRequest;
+}
+
+
+- (NSMutableURLRequest*)urlRequestForTelegramBotMessage:(NSString*)messageText {
+	
+	AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+	
+	NSString* telegramBotAuthToken = appDelegate.telegramBotAuthToken;
+	NSAssert(telegramBotAuthToken.length > 0, @"Telegram bot auth token must exist");
+	if (telegramBotAuthToken.length <= 0) return nil;
+	
+	NSNumber* telegramBotUserID = appDelegate.telegramBotUserID;
+	NSAssert(telegramBotUserID.integerValue > 0, @"Telegram bot user ID must exist");
+	if (telegramBotUserID.integerValue <= 0) return nil;
+	
+	NSString* urlString = [NSString stringWithFormat:URL_TELEGRAM_SEND_MESSAGE_FORMAT, telegramBotAuthToken];
 	NSURL* url = [NSURL URLWithString:urlString];
 	//	NSLog(@"URL for Telegram bot message: %@", url);
 	
@@ -491,44 +671,12 @@
 	urlRequest.timeoutInterval = SEND_MESSAGE_TIMEOUT; // seconds
 	[urlRequest addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
 	
-	NSDictionary<NSString*,id>* messageDictionary =
-	@{
-	  @"entity" :		@"ride",
-	  @"action" :		@"create",
-	  @"attributes" :
-		  @{
-			  // Dispatch
-			  @"sourceName" :			[self.sourceTextField.text trimAll] ?: @"",
-			  
-			  // Passenger
-			  @"passengerNameFirst" :	[self.firstNameTextField.text trimAll] ?: @"",
-			  @"passengerNameLast" :	[self.lastNameTextField.text trimAll] ?: @"",
-			  @"passengerPhoneNumber" : [self.phoneNumberTextField.text trimAll] ?: @"",
-			  @"passengerCount" : 		@(self.passengerCountSegmentedControl.selectedSegmentIndex + 1),
-			  
-			  // Location
-			  @"locationStartAddress" :	[self.startAddressTextField.text trimAll] ?: @"",
-			  @"locationEndAddress" :	[self.endAddressTextField.text trimAll] ?: @"",
-			  @"locationTransferFrom" :	[self.transferFromTextField.text trimAll] ?: @"",
-			  @"locationTransferTo" :	[self.transferToTextField.text trimAll] ?: @"",
-			  
-			  // Vehicle
-			  @"vehicleDescription" :	[self.vehicleDescriptionTextField.text trimAll] ?: @"",
-			  @"vehicleTransmission" :	(self.vehicleTransmissionSegmentedControl.selectedSegmentIndex == 1 ? @"manual" : @"automatic"),
-			  @"vehicleSeatBeltCount" :	@(self.seatBeltCountSegmentedControl.selectedSegmentIndex),
-			  
-			  // Notes
-			  @"notes" :				[self.notesTextView.text trim] ?: @"",
-			  }
-	  };
-	NSString* messageText = [Util stringFromDictionary:messageDictionary];
-	
 	NSDictionary<NSString*,id>* httpBodyJSONDictionary =
 	@{
-	  @"chat_id" :	@"@orn_test_ops_bot",
+	  @"chat_id" :	telegramBotUserID,
 	  @"text" :		messageText ?: @"",
 	  };
-	NSLog(@"Backend URL-request JSON for Telegram bot message: %@", httpBodyJSONDictionary);
+	NSLog(@"URL-request JSON for Telegram bot message: %@", httpBodyJSONDictionary);
 	
 	NSError* error = nil;
 	urlRequest.HTTPBody = [NSJSONSerialization dataWithJSONObject:httpBodyJSONDictionary options:kNilOptions error:&error];

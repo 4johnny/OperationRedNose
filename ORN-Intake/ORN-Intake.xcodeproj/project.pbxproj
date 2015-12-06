@@ -27,6 +27,7 @@
 		B2E2FC871C1189F600E63E6E /* NSString+StringHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E2FC861C1189F600E63E6E /* NSString+StringHelpers.m */; };
 		B2E2FC8A1C118C0900E63E6E /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E2FC891C118C0900E63E6E /* Util.m */; };
 		B2E2FC8D1C118D0D00E63E6E /* NSDate+DateHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E2FC8C1C118D0D00E63E6E /* NSDate+DateHelpers.m */; };
+		B2F61BDF1C1394C20076E2A1 /* BaseTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = B2F61BDE1C1394C20076E2A1 /* BaseTextView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +68,8 @@
 		B2E2FC891C118C0900E63E6E /* Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Util.m; path = "../../ORN-Ops/ORN-Ops/Util.m"; sourceTree = "<group>"; };
 		B2E2FC8B1C118D0D00E63E6E /* NSDate+DateHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+DateHelpers.h"; path = "../../ORN-Ops/ORN-Ops/NSDate+DateHelpers.h"; sourceTree = "<group>"; };
 		B2E2FC8C1C118D0D00E63E6E /* NSDate+DateHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDate+DateHelpers.m"; path = "../../ORN-Ops/ORN-Ops/NSDate+DateHelpers.m"; sourceTree = "<group>"; };
+		B2F61BDD1C1394C20076E2A1 /* BaseTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseTextView.h; path = "../../ORN-Ops/ORN-Ops/BaseTextView.h"; sourceTree = "<group>"; };
+		B2F61BDE1C1394C20076E2A1 /* BaseTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BaseTextView.m; path = "../../ORN-Ops/ORN-Ops/BaseTextView.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +105,7 @@
 		B27C875C1C115A4300675C04 /* ORN-Intake */ = {
 			isa = PBXGroup;
 			children = (
+				B27C875D1C115A4300675C04 /* Supporting Files */,
 				B27C87661C115A4300675C04 /* Main.storyboard */,
 				B2E2FC621C117B2600E63E6E /* MainNavigationController.h */,
 				B2E2FC631C117B2600E63E6E /* MainNavigationController.m */,
@@ -109,7 +113,6 @@
 				B2E2FC661C117D7500E63E6E /* RideDetailTableViewController.m */,
 				B27C87601C115A4300675C04 /* AppDelegate.h */,
 				B27C87611C115A4300675C04 /* AppDelegate.m */,
-				B27C875D1C115A4300675C04 /* Supporting Files */,
 			);
 			path = "ORN-Intake";
 			sourceTree = "<group>";
@@ -153,6 +156,8 @@
 				B2E2FC7B1C1186E400E63E6E /* UIView+ViewHelpers.m */,
 				B2E2FC7E1C1187CF00E63E6E /* UIButton+ButtonHelpers.h */,
 				B2E2FC7F1C1187CF00E63E6E /* UIButton+ButtonHelpers.m */,
+				B2F61BDD1C1394C20076E2A1 /* BaseTextView.h */,
+				B2F61BDE1C1394C20076E2A1 /* BaseTextView.m */,
 				B2E2FC711C11836300E63E6E /* BasePickerTextField.h */,
 				B2E2FC721C11836300E63E6E /* BasePickerTextField.m */,
 				B2E2FC751C11836300E63E6E /* PickerTextField.h */,
@@ -257,6 +262,7 @@
 				B2E2FC641C117B2600E63E6E /* MainNavigationController.m in Sources */,
 				B2E2FC801C1187CF00E63E6E /* UIButton+ButtonHelpers.m in Sources */,
 				B2E2FC671C117D7500E63E6E /* RideDetailTableViewController.m in Sources */,
+				B2F61BDF1C1394C20076E2A1 /* BaseTextView.m in Sources */,
 				B2E2FC771C11836300E63E6E /* BasePickerTextField.m in Sources */,
 				B2E2FC8A1C118C0900E63E6E /* Util.m in Sources */,
 				B2E2FC791C11836300E63E6E /* PickerTextField.m in Sources */,

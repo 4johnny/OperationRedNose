@@ -28,8 +28,10 @@
 
 @property (strong, nonatomic) UIWindow* window;
 
-// TODO: Persist Telegram auth token to keychain instead of user defaults
-@property (strong, nonatomic) NSString* telegramBotAuthToken; // Persisted to user defaults (for now)
+// Persisted in user defaults (for now)
+// TODO: Persist Telegram info in keychain instead of user defaults
+@property (strong, nonatomic) NSString* telegramBotAuthToken;
+@property (strong, nonatomic) NSNumber* telegramBotUserID;
 
 #
 # pragma mark Core Data Properties

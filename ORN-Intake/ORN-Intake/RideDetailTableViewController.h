@@ -6,8 +6,6 @@
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
-// NOTE: Keep in sync with ORN-Ops
-
 #import <UIKit/UIKit.h>
 
 #import "PickerTextField.h"
