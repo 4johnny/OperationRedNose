@@ -2232,7 +2232,7 @@ typedef NS_OPTIONS(NSUInteger, ConfigureOptions) {
 			
 		} else {
 			
-			// No Telegram ID, so stop polling
+			// No Telegram auth token - stop polling, and remove from persistence
 			[appDelegate stopTelegramBotPoll];
 			appDelegate.telegramBotAuthToken = nil;
 		}

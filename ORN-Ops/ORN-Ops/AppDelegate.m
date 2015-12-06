@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Empath Solutions. All rights reserved.
 //
 
+// NOTE: Uses Telegram Bot: https://core.telegram.org/bots/api
+
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 
@@ -23,7 +25,7 @@
 #define CORE_DATA_STORE_SQL_FILE_NAME	@"ORN-Ops.sqlite"
 #define CORE_DATA_MODEL_RESOURCE_NAME	@"ORN-Ops"
 
-#define LONG_POLL_TIMEOUT	300 // seconds
+#define LONG_POLL_TIMEOUT	120 // seconds
 
 #
 # pragma mark - Remote Command Constants
@@ -399,7 +401,7 @@
 	if (offset) {
 		httpBodyJSONDictionary[@"offset"] = offset;
 	}
-	NSLog(@"Backend URL-request JSON for Telegram bot update: %@", httpBodyJSONDictionary);
+	NSLog(@"URL-request JSON for Telegram bot update: %@", httpBodyJSONDictionary);
 	
 	NSError* error = nil;
 	urlRequest.HTTPBody = [NSJSONSerialization dataWithJSONObject:httpBodyJSONDictionary options:kNilOptions error:&error];
@@ -451,7 +453,7 @@
 					NSLog(@"JSON Deserialization Error - %@ %@", error.localizedDescription, error.userInfo);
 					return;
 				}
-				NSLog(@"Backend URL-response JSON for Telegram bot update: %@", responseJSONDictionary);
+				NSLog(@"URL-response JSON for Telegram bot update: %@", responseJSONDictionary);
 				
 				// We have JSON dictionary - grab Telegram update
 				

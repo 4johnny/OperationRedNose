@@ -180,7 +180,7 @@
 + (void)presentConnectionAlertWithViewController:(UIViewController*)viewController
 									  andHandler:(void(^)(UIAlertAction* action))handler {
 	
-	[Util presentOKAlertWithViewController:viewController andTitle:@"Connection Trouble" andMessage:@"Please try again" andHandler:handler];
+	[Util presentOKAlertWithViewController:viewController andTitle:@"Connection Trouble" andMessage:@"Try again later." andHandler:handler];
 }
 
 
