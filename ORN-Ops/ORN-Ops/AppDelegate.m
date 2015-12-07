@@ -28,19 +28,22 @@
 #define LONG_POLL_TIMEOUT	120 // seconds
 
 #
-# pragma mark - Remote Command Constants
+# pragma mark Action Constants
+#
+
+#define ACTION_INVOKE_KEY			@"action"
+#define ACTION_INVOKE_CREATE_VAL	@"create"
+
+#define ACTION_ENTITY_KEY			@"entity"
+#define ACTION_ATTRIBUTES_KEY		@"attributes"
+
+#
+# pragma mark Telegram Constants
 #
 
 #define TELEGRAM_GET_ME_URL_FORMAT			@"https://api.telegram.org/bot%@/getMe"
 #define TELEGRAM_GET_UPDATES_URL_FORMAT		@"https://api.telegram.org/bot%@/getUpdates"
 
-#define REMOTE_COMMAND_ENTITY_KEY			@"entity"
-
-#define REMOTE_COMMAND_ACTION_KEY			@"action"
-#define REMOTE_COMMAND_ACTION_CREATE_VAL	@"create"
-//#define REMOTE_COMMAND_ACTION_UPDATE_VAL	@"update"
-
-#define REMOTE_COMMAND_ATTRIBUTES_KEY		@"attributes"
 
 #
 # pragma mark - Interface
@@ -345,35 +348,44 @@
 
 
 #
-# pragma mark Remote Command Methods
+# pragma mark Telegram Methods
 #
 
 
-- (BOOL)handleRemoteCommand:(NSDictionary<NSString*,id>*)remoteCommand {
+- (BOOL)handleTelegramActionMessage:(NSDictionary<NSString*,id>*)message {
 	
-	if (remoteCommand.count <= 0) return NO;
+	if (message.count <= 0) return NO;
 	
-	NSString* remoteCommandAction = remoteCommand[REMOTE_COMMAND_ACTION_KEY];
-	NSString* remoteCommandEntity = remoteCommand[REMOTE_COMMAND_ENTITY_KEY];
-	NSDictionary<NSString*,id>* attributes = remoteCommand[REMOTE_COMMAND_ATTRIBUTES_KEY];
+	NSString* actionName = message[ACTION_INVOKE_KEY];
+	NSString* entityName = message[ACTION_ENTITY_KEY];
+	NSDictionary<NSString*,id>* attributes = message[ACTION_ATTRIBUTES_KEY];
 	
-	if ([RIDE_ENTITY_NAME.lowercaseString isEqualToString:remoteCommandEntity]) {
+	if ([RIDE_ENTITY_NAME.lowercaseString isEqualToString:entityName]) {
 		
-		if ([REMOTE_COMMAND_ACTION_CREATE_VAL isEqualToString:remoteCommandAction]) {
+		if ([ACTION_INVOKE_CREATE_VAL isEqualToString:actionName]) {
 			
 			Ride* newRide = [Ride rideWithAttributes:attributes andManagedObjectContext:self.managedObjectContext andGeocoder1:self.geocoder1 andGeocoder2:self.geocoder2 andSender:self];
 
 			[self saveManagedObjectContext];
 			[newRide postNotificationCreatedWithSender:self];
 			
-		} // else if (REMOTE_COMMAND_ACTION_ isEqualToString:remoteCommandAction]) { ... }
+		} // else if (ACTION_INVOKE_ isEqualToString:actionName]) { ... }
 		
-	} else if ([TEAM_ENTITY_NAME.lowercaseString isEqualToString:remoteCommandEntity]) {
-
-		// Do nothing (for now)
-	}
+	} // else if ([TEAM_ENTITY_NAME.lowercaseString isEqualToString:entityName]) { ... }
 	
 	return YES;
+}
+
+
+- (BOOL)handleTelegramMessage:(NSString*)messageText {
+	
+	// Handle action message, if possible
+	NSDictionary<NSString*,id>* actionMessage = [Util dictionaryFromString:messageText];
+	NSLog(@"Trying to handle action message: %@", actionMessage);
+	if ([self handleTelegramActionMessage:actionMessage]) return YES;
+	NSLog(@"Cannot handle action message");
+	
+	return NO;
 }
 
 
@@ -472,15 +484,14 @@
 				NSNumber* lastMessageUpdateID = nil;
 				for (NSDictionary<NSString*,id>* messageResult in messageResults) {
 					
-					// Grab ID and remote command from message, if possible
 					lastMessageUpdateID = messageResult[@"update_id"];
 					NSString* messageText = messageResult[@"message"][@"text"];
-					NSDictionary<NSString*,id>* remoteCommand = [Util dictionaryFromString:messageText];
-					NSLog(@"Message update ID: %@; remoteCommand: %@", lastMessageUpdateID, remoteCommand);
+					NSLog(@"Message update ID: %@; text: %@", lastMessageUpdateID, messageText);
 					
-					if (!remoteCommand) continue;
+					if (lastMessageUpdateID.integerValue <= 0 ||
+						messageText.length <= 0) continue;
 					
-					(void)[self handleRemoteCommand:remoteCommand];
+					(void)[self handleTelegramMessage:messageText];
 				}
 				
 				// Bump up offset for next poll
