@@ -509,10 +509,7 @@
 			AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
 			appDelegate.telegramBotUserID = telegramBotUserID;
 			NSString* alertMessage = [NSString stringWithFormat:@"Loaded bot: %@ (%@)", telegramBotUserName, telegramBotUserID];
-			[Util presentOKAlertWithViewController:self andTitle:@"ORN Bot" andMessage:alertMessage andHandler:^(UIAlertAction* action) {
-				
-//				[self clearFields];
-			}];
+			[Util presentOKAlertWithViewController:self andTitle:@"ORN Bot" andMessage:alertMessage andHandler:nil];
 			
 		});
 	}] resume];
@@ -618,7 +615,7 @@
 			
 			// Ride created successfully - notify user
 			
-			[Util presentOKAlertWithViewController:self andTitle:@"Submit Form" andMessage:@"Submitted form successfully.\nProvide paper form to your dispatcher." andHandler:^(UIAlertAction* action) {
+			[Util presentOKAlertWithViewController:self andTitle:@"Submit Form" andMessage:@"Submitted form successfully.\nProvide backup copy to your dispatcher." andHandler:^(UIAlertAction* action) {
 				
 				[self clearFields];
 			}];
