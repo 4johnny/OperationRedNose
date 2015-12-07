@@ -121,6 +121,8 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 
 - (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
 
+- (instancetype)initWithManagedObjectModel:(NSManagedObjectModel*)managedObjectModel;
+
 + (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
 								 andDateTime:(NSDate*)dateTime
 								andPlacemark:(CLPlacemark*)placemark
@@ -133,6 +135,8 @@ typedef NS_ENUM(NSInteger, VehicleTransmission) {
 						 andSender:(id)sender;
 	
 + (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
+
++ (instancetype)rideWithManagedObjectModel:(NSManagedObjectModel*)managedObjectModel;
 
 #
 # pragma mark Notifications

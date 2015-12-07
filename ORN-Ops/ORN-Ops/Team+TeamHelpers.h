@@ -49,7 +49,13 @@
 # pragma mark Initializers
 #
 
+- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
+
+- (instancetype)initWithManagedObjectModel:(NSManagedObjectModel*)managedObjectModel;
+
 + (instancetype)teamWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
+
++ (instancetype)teamWithManagedObjectModel:(NSManagedObjectModel*)managedObjectModel;
 
 #
 # pragma mark Notifications

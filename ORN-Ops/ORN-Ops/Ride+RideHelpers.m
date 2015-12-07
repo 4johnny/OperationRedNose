@@ -146,6 +146,16 @@
 }
 
 
+- (instancetype)initWithManagedObjectModel:(NSManagedObjectModel*)managedObjectModel {
+	
+	self = [super initWithEntity:managedObjectModel.entitiesByName[RIDE_ENTITY_NAME] insertIntoManagedObjectContext:nil];
+	//	if (self) {
+	//
+	//	}
+	return self;
+}
+
+
 + (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
 								 andDateTime:(NSDate*)dateTime
 								andPlacemark:(CLPlacemark*)placemark
@@ -175,6 +185,12 @@
 + (instancetype)rideWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
 	return [[Ride alloc] initWithManagedObjectContext:managedObjectContext];
+}
+
+
++ (instancetype)rideWithManagedObjectModel:(NSManagedObjectModel*)managedObjectModel {
+
+	return [[Ride alloc] initWithManagedObjectModel:managedObjectModel];
 }
 
 

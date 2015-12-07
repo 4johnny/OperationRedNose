@@ -41,9 +41,14 @@
 # pragma mark Telegram Constants
 #
 
-#define TELEGRAM_GET_ME_URL_FORMAT			@"https://api.telegram.org/bot%@/getMe"
-#define TELEGRAM_GET_UPDATES_URL_FORMAT		@"https://api.telegram.org/bot%@/getUpdates"
+//#define URL_TELEGRAM_GET_ME_FORMAT			@"https://api.telegram.org/bot%@/getMe"
+#define URL_TELEGRAM_GET_UPDATES_FORMAT		@"https://api.telegram.org/bot%@/getUpdates"
+#define URL_TELEGRAM_SEND_MESSAGE_FORMAT	@"https://api.telegram.org/bot%@/sendMessage"
 
+#define TELEGRAM_SEND_MESSAGE_TIMEOUT	30 // seconds
+
+#define TELEGRAM_COMMAND_NAME_CANCEL	@"/cancel"
+#define TELEGRAM_COMMAND_NAME_NEW_RIDE	@"/newride"
 
 #
 # pragma mark - Interface
@@ -60,6 +65,9 @@
 @property (nonatomic) CLGeocoder* geocoder2;
 
 @property (strong, nonatomic) NSURLSessionDataTask* telegramDataTask;
+
+// Not persisted
+@property (strong, nonatomic) NSMutableDictionary<NSNumber*,NSDictionary<NSString*,id>*>* telegramBotRideStateByUserID;
 
 #
 # pragma mark Core Data Properties
@@ -146,6 +154,16 @@
 }
 
 
+- (NSMutableDictionary<NSNumber*,NSDictionary<NSString*,id>*>*)telegramBotRideStateByUserID {
+	
+	if (_telegramBotRideStateByUserID) return _telegramBotRideStateByUserID;
+	
+	_telegramBotRideStateByUserID = [NSMutableDictionary dictionary];
+	
+	return _telegramBotRideStateByUserID;
+}
+
+
 #
 # pragma mark <UIApplicationDelegate>
 #
@@ -158,7 +176,7 @@
 	
 	if (self.telegramBotAuthToken.length > 0) {
 		
-		[self launchPollTelegramURLDataTaskWithAuthToken:self.telegramBotAuthToken];
+		[self launchPollTelegramURLDataTask];
 	}
 	
 	return YES;
@@ -352,37 +370,122 @@
 #
 
 
+- (BOOL)handleTelegramCommandMessage:(NSDictionary<NSString*,id>*)message {
+	
+	// Validate command message structure
+	
+	NSString* messageText = message[@"text"];
+	NSAssert([messageText isKindOfClass:[NSString class]], @"Message must be string");
+	if (![messageText isKindOfClass:[NSString class]]) return NO;
+	
+	NSDictionary<NSString*,id>* chat = message[@"chat"];
+	NSAssert([chat isKindOfClass:[NSDictionary class]], @"Chat must be dictionary");
+	NSAssert(chat.count > 0, @"Chat dictionary must exist");
+	if (![chat isKindOfClass:[NSDictionary class]] ||
+		chat.count <= 0) return NO;
+	
+	NSString* chatUserName = chat[@"username"];
+	NSAssert([chatUserName isKindOfClass:[NSString class]], @"Chat user name must be string");
+	if (![chatUserName isKindOfClass:[NSString class]]) return NO;
+	
+	NSNumber* chatUserID = chat[@"id"];
+	NSAssert([chatUserID isKindOfClass:[NSNumber class]], @"Chat user ID must be integer");
+	if (![chatUserID isKindOfClass:[NSNumber class]]) return NO;
+	
+	// If no message text, then no command, and we are done
+	if (messageText.length <= 0) return NO;
+	
+	// Handle command, if possible
+	if ([TELEGRAM_COMMAND_NAME_CANCEL isEqualToString:messageText]) {
+
+		NSLog(@"Cancelling ride-create workflow for user: %@ (%@)", chatUserName, chatUserID);
+		
+		[self.telegramBotRideStateByUserID removeObjectForKey:chatUserID];
+		NSLog(@"Ride state: %@", self.telegramBotRideStateByUserID);
+		
+		return YES;
+		
+	} else if ([TELEGRAM_COMMAND_NAME_NEW_RIDE isEqualToString:messageText]) {
+
+		NSLog(@"Starting ride-create workflow for user: %@ (%@)", chatUserName, chatUserID);
+		
+		self.telegramBotRideStateByUserID[chatUserID] =
+		@{
+		  @"createdDateTime" :	[NSDate date],
+		  @"ride" :				[Ride rideWithManagedObjectModel:self.managedObjectModel],
+		  };
+		NSLog(@"Ride state: %@", self.telegramBotRideStateByUserID);
+		
+		return YES;
+	}
+	
+	return NO;
+}
+
+										  
+- (BOOL)handleTelegramWorkflowMessage:(NSDictionary<NSString*,id>*)message {
+	
+	return NO;
+}
+
+
 - (BOOL)handleTelegramActionMessage:(NSDictionary<NSString*,id>*)message {
 	
-	if (message.count <= 0) return NO;
+	NSString* messageText = message[@"text"];
+	NSDictionary<NSString*,id>* actionMessage = [Util dictionaryFromString:messageText];
+	if (actionMessage.count <= 0) return NO;
 	
-	NSString* actionName = message[ACTION_INVOKE_KEY];
-	NSString* entityName = message[ACTION_ENTITY_KEY];
-	NSDictionary<NSString*,id>* attributes = message[ACTION_ATTRIBUTES_KEY];
+	NSString* actionName = actionMessage[ACTION_INVOKE_KEY];
+	NSString* entityName = actionMessage[ACTION_ENTITY_KEY];
+	NSDictionary<NSString*,id>* attributes = actionMessage[ACTION_ATTRIBUTES_KEY];
 	
 	if ([RIDE_ENTITY_NAME.lowercaseString isEqualToString:entityName]) {
 		
 		if ([ACTION_INVOKE_CREATE_VAL isEqualToString:actionName]) {
 			
+			NSLog(@"Trying to create new ride");
+			
 			Ride* newRide = [Ride rideWithAttributes:attributes andManagedObjectContext:self.managedObjectContext andGeocoder1:self.geocoder1 andGeocoder2:self.geocoder2 andSender:self];
-
-			[self saveManagedObjectContext];
-			[newRide postNotificationCreatedWithSender:self];
+			if (newRide) {
+				
+				[self saveManagedObjectContext];
+				[newRide postNotificationCreatedWithSender:self];
+				
+				NSLog(@"Created new ride");
+				return YES;
+			}
+			
+			NSLog(@"Cannot create new ride");
 			
 		} // else if (ACTION_INVOKE_ isEqualToString:actionName]) { ... }
 		
 	} // else if ([TEAM_ENTITY_NAME.lowercaseString isEqualToString:entityName]) { ... }
 	
-	return YES;
+	return NO;
 }
 
 
-- (BOOL)handleTelegramMessage:(NSString*)messageText {
+- (BOOL)handleTelegramMessage:(NSDictionary<NSString*,id>*)message {
 	
-	// Handle action message, if possible
-	NSDictionary<NSString*,id>* actionMessage = [Util dictionaryFromString:messageText];
-	NSLog(@"Trying to handle action message: %@", actionMessage);
-	if ([self handleTelegramActionMessage:actionMessage]) return YES;
+	NSString* messageText = message[@"text"];
+	if (messageText.length <= 0) return NO;
+	
+	NSRange commandCharRange = [messageText rangeOfString:@"/"];
+	if (commandCharRange.location == 0) {
+	
+		NSLog(@"Trying to handle message as command");
+		if ([self handleTelegramCommandMessage:message]) return YES;
+		NSLog(@"Cannot handle command message");
+		
+		return NO;
+	}
+	
+	NSLog(@"Trying to handle message as workflow");
+	if ([self handleTelegramWorkflowMessage:message]) return YES;
+	NSLog(@"Cannot handle workflow message");
+	
+	NSLog(@"Trying to handle message as action");
+	if ([self handleTelegramActionMessage:message]) return YES;
 	NSLog(@"Cannot handle action message");
 	
 	return NO;
@@ -396,7 +499,7 @@
 	NSAssert(authToken.length > 0, @"Telegram bot auth token must exist");
 	if (authToken.length <= 0) return nil;
 	
-	NSString* urlString = [NSString stringWithFormat:TELEGRAM_GET_UPDATES_URL_FORMAT, authToken];
+	NSString* urlString = [NSString stringWithFormat:URL_TELEGRAM_GET_UPDATES_FORMAT, authToken];
 	NSURL* url = [NSURL URLWithString:urlString];
 	//	NSLog(@"URL for Telegram bot update: %@", telegramBotUpdateURL);
 
@@ -428,9 +531,50 @@
 }
 
 
-- (void)launchPollTelegramURLDataTaskWithAuthToken:(NSString*)authToken {
+- (NSMutableURLRequest*)urlRequestForTelegramBotSendMessageWithChatUserID:(NSNumber*)chatUserID
+														   andMessageText:(NSString*)messageText {
 	
-	if (authToken.length <= 0) return;
+	AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+	
+	NSAssert(chatUserID.integerValue > 0, @"Chat user ID must exist");
+	if (chatUserID.integerValue <= 0) return nil;
+	
+	NSString* telegramBotAuthToken = appDelegate.telegramBotAuthToken;
+	NSAssert(telegramBotAuthToken.length > 0, @"Telegram bot auth token must exist");
+	if (telegramBotAuthToken.length <= 0) return nil;
+	
+	NSString* urlString = [NSString stringWithFormat:URL_TELEGRAM_SEND_MESSAGE_FORMAT, telegramBotAuthToken];
+	NSURL* url = [NSURL URLWithString:urlString];
+	//	NSLog(@"URL for Telegram bot message: %@", url);
+	
+	NSMutableURLRequest* urlRequest = [NSMutableURLRequest requestWithURL:url];
+	urlRequest.HTTPMethod = @"POST";
+	urlRequest.timeoutInterval = TELEGRAM_SEND_MESSAGE_TIMEOUT; // seconds
+	[urlRequest addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+	
+	NSDictionary<NSString*,id>* httpBodyJSONDictionary =
+	@{
+	  @"chat_id" :	chatUserID,
+	  @"text" :		messageText ?: @"",
+	  };
+	NSLog(@"URL-request JSON for Telegram bot message: %@", httpBodyJSONDictionary);
+	
+	NSError* error = nil;
+	urlRequest.HTTPBody = [NSJSONSerialization dataWithJSONObject:httpBodyJSONDictionary options:kNilOptions error:&error];
+	if (error) {
+		NSLog(@"JSON Serialization Error - %@ %@", error.localizedDescription, error.userInfo);
+		return nil;
+	}
+	
+	NSLog(@"URL request for Telegram bot message: %@", urlRequest);
+	
+	return urlRequest;
+}
+
+
+- (void)launchPollTelegramURLDataTask {
+	
+	if (self.telegramBotAuthToken.length <= 0) return;
 	
 	NSURLRequest* urlRequest = [AppDelegate urlRequestForTelegramBotUpdateWithOffset:self.telegramBotOffset andAuthToken:self.telegramBotAuthToken];
 	NSAssert(urlRequest, @"URL request for Telegram bot update must exist");
@@ -485,13 +629,20 @@
 				for (NSDictionary<NSString*,id>* messageResult in messageResults) {
 					
 					lastMessageUpdateID = messageResult[@"update_id"];
-					NSString* messageText = messageResult[@"message"][@"text"];
-					NSLog(@"Message update ID: %@; text: %@", lastMessageUpdateID, messageText);
-					
+					NSDictionary<NSString*,id>* message = messageResult[@"message"];
+					NSLog(@"Received Telegram update ID: %@; message: %@", lastMessageUpdateID, message);
 					if (lastMessageUpdateID.integerValue <= 0 ||
-						messageText.length <= 0) continue;
-					
-					(void)[self handleTelegramMessage:messageText];
+						message.count <= 0) {
+						NSLog(@"Ignoring invalid update");
+						continue;
+					}
+
+					// Yield to UI, since processing Telegram messages from external users
+					NSLog(@"Dispatching handler for Telegram message");
+					dispatch_async(dispatch_get_main_queue(), ^{
+						
+						(void)[self handleTelegramMessage:message];
+					});
 				}
 				
 				// Bump up offset for next poll
@@ -502,7 +653,7 @@
 			} @finally {
 				
 				// Launch next poll
-				[self launchPollTelegramURLDataTaskWithAuthToken:authToken];
+				[self launchPollTelegramURLDataTask];
 			}
 		});
 	}];
@@ -533,7 +684,7 @@
 	
 	NSLog(@"Starting poll for bot");
 	
-	[self launchPollTelegramURLDataTaskWithAuthToken:self.telegramBotAuthToken];
+	[self launchPollTelegramURLDataTask];
 }
 
 

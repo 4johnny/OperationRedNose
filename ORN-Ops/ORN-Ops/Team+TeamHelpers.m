@@ -36,9 +36,35 @@
 #
 
 
+- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
+	
+	self = [super initWithEntity:[NSEntityDescription entityForName:TEAM_ENTITY_NAME inManagedObjectContext:managedObjectContext] insertIntoManagedObjectContext:managedObjectContext];
+	//	if (self) {
+	//
+	//	}
+	return self;
+}
+
+
+- (instancetype)initWithManagedObjectModel:(NSManagedObjectModel*)managedObjectModel {
+	
+	self = [super initWithEntity:managedObjectModel.entitiesByName[TEAM_ENTITY_NAME] insertIntoManagedObjectContext:nil];
+	//	if (self) {
+	//
+	//	}
+	return self;
+}
+
+
 + (instancetype)teamWithManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	
-	return [[Team alloc] initWithEntity:[NSEntityDescription entityForName:TEAM_ENTITY_NAME inManagedObjectContext:managedObjectContext] insertIntoManagedObjectContext:managedObjectContext];
+	return [[Team alloc] initWithManagedObjectContext:managedObjectContext];
+}
+
+
++ (instancetype)teamWithManagedObjectModel:(NSManagedObjectModel*)managedObjectModel {
+
+	return [[Team alloc] initWithManagedObjectModel:managedObjectModel];
 }
 
 
