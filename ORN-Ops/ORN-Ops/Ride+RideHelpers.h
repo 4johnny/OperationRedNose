@@ -13,6 +13,27 @@
 #
 
 #define RIDE_ENTITY_NAME	@"Ride"
+
+#define RIDE_ATTRIBUTE_NAME_SOURCE_NAME						@"sourceName"
+
+#define RIDE_ATTRIBUTE_NAME_PASSENGER_NAME_FIRST			@"passengerNameFirst"
+#define RIDE_ATTRIBUTE_NAME_PASSENGER_NAME_LAST				@"passengerNameLast"
+#define RIDE_ATTRIBUTE_NAME_PASSENGER_PHONE_NUMBER			@"passengerPhoneNumber"
+#define RIDE_ATTRIBUTE_NAME_PASSENGER_COUNT					@"passengerCount"
+
+#define RIDE_ATTRIBUTE_NAME_LOCATION_START_ADDRESS			@"locationStartAddress"
+#define RIDE_ATTRIBUTE_NAME_LOCATION_END_ADDRESS			@"locationEndAddress"
+#define RIDE_ATTRIBUTE_NAME_LOCATION_TRANSFER_FROM			@"locationTransferFrom"
+#define RIDE_ATTRIBUTE_NAME_LOCATION_TRANSFER_TO			@"locationTransferTo"
+
+#define RIDE_ATTRIBUTE_NAME_VEHICLE_DESCRIPTION				@"vehicleDescription"
+#define RIDE_ATTRIBUTE_NAME_VEHICLE_TRANSMISSION			@"vehicleTransmission"
+#define RIDE_ATTRIBUTE_VALUE_VEHICLE_TRANSMISSION_AUTOMATIC	@"automatic"
+#define RIDE_ATTRIBUTE_VALUE_VEHICLE_TRANSMISSION_MANUAL	@"manual"
+#define RIDE_ATTRIBUTE_NAME_VEHICLE_SEAT_BELT_COUNT			@"vehicleSeatBeltCount"
+
+#define RIDE_ATTRIBUTE_NAME_NOTES							@"notes"
+
 #define RIDE_TITLE_DEFAULT	@"(Ride)"
 #define RIDE_TITLE_NONE		@"-None-"
 

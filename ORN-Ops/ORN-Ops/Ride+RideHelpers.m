@@ -22,7 +22,6 @@
 #define RIDE_UPDATED_LOCATION_END_NOTIFICATION_KEY		@"rideUpdatedLocationEnd"
 #define RIDE_UPDATED_TEAM_ASSIGNED_NOTIFICATION_KEY		@"rideUpdatedTeamAssigned"
 
-
 #
 # pragma mark - Implementation
 #
@@ -80,15 +79,15 @@
 			self.dateTimeStart = [NSDate date];
 		}
 		
-		self.sourceName = attributes[@"sourceName"];
+		self.sourceName = attributes[RIDE_ATTRIBUTE_NAME_SOURCE_NAME];
 		
 		// Passenger
 		
-		self.passengerNameFirst = attributes[@"passengerNameFirst"];
-		self.passengerNameLast = attributes[@"passengerNameLast"];
-		self.passengerPhoneNumber = attributes[@"passengerPhoneNumber"];
+		self.passengerNameFirst = attributes[RIDE_ATTRIBUTE_NAME_PASSENGER_NAME_FIRST];
+		self.passengerNameLast = attributes[RIDE_ATTRIBUTE_NAME_PASSENGER_NAME_LAST];
+		self.passengerPhoneNumber = attributes[RIDE_ATTRIBUTE_NAME_PASSENGER_PHONE_NUMBER];
 		
-		self.passengerCount = attributes[@"passengerCount"];
+		self.passengerCount = attributes[RIDE_ATTRIBUTE_NAME_PASSENGER_COUNT];
 		if (self.passengerCount.integerValue < 1) {
 			self.passengerCount = @(1);
 		}
@@ -96,7 +95,7 @@
 		// Location
 		// NOTE: Set addresses only if geocode valid - async
 		
-		NSString* newLocationStartAddress = attributes[@"locationStartAddress"];
+		NSString* newLocationStartAddress = attributes[RIDE_ATTRIBUTE_NAME_LOCATION_START_ADDRESS];
 		if (newLocationStartAddress.length > 0) {
 			
 			[self tryUpdateLocationWithAddressString:newLocationStartAddress
@@ -106,7 +105,7 @@
 											  andSender:sender]; // async
 		}
 		
-		NSString* newLocationEndAddress = attributes[@"locationEndAddress"];
+		NSString* newLocationEndAddress = attributes[RIDE_ATTRIBUTE_NAME_LOCATION_END_ADDRESS];
 		if (newLocationEndAddress.length > 0) {
 			
 			[self tryUpdateLocationWithAddressString:newLocationEndAddress
@@ -116,24 +115,24 @@
 										   andSender:sender]; // async
 		}
 		
-		self.locationTransferFrom = attributes[@"locationTransferFrom"];
-		self.locationTransferTo = attributes[@"locationTransferTo"];
+		self.locationTransferFrom = attributes[RIDE_ATTRIBUTE_NAME_LOCATION_TRANSFER_FROM];
+		self.locationTransferTo = attributes[RIDE_ATTRIBUTE_NAME_LOCATION_TRANSFER_TO];
 		
 		// Vehicle
 		
-		self.vehicleDescription = attributes[@"vehicleDescription"];
+		self.vehicleDescription = attributes[RIDE_ATTRIBUTE_NAME_VEHICLE_DESCRIPTION];
 		
-		NSString* newVehicleTransmissionText = attributes[@"vehicleTransmission"];
-		self.vehicleTransmission = @([newVehicleTransmissionText.lowercaseString isEqualToString:@"manual"] ? VehicleTransmission_Manual : VehicleTransmission_Automatic);
+		NSString* newVehicleTransmissionText = attributes[RIDE_ATTRIBUTE_NAME_VEHICLE_TRANSMISSION];
+		self.vehicleTransmission = @([newVehicleTransmissionText.lowercaseString isEqualToString:RIDE_ATTRIBUTE_VALUE_VEHICLE_TRANSMISSION_MANUAL] ? VehicleTransmission_Manual : VehicleTransmission_Automatic);
 		
-		self.vehicleSeatBeltCount = attributes[@"vehicleSeatBeltCount"];
+		self.vehicleSeatBeltCount = attributes[RIDE_ATTRIBUTE_NAME_VEHICLE_SEAT_BELT_COUNT];
 		if (self.vehicleSeatBeltCount.integerValue < 0) {
 			self.vehicleSeatBeltCount = @(0);
 		}
 		
 		// Notes
 		
-		self.notes = attributes[@"notes"];
+		self.notes = attributes[RIDE_ATTRIBUTE_NAME_NOTES];
 	}
 	
 	return self;

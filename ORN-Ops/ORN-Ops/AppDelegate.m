@@ -31,10 +31,14 @@
 # pragma mark Action Constants
 #
 
+// NOTE: Must be all lower case
+
 #define ACTION_INVOKE_KEY			@"action"
 #define ACTION_INVOKE_CREATE_VAL	@"create"
 
 #define ACTION_ENTITY_KEY			@"entity"
+#define ACTION_ATTRIBUTES_KEY		@"attributes"
+
 #define ACTION_ATTRIBUTES_KEY		@"attributes"
 
 #
@@ -47,8 +51,9 @@
 
 #define TELEGRAM_SEND_MESSAGE_TIMEOUT	30 // seconds
 
-#define TELEGRAM_COMMAND_NAME_CANCEL	@"/cancel"
-#define TELEGRAM_COMMAND_NAME_NEW_RIDE	@"/newride"
+#define TELEGRAM_COMMAND_NAME_CANCEL			@"/cancel"
+#define TELEGRAM_COMMAND_NAME_NEW_RIDE_FORM		@"/new_ride_form"
+//#define TELEGRAM_COMMAND_NAME_NEW_RIDE			@"/new_ride"
 
 #
 # pragma mark - Interface
@@ -374,9 +379,9 @@
 	
 	// Validate command message structure
 	
-	NSString* messageText = message[@"text"];
-	NSAssert([messageText isKindOfClass:[NSString class]], @"Message must be string");
-	if (![messageText isKindOfClass:[NSString class]]) return NO;
+	NSString* commandText = message[@"text"];
+	NSAssert([commandText isKindOfClass:[NSString class]], @"Message must be string");
+	if (![commandText isKindOfClass:[NSString class]]) return NO;
 	
 	NSDictionary<NSString*,id>* chat = message[@"chat"];
 	NSAssert([chat isKindOfClass:[NSDictionary class]], @"Chat must be dictionary");
@@ -392,52 +397,70 @@
 	NSAssert([chatUserID isKindOfClass:[NSNumber class]], @"Chat user ID must be integer");
 	if (![chatUserID isKindOfClass:[NSNumber class]]) return NO;
 	
-	// If no message text, then no command, and we are done
-	if (messageText.length <= 0) return NO;
-	
 	// Handle command, if possible
-	if ([TELEGRAM_COMMAND_NAME_CANCEL isEqualToString:messageText]) {
+	
+	commandText = commandText.lowercaseString;
+	if (commandText.length <= 0) return NO;
+	
+	if ([TELEGRAM_COMMAND_NAME_CANCEL isEqualToString:commandText]) {
 
-		NSLog(@"Cancelling ride-create workflow for user: %@ (%@)", chatUserName, chatUserID);
-		
-		[self.telegramBotRideStateByUserID removeObjectForKey:chatUserID];
-		NSLog(@"Ride state: %@", self.telegramBotRideStateByUserID);
-		
-		return YES;
-		
-	} else if ([TELEGRAM_COMMAND_NAME_NEW_RIDE isEqualToString:messageText]) {
-
-		NSLog(@"Starting ride-create workflow for user: %@ (%@)", chatUserName, chatUserID);
-		
-		self.telegramBotRideStateByUserID[chatUserID] =
-		@{
-		  @"createdDateTime" :	[NSDate date],
-		  @"ride" :				[Ride rideWithManagedObjectModel:self.managedObjectModel],
-		  };
-		NSLog(@"Ride state: %@", self.telegramBotRideStateByUserID);
+		//	NSLog(@"Cancelling ride-create workflow for user: %@ (%@)", chatUserName, chatUserID);
+		//	[self.telegramBotRideStateByUserID removeObjectForKey:chatUserID];
+		//	NSLog(@"Ride state: %@", self.telegramBotRideStateByUserID);
 		
 		return YES;
 	}
+	
+	if ([TELEGRAM_COMMAND_NAME_NEW_RIDE_FORM isEqualToString:commandText]) {
+		
+		NSLog(@"Providing ride-create form to user: %@ (%@)", chatUserName, chatUserID);
+
+		[self sendTelegramRideCreateFormWithChatUserID:chatUserID andMessage:message];
+		
+		return YES;
+	}
+	
+	//	if ([TELEGRAM_COMMAND_NAME_NEW_RIDE isEqualToString:commandText]) {
+	//
+	//		NSLog(@"Starting ride-create workflow for user: %@ (%@)", chatUserName, chatUserID);
+	//
+	//		self.telegramBotRideStateByUserID[chatUserID] =
+	//		@{
+	//		  @"createdDateTime" :	[NSDate date],
+	//		  @"ride" :				[Ride rideWithManagedObjectModel:self.managedObjectModel],
+	//		  };
+	//		NSLog(@"Ride state: %@", self.telegramBotRideStateByUserID);
+	//
+	//		return YES;
+	//	}
 	
 	return NO;
 }
 
 										  
-- (BOOL)handleTelegramWorkflowMessage:(NSDictionary<NSString*,id>*)message {
-	
-	return NO;
-}
+//- (BOOL)handleTelegramWorkflowMessage:(NSDictionary<NSString*,id>*)message {
+//	
+//	return NO;
+//}
 
 
-- (BOOL)handleTelegramActionMessage:(NSDictionary<NSString*,id>*)message {
+- (BOOL)handleTelegramAction:(NSDictionary<NSString*,id>*)action {
 	
-	NSString* messageText = message[@"text"];
-	NSDictionary<NSString*,id>* actionMessage = [Util dictionaryFromString:messageText];
-	if (actionMessage.count <= 0) return NO;
+	NSAssert(action.count > 0, @"Action must exist");
+	if (action.count <= 0) return NO;
 	
-	NSString* actionName = actionMessage[ACTION_INVOKE_KEY];
-	NSString* entityName = actionMessage[ACTION_ENTITY_KEY];
-	NSDictionary<NSString*,id>* attributes = actionMessage[ACTION_ATTRIBUTES_KEY];
+	NSString* actionName = action[ACTION_INVOKE_KEY];
+	NSString* entityName = action[ACTION_ENTITY_KEY];
+	NSDictionary<NSString*,id>* attributes = action[ACTION_ATTRIBUTES_KEY];
+	NSAssert(actionName.length > 0, @"Action name must exist");
+	NSAssert(entityName.length > 0, @"Entity name must exist");
+	NSAssert(attributes.count > 0, @"Attributes must exist");
+	if (actionName.length <= 0 ||
+		entityName.length <= 0 ||
+		attributes.count <= 0) return NO;
+	
+	actionName = actionName.lowercaseString;
+	entityName = entityName.lowercaseString;
 	
 	if ([RIDE_ENTITY_NAME.lowercaseString isEqualToString:entityName]) {
 		
@@ -465,6 +488,33 @@
 }
 
 
+- (BOOL)handleTelegramFormMessage:(NSDictionary<NSString*,id>*)message {
+
+	NSString* messageText = message[@"text"];
+	NSDictionary<NSString*,id>* attributes = [self attributesFromMessageText:messageText];
+	if (attributes.count <= 0) return NO;
+	
+	NSDictionary<NSString*,id>* action =
+	@{
+	  ACTION_INVOKE_KEY :		ACTION_INVOKE_CREATE_VAL,
+	  ACTION_ENTITY_KEY :		RIDE_ENTITY_NAME,
+	  ACTION_ATTRIBUTES_KEY :	attributes,
+	  };
+	
+	return [self handleTelegramAction:action];
+}
+
+
+- (BOOL)handleTelegramActionMessage:(NSDictionary<NSString*,id>*)message {
+	
+	NSString* messageText = message[@"text"];
+	NSDictionary<NSString*,id>* action = [Util dictionaryFromString:messageText];
+	if (action.count <= 0) return NO;
+	
+	return [self handleTelegramAction:action];
+}
+
+
 - (BOOL)handleTelegramMessage:(NSDictionary<NSString*,id>*)message {
 	
 	NSString* messageText = message[@"text"];
@@ -480,15 +530,88 @@
 		return NO;
 	}
 	
-	NSLog(@"Trying to handle message as workflow");
-	if ([self handleTelegramWorkflowMessage:message]) return YES;
-	NSLog(@"Cannot handle workflow message");
+	//	NSLog(@"Trying to handle message as workflow");
+	//	if ([self handleTelegramWorkflowMessage:message]) return YES;
+	//	NSLog(@"Cannot handle workflow message");
+	
+	NSLog(@"Trying to handle message as form");
+	if ([self handleTelegramFormMessage:message]) return YES;
+	NSLog(@"Cannot handle form message");
 	
 	NSLog(@"Trying to handle message as action");
 	if ([self handleTelegramActionMessage:message]) return YES;
 	NSLog(@"Cannot handle action message");
 	
 	return NO;
+}
+
+
+- (void)sendTelegramRideCreateFormWithChatUserID:(NSNumber*)chatUserID
+									  andMessage:(NSDictionary<NSString*,id>*)message {
+	
+	NSAssert(chatUserID.integerValue > 0, @"Chat user ID must exist");
+	NSAssert(message.count > 0 , @"Message must exist");
+	if (chatUserID.integerValue <= 0 ||
+		message.count <= 0) return;
+	
+	NSString* messageText =
+	
+	RIDE_ATTRIBUTE_NAME_SOURCE_NAME @": \n"
+	
+	RIDE_ATTRIBUTE_NAME_PASSENGER_NAME_FIRST @": \n"
+	RIDE_ATTRIBUTE_NAME_PASSENGER_NAME_LAST @": \n"
+	RIDE_ATTRIBUTE_NAME_PASSENGER_PHONE_NUMBER @": \n"
+	RIDE_ATTRIBUTE_NAME_PASSENGER_COUNT @": \n"
+	
+	RIDE_ATTRIBUTE_NAME_LOCATION_START_ADDRESS @": \n"
+	RIDE_ATTRIBUTE_NAME_LOCATION_END_ADDRESS @": \n"
+	RIDE_ATTRIBUTE_NAME_LOCATION_TRANSFER_FROM @": \n"
+	RIDE_ATTRIBUTE_NAME_LOCATION_TRANSFER_TO @": \n"
+	
+	RIDE_ATTRIBUTE_NAME_VEHICLE_DESCRIPTION @": \n"
+	RIDE_ATTRIBUTE_NAME_VEHICLE_TRANSMISSION @" (" RIDE_ATTRIBUTE_VALUE_VEHICLE_TRANSMISSION_AUTOMATIC @" / " RIDE_ATTRIBUTE_VALUE_VEHICLE_TRANSMISSION_MANUAL @")" @": \n"
+	RIDE_ATTRIBUTE_NAME_VEHICLE_SEAT_BELT_COUNT @": \n"
+	
+	RIDE_ATTRIBUTE_NAME_NOTES @": \n"
+	;
+	
+	
+	NSURLRequest* urlRequest = [AppDelegate urlRequestForTelegramBotSendMessageWithChatUserID:chatUserID andMessageText:messageText];
+	NSAssert(urlRequest, @"URL request for Telegram bot update must exist");
+	if (!urlRequest) return;
+	
+	NSURLSessionDataTask* dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData* _Nullable data, NSURLResponse* _Nullable response, NSError* _Nullable error) {
+		
+		//	NSLog(@"URL response for Telegram bot update running on thread: %@", [NSThread currentThread]);
+		
+		dispatch_async(dispatch_get_main_queue(), ^{
+			
+			//	NSLog(@"Processing response for Telegram bot update on thread: %@", [NSThread currentThread]);
+			
+			if (!data) {
+				NSLog(@"URL Client Connection Error - %@ %@", error.localizedDescription, error.userInfo[NSURLErrorFailingURLStringErrorKey]);
+				return;
+			}
+			
+			NSHTTPURLResponse* httpUrlResponse = (NSHTTPURLResponse*)response;
+			if (httpUrlResponse.statusCode != HTTP_RESPONSE_STATUS_OK) {
+				
+				NSLog(@"URL Server Connection Error - %d %@", (int)httpUrlResponse.statusCode, [NSHTTPURLResponse localizedStringForStatusCode:httpUrlResponse.statusCode]);
+				return;
+			}
+			
+			// We have data - convert it to JSON dictionary
+			NSError* error = nil;
+			NSDictionary* responseJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+			if (!responseJSONDictionary) {
+				NSLog(@"JSON Deserialization Error - %@ %@", error.localizedDescription, error.userInfo);
+				return;
+			}
+			NSLog(@"URL-response JSON for Telegram bot update: %@", responseJSONDictionary);
+			
+		});
+	}];
+	[dataTask resume];
 }
 
 
@@ -531,7 +654,7 @@
 }
 
 
-- (NSMutableURLRequest*)urlRequestForTelegramBotSendMessageWithChatUserID:(NSNumber*)chatUserID
++ (NSMutableURLRequest*)urlRequestForTelegramBotSendMessageWithChatUserID:(NSNumber*)chatUserID
 														   andMessageText:(NSString*)messageText {
 	
 	AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
@@ -693,6 +816,86 @@
 	NSLog(@"Stopping poll for bot");
 	
 	[self cancelPollTelegramURLDataTask];
+}
+
+
+- (NSDictionary<NSString*,id>*)attributesFromMessageText:(NSString*)messageText {
+
+	if (!messageText) return nil;
+	if (messageText.length <= 0) return @{};
+	
+	NSArray<NSString*>* messageLines = [messageText componentsTrimAllNewline];
+	if (messageLines.count <= 0) return @{};
+	
+	NSMutableDictionary<NSString*,id>* attributes = [NSMutableDictionary<NSString*,id> dictionaryWithCapacity:messageLines.count];
+	
+	BOOL isNotes = NO;
+	NSMutableString* notes = [NSMutableString string];
+	
+	for (NSString* messageLine in messageLines) {
+		
+		NSRange attributeSeparatorRange = [messageLine rangeOfString:@":"];
+		if (attributeSeparatorRange.location == NSNotFound) {
+			
+			if (isNotes) {
+			
+				[notes appendString:[messageLine stringByAppendingString:@"\n"]];
+			}
+			
+			continue;
+		}
+		
+		NSString* attributeName = [[messageLine substringToIndex:attributeSeparatorRange.location] trim];
+		if (attributeName.length <= 0) continue;
+		
+		NSString* attributeValue = [[messageLine substringFromIndex:(attributeSeparatorRange.location + 1)] trim];
+		
+		isNotes = [RIDE_ATTRIBUTE_NAME_NOTES isEqualToString:attributeName];
+		if (isNotes) {
+		
+			[notes appendString:[attributeValue stringByAppendingString:@"\n"]];
+			
+			continue;
+		}
+		
+		if ([RIDE_ATTRIBUTE_NAME_PASSENGER_COUNT isEqualToString:attributeName] ||
+			[RIDE_ATTRIBUTE_NAME_VEHICLE_SEAT_BELT_COUNT isEqualToString:attributeName]) {
+			
+			attributes[attributeName] = @(attributeValue.integerValue);
+			
+			continue;
+		}
+			
+		if ([attributeName rangeOfString:RIDE_ATTRIBUTE_NAME_VEHICLE_TRANSMISSION].location == 0) {
+			
+			if (attributeValue.length <= 0) {
+				
+				attributes[RIDE_ATTRIBUTE_NAME_VEHICLE_TRANSMISSION] = RIDE_ATTRIBUTE_VALUE_VEHICLE_TRANSMISSION_AUTOMATIC;
+				
+				continue;
+			}
+			
+			attributeValue = attributeValue.lowercaseString;
+			
+			if ([attributeValue rangeOfString:@"m"].location == 0) {
+				
+				attributeValue = RIDE_ATTRIBUTE_VALUE_VEHICLE_TRANSMISSION_MANUAL;
+			}
+			
+			attributes[RIDE_ATTRIBUTE_NAME_VEHICLE_TRANSMISSION] = attributeValue;
+			
+			continue;
+		}
+	
+		attributes[attributeName] = attributeValue;
+	}
+	
+	if (notes) {
+		
+		attributes[RIDE_ATTRIBUTE_NAME_NOTES] = [notes trim];
+	}
+	
+	return attributes;
 }
 
 
