@@ -33,6 +33,58 @@
 #
 
 
+- (instancetype)dateWithCalendarUnit:(NSCalendarUnit)calendarUnit {
+	
+	NSCalendar* currentCalendar = [NSCalendar currentCalendar];
+	
+	NSDateComponents* dateComponents = [currentCalendar components:calendarUnit fromDate:self];
+	
+	return [currentCalendar dateFromComponents:dateComponents];
+}
+
+
+- (instancetype)dateByFlooringToMinute {
+	
+	const NSCalendarUnit calendarUnit =
+	(
+	 NSCalendarUnitEra |
+	 NSCalendarUnitYear |
+	 NSCalendarUnitMonth |
+	 NSCalendarUnitDay |
+	 NSCalendarUnitHour |
+	 NSCalendarUnitMinute
+	 );
+	
+	return [self dateWithCalendarUnit:calendarUnit];
+}
+
+
+- (instancetype)dateByFlooringToDay {
+	
+	const NSCalendarUnit calendarUnit =
+	(
+	 NSCalendarUnitEra |
+	 NSCalendarUnitYear |
+	 NSCalendarUnitMonth |
+	 NSCalendarUnitDay
+	 );
+	
+	return [self dateWithCalendarUnit:calendarUnit];
+}
+
+
+- (instancetype)dateByFlooringToYear {
+	
+	const NSCalendarUnit calendarUnit =
+	(
+	 NSCalendarUnitEra |
+	 NSCalendarUnitYear
+	 );
+	
+	return [self dateWithCalendarUnit:calendarUnit];
+}
+
+
 - (NSDate*)roundToMinuteInterval:(NSInteger)minuteInterval {
 	
 	NSCalendar* currentCalendar = [NSCalendar currentCalendar];
@@ -78,6 +130,13 @@
 #
 # pragma mark Class Methods
 #
+
+
++ (instancetype)dateWithYear:(NSInteger)year {
+	
+	NSInteger commonEra = 1;
+	return [[NSCalendar currentCalendar] dateWithEra:commonEra year:year month:0 day:0 hour:0 minute:0 second:0 nanosecond:0];
+}
 
 
 + (BOOL)compareDate:(NSDate*)firstDate toDate:(NSDate*)secondDate {

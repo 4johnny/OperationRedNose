@@ -55,6 +55,7 @@
 #define TELEGRAM_COMMAND_NAME_NEW_RIDE_FORM		@"/new_ride_form"
 //#define TELEGRAM_COMMAND_NAME_NEW_RIDE			@"/new_ride"
 
+
 #
 # pragma mark - Interface
 #
@@ -556,6 +557,7 @@
 	
 	NSString* messageText =
 	
+	RIDE_ATTRIBUTE_NAME_DATE_TIME_START @": \n"
 	RIDE_ATTRIBUTE_NAME_SOURCE_NAME @": \n"
 	
 	RIDE_ATTRIBUTE_NAME_PASSENGER_NAME_FIRST @": \n"
@@ -854,6 +856,47 @@
 		if (isNotes) {
 		
 			[notes appendString:[attributeValue stringByAppendingString:@"\n"]];
+			
+			continue;
+		}
+		
+		if ([RIDE_ATTRIBUTE_NAME_DATE_TIME_START isEqualToString:attributeName]) {
+			
+			// Grab hour & minute
+			NSRange timeSeparatorRange = [attributeValue rangeOfString:@":"];
+			if (timeSeparatorRange.location == NSNotFound) continue;
+			
+			NSString* hourText = [[attributeValue substringToIndex:timeSeparatorRange.location] trim];
+			if (hourText.length <= 0) continue;
+			NSInteger hourDelta = hourText.integerValue;
+			if (hourDelta > 6) { // Assume PM
+				
+				hourDelta -= 12;
+			}
+			
+			// Determine base date
+			NSString* minuteText = [[attributeValue substringFromIndex:(timeSeparatorRange.location + 1)] trim];
+			if (minuteText.length <= 0) continue;
+			NSInteger minute = minuteText.integerValue;
+			
+			// Determine midnight of base date from now
+			NSDate* now = [NSDate date];
+			NSDate* dateTimeStart = [now dateByFlooringToDay];
+			NSCalendar* currentCalendar = [NSCalendar currentCalendar];
+			NSDateComponents* dateComponents = [currentCalendar components:NSCalendarUnitHour fromDate:now];
+			if (dateComponents.hour > 12) { // 24-hour clock
+				
+				dateTimeStart = [currentCalendar dateByAddingUnit:NSCalendarUnitDay value:1 toDate:dateTimeStart options:kNilOptions];
+			}
+
+			
+			// Determine start date-time relative to base date
+			dateComponents.hour = hourDelta;
+			dateComponents.minute = minute;
+			
+			dateTimeStart = [currentCalendar dateByAddingComponents:dateComponents toDate:dateTimeStart options:kNilOptions];
+			
+			attributes[attributeName] = dateTimeStart;
 			
 			continue;
 		}

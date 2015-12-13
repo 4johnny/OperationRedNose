@@ -24,6 +24,12 @@
 # pragma mark Methods
 #
 
+- (instancetype)dateWithCalendarUnit:(NSCalendarUnit)calendarUnit;
+
+- (instancetype)dateByFlooringToMinute;
+- (instancetype)dateByFlooringToDay;
+- (instancetype)dateByFlooringToYear;
+
 - (instancetype)roundToMinuteInterval:(NSInteger)minuteInterval;
 
 - (BOOL)isOlderThanMinutes:(NSInteger)minutes;
@@ -31,6 +37,8 @@
 #
 # pragma mark Class Methods
 #
+
++ (instancetype)dateWithYear:(NSInteger)year;
 
 + (BOOL)compareDate:(NSDate*)firstDate toDate:(NSDate*)secondDate;
 

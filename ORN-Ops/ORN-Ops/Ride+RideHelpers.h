@@ -14,6 +14,7 @@
 
 #define RIDE_ENTITY_NAME	@"Ride"
 
+#define RIDE_ATTRIBUTE_NAME_DATE_TIME_START					@"dateTimeStart"
 #define RIDE_ATTRIBUTE_NAME_SOURCE_NAME						@"sourceName"
 
 #define RIDE_ATTRIBUTE_NAME_PASSENGER_NAME_FIRST			@"passengerNameFirst"

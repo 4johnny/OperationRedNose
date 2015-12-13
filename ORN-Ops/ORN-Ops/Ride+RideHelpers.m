@@ -74,7 +74,7 @@
 		
 		self.status = @(RideStatus_New);
 		
-		//	NSDate* newDateTimeStart = ... attributes[@"dateTimeStart"]; // Need to parse from a standard
+		self.dateTimeStart = attributes[RIDE_ATTRIBUTE_NAME_DATE_TIME_START];
 		if (!self.dateTimeStart) {
 			self.dateTimeStart = [NSDate date];
 		}
